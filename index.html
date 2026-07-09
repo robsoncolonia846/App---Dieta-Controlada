@@ -1567,8 +1567,7 @@
       const percent = Math.round((count / mealTypes.length) * 100);
       mealProgressCount.textContent = `${count}/${mealTypes.length}`;
       mealProgressFill.style.setProperty("--width", `${percent}%`);
-      const visibleMealTypes = count > 0 ? mealTypes.filter((meal) => completed.has(meal.id)) : mealTypes;
-      mealProgressList.innerHTML = visibleMealTypes.map((meal) => {
+      mealProgressList.innerHTML = mealTypes.map((meal) => {
         const done = completed.has(meal.id);
         const time = appData.mealTimes?.[meal.id] || meal.defaultTime;
         return `<button type="button" class="meal-step ${done ? "done" : ""}" data-open-meal-detail="${meal.id}"><div class="meal-icon">${meal.icon}</div><div>${meal.name}</div><div class="muted">${time}</div></button>`;
@@ -1584,7 +1583,8 @@
       mealDetailRegister.classList.add("hidden");
       const mealType = mealTypes.find((item) => item.id === mealTypeId) || mealTypes[0];
       selectedMealType = mealType.id;
-      const alreadyDone = appData.meals.some((item) => item.date === todayISO() && item.mealType === mealType.id);
+      const registeredMeals = appData.meals.filter((item) => item.date === todayISO() && item.mealType === mealType.id);
+      const alreadyDone = registeredMeals.length > 0;
       mealDetailTitle.textContent = mealDetailLabels[mealType.id] || mealType.name;
       mealDetailIcon.textContent = mealType.icon;
       mealDetailTime.value = appData.mealTimes?.[mealType.id] || mealType.defaultTime;
@@ -1592,6 +1592,33 @@
       mealDetailSubtitle.textContent = alreadyDone
         ? "Você já registrou essa refeição hoje"
         : "Escolha uma sugestão ou crie sua própria refeição";
+      if (alreadyDone) {
+        recommendationCarousel.innerHTML = registeredMeals.map((item) => {
+          const portionLabel = item.servingId === "dieta-sugerida"
+            ? "Dieta sugerida"
+            : item.quantity && item.servingName && item.servingName !== "Gramas"
+            ? `${item.quantity} ${item.servingName.toLowerCase()} (${item.grams}g)`
+            : `${item.grams}g`;
+          return `
+            <div class="recommendation-card selected">
+              <div class="recommendation-head">
+                <span class="selected-pill">Registrada</span>
+                <span class="kcal-pill">${item.calories} kcal</span>
+              </div>
+              <div class="recommended-item">
+                <div class="recommended-item-icon">${mealType.icon}</div>
+                <div>
+                  <div class="meal-name">${item.foodName}</div>
+                  <div class="muted">${portionLabel}</div>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join("");
+        recommendationDots.innerHTML = "";
+        openTab("refeicao-detalhe");
+        return;
+      }
       const options = mealRecommendations[mealType.id] || [];
       recommendationCarousel.innerHTML = [
         ...options.map((option, index) => `
