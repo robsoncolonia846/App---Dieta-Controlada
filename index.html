@@ -1,0 +1,2234 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dieta Controlada</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #f5f7ef;
+      color: #243119;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      overflow-x: hidden;
+    }
+
+    .screen {
+      width: 100%;
+      min-height: 100vh;
+      max-width: 480px;
+      margin: 0 auto;
+      overflow-x: hidden;
+      overflow-y: auto;
+      background: #f5f7ef;
+      scrollbar-width: none;
+    }
+
+    .screen::-webkit-scrollbar {
+      display: none;
+    }
+
+    header {
+      padding: max(14px, env(safe-area-inset-top)) 18px 8px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 27px;
+      letter-spacing: -0.05em;
+      line-height: 1;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .profile-meta {
+      color: #9ba19a;
+      margin-top: 7px;
+      display: flex;
+      gap: 12px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .avatar-button {
+      width: 50px;
+      height: 50px;
+      border: 0;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #466b2d, #9fe870);
+      color: #ffffff;
+      font-size: 24px;
+      font-weight: 950;
+      box-shadow: 0 12px 24px rgba(36, 49, 25, 0.18);
+    }
+
+    .subtitle {
+      color: #607052;
+      margin-top: 7px;
+      font-size: 14px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 0;
+      position: fixed;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      width: calc(100% - 32px);
+      max-width: 448px;
+      margin: 0;
+      padding: 9px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.96);
+      box-shadow: 0 12px 28px rgba(36, 49, 25, 0.12);
+      border: 1px solid #e3e4e8;
+    }
+
+    .tab {
+      border: 0;
+      flex: 1;
+      border-radius: 999px;
+      padding: 4px 5px;
+      background: transparent;
+      color: #8d918a;
+      font-weight: 800;
+      font-size: 11px;
+      white-space: nowrap;
+      display: grid;
+      justify-items: center;
+      gap: 2px;
+    }
+
+    .tab.active {
+      background: transparent;
+      color: #209b26;
+    }
+
+    .tab-icon {
+      font-size: 24px;
+      line-height: 1;
+    }
+
+    .tab-label {
+      font-size: 11px;
+      line-height: 1.1;
+    }
+
+    main {
+      padding: 0 12px 66px;
+      display: grid;
+      gap: 8px;
+      width: 100%;
+      min-width: 0;
+    }
+
+    .hero {
+      background: #fff;
+      color: #111;
+      border-radius: 22px;
+      padding: 14px;
+      box-shadow: 0 10px 24px rgba(36, 49, 25, 0.06);
+    }
+
+    .hero .title {
+      color: #111;
+      font-size: 21px;
+      font-weight: 950;
+      letter-spacing: -0.05em;
+    }
+
+    .balance {
+      color: #111;
+      font-size: 40px;
+      line-height: 1;
+      margin: 11px 0 9px;
+      font-weight: 950;
+      letter-spacing: -0.06em;
+    }
+
+    .period-filter {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 13px;
+    }
+
+    .period-button {
+      border-radius: 999px;
+      background: #334923;
+      color: #dce9cf;
+      padding: 7px 7px;
+      font-size: 10px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .period-button.active {
+      background: #9fe870;
+      color: #243119;
+    }
+
+    .muted {
+      color: #748167;
+      font-size: 12px;
+    }
+
+    .hero .muted {
+      color: #909090;
+    }
+
+    .hero-metrics {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .hero-metrics .metric {
+      background: #f6f6f6;
+      border: 1px solid #eeeeee;
+      border-radius: 16px;
+      box-shadow: none;
+      padding: 10px;
+    }
+
+    .hero-metrics .metric-label {
+      color: #888;
+      font-size: 11px;
+    }
+
+    .hero-metrics .metric-value {
+      color: #111;
+      font-size: 16px;
+      margin-top: 4px;
+      letter-spacing: -0.03em;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .metric,
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 10px 24px rgba(36, 49, 25, 0.06);
+      width: 100%;
+      min-width: 0;
+      max-width: 100%;
+    }
+
+    .metric {
+      padding: 15px;
+    }
+
+    .metric-label {
+      color: #748167;
+      font-size: 13px;
+    }
+
+    .metric-value {
+      margin-top: 6px;
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+    }
+
+    .chart {
+      position: relative;
+      min-height: 160px;
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 8px;
+      padding-top: 12px;
+    }
+
+    .chart-svg {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 8px;
+      width: 100%;
+      height: 128px;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .chart-col {
+      flex: 1;
+      display: grid;
+      justify-items: center;
+      align-content: end;
+      gap: 6px;
+      min-width: 0;
+      z-index: 1;
+    }
+
+    .chart-value {
+      color: #466b2d;
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .chart-value.positive {
+      color: #d94b4b;
+    }
+
+    .chart-bar {
+      width: 72%;
+      border-radius: 999px;
+      background: #9fdc8a;
+    }
+
+    .chart-bar.positive {
+      background: #ff8f8f;
+    }
+
+    .chart-date {
+      color: #748167;
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .card {
+      padding: 12px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .goal-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      background: #fff;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 950;
+      box-shadow: 0 10px 24px rgba(36, 49, 25, 0.05);
+    }
+
+    .summary-body {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .progress-ring {
+      width: 78px;
+      height: 78px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: conic-gradient(#209b26 var(--progress), #dff2df 0);
+      position: relative;
+    }
+
+    .progress-ring::after {
+      content: "";
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #fff;
+      position: absolute;
+    }
+
+    .progress-ring-content {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      justify-items: center;
+      line-height: 1.1;
+    }
+
+    .progress-ring-content strong {
+      font-size: 21px;
+      letter-spacing: -0.06em;
+    }
+
+    .progress-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .progress-row {
+      display: grid;
+      gap: 4px;
+    }
+
+    .progress-row-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 12px;
+    }
+
+    .progress-track {
+      height: 5px;
+      border-radius: 999px;
+      background: #e4e4e8;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: var(--width, 0%);
+      border-radius: inherit;
+      background: #209b26;
+    }
+
+    .summary-footer {
+      display: flex;
+      justify-content: space-between;
+      border-top: 1px solid #f0f0f0;
+      padding-top: 8px;
+      margin-top: 6px;
+    }
+
+    .summary-number {
+      font-size: 22px;
+      font-weight: 950;
+      letter-spacing: -0.06em;
+    }
+
+    .profile-card {
+      display: grid;
+      gap: 12px;
+    }
+
+    .meal-progress-line {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 4px;
+      align-items: center;
+      margin-top: 2px;
+    }
+
+    .meal-step {
+      border: 0;
+      background: transparent;
+      font: inherit;
+      display: grid;
+      justify-items: center;
+      gap: 4px;
+      color: #8d918a;
+      font-size: 10px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .meal-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: #f3f3f5;
+      border: 2px solid transparent;
+      font-size: 18px;
+      position: relative;
+    }
+
+    .meal-step.done .meal-icon {
+      background: #f0fbef;
+      border-color: #25a330;
+    }
+
+    .meal-step.done .meal-icon::after {
+      content: "✓";
+      position: absolute;
+      right: -4px;
+      bottom: -4px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #dff5e0;
+      color: #25a330;
+      font-size: 16px;
+      display: grid;
+      place-items: center;
+    }
+
+    .water-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 6px;
+    }
+
+    .cup {
+      height: 46px;
+      border-radius: 0 0 10px 10px;
+      background: #f1f1f3;
+      opacity: 0.8;
+    }
+
+    .cup.filled {
+      background: #dce9ff;
+      border: 1px solid #9ab7ee;
+    }
+
+    .water-actions {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .water-button {
+      border: 1px solid #e1e3e8;
+      background: #fff;
+      color: #3d68ad;
+      border-radius: 16px;
+      padding: 13px 8px;
+      font-size: 15px;
+      font-weight: 950;
+    }
+
+    .meal-detail-header {
+      display: grid;
+      gap: 22px;
+      padding: 8px 0 18px;
+    }
+
+    #refeicao-detalhe {
+      width: 100%;
+      max-width: 390px;
+      margin: 0 auto;
+      overflow: hidden;
+      padding-bottom: 92px;
+    }
+
+    #refeicao-detalhe #meal-detail-register {
+      position: fixed;
+      left: 50%;
+      bottom: 86px;
+      transform: translateX(-50%);
+      width: calc(100% - 42px);
+      max-width: 420px;
+      z-index: 11;
+      margin-top: 0 !important;
+      border-radius: 999px;
+      padding: 18px 16px;
+      box-shadow: 0 12px 28px rgba(36, 49, 25, 0.18);
+    }
+
+    #refeicao-detalhe #meal-detail-register.hidden {
+      display: none !important;
+    }
+
+    .back-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .back-button {
+      width: 48px;
+      height: 48px;
+      border: 1px solid #e7e7ec;
+      border-radius: 50%;
+      background: #fff;
+      font-size: 30px;
+      line-height: 1;
+      box-shadow: 0 8px 18px rgba(36, 49, 25, 0.06);
+    }
+
+    .meal-detail-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .meal-detail-title h2 {
+      font-size: 42px;
+      line-height: 0.95;
+      letter-spacing: -0.07em;
+    }
+
+    .meal-detail-icon {
+      font-size: 58px;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: fit-content;
+      border-radius: 999px;
+      background: #e4f8e8;
+      color: #209b26;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 950;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .meal-time-editor {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #8d8d92;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .meal-time-editor input {
+      width: 96px;
+      padding: 9px 10px;
+      border-radius: 12px;
+      text-align: center;
+      font-weight: 900;
+    }
+
+    .recommendation-carousel {
+      display: grid;
+      gap: 12px;
+      overflow-x: hidden;
+      padding: 8px 0 12px;
+      scrollbar-width: none;
+    }
+
+    .recommendation-carousel::-webkit-scrollbar {
+      display: none;
+    }
+
+    .recommendation-card {
+      width: 100%;
+      min-width: 0;
+      max-width: 100%;
+      border: 1.5px solid #209b26;
+      border-radius: 28px;
+      background: #fff;
+      padding: 20px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .recommendation-card:not(.empty) {
+      cursor: pointer;
+      opacity: 0.72;
+    }
+
+    .recommendation-card.selected {
+      opacity: 1;
+      border-width: 2px;
+      box-shadow: 0 10px 24px rgba(32, 155, 38, 0.12);
+    }
+
+    .recommendation-card:not(.selected) .selected-pill {
+      visibility: hidden;
+    }
+
+    .recommendation-card.empty {
+      border: 2px dashed #209b26;
+      background: #eaf6ea;
+      min-height: 250px;
+      place-items: center;
+      text-align: center;
+    }
+
+    .recommendation-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .selected-pill {
+      border: 1.5px solid #209b26;
+      border-radius: 12px;
+      color: #209b26;
+      padding: 8px 12px;
+      font-weight: 950;
+    }
+
+    .kcal-pill {
+      background: #f6f8f4;
+      color: #209b26;
+      border-radius: 12px;
+      padding: 8px 12px;
+      font-weight: 950;
+    }
+
+    .recommended-item {
+      display: grid;
+      grid-template-columns: 54px 1fr auto;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .recommended-item-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: #f6f6f7;
+      display: grid;
+      place-items: center;
+      font-size: 25px;
+    }
+
+    .swap-icon {
+      color: #209b26;
+      font-size: 24px;
+      font-weight: 900;
+    }
+
+    .recipe-button {
+      border: 0;
+      border-radius: 999px;
+      background: #f2f2f4;
+      color: #8d8d92;
+      padding: 14px;
+      font-size: 17px;
+      font-weight: 950;
+    }
+
+    .carousel-dots {
+      display: none;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .carousel-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #e3e4e8;
+    }
+
+    .carousel-dot.active {
+      width: 34px;
+      background: #209b26;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: -0.03em;
+    }
+
+    label {
+      display: grid;
+      gap: 6px;
+      color: #39492d;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    input,
+    select {
+      width: 100%;
+      border: 1px solid #d8e2c6;
+      background: #f5f7ef;
+      border-radius: 14px;
+      padding: 13px 14px;
+      color: #243119;
+      font: inherit;
+    }
+
+    .button {
+      border: 0;
+      border-radius: 16px;
+      background: #466b2d;
+      color: #fff;
+      padding: 14px;
+      font-weight: 900;
+      font-size: 15px;
+    }
+
+    .meal {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      border-top: 1px solid #eef2e6;
+      padding-top: 12px;
+    }
+
+    .meal-name {
+      font-weight: 900;
+      min-width: 0;
+      flex: 1;
+      color: #466b2d;
+    }
+
+    .meal-list-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .meal-kcal {
+      color: #466b2d;
+      font-weight: 950;
+      white-space: nowrap;
+    }
+
+    .macro-summary {
+      display: grid;
+      gap: 2px;
+      justify-items: end;
+      color: #466b2d;
+      font-size: 12px;
+      font-weight: 950;
+      white-space: nowrap;
+    }
+
+    .log-summary {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .log-summary h2 {
+      font-size: 16px;
+    }
+
+    .delete-button {
+      border: 0;
+      border-radius: 999px;
+      background: #ffe8e8;
+      color: #c03939;
+      padding: 7px 10px;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .edit-button {
+      border: 0;
+      border-radius: 999px;
+      background: #eef6df;
+      color: #466b2d;
+      padding: 7px 10px;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .pill-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    #food-options {
+      max-height: 260px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .selector-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .selector-tab {
+      flex: 1;
+      min-width: 0;
+      border: 1px solid #d8e2c6;
+      border-radius: 14px;
+      background: #f5f7ef;
+      color: #466b2d;
+      padding: 11px 8px;
+      font-weight: 900;
+    }
+
+    .selector-tab.active {
+      background: #466b2d;
+      border-color: #466b2d;
+      color: #fff;
+    }
+
+    .pill {
+      width: 100%;
+      border: 1px solid #d8e2c6;
+      border-radius: 14px;
+      background: #f5f7ef;
+      color: #466b2d;
+      padding: 11px 12px;
+      font-size: 13px;
+      font-weight: 800;
+      text-align: left;
+      min-width: 0;
+    }
+
+    .pill.active {
+      background: #466b2d;
+      border-color: #466b2d;
+      color: #fff;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    #hoje {
+      display: grid;
+      gap: 8px;
+    }
+
+    #hoje .card,
+    #hoje .goal-banner,
+    #hoje .hero {
+      margin-top: 0 !important;
+    }
+
+    #hoje .home-extra {
+      display: grid;
+    }
+
+    #hoje #open-meal-tab {
+      display: block;
+    }
+
+    #hoje .meal-step.done .meal-icon::after {
+      content: "✓";
+      width: 18px;
+      height: 18px;
+      font-size: 12px;
+    }
+
+    #hoje .cup {
+      height: 28px;
+    }
+
+    #hoje .water-actions {
+      gap: 8px;
+    }
+
+    #hoje .water-button {
+      border-radius: 13px;
+      padding: 9px 6px;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+        <header>
+          <div class="topbar">
+            <div>
+              <h1 id="greeting-title">Olá, Robson</h1>
+              <div class="profile-meta">
+                <span id="profile-weight-label">-- kg</span>
+                <span id="profile-height-label">-- m</span>
+              </div>
+            </div>
+            <button class="avatar-button" id="profile-button" type="button" aria-label="Abrir perfil">R</button>
+          </div>
+        </header>
+
+        <nav class="tabs" aria-label="Abas do app">
+          <button class="tab active" data-tab="hoje" aria-label="Home">
+            <span class="tab-icon">🏠</span>
+            <span class="tab-label">Home</span>
+          </button>
+          <button class="tab" data-tab="refeicao" aria-label="Dieta">
+            <span class="tab-icon">🍴</span>
+            <span class="tab-label">Dieta</span>
+          </button>
+          <button class="tab" data-tab="gasto" aria-label="Treino">
+            <span class="tab-icon">🏋️</span>
+            <span class="tab-label">Treino</span>
+          </button>
+        </nav>
+
+        <main>
+          <section id="hoje">
+            <div class="goal-banner">
+              <span>🔥 Meta do dia: <span id="goal-banner-value">0 - 0 kcal</span></span>
+              <span>→</span>
+            </div>
+
+            <div class="hero">
+              <div>
+                <div class="title">Resumo diário</div>
+                <div class="muted">Metas do dia</div>
+              </div>
+              <div class="summary-body">
+                <div class="progress-ring" id="calorie-ring" style="--progress: 0%;">
+                  <div class="progress-ring-content">
+                    <strong id="goal-percent">0%</strong>
+                    <span class="muted">da meta</span>
+                  </div>
+                </div>
+                <div class="progress-list">
+                  <div class="progress-row">
+                    <div class="progress-row-head"><span>Calorias</span><strong id="metric-consumed">0 kcal</strong></div>
+                    <div class="progress-track"><div class="progress-fill" id="calorie-fill"></div></div>
+                  </div>
+                  <div class="progress-row">
+                    <div class="progress-row-head"><span>Proteínas</span><strong id="metric-protein">0 g</strong></div>
+                    <div class="progress-track"><div class="progress-fill" id="protein-fill"></div></div>
+                  </div>
+                  <div class="progress-row">
+                    <div class="progress-row-head"><span>Carboidratos</span><strong id="metric-carbs">0 g</strong></div>
+                    <div class="progress-track"><div class="progress-fill" id="carbs-fill"></div></div>
+                  </div>
+                  <div class="progress-row">
+                    <div class="progress-row-head"><span>Kcal gastas</span><strong id="metric-spent">0 kcal</strong></div>
+                    <div class="progress-track"><div class="progress-fill" id="spent-fill"></div></div>
+                  </div>
+                </div>
+              </div>
+              <div class="summary-footer">
+                <div>
+                  <div class="muted">Restante</div>
+                  <div class="summary-number" id="remaining-kcal">0</div>
+                  <div class="muted">kcal para hoje</div>
+                </div>
+                <div style="text-align:right;">
+                  <div class="muted">Meta mín/máx</div>
+                  <div class="summary-number" id="target-kcal">0</div>
+                  <div class="muted">kcal por dia</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card" style="margin-top: 14px;">
+              <h2>Refeições</h2>
+              <div class="muted">Progresso diário</div>
+              <div class="progress-row">
+                <div class="progress-row-head"><span>Concluídas</span><strong id="meal-progress-count">0/5</strong></div>
+                <div class="progress-track"><div class="progress-fill" id="meal-progress-fill"></div></div>
+              </div>
+              <div class="meal-progress-line" id="meal-progress-list"></div>
+              <div class="muted" id="open-meal-tab">Escolha a refeição a registrar</div>
+            </div>
+
+            <div class="card" style="margin-top: 14px;">
+              <div class="log-summary">
+                <div>
+                  <h2>Hidratação</h2>
+                  <div><span class="summary-number" id="water-total">0</span> <span class="muted">ml</span></div>
+                </div>
+                <button class="avatar-button" type="button" id="add-water-quick" aria-label="Adicionar água">+</button>
+              </div>
+              <div class="water-grid" id="water-cups"></div>
+              <div class="water-actions">
+                <button class="water-button" type="button" data-water-add="250">+250ml</button>
+                <button class="water-button" type="button" data-water-add="500">+500ml</button>
+                <button class="water-button" type="button" data-water-add="1000">+1L</button>
+              </div>
+              <button class="water-button" type="button" id="remove-water" style="color: #d94b4b;">−250ml</button>
+              <div class="muted">Meta diária: <strong id="water-goal">3000 ml</strong></div>
+            </div>
+
+            <div class="card home-extra" style="margin-top: 14px;">
+              <h2>Evolução do saldo acumulado</h2>
+              <div class="period-filter">
+                <span class="period-button active" data-period="hoje">Hoje</span>
+                <span class="period-button" data-period="semana">Semana</span>
+                <span class="period-button" data-period="últimos 7 dias">Últ. 7 dias</span>
+                <span class="period-button" data-period="mês">Mês</span>
+                <span class="period-button" data-period="total">Total</span>
+              </div>
+              <div class="chart" id="balance-chart" aria-label="Gráfico de saldo diário e acumulado">
+              </div>
+            </div>
+
+            <div class="card home-extra" style="margin-top: 14px;">
+              <h2 id="consumo-title">Alimentação de hoje</h2>
+              <div id="consumo-resumo"></div>
+            </div>
+
+            <div class="card home-extra" style="margin-top: 14px;">
+              <h2 id="gasto-title">Atividades de hoje</h2>
+              <div id="gasto-resumo"></div>
+            </div>
+          </section>
+
+          <section id="refeicao" class="hidden">
+            <div class="card">
+              <h2>Registrar alimentação</h2>
+              <label>Data <input id="meal-date" /></label>
+              <div>
+                <div class="metric-label" style="margin-bottom: 8px; font-weight: 800;">Refeição</div>
+                <div class="selector-tabs" id="meal-type-options"></div>
+              </div>
+              <div>
+                <div class="metric-label" style="margin-bottom: 8px; font-weight: 800;">Item da alimentação</div>
+                <div class="selector-tabs">
+                  <button class="selector-tab active" data-food-mode="popular">Mais usados</button>
+                  <button class="selector-tab" data-food-mode="all">Todos itens</button>
+                </div>
+                <label id="food-search-wrap" class="hidden">Buscar alimento <input id="food-search" placeholder="Ex: arroz, frango, banana..." /></label>
+                <div class="pill-row" id="food-options"></div>
+                <div class="muted hidden" id="food-hint">Mostrando itens iniciais. Use a busca para encontrar outros alimentos.</div>
+              </div>
+              <div>
+                <div class="metric-label" style="margin-bottom: 8px; font-weight: 800;">Medida</div>
+                <div class="selector-tabs" id="serving-options"></div>
+                <div class="muted" id="serving-hint"></div>
+              </div>
+              <label id="meal-quantity-label">Quantidade <input id="meal-grams" inputmode="decimal" placeholder="Ex: 150" /></label>
+              <button class="button" id="save-consumption">Salvar alimentação</button>
+              <div>
+                <div class="log-summary">
+                  <h2 id="meal-log-title">Alimentação lançada hoje</h2>
+                  <div class="macro-summary" id="meal-log-total">
+                    <div>0 kcal</div>
+                    <div>0g pro</div>
+                    <div>0g carb</div>
+                  </div>
+                </div>
+                <div id="meal-log"></div>
+              </div>
+            </div>
+          </section>
+
+          <section id="gasto" class="hidden">
+            <div class="card">
+              <h2>Registrar atividade</h2>
+              <label>Data <input id="expense-date" /></label>
+              <div>
+                <div class="metric-label" style="margin-bottom: 8px; font-weight: 800;">Atividade</div>
+                <div class="pill-row" id="expense-options"></div>
+              </div>
+              <div class="selector-tabs" id="time-unit-tabs">
+                <button class="selector-tab active" data-time-unit="minutes">Min</button>
+                <button class="selector-tab" data-time-unit="hours">Hora</button>
+              </div>
+              <label id="expense-input-label">Tempo <input id="expense-minutes" inputmode="decimal" placeholder="Ex: 45" /></label>
+              <div class="muted" id="expense-preview">Selecione uma atividade e informe o tempo.</div>
+              <button class="button" id="save-expense">Salvar atividade</button>
+              <div>
+                <div class="log-summary">
+                  <h2 id="expense-log-title">Atividades lançadas hoje</h2>
+                  <div class="macro-summary" id="expense-log-total">
+                    <div>0 kcal</div>
+                  </div>
+                </div>
+                <div id="expense-log"></div>
+              </div>
+            </div>
+          </section>
+
+          <section id="perfil" class="hidden">
+            <div class="card profile-card">
+              <h2>Perfil e meta</h2>
+              <div class="muted">Esses dados ajudam a estimar gasto diário e uma faixa de meta.</div>
+              <label>Nome <input id="profile-name" placeholder="Ex: Robson" /></label>
+              <label>Peso atual em kg <input id="profile-weight" inputmode="decimal" placeholder="Ex: 88.4" /></label>
+              <label>Altura em cm <input id="profile-height" inputmode="decimal" placeholder="Ex: 168" /></label>
+              <label>Idade <input id="profile-age" inputmode="numeric" placeholder="Ex: 35" /></label>
+              <label>Sexo
+                <select id="profile-sex">
+                  <option value="male">Masculino</option>
+                  <option value="female">Feminino</option>
+                </select>
+              </label>
+              <label>Meta mínima diária em kcal <input id="profile-target" inputmode="decimal" placeholder="Calculada automaticamente" /></label>
+              <button class="button" id="save-profile">Salvar perfil</button>
+              <div class="muted" id="profile-basal-info">Gasto diário estimado: -- kcal/dia.</div>
+            </div>
+          </section>
+
+          <section id="refeicao-detalhe" class="hidden">
+            <div class="meal-detail-header">
+              <div class="back-row">
+                <button class="back-button" type="button" id="meal-detail-back">‹</button>
+                <div>
+                  <h2>Refeição</h2>
+                  <div class="muted">Modo visualização</div>
+                </div>
+              </div>
+              <div>
+                <span class="status-pill" id="meal-detail-status">Pendente</span>
+              </div>
+              <div class="meal-time-editor">
+                <span>⏱ Horário</span>
+                <input id="meal-detail-time" type="time" />
+              </div>
+              <div class="meal-detail-title">
+                <div>
+                  <h2 id="meal-detail-title">Café da manhã</h2>
+                  <div class="muted" id="meal-detail-subtitle">Escolha uma opção ou registre manualmente</div>
+                </div>
+                <div class="meal-detail-icon" id="meal-detail-icon">☕</div>
+              </div>
+            </div>
+
+            <div class="recommendation-carousel" id="recommendation-carousel"></div>
+            <div class="carousel-dots" id="recommendation-dots"></div>
+            <button class="button" type="button" id="meal-detail-register" style="margin-top: 18px;">Registrar dieta</button>
+          </section>
+
+        </main>
+  </div>
+
+  <script type="module">
+    const tabs = document.querySelectorAll(".tab");
+    const sections = document.querySelectorAll("main > section");
+    const periodButtons = document.querySelectorAll(".period-button");
+    const chart = document.getElementById("balance-chart");
+    const greetingTitle = document.getElementById("greeting-title");
+    const profileButton = document.getElementById("profile-button");
+    const profileWeightLabel = document.getElementById("profile-weight-label");
+    const profileHeightLabel = document.getElementById("profile-height-label");
+    const goalBannerValue = document.getElementById("goal-banner-value");
+    const goalPercent = document.getElementById("goal-percent");
+    const calorieRing = document.getElementById("calorie-ring");
+    const calorieFill = document.getElementById("calorie-fill");
+    const proteinFill = document.getElementById("protein-fill");
+    const carbsFill = document.getElementById("carbs-fill");
+    const spentFill = document.getElementById("spent-fill");
+    const remainingKcal = document.getElementById("remaining-kcal");
+    const targetKcal = document.getElementById("target-kcal");
+    const mealProgressCount = document.getElementById("meal-progress-count");
+    const mealProgressFill = document.getElementById("meal-progress-fill");
+    const mealProgressList = document.getElementById("meal-progress-list");
+    const waterTotal = document.getElementById("water-total");
+    const waterGoal = document.getElementById("water-goal");
+    const waterCups = document.getElementById("water-cups");
+    const addWaterQuick = document.getElementById("add-water-quick");
+    const removeWater = document.getElementById("remove-water");
+    const waterButtons = document.querySelectorAll("[data-water-add]");
+    const mealDetailBack = document.getElementById("meal-detail-back");
+    const mealDetailStatus = document.getElementById("meal-detail-status");
+    const mealDetailTitle = document.getElementById("meal-detail-title");
+    const mealDetailSubtitle = document.getElementById("meal-detail-subtitle");
+    const mealDetailIcon = document.getElementById("meal-detail-icon");
+    const mealDetailTime = document.getElementById("meal-detail-time");
+    const recommendationCarousel = document.getElementById("recommendation-carousel");
+    const recommendationDots = document.getElementById("recommendation-dots");
+    const mealDetailRegister = document.getElementById("meal-detail-register");
+    const consumoTitle = document.getElementById("consumo-title");
+    const consumoResumo = document.getElementById("consumo-resumo");
+    const gastoTitle = document.getElementById("gasto-title");
+    const gastoResumo = document.getElementById("gasto-resumo");
+    const metricConsumed = document.getElementById("metric-consumed");
+    const metricSpent = document.getElementById("metric-spent");
+    const metricProtein = document.getElementById("metric-protein");
+    const metricCarbs = document.getElementById("metric-carbs");
+    const mealDate = document.getElementById("meal-date");
+    const mealGrams = document.getElementById("meal-grams");
+    const mealTypeOptions = document.getElementById("meal-type-options");
+    const saveConsumption = document.getElementById("save-consumption");
+    const mealLogTitle = document.getElementById("meal-log-title");
+    const mealLogTotal = document.getElementById("meal-log-total");
+    const mealLog = document.getElementById("meal-log");
+    const expenseDate = document.getElementById("expense-date");
+    const expenseInputLabel = document.getElementById("expense-input-label");
+    const expenseMinutes = document.getElementById("expense-minutes");
+    const expenseOptions = document.getElementById("expense-options");
+    const expensePreview = document.getElementById("expense-preview");
+    const saveExpense = document.getElementById("save-expense");
+    const expenseLogTitle = document.getElementById("expense-log-title");
+    const expenseLogTotal = document.getElementById("expense-log-total");
+    const expenseLog = document.getElementById("expense-log");
+    const timeUnitTabs = document.getElementById("time-unit-tabs");
+    const timeUnitButtons = document.querySelectorAll("[data-time-unit]");
+    const foodModeButtons = document.querySelectorAll("[data-food-mode]");
+    const foodOptions = document.getElementById("food-options");
+    const servingOptions = document.getElementById("serving-options");
+    const servingHint = document.getElementById("serving-hint");
+    const mealQuantityLabel = document.getElementById("meal-quantity-label");
+    const foodSearchWrap = document.getElementById("food-search-wrap");
+    const foodSearch = document.getElementById("food-search");
+    const foodHint = document.getElementById("food-hint");
+    const profileName = document.getElementById("profile-name");
+    const profileWeight = document.getElementById("profile-weight");
+    const profileHeight = document.getElementById("profile-height");
+    const profileAge = document.getElementById("profile-age");
+    const profileSex = document.getElementById("profile-sex");
+    const profileTarget = document.getElementById("profile-target");
+    const saveProfile = document.getElementById("save-profile");
+    const profileBasalInfo = document.getElementById("profile-basal-info");
+
+    const storageKey = "dieta-controlada-web:v1";
+    const formatSigned = (value) => value > 0 ? `+${value}` : `${value}`;
+    const normalizeText = (value) => value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    const sortByName = (items) => [...items].sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
+    const round = (value) => Math.round(value * 10) / 10;
+    const todayISO = () => new Date().toISOString().slice(0, 10);
+    let foods = [];
+    try {
+      const dataModule = await import("./foods.js");
+      if (Array.isArray(dataModule.foods)) {
+        foods = dataModule.foods;
+      }
+    } catch (error) {
+      console.warn("Base de alimentos não carregou.", error);
+    }
+    const activityPresets = [
+      { id: "caminhada", name: "Caminhada", caloriesPerHour: 240 },
+      { id: "trabalho-sentado", name: "Trabalho em Escritório", caloriesPerHour: 120 },
+      { id: "academia", name: "Academia", caloriesPerHour: 420 },
+      { id: "sono", name: "Sono", caloriesPerHour: 60 },
+      { id: "trabalho-em-pe", name: "Trabalho em pé", caloriesPerHour: 140 },
+      { id: "limpeza-de-casa", name: "Limpeza de casa", caloriesPerHour: 180 },
+      { id: "deitar-com-forninho", name: "Deitar com Forninho", caloriesPerHour: 70 },
+      { id: "corrida-leve", name: "Corrida leve", caloriesPerHour: 520 },
+      { id: "bicicleta", name: "Bicicleta", caloriesPerHour: 300 },
+      { id: "inserir-manual", name: "Inserir manual", manualCalories: true }
+    ];
+    const mealTypes = [
+      { id: "cafe", name: "Café", icon: "☕", defaultTime: "09:00" },
+      { id: "lanche-manha", name: "Lanche", icon: "🍏", defaultTime: "11:00" },
+      { id: "almoco", name: "Almoço", icon: "🍲", defaultTime: "13:00" },
+      { id: "lanche-tarde", name: "Lanche", icon: "🥪", defaultTime: "16:00" },
+      { id: "jantar", name: "Jantar", icon: "🍽️", defaultTime: "21:00" }
+    ];
+    const mealDetailLabels = {
+      cafe: "Café da manhã",
+      "lanche-manha": "Lanche da manhã",
+      almoco: "Almoço",
+      "lanche-tarde": "Lanche da tarde",
+      jantar: "Jantar"
+    };
+    const mealRecommendations = {
+      cafe: [
+        {
+          kcal: 305,
+          items: [
+            { icon: "🍓", name: "Morango", amount: "180g" },
+            { icon: "🥛", name: "Iogurte desnatado", amount: "160 ml" },
+            { icon: "🍳", name: "Omelete", amount: "2 ovos" }
+          ]
+        },
+        {
+          kcal: 305,
+          items: [
+            { icon: "🥖", name: "Pão de forma", amount: "2 fatias" },
+            { icon: "🍊", name: "Laranja lima", amount: "1 unidade" },
+            { icon: "🥛", name: "Iogurte desnatado", amount: "160 ml" },
+            { icon: "🧀", name: "Queijo prato", amount: "1 fatia" }
+          ]
+        },
+        {
+          kcal: 305,
+          items: [
+            { icon: "🥖", name: "Pão francês", amount: "1 unidade" },
+            { icon: "🍌", name: "Banana prata", amount: "1 unidade" },
+            { icon: "🥛", name: "Iogurte desnatado", amount: "160 ml" },
+            { icon: "🥚", name: "Ovo mexido", amount: "1 unidade" }
+          ]
+        }
+      ],
+      "lanche-manha": [
+        {
+          kcal: 71,
+          items: [
+            { icon: "🍍", name: "Abacaxi", amount: "150g" }
+          ]
+        },
+        {
+          kcal: 71,
+          items: [
+            { icon: "🍊", name: "Laranja Lima", amount: "1 unidade" }
+          ]
+        },
+        {
+          kcal: 89,
+          items: [
+            { icon: "🍌", name: "Banana Prata", amount: "1 unidade" }
+          ]
+        }
+      ],
+      almoco: [
+        {
+          kcal: 225,
+          items: [
+            { icon: "🍅", name: "Tomate-cereja cru", amount: "à vontade" },
+            { icon: "🥔", name: "Batata inglesa em cubos com temperos", amount: "70g" },
+            { icon: "🍗", name: "Coração de frango", amount: "75g" }
+          ]
+        },
+        {
+          kcal: 383,
+          items: [
+            { icon: "🍚", name: "Arroz", amount: "85g" },
+            { icon: "🥔", name: "Batata inglesa", amount: "95g" },
+            { icon: "🥬", name: "Salada de alface e tomate", amount: "à vontade" },
+            { icon: "🥩", name: "Carne bovina magra", amount: "100g" }
+          ]
+        },
+        {
+          kcal: 383,
+          items: [
+            { icon: "🍚", name: "Arroz", amount: "90g" },
+            { icon: "🥬", name: "Salada de alface e tomate", amount: "à vontade" },
+            { icon: "🥩", name: "Carne bovina músculo", amount: "120g" },
+            { icon: "🫘", name: "Feijão preto", amount: "50g" }
+          ]
+        },
+        {
+          kcal: 382,
+          items: [
+            { icon: "🍗", name: "Peito de frango", amount: "150g" },
+            { icon: "🍝", name: "Macarrão", amount: "115g" }
+          ]
+        }
+      ],
+      "lanche-tarde": [
+        {
+          kcal: 305,
+          items: [
+            { icon: "🥖", name: "Pão francês", amount: "1 unidade" },
+            { icon: "🍊", name: "Laranja lima", amount: "1 unidade" },
+            { icon: "🥛", name: "Iogurte desnatado", amount: "160 ml" },
+            { icon: "🥚", name: "Ovo mexido", amount: "1 unidade" }
+          ]
+        },
+        {
+          kcal: 307,
+          items: [
+            { icon: "🥖", name: "Pão de forma", amount: "2 fatias" },
+            { icon: "🍌", name: "Banana prata", amount: "1 unidade" },
+            { icon: "🥛", name: "Iogurte desnatado", amount: "160 ml" },
+            { icon: "🍗", name: "Frango desfiado", amount: "40g" }
+          ]
+        },
+        {
+          kcal: 310,
+          items: [
+            { icon: "🥖", name: "Pão de forma", amount: "2 fatias" },
+            { icon: "🍓", name: "Morango", amount: "100g" },
+            { icon: "🥛", name: "Iogurte desnatado", amount: "160 ml" },
+            { icon: "🧀", name: "Queijo prato", amount: "1 fatia" }
+          ]
+        },
+        {
+          kcal: 364,
+          items: [
+            { icon: "🧀", name: "Queijo prato", amount: "1 fatia" },
+            { icon: "🍗", name: "Frango desfiado", amount: "40g" },
+            { icon: "🍳", name: "Rap10", amount: "50g" },
+            { icon: "🍬", name: "Bombom", amount: "20g" }
+          ]
+        }
+      ],
+      jantar: [
+        {
+          kcal: 355,
+          items: [
+            { icon: "🍝", name: "Macarrão", amount: "105g" },
+            { icon: "🍗", name: "Peito de frango", amount: "140g" }
+          ]
+        },
+        {
+          kcal: 355,
+          items: [
+            { icon: "🫘", name: "Feijão preto", amount: "50g" },
+            { icon: "🍚", name: "Arroz", amount: "80g" },
+            { icon: "🥬", name: "Salada de alface e tomate", amount: "à vontade" },
+            { icon: "🥩", name: "Carne bovina músculo", amount: "110g" }
+          ]
+        },
+        {
+          kcal: 355,
+          items: [
+            { icon: "🥩", name: "Carne bovina músculo", amount: "110g" },
+            { icon: "🍚", name: "Arroz", amount: "80g" },
+            { icon: "🥬", name: "Salada de alface e tomate", amount: "à vontade" },
+            { icon: "🫘", name: "Feijão preto", amount: "50g" }
+          ]
+        },
+        {
+          kcal: 615,
+          items: [
+            { icon: "🍅", name: "Tomate cereja", amount: "1 unidade, à vontade" },
+            { icon: "🍳", name: "Omelete", amount: "7 ovos" }
+          ]
+        }
+      ]
+    };
+
+    if (new URLSearchParams(window.location.search).get("clear") === "1") {
+      localStorage.removeItem(storageKey);
+      history.replaceState(null, "", window.location.pathname);
+    }
+
+    const defaultProfile = {
+      name: "Robson",
+      weightKg: "",
+      heightCm: "",
+      age: "",
+      sex: "male",
+      calorieTarget: ""
+    };
+    const defaultMealTimes = Object.fromEntries(mealTypes.map((item) => [item.id, item.defaultTime]));
+
+    let appData = JSON.parse(localStorage.getItem(storageKey) || '{"meals":[],"expenses":[]}');
+    appData = {
+      meals: Array.isArray(appData.meals) ? appData.meals : [],
+      expenses: Array.isArray(appData.expenses) ? appData.expenses : [],
+      water: appData.water && typeof appData.water === "object" ? appData.water : {},
+      mealTimes: { ...defaultMealTimes, ...(appData.mealTimes || {}) },
+      profile: { ...defaultProfile, ...(appData.profile || {}) }
+    };
+    let selectedFoodId = foods[0]?.id;
+    let selectedServingId = "gramas";
+    let selectedMealType = mealTypes[0].id;
+    let selectedActivityId = activityPresets[0].id;
+    let selectedTimeUnit = "minutes";
+    let currentFoodMode = "popular";
+    let currentPeriod = "hoje";
+    let currentMealDetail = mealTypes[0].id;
+    let selectedRecommendationIndex = null;
+
+    mealDate.value = todayISO();
+    expenseDate.value = todayISO();
+
+    function saveData() {
+      localStorage.setItem(storageKey, JSON.stringify(appData));
+    }
+
+    function calculateBasal(profile = appData.profile) {
+      const weight = Number(String(profile.weightKg).replace(",", ".")) || 0;
+      const height = Number(String(profile.heightCm).replace(",", ".")) || 0;
+      const age = Number(profile.age) || 0;
+      if (!weight || !height || !age) return 0;
+      const base = 10 * weight + 6.25 * height - 5 * age;
+      return Math.round(base + (profile.sex === "female" ? -161 : 5));
+    }
+
+    function maintenanceTarget() {
+      const basal = calculateBasal();
+      return basal ? Math.round(basal * 1.2) : 1920;
+    }
+
+    function dailyTarget() {
+      const manualTarget = Number(String(appData.profile.calorieTarget).replace(",", ".")) || 0;
+      return manualTarget || Math.max(0, maintenanceTarget() - 500) || 1420;
+    }
+
+    function dailyTargetRange() {
+      const min = dailyTarget();
+      const max = Math.max(min, maintenanceTarget());
+      return { min, max };
+    }
+
+    function renderProfile() {
+      const profile = appData.profile;
+      const basal = calculateBasal(profile);
+      const targetRange = dailyTargetRange();
+      const firstName = (profile.name || "Robson").trim().split(" ")[0] || "Robson";
+      greetingTitle.textContent = `Olá, ${firstName}`;
+      profileButton.textContent = firstName.slice(0, 1).toUpperCase();
+      profileWeightLabel.textContent = profile.weightKg ? `${String(profile.weightKg).replace(".", ",")}kg` : "-- kg";
+      profileHeightLabel.textContent = profile.heightCm ? `${round(Number(profile.heightCm) / 100).toString().replace(".", ",")}m` : "-- m";
+      profileName.value = profile.name || "";
+      profileWeight.value = profile.weightKg || "";
+      profileHeight.value = profile.heightCm || "";
+      profileAge.value = profile.age || "";
+      profileSex.value = profile.sex || "male";
+      profileTarget.value = profile.calorieTarget || "";
+      goalBannerValue.textContent = `${targetRange.min} - ${targetRange.max} kcal`;
+      profileBasalInfo.textContent = basal
+        ? `Gasto basal estimado: ${basal} kcal/dia. Meta usada: ${targetRange.min} - ${targetRange.max} kcal/dia.`
+        : "Informe peso, altura e idade para estimar o gasto diário.";
+    }
+
+    function waterTarget() {
+      const weight = Number(String(appData.profile.weightKg).replace(",", ".")) || 0;
+      return weight ? Math.round(weight * 35) : 3000;
+    }
+
+    function renderMealTypeOptions() {
+      mealTypeOptions.innerHTML = mealTypes
+        .map((item) => `<button type="button" data-meal-type="${item.id}" class="selector-tab ${item.id === selectedMealType ? "active" : ""}">${item.icon} ${item.name}</button>`)
+        .join("");
+      mealTypeOptions.querySelectorAll("[data-meal-type]").forEach((button) => {
+        button.addEventListener("click", () => {
+          selectedMealType = button.dataset.mealType;
+          renderMealTypeOptions();
+        });
+      });
+    }
+
+    function renderMealsProgress() {
+      const todayMeals = appData.meals.filter((item) => item.date === todayISO());
+      const completed = new Set(todayMeals.map((item) => item.mealType).filter(Boolean));
+      const count = completed.size;
+      const percent = Math.round((count / mealTypes.length) * 100);
+      mealProgressCount.textContent = `${count}/${mealTypes.length}`;
+      mealProgressFill.style.setProperty("--width", `${percent}%`);
+      const visibleMealTypes = count > 0 ? mealTypes.filter((meal) => completed.has(meal.id)) : mealTypes;
+      mealProgressList.innerHTML = visibleMealTypes.map((meal) => {
+        const done = completed.has(meal.id);
+        const time = appData.mealTimes?.[meal.id] || meal.defaultTime;
+        return `<button type="button" class="meal-step ${done ? "done" : ""}" data-open-meal-detail="${meal.id}"><div class="meal-icon">${meal.icon}</div><div>${meal.name}</div><div class="muted">${time}</div></button>`;
+      }).join("");
+      mealProgressList.querySelectorAll("[data-open-meal-detail]").forEach((button) => {
+        button.addEventListener("click", () => openMealDetail(button.dataset.openMealDetail));
+      });
+    }
+
+    function openMealDetail(mealTypeId) {
+      currentMealDetail = mealTypeId;
+      selectedRecommendationIndex = null;
+      mealDetailRegister.classList.add("hidden");
+      const mealType = mealTypes.find((item) => item.id === mealTypeId) || mealTypes[0];
+      selectedMealType = mealType.id;
+      const alreadyDone = appData.meals.some((item) => item.date === todayISO() && item.mealType === mealType.id);
+      mealDetailTitle.textContent = mealDetailLabels[mealType.id] || mealType.name;
+      mealDetailIcon.textContent = mealType.icon;
+      mealDetailTime.value = appData.mealTimes?.[mealType.id] || mealType.defaultTime;
+      mealDetailStatus.textContent = alreadyDone ? "Concluída" : "Pendente";
+      mealDetailSubtitle.textContent = alreadyDone
+        ? "Você já registrou essa refeição hoje"
+        : "Escolha uma sugestão ou crie sua própria refeição";
+      const options = mealRecommendations[mealType.id] || [];
+      recommendationCarousel.innerHTML = [
+        ...options.map((option, index) => `
+          <div class="recommendation-card" data-recommendation-index="${index}">
+            <div class="recommendation-head">
+              <span class="selected-pill">✓ Selecionada</span>
+              <span class="kcal-pill">${option.kcal} kcal</span>
+            </div>
+            ${option.items.map((item) => `
+              <div class="recommended-item">
+                <div class="recommended-item-icon">${item.icon}</div>
+                <div>
+                  <div class="meal-name">${item.name}</div>
+                  <div class="muted">${item.amount}</div>
+                </div>
+                <div class="swap-icon">⇄</div>
+              </div>
+            `).join("")}
+            <button class="recipe-button" type="button">🍴 Ver preparo</button>
+          </div>
+        `),
+        `<div class="recommendation-card empty">
+          <div>
+            <button class="avatar-button" type="button">+</button>
+            <h2 style="margin-top: 18px;">Criar nova opção</h2>
+            <div class="muted">Adicione sua própria refeição</div>
+          </div>
+        </div>`
+      ].join("");
+      recommendationDots.innerHTML = Array.from({ length: options.length + 1 }, (_, index) => `<span class="carousel-dot ${index === 0 ? "active" : ""}"></span>`).join("");
+      recommendationCarousel.querySelectorAll("[data-recommendation-index]").forEach((card) => {
+        card.addEventListener("click", () => selectRecommendation(Number(card.dataset.recommendationIndex)));
+      });
+      openTab("refeicao-detalhe");
+    }
+
+    function selectRecommendation(index) {
+      selectedRecommendationIndex = index;
+      recommendationCarousel.querySelectorAll("[data-recommendation-index]").forEach((card) => {
+        card.classList.toggle("selected", Number(card.dataset.recommendationIndex) === selectedRecommendationIndex);
+      });
+      mealDetailRegister.classList.remove("hidden");
+    }
+
+    function registerSelectedRecommendation() {
+      const mealType = mealTypes.find((item) => item.id === currentMealDetail) || mealTypes[0];
+      const options = mealRecommendations[mealType.id] || [];
+      const option = options[selectedRecommendationIndex];
+      if (!option) {
+        selectedMealType = currentMealDetail;
+        renderMealTypeOptions();
+        openTab("refeicao");
+        return;
+      }
+      const itemsLabel = option.items.map((item) => `${item.name} (${item.amount})`).join(", ");
+      appData.meals.unshift({
+        id: `${Date.now()}`,
+        date: todayISO(),
+        foodId: `sugestao-${mealType.id}-${Date.now()}`,
+        foodName: `${mealDetailLabels[mealType.id] || mealType.name}: ${itemsLabel}`,
+        mealType: mealType.id,
+        mealTypeName: mealType.name,
+        mealTime: appData.mealTimes?.[mealType.id] || defaultMealTimes[mealType.id],
+        grams: 0,
+        quantity: 1,
+        servingName: "Dieta sugerida",
+        servingId: "dieta-sugerida",
+        calories: round(option.kcal || 0),
+        protein: 0,
+        carbs: 0
+      });
+      saveData();
+      currentPeriod = "hoje";
+      periodButtons.forEach((item) => item.classList.toggle("active", item.dataset.period === "hoje"));
+      renderAll();
+      openTab("hoje");
+    }
+
+    function renderWater() {
+      const today = todayISO();
+      const total = Number(appData.water?.[today]) || 0;
+      const target = waterTarget();
+      const cupCount = Math.max(12, Math.ceil(target / 250));
+      const filled = Math.min(cupCount, Math.floor(total / 250));
+      waterTotal.textContent = total.toLocaleString("pt-BR");
+      waterGoal.textContent = `${target.toLocaleString("pt-BR")} ml`;
+      waterCups.innerHTML = Array.from({ length: cupCount }, (_, index) => `<div class="cup ${index < filled ? "filled" : ""}"></div>`).join("");
+    }
+
+    function addWater(amount) {
+      const today = todayISO();
+      appData.water[today] = Math.max(0, (Number(appData.water[today]) || 0) + amount);
+      saveData();
+      renderWater();
+    }
+
+    function periodStart(period) {
+      const date = new Date();
+      if (period === "hoje") return todayISO();
+      if (period === "últimos 7 dias") {
+        date.setDate(date.getDate() - 6);
+        return date.toISOString().slice(0, 10);
+      }
+      if (period === "semana") {
+        const day = date.getDay();
+        const daysSinceMonday = day === 0 ? 6 : day - 1;
+        date.setDate(date.getDate() - daysSinceMonday);
+        return date.toISOString().slice(0, 10);
+      }
+      if (period === "mês") {
+        date.setDate(1);
+        return date.toISOString().slice(0, 10);
+      }
+      if (period === "total") return "";
+      return "";
+    }
+
+    function inPeriod(item, period) {
+      const start = periodStart(period);
+      return !start || item.date >= start;
+    }
+
+    function periodTitle(prefix, period = currentPeriod) {
+      if (period === "total") return prefix === "Atividades" ? "Atividades totais" : `${prefix} total`;
+      return `${prefix} de ${period}`;
+    }
+
+    function dateLabel(date) {
+      if (date === todayISO()) return "hoje";
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      if (date === yesterday.toISOString().slice(0, 10)) return "ontem";
+      return date.split("-").reverse().join("/");
+    }
+
+    function calculateNutrition(food, grams) {
+      const factor = grams / 100;
+      return {
+        calories: round((food.caloriesPer100g || 0) * factor),
+        protein: round((food.proteinPer100g || 0) * factor),
+        carbs: round((food.carbsPer100g || 0) * factor)
+      };
+    }
+
+    function selectedFood() {
+      return foods.find((item) => item.id === selectedFoodId);
+    }
+
+    function servingsForFood(food) {
+      return food?.servings?.length ? food.servings : [{ id: "gramas", name: "Gramas", grams: 1 }];
+    }
+
+    function selectedServing() {
+      const food = selectedFood();
+      return servingsForFood(food).find((item) => item.id === selectedServingId) || servingsForFood(food)[0];
+    }
+
+    function renderServingOptions() {
+      const food = selectedFood();
+      const servings = servingsForFood(food);
+      if (!servings.some((item) => item.id === selectedServingId)) {
+        selectedServingId = servings[0]?.id || "gramas";
+      }
+      servingOptions.innerHTML = servings
+        .map((item) => `<button type="button" data-serving-id="${item.id}" class="selector-tab ${item.id === selectedServingId ? "active" : ""}">${item.name}</button>`)
+        .join("");
+      const serving = selectedServing();
+      mealQuantityLabel.childNodes[0].textContent = serving?.grams === 1 ? "Quantidade em gramas " : `Quantidade em ${serving.name.toLowerCase()} `;
+      mealGrams.placeholder = serving?.grams === 1 ? "Ex: 150" : "Ex: 1";
+      servingHint.textContent = serving?.grams === 1 ? "Digite o peso em gramas." : `Referência: 1 ${serving.name.toLowerCase()} = ${serving.grams}g.`;
+      servingOptions.querySelectorAll("[data-serving-id]").forEach((button) => {
+        button.addEventListener("click", () => {
+          selectedServingId = button.dataset.servingId;
+          renderServingOptions();
+        });
+      });
+    }
+
+    function getMostUsedFoods() {
+      const usage = appData.meals.reduce((acc, meal) => {
+        if (meal.foodId) acc[meal.foodId] = (acc[meal.foodId] || 0) + 1;
+        return acc;
+      }, {});
+
+      return Object.entries(usage)
+        .map(([foodId, count]) => {
+          const food = foods.find((item) => item.id === foodId);
+          return food ? { ...food, usageCount: count } : null;
+        })
+        .filter(Boolean)
+        .sort((a, b) => b.usageCount - a.usageCount || a.name.localeCompare(b.name, "pt-BR"))
+        .slice(0, 80);
+    }
+
+    function renderFoodOptions(mode = currentFoodMode) {
+      currentFoodMode = mode;
+      const search = normalizeText(foodSearch.value.trim());
+      const source = mode === "popular"
+        ? getMostUsedFoods()
+        : sortByName(search ? foods.filter((food) => normalizeText(food.name).includes(search)) : foods).slice(0, search ? 120 : 80);
+
+      if (!source.some((food) => food.id === selectedFoodId) && source[0]) {
+        selectedFoodId = source[0].id;
+      }
+
+      if (source.length === 0) {
+        foodOptions.innerHTML = mode === "popular"
+          ? '<div class="muted">Nenhum item usado ainda. Entre em "Todos itens" para lançar a primeira alimentação.</div>'
+          : '<div class="muted">Nenhum alimento encontrado nessa busca.</div>';
+        foodSearchWrap.classList.toggle("hidden", mode !== "all");
+        foodHint.classList.add("hidden");
+        servingOptions.innerHTML = "";
+        return;
+      }
+
+      foodOptions.innerHTML = source
+        .map((item) => `<button type="button" data-food-id="${item.id}" class="pill ${item.id === selectedFoodId ? "active" : ""}">${item.name}</button>`)
+        .join("");
+      foodSearchWrap.classList.toggle("hidden", mode !== "all");
+      foodHint.classList.toggle("hidden", mode !== "all" || Boolean(search));
+      foodOptions.querySelectorAll(".pill").forEach((item) => {
+        item.addEventListener("click", () => {
+          selectedFoodId = item.dataset.foodId;
+          foodOptions.querySelectorAll(".pill").forEach((pill) => pill.classList.remove("active"));
+          item.classList.add("active");
+          renderServingOptions();
+        });
+      });
+      renderServingOptions();
+    }
+
+    function renderExpenseOptions() {
+      expenseOptions.innerHTML = activityPresets
+        .map((item) => `<button type="button" data-activity-id="${item.id}" class="pill ${item.id === selectedActivityId ? "active" : ""}">${item.name}</button>`)
+        .join("");
+      expenseOptions.querySelectorAll(".pill").forEach((item) => {
+        item.addEventListener("click", () => {
+          selectedActivityId = item.dataset.activityId;
+          expenseOptions.querySelectorAll(".pill").forEach((pill) => pill.classList.remove("active"));
+          item.classList.add("active");
+          updateExpensePreview();
+        });
+      });
+      updateExpensePreview();
+    }
+
+    function updateExpensePreview() {
+      const activity = activityPresets.find((item) => item.id === selectedActivityId);
+      const rawTime = Number(String(expenseMinutes.value).replace(",", ".")) || 0;
+      const isManual = Boolean(activity?.manualCalories);
+      timeUnitTabs.classList.toggle("hidden", isManual);
+      expenseInputLabel.childNodes[0].textContent = isManual ? "Calorias gastas " : "Tempo ";
+      expenseMinutes.placeholder = isManual ? "Ex: 350" : selectedTimeUnit === "hours" ? "Ex: 1.5" : "Ex: 45";
+      if (isManual) {
+        expensePreview.textContent = rawTime
+          ? `Valor manual: ${round(rawTime)} kcal.`
+          : "Informe quantas kcal deseja lançar.";
+        return;
+      }
+      const minutes = selectedTimeUnit === "hours" ? rawTime * 60 : rawTime;
+      const calories = activity && minutes ? round((minutes / 60) * activity.caloriesPerHour) : 0;
+      expensePreview.textContent = activity && minutes
+        ? `${activity.name}: ${activity.caloriesPerHour} kcal/h. Gasto estimado de ${calories} kcal.`
+        : "Selecione uma atividade e informe o tempo.";
+    }
+
+    function seriesForPeriod(period) {
+      const daily = {};
+      appData.meals.filter((item) => inPeriod(item, period)).forEach((meal) => {
+        daily[meal.date] = daily[meal.date] || 0;
+        daily[meal.date] += meal.calories;
+      });
+      appData.expenses.filter((item) => inPeriod(item, period)).forEach((expense) => {
+        daily[expense.date] = daily[expense.date] || 0;
+        daily[expense.date] -= expense.calories;
+      });
+      return Object.keys(daily).sort().map((date) => ({ date: date.slice(5), daily: round(daily[date]) }));
+    }
+
+    function renderChart(period = currentPeriod) {
+      const chartPeriod = period === "hoje" ? "total" : period;
+      const data = seriesForPeriod(chartPeriod);
+      if (data.length === 0) {
+        chart.innerHTML = '<div class="muted">Registre alimentação e atividades para gerar o gráfico.</div>';
+        return;
+      }
+      const maxAbs = Math.max(...data.map((item) => Math.abs(item.daily)), 1);
+      const barAreaHeight = 92;
+      const bars = data.map((item) => {
+        const height = Math.max(8, Math.abs(item.daily) / maxAbs * barAreaHeight);
+        const positive = item.daily > 0;
+        return `<div class="chart-col"><div class="chart-value ${positive ? "positive" : ""}">${formatSigned(item.daily)}</div><div class="chart-bar ${positive ? "positive" : ""}" style="height: ${height}px;"></div><div class="chart-date">${item.date}</div></div>`;
+      }).join("");
+
+      chart.innerHTML = bars;
+    }
+
+    function periodMeals(period = currentPeriod) {
+      return appData.meals.filter((item) => inPeriod(item, period));
+    }
+
+    function periodExpenses(period = currentPeriod) {
+      return appData.expenses.filter((item) => inPeriod(item, period));
+    }
+
+    function renderTotals(period = currentPeriod) {
+      const meals = periodMeals(period);
+      const expenses = periodExpenses(period);
+      const consumed = round(meals.reduce((sum, item) => sum + item.calories, 0));
+      const spent = round(expenses.reduce((sum, item) => sum + item.calories, 0));
+      const protein = round(meals.reduce((sum, item) => sum + item.protein, 0));
+      const carbs = round(meals.reduce((sum, item) => sum + item.carbs, 0));
+      const balance = round(consumed - spent);
+      const target = dailyTarget();
+      const targetRange = dailyTargetRange();
+      const remaining = round(target - consumed + spent);
+      const percent = Math.max(0, Math.min(100, Math.round((consumed / Math.max(target, 1)) * 100)));
+      const proteinPercent = Math.max(0, Math.min(100, Math.round((protein / 120) * 100)));
+      const carbsPercent = Math.max(0, Math.min(100, Math.round((carbs / 220) * 100)));
+      const spentPercent = Math.max(0, Math.min(100, Math.round((spent / Math.max(target, 1)) * 100)));
+
+      metricConsumed.textContent = `${consumed} kcal`;
+      metricSpent.textContent = `${spent} kcal`;
+      metricProtein.textContent = `${protein} g`;
+      metricCarbs.textContent = `${carbs} g`;
+      targetKcal.textContent = `${targetRange.min.toLocaleString("pt-BR")} - ${targetRange.max.toLocaleString("pt-BR")}`;
+      remainingKcal.textContent = remaining.toLocaleString("pt-BR");
+      goalPercent.textContent = `${percent}%`;
+      calorieRing.style.setProperty("--progress", `${percent}%`);
+      calorieFill.style.setProperty("--width", `${percent}%`);
+      proteinFill.style.setProperty("--width", `${proteinPercent}%`);
+      carbsFill.style.setProperty("--width", `${carbsPercent}%`);
+      spentFill.style.setProperty("--width", `${spentPercent}%`);
+    }
+
+    function renderConsumption(period = currentPeriod) {
+      consumoTitle.textContent = periodTitle("Alimentação", period);
+      const data = periodMeals(period);
+      if (data.length === 0) {
+        consumoResumo.innerHTML = '<div class="muted">Nenhuma alimentação registrada neste período.</div>';
+        return;
+      }
+      consumoResumo.innerHTML = data.map((item) => {
+        const portionLabel = item.servingId === "dieta-sugerida"
+          ? "Dieta sugerida"
+          : item.quantity && item.servingName && item.servingName !== "Gramas"
+          ? `${item.quantity} ${item.servingName.toLowerCase()} (${item.grams}g)`
+          : `${item.grams}g`;
+        const mealTypeLabel = item.mealTypeName ? `${item.mealTypeName} ${item.mealTime || ""} â€¢ ` : "";
+        const mealIcon = mealTypes.find((meal) => meal.id === item.mealType)?.icon || "🍴";
+        return `<div class="meal"><div class="meal-list-left"><div class="recommended-item-icon">${mealIcon}</div><div><div class="meal-name">${item.foodName}</div><div class="muted">${mealTypeLabel}${portionLabel}</div></div></div><div class="macro-summary"><div>${item.calories} kcal</div><div>${item.protein}g pro</div><div>${item.carbs}g carb</div></div></div>`;
+      }).join("");
+    }
+
+    function renderMealLog() {
+      const selectedDate = mealDate.value || todayISO();
+      const meals = appData.meals.filter((item) => item.date === selectedDate);
+      const total = meals.reduce((acc, item) => ({
+        calories: round(acc.calories + (Number(item.calories) || 0)),
+        protein: round(acc.protein + (Number(item.protein) || 0)),
+        carbs: round(acc.carbs + (Number(item.carbs) || 0))
+      }), { calories: 0, protein: 0, carbs: 0 });
+      mealLogTitle.textContent = `Alimentação lançada ${dateLabel(selectedDate)}`;
+      mealLogTotal.innerHTML = `<div>${total.calories} kcal</div><div>${total.protein}g pro</div><div>${total.carbs}g carb</div>`;
+      if (meals.length === 0) {
+        mealLog.innerHTML = '<div class="muted">Nenhuma alimentação lançada nesta data.</div>';
+        return;
+      }
+      mealLog.innerHTML = meals.map((item) => {
+        const portionLabel = item.servingId === "dieta-sugerida"
+          ? "Dieta sugerida"
+          : item.quantity && item.servingName && item.servingName !== "Gramas"
+          ? `${item.quantity} ${item.servingName.toLowerCase()} (${item.grams}g)`
+          : `${item.grams}g`;
+        const mealTypeLabel = item.mealTypeName ? `${item.mealTypeName} ${item.mealTime || ""} • ` : "";
+        return `<div class="meal"><div><div class="meal-name">${item.foodName}</div><div class="muted">${mealTypeLabel}${portionLabel}</div></div><div class="macro-summary"><div>${item.calories} kcal</div><div>${item.protein}g pro</div><div>${item.carbs}g carb</div><button class="edit-button" data-edit-meal="${item.id}">Editar</button><button class="delete-button" data-delete-meal="${item.id}">Excluir</button></div></div>`;
+      }).join("");
+      mealLog.querySelectorAll("[data-edit-meal]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const meal = appData.meals.find((item) => item.id === button.dataset.editMeal);
+          if (!meal) return;
+          if (!confirm("Editar esta alimentação? O lançamento atual será removido e voltará para o formulário.")) return;
+          const food = foods.find((item) => item.id === meal.foodId);
+          const servings = servingsForFood(food);
+          selectedFoodId = meal.foodId;
+          selectedMealType = meal.mealType || mealTypes[0].id;
+          selectedServingId =
+            meal.servingId ||
+            servings.find((item) => item.name === meal.servingName)?.id ||
+            servings.find((item) => item.grams === round((Number(meal.grams) || 0) / (Number(meal.quantity) || 1)))?.id ||
+            "gramas";
+          mealDate.value = meal.date;
+          mealGrams.value = meal.quantity || meal.grams;
+          currentFoodMode = "all";
+          foodModeButtons.forEach((item) => item.classList.toggle("active", item.dataset.foodMode === "all"));
+          appData.meals = appData.meals.filter((item) => item.id !== meal.id);
+          saveData();
+          renderFoodOptions("all");
+          renderAll();
+        });
+      });
+      mealLog.querySelectorAll("[data-delete-meal]").forEach((button) => {
+        button.addEventListener("click", () => {
+          if (!confirm("Tem certeza que quer excluir esta alimentação?")) return;
+          appData.meals = appData.meals.filter((meal) => meal.id !== button.dataset.deleteMeal);
+          saveData();
+          renderFoodOptions(currentFoodMode);
+          renderAll();
+        });
+      });
+    }
+
+    function renderExpenses(period = currentPeriod) {
+      gastoTitle.textContent = periodTitle("Atividades", period);
+      const data = periodExpenses(period);
+      if (data.length === 0) {
+        gastoResumo.innerHTML = '<div class="muted">Nenhuma atividade registrada neste período.</div>';
+        return;
+      }
+      gastoResumo.innerHTML = data.map((item) => {
+        const timeLabel = item.minutes > 0 ? `${item.minutes} min acumulados` : "valor manual";
+        const hourLabel = item.minutes > 0 ? `<div>${Math.round((item.minutes / 60) * 10) / 10}h total</div>` : "";
+        return `<div class="meal"><div><div class="meal-name">${item.activity || item.description}</div><div class="muted">${timeLabel}</div></div><div class="macro-summary"><div>${item.calories} kcal</div>${hourLabel}</div></div>`;
+      }).join("");
+    }
+
+    function renderExpenseLog() {
+      const selectedDate = expenseDate.value || todayISO();
+      const expenses = appData.expenses.filter((item) => item.date === selectedDate);
+      const total = round(expenses.reduce((sum, item) => sum + (Number(item.calories) || 0), 0));
+      expenseLogTitle.textContent = `Atividades lançadas ${dateLabel(selectedDate)}`;
+      expenseLogTotal.innerHTML = `<div>${total} kcal</div>`;
+      if (expenses.length === 0) {
+        expenseLog.innerHTML = '<div class="muted">Nenhuma atividade lançada nesta data.</div>';
+        return;
+      }
+      expenseLog.innerHTML = expenses.map((item) => {
+        const timeLabel = item.minutes > 0 ? `${item.minutes} min` : "valor manual";
+        const hourLabel = item.minutes > 0 ? `<div>${Math.round((item.minutes / 60) * 10) / 10}h total</div>` : "";
+        return `<div class="meal"><div><div class="meal-name">${item.activity || item.description}</div><div class="muted">${timeLabel}</div></div><div class="macro-summary"><div>${item.calories} kcal</div>${hourLabel}<button class="edit-button" data-edit-expense="${item.id}">Editar</button><button class="delete-button" data-delete-expense="${item.id}">Excluir</button></div></div>`;
+      }).join("");
+      expenseLog.querySelectorAll("[data-edit-expense]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const expense = appData.expenses.find((item) => item.id === button.dataset.editExpense);
+          if (!expense) return;
+          if (!confirm("Editar esta atividade? O lançamento atual será removido e voltará para o formulário.")) return;
+          const activity = activityPresets.find((item) => item.id === expense.activityId);
+          selectedActivityId = expense.activityId;
+          expenseDate.value = expense.date;
+          if (activity?.manualCalories || !expense.minutes) {
+            expenseMinutes.value = expense.calories;
+          } else {
+            selectedTimeUnit = "minutes";
+            expenseMinutes.value = expense.minutes;
+            timeUnitButtons.forEach((item) => item.classList.toggle("active", item.dataset.timeUnit === "minutes"));
+          }
+          appData.expenses = appData.expenses.filter((item) => item.id !== expense.id);
+          saveData();
+          renderExpenseOptions();
+          renderAll();
+        });
+      });
+      expenseLog.querySelectorAll("[data-delete-expense]").forEach((button) => {
+        button.addEventListener("click", () => {
+          if (!confirm("Tem certeza que quer excluir esta atividade?")) return;
+          appData.expenses = appData.expenses.filter((expense) => expense.id !== button.dataset.deleteExpense);
+          saveData();
+          renderAll();
+        });
+      });
+    }
+
+    function renderAll() {
+      renderProfile();
+      renderTotals("hoje");
+      renderMealsProgress();
+      renderWater();
+      renderMealTypeOptions();
+      renderChart(currentPeriod);
+      renderConsumption(currentPeriod);
+      renderExpenses(currentPeriod);
+      renderMealLog();
+      renderExpenseLog();
+    }
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        tabs.forEach((item) => item.classList.remove("active"));
+        sections.forEach((section) => section.classList.add("hidden"));
+        tab.classList.add("active");
+        document.getElementById(tab.dataset.tab).classList.remove("hidden");
+      });
+    });
+
+    function openTab(tabName) {
+      tabs.forEach((item) => item.classList.toggle("active", item.dataset.tab === tabName));
+      sections.forEach((section) => section.classList.add("hidden"));
+      document.getElementById(tabName).classList.remove("hidden");
+      document.querySelector(".screen")?.scrollTo({ top: 0, behavior: "smooth" });
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    profileButton.addEventListener("click", () => openTab("perfil"));
+    mealDetailBack.addEventListener("click", () => openTab("hoje"));
+    mealDetailTime.addEventListener("change", () => {
+      appData.mealTimes[currentMealDetail] = mealDetailTime.value || defaultMealTimes[currentMealDetail];
+      saveData();
+      renderMealsProgress();
+    });
+    mealDetailRegister.addEventListener("click", () => {
+      registerSelectedRecommendation();
+    });
+    recommendationCarousel.addEventListener("click", (event) => {
+      if (event.target.closest(".recommendation-card.empty")) {
+        selectedMealType = currentMealDetail;
+        renderMealTypeOptions();
+        openTab("refeicao");
+      }
+    });
+    addWaterQuick.addEventListener("click", () => addWater(250));
+    removeWater.addEventListener("click", () => addWater(-250));
+    waterButtons.forEach((button) => {
+      button.addEventListener("click", () => addWater(Number(button.dataset.waterAdd)));
+    });
+
+    saveProfile.addEventListener("click", () => {
+      appData.profile = {
+        name: profileName.value.trim() || "Robson",
+        weightKg: profileWeight.value.trim(),
+        heightCm: profileHeight.value.trim(),
+        age: profileAge.value.trim(),
+        sex: profileSex.value,
+        calorieTarget: profileTarget.value.trim()
+      };
+      saveData();
+      renderAll();
+      alert("Perfil salvo.");
+    });
+
+    foodModeButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        foodModeButtons.forEach((item) => item.classList.remove("active"));
+        button.classList.add("active");
+        renderFoodOptions(button.dataset.foodMode);
+      });
+    });
+
+    foodSearch.addEventListener("input", () => renderFoodOptions("all"));
+    mealDate.addEventListener("input", renderMealLog);
+    mealDate.addEventListener("change", renderMealLog);
+    expenseDate.addEventListener("input", renderExpenseLog);
+    expenseDate.addEventListener("change", renderExpenseLog);
+    expenseMinutes.addEventListener("input", updateExpensePreview);
+    timeUnitButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        timeUnitButtons.forEach((item) => item.classList.remove("active"));
+        button.classList.add("active");
+        selectedTimeUnit = button.dataset.timeUnit;
+        expenseMinutes.placeholder = selectedTimeUnit === "hours" ? "Ex: 1.5" : "Ex: 45";
+        updateExpensePreview();
+      });
+    });
+
+    saveConsumption.addEventListener("click", () => {
+      const food = foods.find((item) => item.id === selectedFoodId);
+      const quantity = Number(String(mealGrams.value).replace(",", "."));
+      const serving = selectedServing();
+      const grams = round(quantity * (Number(serving?.grams) || 1));
+      if (!food || !quantity || quantity <= 0) {
+        alert("Escolha um alimento e informe a quantidade.");
+        return;
+      }
+      const nutrition = calculateNutrition(food, grams);
+      appData.meals.unshift({
+        id: `${Date.now()}`,
+        date: mealDate.value || todayISO(),
+        foodId: food.id,
+        foodName: food.name,
+        mealType: selectedMealType,
+        mealTypeName: mealTypes.find((item) => item.id === selectedMealType)?.name || "Refeição",
+        mealTime: appData.mealTimes?.[selectedMealType] || defaultMealTimes[selectedMealType],
+        grams,
+        quantity,
+        servingName: serving?.name || "Gramas",
+        servingId: serving?.id || "gramas",
+        ...nutrition
+      });
+      mealGrams.value = "";
+      saveData();
+      currentPeriod = "hoje";
+      periodButtons.forEach((item) => item.classList.toggle("active", item.dataset.period === "hoje"));
+      renderFoodOptions(currentFoodMode);
+      renderAll();
+    });
+
+    saveExpense.addEventListener("click", () => {
+      const activity = activityPresets.find((item) => item.id === selectedActivityId);
+      const rawTime = Number(String(expenseMinutes.value).replace(",", "."));
+      if (!activity) {
+        alert("Escolha uma atividade.");
+        return;
+      }
+      const isManual = Boolean(activity?.manualCalories);
+      const minutes = isManual ? 0 : selectedTimeUnit === "hours" ? rawTime * 60 : rawTime;
+      const calories = isManual ? round(rawTime) : round((minutes / 60) * activity.caloriesPerHour);
+      if (!activity || !calories || calories <= 0) {
+        alert(isManual ? "Informe as kcal gastas." : "Escolha uma atividade e informe o tempo.");
+        return;
+      }
+      appData.expenses.unshift({
+        id: `${Date.now()}`,
+        date: expenseDate.value || todayISO(),
+        activityId: activity.id,
+        activity: activity.name,
+        minutes,
+        calories
+      });
+      expenseMinutes.value = "";
+      updateExpensePreview();
+      saveData();
+      currentPeriod = "hoje";
+      periodButtons.forEach((item) => item.classList.toggle("active", item.dataset.period === "hoje"));
+      renderAll();
+    });
+
+    periodButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        periodButtons.forEach((item) => item.classList.remove("active"));
+        button.classList.add("active");
+        currentPeriod = button.dataset.period;
+        renderAll();
+      });
+    });
+
+    renderFoodOptions("popular");
+    renderExpenseOptions();
+    renderAll();
+  </script>
+</body>
+</html>
