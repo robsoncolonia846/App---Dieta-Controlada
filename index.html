@@ -699,8 +699,20 @@
       color: #209b26;
       font-size: 24px;
       font-weight: 900;
-      padding: 8px;
+      width: 52px;
+      height: 52px;
+      padding: 0;
       cursor: pointer;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      position: relative;
+      z-index: 3;
+      touch-action: manipulation;
+    }
+
+    .swap-icon:active {
+      background: #eaf6ea;
     }
 
     .substitute-modal {
@@ -1802,6 +1814,7 @@
     let selectedRecommendationIndex = null;
     let currentRecommendationOptions = [];
     let substituteTarget = null;
+    let ignoreNextRecommendationClick = false;
 
     mealDate.value = todayISO();
     expenseDate.value = todayISO();
@@ -1973,18 +1986,28 @@
       recommendationDots.innerHTML = Array.from({ length: currentRecommendationOptions.length + 1 }, (_, index) => `<span class="carousel-dot ${index === selectedRecommendationIndex ? "active" : ""}"></span>`).join("");
       recommendationCarousel.querySelectorAll("[data-recommendation-index]").forEach((card) => {
         card.addEventListener("click", (event) => {
+          if (ignoreNextRecommendationClick) {
+            ignoreNextRecommendationClick = false;
+            return;
+          }
           if (event.target.closest("[data-substitute-rec], .recipe-button")) return;
           selectRecommendation(Number(card.dataset.recommendationIndex));
         });
       });
       recommendationCarousel.querySelectorAll("[data-substitute-rec]").forEach((button) => {
         button.addEventListener("pointerdown", (event) => {
+          event.preventDefault();
           event.stopPropagation();
+          ignoreNextRecommendationClick = true;
+          openSubstituteModal(Number(button.dataset.substituteRec), Number(button.dataset.substituteItem));
+          window.setTimeout(() => {
+            ignoreNextRecommendationClick = false;
+          }, 350);
         });
         button.addEventListener("click", (event) => {
+          event.preventDefault();
           event.stopPropagation();
           event.stopImmediatePropagation();
-          openSubstituteModal(Number(button.dataset.substituteRec), Number(button.dataset.substituteItem));
         });
       });
     }

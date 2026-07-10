@@ -1,4 +1,4 @@
-﻿const CACHE_NAME = "dieta-controlada-pwa-v5";
+﻿const CACHE_NAME = "dieta-controlada-pwa-v6";
 
 const APP_SHELL = [
   "./",
