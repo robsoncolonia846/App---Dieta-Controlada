@@ -812,6 +812,18 @@
       font-weight: 950;
     }
 
+    .add-recommendation-item {
+      border: 1.5px dashed #209b26;
+      border-radius: 999px;
+      background: #f7fbf7;
+      color: #209b26;
+      padding: 14px;
+      font-size: 17px;
+      font-weight: 950;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
     .carousel-dots {
       display: none;
       justify-content: center;
@@ -1343,6 +1355,7 @@
     const mealDetailRegister = document.getElementById("meal-detail-register");
     const substituteModal = document.getElementById("substitute-modal");
     const substituteClose = document.getElementById("substitute-close");
+    const substituteTitle = document.getElementById("substitute-title");
     const substituteDescription = document.getElementById("substitute-description");
     const substituteList = document.getElementById("substitute-list");
     const consumoTitle = document.getElementById("consumo-title");
@@ -1978,6 +1991,7 @@
                 <span class="swap-icon" aria-hidden="true">⇄</span>
               </button>
             `).join("")}
+            <button class="add-recommendation-item" type="button" data-add-item-rec="${index}">+ Adicionar item</button>
             <button class="recipe-button" type="button">🍴 Ver preparo</button>
           </div>
         `),
@@ -2005,6 +2019,13 @@
           openSubstituteModal(Number(button.dataset.substituteRec), Number(button.dataset.substituteItem));
         });
       });
+      recommendationCarousel.querySelectorAll("[data-add-item-rec]").forEach((button) => {
+        button.addEventListener("click", (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          openAddItemModal(Number(button.dataset.addItemRec));
+        });
+      });
     }
 
     function selectRecommendation(index) {
@@ -2016,17 +2037,54 @@
       renderRecommendationOptions();
     }
 
+    function recalculateRecommendation(option) {
+      option.kcal = option.items.reduce((total, item) => total + (Number(item.kcal) || 0), 0);
+    }
+
+    function iconForFoodName(name = "") {
+      const normalized = normalizeText(name);
+      if (normalized.includes("banana")) return "🍌";
+      if (normalized.includes("maca")) return "🍎";
+      if (normalized.includes("laranja")) return "🍊";
+      if (normalized.includes("tomate")) return "🍅";
+      if (normalized.includes("arroz")) return "🍚";
+      if (normalized.includes("feijao")) return "🫘";
+      if (normalized.includes("frango")) return "🍗";
+      if (normalized.includes("carne") || normalized.includes("bife")) return "🥩";
+      if (normalized.includes("ovo") || normalized.includes("omelete")) return "🍳";
+      if (normalized.includes("queijo")) return "🧀";
+      if (normalized.includes("pao")) return "🥖";
+      if (normalized.includes("macarrao") || normalized.includes("massa")) return "🍝";
+      return "🍽️";
+    }
+
+    function foodToRecommendationItem(food) {
+      const preferredServing = food.servings?.find((serving) => serving.id !== "gramas") || food.servings?.[0];
+      const grams = preferredServing?.id === "gramas" || !preferredServing ? 100 : Number(preferredServing.grams) || 100;
+      const amount = preferredServing?.id === "gramas" || !preferredServing
+        ? "100g"
+        : `1 ${preferredServing.name.toLowerCase()}`;
+      return {
+        icon: iconForFoodName(food.name),
+        name: food.name,
+        amount,
+        kcal: Math.round((Number(food.caloriesPer100g) || 0) * grams / 100),
+        protein: Number(((Number(food.proteinPer100g) || 0) * grams / 100).toFixed(1)),
+        carbs: Number(((Number(food.carbsPer100g) || 0) * grams / 100).toFixed(1))
+      };
+    }
+
     function openSubstituteModal(recommendationIndex, itemIndex) {
       const item = currentRecommendationOptions?.[recommendationIndex]?.items?.[itemIndex];
       if (!item) return;
       const key = normalizeText(item.name);
       const substitutes = substituteCatalog[key] || [];
-      substituteTarget = { recommendationIndex, itemIndex };
+      substituteTarget = { mode: "substitute", recommendationIndex, itemIndex };
+      substituteTitle.textContent = "Alimentos Substitutos";
       substituteDescription.textContent = `Esses são os alimentos que você pode substituir por ${item.name}. Se atente às quantidades.`;
-      if (substitutes.length === 0) {
-        substituteList.innerHTML = '<div class="muted" style="text-align:center;">Ainda não há substitutos cadastrados para este alimento.</div>';
-      } else {
-        substituteList.innerHTML = substitutes.map((substitute, index) => `
+      const substituteOptionsHtml = substitutes.length === 0
+        ? '<div class="muted" style="text-align:center;">Ainda não há substitutos cadastrados para este alimento.</div>'
+        : substitutes.map((substitute, index) => `
           <button class="substitute-option" type="button" data-substitute-index="${index}">
             <div class="recommended-item-icon">${substitute.icon}</div>
             <div>
@@ -2036,10 +2094,47 @@
             <div class="substitute-info">i</div>
           </button>
         `).join("");
-        substituteList.querySelectorAll("[data-substitute-index]").forEach((button) => {
-          button.addEventListener("click", () => applySubstitute(substitutes[Number(button.dataset.substituteIndex)]));
-        });
-      }
+      substituteList.innerHTML = `
+        ${substituteOptionsHtml}
+        <button class="substitute-option" type="button" data-ignore-item="1">
+          <div class="recommended-item-icon">🚫</div>
+          <div>
+            <div class="meal-name">Desconsiderar item</div>
+            <div class="muted">Remover ${item.name} desta refeição</div>
+          </div>
+          <div class="substitute-info">−</div>
+        </button>
+      `;
+      substituteList.querySelectorAll("[data-substitute-index]").forEach((button) => {
+        button.addEventListener("click", () => applySubstitute(substitutes[Number(button.dataset.substituteIndex)]));
+      });
+      substituteList.querySelector("[data-ignore-item]")?.addEventListener("click", ignoreRecommendationItem);
+      substituteModal.classList.remove("hidden");
+    }
+
+    function openAddItemModal(recommendationIndex) {
+      const option = currentRecommendationOptions?.[recommendationIndex];
+      if (!option) return;
+      substituteTarget = { mode: "add", recommendationIndex };
+      substituteTitle.textContent = "Adicionar item";
+      substituteDescription.textContent = "Selecione um alimento para incluir nesta refeição.";
+      const foodOptions = [...foods].sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
+      substituteList.innerHTML = foodOptions.map((food, index) => {
+        const item = foodToRecommendationItem(food);
+        return `
+          <button class="substitute-option" type="button" data-add-food-index="${index}">
+            <div class="recommended-item-icon">${item.icon}</div>
+            <div>
+              <div class="meal-name">${item.name}</div>
+              <div class="muted">${item.amount} • ${item.kcal} kcal</div>
+            </div>
+            <div class="substitute-info">+</div>
+          </button>
+        `;
+      }).join("");
+      substituteList.querySelectorAll("[data-add-food-index]").forEach((button) => {
+        button.addEventListener("click", () => addRecommendationItem(foodOptions[Number(button.dataset.addFoodIndex)]));
+      });
       substituteModal.classList.remove("hidden");
     }
 
@@ -2054,7 +2149,28 @@
       const option = currentRecommendationOptions?.[recommendationIndex];
       if (!option?.items?.[itemIndex]) return;
       option.items[itemIndex] = { ...substitute, substituted: true };
-      option.kcal = option.items.reduce((total, item) => total + (Number(item.kcal) || 0), 0);
+      recalculateRecommendation(option);
+      renderRecommendationOptions();
+      closeSubstituteModal();
+    }
+
+    function ignoreRecommendationItem() {
+      if (!substituteTarget) return;
+      const { recommendationIndex, itemIndex } = substituteTarget;
+      const option = currentRecommendationOptions?.[recommendationIndex];
+      if (!option?.items?.[itemIndex]) return;
+      option.items.splice(itemIndex, 1);
+      recalculateRecommendation(option);
+      renderRecommendationOptions();
+      closeSubstituteModal();
+    }
+
+    function addRecommendationItem(food) {
+      if (!substituteTarget || !food) return;
+      const option = currentRecommendationOptions?.[substituteTarget.recommendationIndex];
+      if (!option) return;
+      option.items.push(foodToRecommendationItem(food));
+      recalculateRecommendation(option);
       renderRecommendationOptions();
       closeSubstituteModal();
     }
@@ -2068,7 +2184,9 @@
         openTab("refeicao");
         return;
       }
-      const itemsLabel = option.items.map((item) => `${item.name} (${item.amount})`).join(", ");
+      const itemsLabel = option.items.map((item) => `${item.name} (${item.amount})`).join(", ") || "Sem itens";
+      const proteinTotal = option.items.reduce((total, item) => total + (Number(item.protein) || 0), 0);
+      const carbsTotal = option.items.reduce((total, item) => total + (Number(item.carbs) || 0), 0);
       appData.meals.unshift({
         id: `${Date.now()}`,
         date: todayISO(),
@@ -2082,8 +2200,8 @@
         servingName: "Dieta sugerida",
         servingId: "dieta-sugerida",
         calories: round(option.kcal || 0),
-        protein: 0,
-        carbs: 0
+        protein: round(proteinTotal),
+        carbs: round(carbsTotal)
       });
       saveData();
       currentPeriod = "hoje";
