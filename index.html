@@ -721,7 +721,7 @@
 
     .recommended-item {
       display: grid;
-      grid-template-columns: 54px 1fr auto;
+      grid-template-columns: 54px 1fr auto auto;
       align-items: center;
       gap: 14px;
       border: 0;
@@ -758,6 +758,17 @@
       display: grid;
       place-items: center;
       pointer-events: none;
+    }
+
+    .item-edit-button {
+      border: 0;
+      border-radius: 999px;
+      background: #eaf6ea;
+      color: #209b26;
+      padding: 8px 10px;
+      font-size: 12px;
+      font-weight: 950;
+      white-space: nowrap;
     }
 
     .item-detail-row {
@@ -1262,7 +1273,7 @@
 
     .diet-food-row {
       display: grid;
-      grid-template-columns: 26px 1fr auto;
+      grid-template-columns: 26px 1fr auto auto;
       align-items: center;
       gap: 12px;
       font-size: 17px;
@@ -2141,11 +2152,18 @@
               data-diet-option="${index}"
             >OpÃ§Ã£o ${index + 1}</button>
           `).join("");
-          const foodsList = selectedOption.items.map((item) => `
+          const foodsList = selectedOption.items.map((item, itemIndex) => `
             <div class="diet-food-row">
               <span class="diet-check">âœ“</span>
               <span class="diet-food-name">${escapeHTML(item.name)}</span>
               <span class="diet-food-amount">${escapeHTML(item.amount)}</span>
+              <button
+                class="item-edit-button"
+                type="button"
+                data-diet-edit-meal="${mealType.id}"
+                data-diet-edit-option="${selectedIndex}"
+                data-diet-edit-item="${itemIndex}"
+              >Editar</button>
             </div>
           `).join("");
           return `
@@ -2371,6 +2389,33 @@
       }
       renderRecommendationOptions();
       openTab("refeicao-detalhe");
+    }
+
+    function openDietItemEditor(mealTypeId, optionIndex, itemIndex) {
+      const mealType = mealTypes.find((item) => item.id === mealTypeId) || mealTypes[0];
+      const options = mealRecommendations[mealType.id] || [];
+      const safeOptionIndex = Math.max(0, Math.min(Number(optionIndex) || 0, Math.max(0, options.length - 1)));
+      currentMealDetail = mealType.id;
+      selectedMealType = mealType.id;
+      selectedRecommendationIndex = safeOptionIndex;
+      editingMealType = appData.meals.some((item) => item.date === todayISO() && item.mealType === mealType.id)
+        ? mealType.id
+        : null;
+      mealDetailTitle.textContent = mealDetailLabels[mealType.id] || mealType.name;
+      mealDetailIcon.textContent = mealType.icon;
+      mealDetailTime.value = appData.mealTimes?.[mealType.id] || mealType.defaultTime;
+      mealDetailStatus.textContent = "Editando";
+      mealDetailSubtitle.textContent = "Ajuste ou substitua o alimento selecionado";
+      mealDetailRegister.textContent = editingMealType ? "Salvar edição" : "Registrar dieta";
+      mealCompensateLater.classList.add("hidden");
+      currentRecommendationOptions = options.map((option) => ({
+        ...option,
+        items: option.items.map((item) => hydrateRecommendationItem(item, option))
+      }));
+      renderRecommendationOptions();
+      mealDetailRegister.classList.remove("hidden");
+      openTab("refeicao-detalhe");
+      requestAnimationFrame(() => openSubstituteModal(safeOptionIndex, Number(itemIndex) || 0));
     }
 
     function minutesFromTime(time = "00:00") {
@@ -2607,6 +2652,7 @@
                   </div>
                 </div>
                 <span class="swap-icon" aria-hidden="true">â‡„</span>
+                <span class="item-edit-button" role="button" tabindex="0" data-substitute-rec="${index}" data-substitute-item="${itemIndex}">Editar</span>
               </button>
             `).join("")}
             <button class="add-recommendation-item" type="button" data-add-item-rec="${index}">+ Adicionar item</button>
@@ -3425,6 +3471,17 @@
       openMealDetail(mealButton.dataset.openMealDetail);
     });
     dietDashboard.addEventListener("click", (event) => {
+      const editButton = event.target.closest("[data-diet-edit-meal]");
+      if (editButton) {
+        event.preventDefault();
+        event.stopPropagation();
+        openDietItemEditor(
+          editButton.dataset.dietEditMeal,
+          editButton.dataset.dietEditOption,
+          editButton.dataset.dietEditItem
+        );
+        return;
+      }
       const optionButton = event.target.closest("[data-diet-meal][data-diet-option]");
       if (!optionButton) return;
       dietSelectedOptions[optionButton.dataset.dietMeal] = Number(optionButton.dataset.dietOption) || 0;
