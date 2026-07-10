@@ -1085,6 +1085,201 @@
       color: #fff;
     }
 
+    .diet-page {
+      display: grid;
+      gap: 14px;
+      padding-bottom: 18px;
+    }
+
+    .diet-page-head h2 {
+      font-size: 32px;
+      margin: 0 0 6px;
+      letter-spacing: -1px;
+    }
+
+    .diet-top-tabs {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding: 6px 0 2px;
+      scrollbar-width: none;
+    }
+
+    .diet-top-tabs::-webkit-scrollbar,
+    .diet-option-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .diet-top-pill {
+      border: 1px solid #edf0f5;
+      border-radius: 999px;
+      background: #fff;
+      padding: 14px 24px;
+      font-size: 18px;
+      font-weight: 900;
+      color: #111827;
+      white-space: nowrap;
+      box-shadow: 0 1px 4px rgba(15, 23, 42, 0.04);
+    }
+
+    .diet-top-pill.active {
+      background: #1fa12e;
+      border-color: #1fa12e;
+      color: #fff;
+    }
+
+    .diet-renew {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-radius: 28px;
+      background: #fff;
+      padding: 18px 22px;
+      font-size: 16px;
+      font-weight: 900;
+      box-shadow: 0 1px 4px rgba(15, 23, 42, 0.04);
+    }
+
+    .diet-info-button {
+      justify-self: end;
+      border: 0;
+      border-radius: 999px;
+      background: #1fa12e;
+      color: #fff;
+      padding: 14px 18px;
+      font-weight: 950;
+      font-size: 14px;
+    }
+
+    .diet-card {
+      border-radius: 18px;
+      background: #fff;
+      border: 1px solid #e4e7ec;
+      box-shadow: 0 1px 4px rgba(15, 23, 42, 0.04);
+      overflow: hidden;
+    }
+
+    .diet-card-inner {
+      padding: 24px 22px 0;
+    }
+
+    .diet-card-header {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .diet-card-icon {
+      width: 54px;
+      height: 54px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      font-size: 35px;
+      background: #f7f8fb;
+    }
+
+    .diet-card-title {
+      font-size: 23px;
+      line-height: 1.05;
+      font-weight: 950;
+      letter-spacing: -0.4px;
+    }
+
+    .diet-card-time {
+      margin-top: 4px;
+      color: #1fa12e;
+      font-weight: 950;
+      font-size: 14px;
+    }
+
+    .diet-card-kcal {
+      font-size: 24px;
+      font-weight: 950;
+      letter-spacing: -0.7px;
+      white-space: nowrap;
+    }
+
+    .diet-card-divider {
+      height: 1px;
+      background: #eceff3;
+      margin: 22px 0;
+    }
+
+    .diet-option-tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      border-radius: 999px;
+      background: #f4f5f7;
+      padding: 6px;
+      margin-bottom: 20px;
+    }
+
+    .diet-option-tab {
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: #8b8f98;
+      min-width: 118px;
+      padding: 14px 12px;
+      font-weight: 950;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .diet-option-tab.active {
+      color: #fff;
+      background: #1fa12e;
+    }
+
+    .diet-food-list {
+      display: grid;
+      gap: 18px;
+      padding-bottom: 24px;
+    }
+
+    .diet-food-row {
+      display: grid;
+      grid-template-columns: 26px 1fr auto;
+      align-items: center;
+      gap: 12px;
+      font-size: 17px;
+      font-weight: 950;
+    }
+
+    .diet-check,
+    .diet-food-amount {
+      color: #1fa12e;
+      font-weight: 950;
+    }
+
+    .diet-food-name {
+      min-width: 0;
+    }
+
+    .diet-food-amount {
+      text-align: right;
+      white-space: nowrap;
+      font-size: 15px;
+    }
+
+    .diet-prep {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-top: 1px solid #eceff3;
+      padding: 18px 22px;
+      font-size: 20px;
+      font-weight: 950;
+    }
+
+    .legacy-manual-meal {
+      display: none !important;
+    }
+
     .hidden {
       display: none !important;
     }
@@ -1267,7 +1462,29 @@
           </section>
 
           <section id="refeicao" class="hidden">
-            <div class="card">
+            <div class="diet-page">
+              <div class="diet-page-head">
+                <h2>Dieta</h2>
+                <div class="profile-meta">
+                  <span id="diet-profile-weight">-- kg</span>
+                  <span id="diet-profile-height">-- m</span>
+                </div>
+              </div>
+              <div class="diet-top-tabs" aria-label="Menu da dieta">
+                <button class="diet-top-pill active" type="button">Dieta</button>
+                <button class="diet-top-pill" type="button">Consulta</button>
+                <button class="diet-top-pill" type="button">Editar dieta</button>
+                <button class="diet-top-pill" type="button">Mercado</button>
+              </div>
+              <div class="diet-renew">
+                <span>↻ Sua dieta renova em 29 dias</span>
+                <span>◷</span>
+              </div>
+              <button class="diet-info-button" type="button">Mais informações ⓘ</button>
+              <div id="diet-dashboard"></div>
+            </div>
+
+            <div class="card legacy-manual-meal">
               <h2>Registrar alimentação</h2>
               <label>Data <input id="meal-date" /></label>
               <div>
@@ -1409,6 +1626,9 @@
     const profileButton = document.getElementById("profile-button");
     const profileWeightLabel = document.getElementById("profile-weight-label");
     const profileHeightLabel = document.getElementById("profile-height-label");
+    const dietProfileWeight = document.getElementById("diet-profile-weight");
+    const dietProfileHeight = document.getElementById("diet-profile-height");
+    const dietDashboard = document.getElementById("diet-dashboard");
     const goalBannerValue = document.getElementById("goal-banner-value");
     const goalPercent = document.getElementById("goal-percent");
     const goalAlert = document.getElementById("goal-alert");
@@ -1887,6 +2107,61 @@
       history.replaceState(null, "", window.location.pathname);
     }
 
+    function escapeHTML(value = "") {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function renderDietDashboard() {
+      if (!dietDashboard) return;
+      dietProfileWeight.textContent = profileWeightLabel.textContent;
+      dietProfileHeight.textContent = profileHeightLabel.textContent;
+      dietDashboard.innerHTML = mealTypes
+        .map((mealType) => {
+          const options = mealRecommendations[mealType.id] || [];
+          const selectedIndex = Math.min(dietSelectedOptions[mealType.id] || 0, Math.max(0, options.length - 1));
+          const selectedOption = options[selectedIndex] || { kcal: 0, items: [] };
+          const optionTabs = options.map((option, index) => `
+            <button
+              class="diet-option-tab ${index === selectedIndex ? "active" : ""}"
+              type="button"
+              data-diet-meal="${mealType.id}"
+              data-diet-option="${index}"
+            >Opção ${index + 1}</button>
+          `).join("");
+          const foodsList = selectedOption.items.map((item) => `
+            <div class="diet-food-row">
+              <span class="diet-check">✓</span>
+              <span class="diet-food-name">${escapeHTML(item.name)}</span>
+              <span class="diet-food-amount">${escapeHTML(item.amount)}</span>
+            </div>
+          `).join("");
+          return `
+            <article class="diet-card">
+              <div class="diet-card-inner">
+                <div class="diet-card-header">
+                  <div class="diet-card-icon">${mealType.icon}</div>
+                  <div>
+                    <div class="diet-card-title">${mealDetailLabels[mealType.id] || mealType.name}</div>
+                    <div class="diet-card-time">${appData.mealTimes?.[mealType.id] || mealType.defaultTime}</div>
+                  </div>
+                  <div class="diet-card-kcal">${selectedOption.kcal || 0} kcal</div>
+                </div>
+                <div class="diet-card-divider"></div>
+                <div class="diet-option-tabs">${optionTabs}</div>
+                <div class="diet-food-list">${foodsList}</div>
+              </div>
+              <div class="diet-prep"><span>▤</span><span>Ver preparo</span></div>
+            </article>
+          `;
+        })
+        .join("");
+    }
+
     const defaultProfile = {
       name: "Robson",
       weightKg: "",
@@ -1942,6 +2217,8 @@
     let selectedRecommendationIndex = null;
     let currentRecommendationOptions = [];
     let substituteTarget = null;
+    let dietSelectedOptions = {};
+    let editingMealType = null;
 
     mealDate.value = todayISO();
     expenseDate.value = todayISO();
@@ -2070,6 +2347,22 @@
       saveData();
       renderAll();
       openTab("hoje");
+    }
+
+    function showMealRecommendationOptions(mealType) {
+      const options = mealRecommendations[mealType.id] || [];
+      currentRecommendationOptions = options.map((option) => ({
+        ...option,
+        items: option.items.map((item) => hydrateRecommendationItem(item, option))
+      }));
+      if (editingMealType !== mealType.id) {
+        currentRecommendationOptions = [
+          ...pendingCompensationsForMealDetail(mealType.id).map(createCompensationOption),
+          ...currentRecommendationOptions
+        ];
+      }
+      renderRecommendationOptions();
+      openTab("refeicao-detalhe");
     }
 
     function minutesFromTime(time = "00:00") {
@@ -2204,8 +2497,10 @@
 
     function openMealDetail(mealTypeId) {
       currentMealDetail = mealTypeId;
+      editingMealType = null;
       selectedRecommendationIndex = null;
       mealDetailRegister.classList.add("hidden");
+      mealDetailRegister.textContent = "Registrar dieta";
       mealCompensateLater.classList.remove("hidden");
       mealCompensateLater.disabled = false;
       mealCompensateLater.textContent = "Compensar mais tarde";
@@ -2256,21 +2551,25 @@
             </div>
           `;
         }).join("");
+        recommendationCarousel.innerHTML += `
+          <button class="button" type="button" id="edit-registered-meal" style="margin-top: 14px;">Editar refeição</button>
+        `;
         recommendationDots.innerHTML = "";
+        const editButton = document.getElementById("edit-registered-meal");
+        editButton?.addEventListener("click", () => {
+          editingMealType = mealType.id;
+          selectedRecommendationIndex = null;
+          mealDetailStatus.textContent = "Editando";
+          mealDetailSubtitle.textContent = "Escolha uma nova opção para substituir o lançamento atual";
+          mealDetailRegister.textContent = "Salvar edição";
+          mealDetailRegister.classList.add("hidden");
+          mealCompensateLater.classList.add("hidden");
+          showMealRecommendationOptions(mealType);
+        });
         openTab("refeicao-detalhe");
         return;
       }
-      const options = mealRecommendations[mealType.id] || [];
-      currentRecommendationOptions = options.map((option) => ({
-        ...option,
-        items: option.items.map((item) => hydrateRecommendationItem(item, option))
-      }));
-      currentRecommendationOptions = [
-        ...pendingCompensationsForMealDetail(mealType.id).map(createCompensationOption),
-        ...currentRecommendationOptions
-      ];
-      renderRecommendationOptions();
-      openTab("refeicao-detalhe");
+      showMealRecommendationOptions(mealType);
     }
 
     function renderRecommendationOptions() {
@@ -2631,6 +2930,9 @@
       const itemsLabel = option.items.map((item) => `${item.name} (${item.amount})`).join(", ") || "Sem itens";
       const proteinTotal = option.items.reduce((total, item) => total + (Number(item.protein) || 0), 0);
       const carbsTotal = option.items.reduce((total, item) => total + (Number(item.carbs) || 0), 0);
+      if (editingMealType === mealType.id) {
+        appData.meals = appData.meals.filter((item) => !(item.date === todayISO() && item.mealType === mealType.id));
+      }
       appData.meals.unshift({
         id: `${Date.now()}`,
         date: todayISO(),
@@ -2654,6 +2956,8 @@
         if (pendingForMeal) markCompensationCompleted(pendingForMeal.id, currentMealDetail);
       }
       saveData();
+      editingMealType = null;
+      mealDetailRegister.textContent = "Registrar dieta";
       currentPeriod = "hoje";
       periodButtons.forEach((item) => item.classList.toggle("active", item.dataset.period === "hoje"));
       renderAll();
@@ -3069,6 +3373,7 @@
       renderExpenses(currentPeriod);
       renderMealLog();
       renderExpenseLog();
+      renderDietDashboard();
     }
 
     tabs.forEach((tab) => {
@@ -3110,6 +3415,12 @@
       if (!mealButton) return;
       event.preventDefault();
       openMealDetail(mealButton.dataset.openMealDetail);
+    });
+    dietDashboard.addEventListener("click", (event) => {
+      const optionButton = event.target.closest("[data-diet-meal][data-diet-option]");
+      if (!optionButton) return;
+      dietSelectedOptions[optionButton.dataset.dietMeal] = Number(optionButton.dataset.dietOption) || 0;
+      renderDietDashboard();
     });
     recommendationCarousel.addEventListener("click", (event) => {
       if (event.target.closest(".recommendation-card.empty")) {
