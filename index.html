@@ -3,7 +3,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#209b26" />
+  <meta name="description" content="App para controle de dieta, refeições, hidratação, atividades e saldo calórico diário." />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Dieta" />
   <title>Dieta Controlada</title>
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="icon" href="./favicon.ico" sizes="any" />
+  <link rel="apple-touch-icon" href="./icon-192.png" />
   <style>
     * {
       box-sizing: border-box;
@@ -2306,6 +2315,15 @@
     renderFoodOptions("popular");
     renderExpenseOptions();
     renderAll();
+  </script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./service-worker.js").catch((error) => {
+          console.warn("Service worker não registrado.", error);
+        });
+      });
+    }
   </script>
 </body>
 </html>
