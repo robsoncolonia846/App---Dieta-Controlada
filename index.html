@@ -377,6 +377,27 @@
       gap: 8px;
     }
 
+    .goal-alert {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: #f6f8f4;
+      color: #466b2d;
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.25;
+    }
+
+    .goal-alert.warn {
+      background: #fff7dc;
+      color: #8a6100;
+    }
+
+    .goal-alert.danger {
+      background: #ffe9e9;
+      color: #a02b2b;
+    }
+
     .progress-row {
       display: grid;
       gap: 4px;
@@ -441,6 +462,16 @@
       font-size: 10px;
       font-weight: 800;
       text-align: center;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .meal-kcal-target {
+      color: #466b2d;
+      font-size: 11px;
+      font-weight: 900;
+      line-height: 1;
+      margin-top: 2px;
     }
 
     .meal-icon {
@@ -1127,7 +1158,7 @@
                 <div class="progress-ring" id="calorie-ring" style="--progress: 0%;">
                   <div class="progress-ring-content">
                     <strong id="goal-percent">0%</strong>
-                    <span class="muted">da meta</span>
+                    <span class="muted">do dia</span>
                   </div>
                 </div>
                 <div class="progress-list">
@@ -1149,6 +1180,7 @@
                   </div>
                 </div>
               </div>
+              <div class="goal-alert" id="goal-alert">Dia no controle. Continue assim.</div>
               <div class="summary-footer">
                 <div>
                   <div class="muted">Restante</div>
@@ -1360,6 +1392,7 @@
     const profileHeightLabel = document.getElementById("profile-height-label");
     const goalBannerValue = document.getElementById("goal-banner-value");
     const goalPercent = document.getElementById("goal-percent");
+    const goalAlert = document.getElementById("goal-alert");
     const calorieRing = document.getElementById("calorie-ring");
     const calorieFill = document.getElementById("calorie-fill");
     const proteinFill = document.getElementById("protein-fill");
@@ -1937,6 +1970,103 @@
       return weight ? Math.round(weight * 35) : 3000;
     }
 
+    const mealTargetWeights = {
+      cafe: 0.22,
+      "lanche-manha": 0.08,
+      almoco: 0.32,
+      "lanche-tarde": 0.13,
+      jantar: 0.25
+    };
+
+    function mealKcalTarget(mealId) {
+      return Math.round(dailyTarget() * (mealTargetWeights[mealId] || (1 / mealTypes.length)));
+    }
+
+    function minutesFromTime(time = "00:00") {
+      const [hours, minutes] = String(time).split(":").map(Number);
+      return (hours || 0) * 60 + (minutes || 0);
+    }
+
+    function currentAppMinutes() {
+      const now = new Date();
+      return now.getHours() * 60 + now.getMinutes();
+    }
+
+    function expectedDayProgress() {
+      const start = 6 * 60;
+      const end = 23 * 60;
+      const now = currentAppMinutes();
+      return Math.max(0, Math.min(1, (now - start) / (end - start)));
+    }
+
+    function calculateDayScore(consumed, spent) {
+      const today = todayISO();
+      const target = dailyTarget();
+      const adjustedTarget = Math.max(1, target + spent);
+      const waterNow = Number(appData.water?.[today]) || 0;
+      const waterExpected = Math.max(250, Math.round(waterTarget() * expectedDayProgress()));
+      const waterScore = Math.min(100, Math.round((waterNow / waterExpected) * 100));
+      const mealScoreData = calculateMealTimingScore();
+      const calorieRatio = consumed / adjustedTarget;
+      let calorieScore = 100;
+      if (consumed > adjustedTarget + 150) {
+        calorieScore = Math.max(0, 100 - Math.round(((consumed - adjustedTarget - 150) / adjustedTarget) * 140));
+      } else if (expectedDayProgress() > 0.35 && calorieRatio < expectedDayProgress() * 0.55) {
+        calorieScore = Math.max(30, Math.round((calorieRatio / Math.max(0.1, expectedDayProgress() * 0.55)) * 100));
+      }
+      const score = Math.max(0, Math.min(100, Math.round(calorieScore * 0.6 + mealScoreData.score * 0.25 + waterScore * 0.15)));
+      const alerts = [];
+      if (consumed > adjustedTarget + 150) {
+        alerts.push({ level: "danger", text: `Você passou da meta em ${round(consumed - adjustedTarget)} kcal.` });
+      }
+      if (mealScoreData.alert) alerts.push(mealScoreData.alert);
+      if (waterScore < 70) {
+        alerts.push({ level: "warn", text: `Água abaixo do esperado para este horário: ${waterNow}ml de ${waterExpected}ml.` });
+      }
+      if (expectedDayProgress() > 0.45 && calorieScore < 70 && consumed <= adjustedTarget) {
+        alerts.push({ level: "warn", text: "Consumo calórico baixo para este horário." });
+      }
+      const alert = alerts.find((item) => item.level === "danger") || alerts[0] || { level: "ok", text: "Dia no controle. Continue assim." };
+      return { score, alert };
+    }
+
+    function calculateMealTimingScore() {
+      const now = currentAppMinutes();
+      const todayMeals = appData.meals.filter((item) => item.date === todayISO());
+      let totalWeight = 0;
+      let earned = 0;
+      let worstAlert = null;
+      mealTypes.forEach((meal) => {
+        const time = appData.mealTimes?.[meal.id] || meal.defaultTime;
+        const mealMinute = minutesFromTime(time);
+        if (now < mealMinute) return;
+        const weight = 100 / mealTypes.length;
+        totalWeight += weight;
+        const registered = todayMeals.find((item) => item.mealType === meal.id);
+        if (registered) {
+          const registeredMinute = minutesFromTime(registered.mealTime || time);
+          const delay = Math.max(0, registeredMinute - mealMinute);
+          earned += delay > 90 ? weight * 0.75 : delay > 30 ? weight * 0.9 : weight;
+          if (delay > 30 && !worstAlert) {
+            worstAlert = { level: "warn", text: `${meal.name} registrada com atraso.` };
+          }
+          return;
+        }
+        const delayNow = now - mealMinute;
+        if (delayNow <= 30) {
+          earned += weight * 0.95;
+        } else if (delayNow <= 90) {
+          earned += weight * 0.55;
+          worstAlert = worstAlert || { level: "warn", text: `${meal.name} ainda não registrada.` };
+        } else {
+          earned += weight * 0.15;
+          worstAlert = { level: "danger", text: `${meal.name} passou do horário e não foi registrada.` };
+        }
+      });
+      const score = totalWeight ? Math.round((earned / totalWeight) * 100) : 100;
+      return { score, alert: worstAlert };
+    }
+
     function renderMealTypeOptions() {
       mealTypeOptions.innerHTML = mealTypes
         .map((item) => `<button type="button" data-meal-type="${item.id}" class="selector-tab ${item.id === selectedMealType ? "active" : ""}">${item.icon} ${item.name}</button>`)
@@ -1959,7 +2089,8 @@
       mealProgressList.innerHTML = mealTypes.map((meal) => {
         const done = completed.has(meal.id);
         const time = appData.mealTimes?.[meal.id] || meal.defaultTime;
-        return `<button type="button" class="meal-step ${done ? "done" : ""}" data-open-meal-detail="${meal.id}"><div class="meal-icon">${meal.icon}</div><div>${meal.name}</div><div class="muted">${time}</div></button>`;
+        const kcal = mealKcalTarget(meal.id);
+        return `<button type="button" class="meal-step ${done ? "done" : ""}" data-open-meal-detail="${meal.id}"><div class="meal-icon">${meal.icon}</div><div>${meal.name}</div><div class="meal-kcal-target">${kcal} kcal</div><div class="muted">${time}</div></button>`;
       }).join("");
       mealProgressList.querySelectorAll("[data-open-meal-detail]").forEach((button) => {
         button.addEventListener("click", () => openMealDetail(button.dataset.openMealDetail));
@@ -2634,6 +2765,7 @@
       const targetRange = dailyTargetRange();
       const remaining = round(target - consumed + spent);
       const percent = Math.max(0, Math.min(100, Math.round((consumed / Math.max(target, 1)) * 100)));
+      const dayScore = calculateDayScore(consumed, spent);
       const proteinPercent = Math.max(0, Math.min(100, Math.round((protein / 120) * 100)));
       const carbsPercent = Math.max(0, Math.min(100, Math.round((carbs / 220) * 100)));
       const spentPercent = Math.max(0, Math.min(100, Math.round((spent / Math.max(target, 1)) * 100)));
@@ -2644,8 +2776,11 @@
       metricCarbs.textContent = `${carbs} g`;
       targetKcal.textContent = `${targetRange.min.toLocaleString("pt-BR")} - ${targetRange.max.toLocaleString("pt-BR")}`;
       remainingKcal.textContent = remaining.toLocaleString("pt-BR");
-      goalPercent.textContent = `${percent}%`;
-      calorieRing.style.setProperty("--progress", `${percent}%`);
+      goalPercent.textContent = `${dayScore.score}%`;
+      calorieRing.style.setProperty("--progress", `${dayScore.score}%`);
+      goalAlert.textContent = dayScore.alert.text;
+      goalAlert.classList.toggle("warn", dayScore.alert.level === "warn");
+      goalAlert.classList.toggle("danger", dayScore.alert.level === "danger");
       calorieFill.style.setProperty("--width", `${percent}%`);
       proteinFill.style.setProperty("--width", `${proteinPercent}%`);
       carbsFill.style.setProperty("--width", `${carbsPercent}%`);
