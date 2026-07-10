@@ -690,6 +690,21 @@
       text-align: center;
     }
 
+    .recommendation-card.empty .avatar-button {
+      display: inline-grid;
+      place-items: center;
+    }
+
+    .empty-recommendation-state {
+      display: grid;
+      gap: 10px;
+      padding: 18px 0;
+      text-align: center;
+      color: #748167;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
     .recommendation-head {
       display: flex;
       justify-content: space-between;
@@ -1834,7 +1849,7 @@
           kcal: 305,
           items: [
             { icon: "🥖", name: "Pão de forma", amount: "2 fatias" },
-            { icon: "🍊", name: "Laranja lima", amount: "1 unidade" },
+            { icon: "🍊", name: "Laranja de umbigo", amount: "1 unidade" },
             { icon: "🥛", name: "Iogurte desnatado", amount: "160 ml" },
             { icon: "🧀", name: "Queijo prato", amount: "1 fatia" }
           ]
@@ -1859,7 +1874,7 @@
         {
           kcal: 71,
           items: [
-            { icon: "🍊", name: "Laranja Lima", amount: "1 unidade" }
+            { icon: "🍊", name: "Laranja de umbigo", amount: "1 unidade" }
           ]
         },
         {
@@ -1919,7 +1934,7 @@
           kcal: 305,
           items: [
             { icon: "🥖", name: "Pão francês", amount: "1 unidade" },
-            { icon: "🍊", name: "Laranja lima", amount: "1 unidade" },
+            { icon: "🍊", name: "Laranja de umbigo", amount: "1 unidade" },
             { icon: "🥛", name: "Iogurte desnatado", amount: "160 ml" },
             { icon: "🥚", name: "Ovo mexido", amount: "1 unidade" }
           ]
@@ -2040,7 +2055,7 @@
         { icon: "🍌", name: "Banana", amount: "35g", kcal: 31 },
         { icon: "🍊", name: "Laranja", amount: "60g", kcal: 28 }
       ],
-      "laranja lima": [
+      "laranja de umbigo": [
         { icon: "🍌", name: "Banana", amount: "30g", kcal: 27 },
         { icon: "🍎", name: "Maçã", amount: "50g", kcal: 26 }
       ],
@@ -2701,6 +2716,12 @@
               ${option.compensationFor ? `<span class="compensation-pill">Compensar ${option.compensationLabel}</span>` : ""}
               <span class="kcal-pill">${option.kcal} kcal</span>
             </div>
+            ${option.items.length === 0 ? `
+              <div class="empty-recommendation-state">
+                <div>Nenhum item adicionado ainda.</div>
+                <div>Use o botão abaixo para montar esta opção item por item.</div>
+              </div>
+            ` : ""}
             ${option.items.map((item, itemIndex) => `
               <button class="recommended-item" type="button" data-substitute-rec="${index}" data-substitute-item="${itemIndex}" aria-label="Substituir ${item.name}">
                 <div class="recommended-item-icon">${item.icon}</div>
@@ -2724,15 +2745,19 @@
             <button class="recipe-button" type="button">🍴 Ver preparo</button>
           </div>
         `),
-        `<div class="recommendation-card empty">
+        `<button class="recommendation-card empty" type="button" data-create-custom-option="1">
           <div>
-            <button class="avatar-button" type="button">+</button>
+            <span class="avatar-button" aria-hidden="true">+</span>
             <h2 style="margin-top: 18px;">Criar nova opção</h2>
             <div class="muted">Adicione sua própria refeição</div>
           </div>
-        </div>`
+        </button>`
       ].join("");
       recommendationDots.innerHTML = Array.from({ length: currentRecommendationOptions.length + 1 }, (_, index) => `<span class="carousel-dot ${index === selectedRecommendationIndex ? "active" : ""}"></span>`).join("");
+      recommendationCarousel.querySelector("[data-create-custom-option]")?.addEventListener("click", (event) => {
+        event.preventDefault();
+        createCustomRecommendationOption();
+      });
       recommendationCarousel.querySelectorAll("[data-select-rec]").forEach((button) => {
         button.addEventListener("click", (event) => {
           event.preventDefault();
@@ -2771,6 +2796,30 @@
           if (event.key === "Enter" || event.key === " ") runAdjustment(event);
         });
       });
+      updateRecommendationRegisterVisibility();
+    }
+
+    function selectedRecommendationHasItems() {
+      const option = currentRecommendationOptions?.[selectedRecommendationIndex];
+      return Boolean(option?.items?.length);
+    }
+
+    function updateRecommendationRegisterVisibility() {
+      mealDetailRegister.classList.toggle("hidden", selectedRecommendationIndex === null || !selectedRecommendationHasItems());
+    }
+
+    function createCustomRecommendationOption() {
+      currentRecommendationOptions.push({
+        kcal: 0,
+        custom: true,
+        items: []
+      });
+      selectedRecommendationIndex = currentRecommendationOptions.length - 1;
+      renderRecommendationOptions();
+      requestAnimationFrame(() => {
+        const card = recommendationCarousel.querySelector(`[data-recommendation-index="${selectedRecommendationIndex}"]`);
+        card?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+      });
     }
 
     function selectRecommendation(index) {
@@ -2778,7 +2827,6 @@
       recommendationCarousel.querySelectorAll("[data-recommendation-index]").forEach((card) => {
         card.classList.toggle("selected", Number(card.dataset.recommendationIndex) === selectedRecommendationIndex);
       });
-      mealDetailRegister.classList.toggle("hidden", selectedRecommendationIndex === null);
       renderRecommendationOptions();
     }
 
@@ -2895,7 +2943,7 @@
       const normalized = normalizeText(name);
       if (normalized.includes("banana")) return "🍌";
       if (normalized.includes("maca")) return "🍎";
-      if (normalized.includes("laranja")) return "🍊";
+      if (normalized.includes("laranja") || normalized.includes("bergamota") || normalized.includes("mexerica") || normalized.includes("tangerina")) return "🍊";
       if (normalized.includes("tomate")) return "🍅";
       if (normalized.includes("arroz")) return "🍚";
       if (normalized.includes("feijao")) return "🫘";
@@ -2930,7 +2978,7 @@
         || (key.includes("abacaxi") ? substituteCatalog.abacaxi : null)
         || (key.includes("morango") ? substituteCatalog.morango : null)
         || (key.includes("banana") ? substituteCatalog["banana prata"] : null)
-        || (key.includes("laranja") ? substituteCatalog["laranja lima"] : null)
+        || (key.includes("laranja") ? substituteCatalog["laranja de umbigo"] : null)
         || (key.includes("maca") ? substituteCatalog.maca : null)
         || [];
     }
@@ -3022,6 +3070,7 @@
       option.items.splice(itemIndex, 1);
       recalculateRecommendation(option);
       renderRecommendationOptions();
+      updateRecommendationRegisterVisibility();
       closeSubstituteModal();
     }
 
@@ -3032,6 +3081,7 @@
       option.items.push(hydrateRecommendationItem(foodToRecommendationItem(food), option));
       recalculateRecommendation(option);
       renderRecommendationOptions();
+      updateRecommendationRegisterVisibility();
       closeSubstituteModal();
     }
 
@@ -3073,6 +3123,10 @@
         selectedMealType = currentMealDetail;
         renderMealTypeOptions();
         openTab("refeicao");
+        return;
+      }
+      if (!option.items.length) {
+        alert("Adicione pelo menos um item antes de registrar a dieta.");
         return;
       }
       if (editingDietTemplate) {
@@ -3603,9 +3657,7 @@
     });
     recommendationCarousel.addEventListener("click", (event) => {
       if (event.target.closest(".recommendation-card.empty")) {
-        selectedMealType = currentMealDetail;
-        renderMealTypeOptions();
-        openTab("refeicao");
+        event.preventDefault();
       }
     });
     addWaterQuick.addEventListener("click", () => addWater(250));
