@@ -1,10 +1,10 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#209b26" />
-  <meta name="description" content="App para controle de dieta, refeiÃ§Ãµes, hidrataÃ§Ã£o, atividades e saldo calÃ³rico diÃ¡rio." />
+  <meta name="description" content="App para controle de dieta, refeições, hidratação, atividades e saldo calórico diário." />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
@@ -491,17 +491,8 @@
       border-color: #25a330;
     }
 
-    .meal-step.pending .meal-icon {
-      background: #fff7dc;
-      border-color: #e6ad23;
-    }
-
-    .meal-step.pending .meal-kcal-target {
-      color: #8a6100;
-    }
-
     .meal-step.done .meal-icon::after {
-      content: "âœ“";
+      content: "✓";
       position: absolute;
       right: -4px;
       bottom: -4px;
@@ -721,7 +712,7 @@
 
     .recommended-item {
       display: grid;
-      grid-template-columns: 54px 1fr auto auto;
+      grid-template-columns: 54px 1fr auto;
       align-items: center;
       gap: 14px;
       border: 0;
@@ -758,17 +749,6 @@
       display: grid;
       place-items: center;
       pointer-events: none;
-    }
-
-    .item-edit-button {
-      border: 0;
-      border-radius: 999px;
-      background: #eaf6ea;
-      color: #209b26;
-      padding: 8px 10px;
-      font-size: 12px;
-      font-weight: 950;
-      white-space: nowrap;
     }
 
     .item-detail-row {
@@ -905,15 +885,6 @@
       font-weight: 950;
       cursor: pointer;
       touch-action: manipulation;
-    }
-
-    .compensation-pill {
-      border: 1.5px solid #e6ad23;
-      border-radius: 12px;
-      color: #8a6100;
-      background: #fff7dc;
-      padding: 8px 12px;
-      font-weight: 950;
     }
 
     .carousel-dots {
@@ -1096,229 +1067,6 @@
       color: #fff;
     }
 
-    .diet-page {
-      display: grid;
-      gap: 14px;
-      padding-bottom: 18px;
-    }
-
-    .diet-page-head h2 {
-      font-size: 32px;
-      margin: 0 0 6px;
-      letter-spacing: -1px;
-    }
-
-    .diet-top-tabs {
-      display: flex;
-      gap: 12px;
-      overflow-x: auto;
-      padding: 6px 0 2px;
-      scrollbar-width: none;
-    }
-
-    .diet-top-tabs::-webkit-scrollbar {
-      display: none;
-    }
-
-    .diet-top-pill {
-      border: 1px solid #edf0f5;
-      border-radius: 999px;
-      background: #fff;
-      padding: 14px 24px;
-      font-size: 18px;
-      font-weight: 900;
-      color: #111827;
-      white-space: nowrap;
-      box-shadow: 0 1px 4px rgba(15, 23, 42, 0.04);
-    }
-
-    .diet-top-pill.active {
-      background: #1fa12e;
-      border-color: #1fa12e;
-      color: #fff;
-    }
-
-    .diet-renew {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      border-radius: 28px;
-      background: #fff;
-      padding: 18px 22px;
-      font-size: 16px;
-      font-weight: 900;
-      box-shadow: 0 1px 4px rgba(15, 23, 42, 0.04);
-    }
-
-    .diet-info-button {
-      justify-self: end;
-      border: 0;
-      border-radius: 999px;
-      background: #1fa12e;
-      color: #fff;
-      padding: 14px 18px;
-      font-weight: 950;
-      font-size: 14px;
-    }
-
-    .diet-card {
-      border-radius: 18px;
-      background: #fff;
-      border: 1px solid #e4e7ec;
-      box-shadow: 0 1px 4px rgba(15, 23, 42, 0.04);
-      overflow: hidden;
-    }
-
-    .diet-card-inner {
-      padding: 24px 22px 0;
-    }
-
-    .diet-card-header {
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .diet-card-icon {
-      width: 54px;
-      height: 54px;
-      border-radius: 18px;
-      display: grid;
-      place-items: center;
-      font-size: 35px;
-      background: #f7f8fb;
-    }
-
-    .diet-card-title {
-      font-size: 23px;
-      line-height: 1.05;
-      font-weight: 950;
-      letter-spacing: -0.4px;
-    }
-
-    .diet-card-time {
-      margin-top: 4px;
-      color: #1fa12e;
-      font-weight: 950;
-      font-size: 14px;
-    }
-
-    .diet-card-kcal {
-      font-size: 24px;
-      font-weight: 950;
-      letter-spacing: -0.7px;
-      white-space: nowrap;
-    }
-
-    .diet-card-divider {
-      height: 1px;
-      background: #eceff3;
-      margin: 22px 0;
-    }
-
-    .diet-option-tabs {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      overflow-y: hidden;
-      border-radius: 999px;
-      background: #f4f5f7;
-      padding: 6px;
-      margin-bottom: 20px;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: thin;
-      scroll-snap-type: x proximity;
-    }
-
-    .diet-option-tabs::-webkit-scrollbar {
-      height: 5px;
-    }
-
-    .diet-option-tabs::-webkit-scrollbar-thumb {
-      background: #cfd5dc;
-      border-radius: 999px;
-    }
-
-    .diet-option-tabs::after {
-      content: "";
-      flex: 0 0 18px;
-    }
-
-    .diet-option-tab {
-      flex: 0 0 auto;
-      border: 0;
-      border-radius: 999px;
-      background: transparent;
-      color: #8b8f98;
-      min-width: 112px;
-      padding: 14px 12px;
-      font-weight: 950;
-      font-size: 14px;
-      white-space: nowrap;
-      scroll-snap-align: start;
-    }
-
-    .diet-option-tab.active {
-      color: #fff;
-      background: #1fa12e;
-    }
-
-    .diet-food-list {
-      display: grid;
-      gap: 18px;
-      padding-bottom: 24px;
-    }
-
-    .diet-food-row {
-      display: grid;
-      grid-template-columns: 26px 1fr auto auto;
-      align-items: center;
-      gap: 12px;
-      font-size: 17px;
-      font-weight: 950;
-    }
-
-    .diet-check,
-    .diet-food-amount {
-      color: #1fa12e;
-      font-weight: 950;
-    }
-
-    .diet-food-name {
-      min-width: 0;
-    }
-
-    .diet-food-detail {
-      display: block;
-      margin-top: 3px;
-      color: #8b8f98;
-      font-size: 13px;
-      font-weight: 800;
-      line-height: 1.25;
-    }
-
-    .diet-food-amount {
-      text-align: right;
-      white-space: nowrap;
-      font-size: 15px;
-    }
-
-    .diet-prep {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      border-top: 1px solid #eceff3;
-      padding: 18px 22px;
-      font-size: 20px;
-      font-weight: 950;
-    }
-
-    .legacy-manual-meal {
-      display: none !important;
-    }
-
     .hidden {
       display: none !important;
     }
@@ -1343,7 +1091,7 @@
     }
 
     #hoje .meal-step.done .meal-icon::after {
-      content: "âœ“";
+      content: "✓";
       width: 18px;
       height: 18px;
       font-size: 12px;
@@ -1369,7 +1117,7 @@
         <header>
           <div class="topbar">
             <div>
-              <h1 id="greeting-title">OlÃ¡, Robson</h1>
+              <h1 id="greeting-title">Olá, Robson</h1>
               <div class="profile-meta">
                 <span id="profile-weight-label">-- kg</span>
                 <span id="profile-height-label">-- m</span>
@@ -1381,15 +1129,15 @@
 
         <nav class="tabs" aria-label="Abas do app">
           <button class="tab active" data-tab="hoje" aria-label="Home">
-            <span class="tab-icon">ðŸ </span>
+            <span class="tab-icon">🏠</span>
             <span class="tab-label">Home</span>
           </button>
           <button class="tab" data-tab="refeicao" aria-label="Dieta">
-            <span class="tab-icon">ðŸ´</span>
+            <span class="tab-icon">🍴</span>
             <span class="tab-label">Dieta</span>
           </button>
           <button class="tab" data-tab="gasto" aria-label="Treino">
-            <span class="tab-icon">ðŸ‹ï¸</span>
+            <span class="tab-icon">🏋️</span>
             <span class="tab-label">Treino</span>
           </button>
         </nav>
@@ -1397,13 +1145,13 @@
         <main>
           <section id="hoje">
             <div class="goal-banner">
-              <span>ðŸ”¥ Meta do dia: <span id="goal-banner-value">0 - 0 kcal</span></span>
-              <span>â†’</span>
+              <span>🔥 Meta do dia: <span id="goal-banner-value">0 - 0 kcal</span></span>
+              <span>→</span>
             </div>
 
             <div class="hero">
               <div>
-                <div class="title">Resumo diÃ¡rio</div>
+                <div class="title">Resumo diário</div>
                 <div class="muted">Metas do dia</div>
               </div>
               <div class="summary-body">
@@ -1419,7 +1167,7 @@
                     <div class="progress-track"><div class="progress-fill" id="calorie-fill"></div></div>
                   </div>
                   <div class="progress-row">
-                    <div class="progress-row-head"><span>ProteÃ­nas</span><strong id="metric-protein">0 g</strong></div>
+                    <div class="progress-row-head"><span>Proteínas</span><strong id="metric-protein">0 g</strong></div>
                     <div class="progress-track"><div class="progress-fill" id="protein-fill"></div></div>
                   </div>
                   <div class="progress-row">
@@ -1440,7 +1188,7 @@
                   <div class="muted">kcal para hoje</div>
                 </div>
                 <div style="text-align:right;">
-                  <div class="muted">Meta mÃ­n/mÃ¡x</div>
+                  <div class="muted">Meta mín/máx</div>
                   <div class="summary-number" id="target-kcal">0</div>
                   <div class="muted">kcal por dia</div>
                 </div>
@@ -1448,23 +1196,23 @@
             </div>
 
             <div class="card" style="margin-top: 14px;">
-              <h2>RefeiÃ§Ãµes</h2>
-              <div class="muted">Progresso diÃ¡rio</div>
+              <h2>Refeições</h2>
+              <div class="muted">Progresso diário</div>
               <div class="progress-row">
-                <div class="progress-row-head"><span>ConcluÃ­das</span><strong id="meal-progress-count">0/5</strong></div>
+                <div class="progress-row-head"><span>Concluídas</span><strong id="meal-progress-count">0/5</strong></div>
                 <div class="progress-track"><div class="progress-fill" id="meal-progress-fill"></div></div>
               </div>
               <div class="meal-progress-line" id="meal-progress-list"></div>
-              <div class="muted" id="open-meal-tab">Escolha a refeiÃ§Ã£o a registrar</div>
+              <div class="muted" id="open-meal-tab">Escolha a refeição a registrar</div>
             </div>
 
             <div class="card" style="margin-top: 14px;">
               <div class="log-summary">
                 <div>
-                  <h2>HidrataÃ§Ã£o</h2>
+                  <h2>Hidratação</h2>
                   <div><span class="summary-number" id="water-total">0</span> <span class="muted">ml</span></div>
                 </div>
-                <button class="avatar-button" type="button" id="add-water-quick" aria-label="Adicionar Ã¡gua">+</button>
+                <button class="avatar-button" type="button" id="add-water-quick" aria-label="Adicionar água">+</button>
               </div>
               <div class="water-grid" id="water-cups"></div>
               <div class="water-actions">
@@ -1472,25 +1220,25 @@
                 <button class="water-button" type="button" data-water-add="500">+500ml</button>
                 <button class="water-button" type="button" data-water-add="1000">+1L</button>
               </div>
-              <button class="water-button" type="button" id="remove-water" style="color: #d94b4b;">âˆ’250ml</button>
-              <div class="muted">Meta diÃ¡ria: <strong id="water-goal">3000 ml</strong></div>
+              <button class="water-button" type="button" id="remove-water" style="color: #d94b4b;">−250ml</button>
+              <div class="muted">Meta diária: <strong id="water-goal">3000 ml</strong></div>
             </div>
 
             <div class="card home-extra" style="margin-top: 14px;">
-              <h2>EvoluÃ§Ã£o do saldo acumulado</h2>
+              <h2>Evolução do saldo acumulado</h2>
               <div class="period-filter">
                 <span class="period-button active" data-period="hoje">Hoje</span>
                 <span class="period-button" data-period="semana">Semana</span>
-                <span class="period-button" data-period="Ãºltimos 7 dias">Ãšlt. 7 dias</span>
-                <span class="period-button" data-period="mÃªs">MÃªs</span>
+                <span class="period-button" data-period="últimos 7 dias">Últ. 7 dias</span>
+                <span class="period-button" data-period="mês">Mês</span>
                 <span class="period-button" data-period="total">Total</span>
               </div>
-              <div class="chart" id="balance-chart" aria-label="GrÃ¡fico de saldo diÃ¡rio e acumulado">
+              <div class="chart" id="balance-chart" aria-label="Gráfico de saldo diário e acumulado">
               </div>
             </div>
 
             <div class="card home-extra" style="margin-top: 14px;">
-              <h2 id="consumo-title">AlimentaÃ§Ã£o de hoje</h2>
+              <h2 id="consumo-title">Alimentação de hoje</h2>
               <div id="consumo-resumo"></div>
             </div>
 
@@ -1501,26 +1249,15 @@
           </section>
 
           <section id="refeicao" class="hidden">
-            <div class="diet-page">
-              <div class="diet-page-head">
-                <h2>Dieta</h2>
-                <div class="profile-meta">
-                  <span id="diet-profile-weight">-- kg</span>
-                  <span id="diet-profile-height">-- m</span>
-                </div>
-              </div>
-              <div id="diet-dashboard"></div>
-            </div>
-
-            <div class="card legacy-manual-meal">
-              <h2>Registrar alimentaÃ§Ã£o</h2>
+            <div class="card">
+              <h2>Registrar alimentação</h2>
               <label>Data <input id="meal-date" /></label>
               <div>
-                <div class="metric-label" style="margin-bottom: 8px; font-weight: 800;">RefeiÃ§Ã£o</div>
+                <div class="metric-label" style="margin-bottom: 8px; font-weight: 800;">Refeição</div>
                 <div class="selector-tabs" id="meal-type-options"></div>
               </div>
               <div>
-                <div class="metric-label" style="margin-bottom: 8px; font-weight: 800;">Item da alimentaÃ§Ã£o</div>
+                <div class="metric-label" style="margin-bottom: 8px; font-weight: 800;">Item da alimentação</div>
                 <div class="selector-tabs">
                   <button class="selector-tab active" data-food-mode="popular">Mais usados</button>
                   <button class="selector-tab" data-food-mode="all">Todos itens</button>
@@ -1535,10 +1272,10 @@
                 <div class="muted" id="serving-hint"></div>
               </div>
               <label id="meal-quantity-label">Quantidade <input id="meal-grams" inputmode="decimal" placeholder="Ex: 150" /></label>
-              <button class="button" id="save-consumption">Salvar alimentaÃ§Ã£o</button>
+              <button class="button" id="save-consumption">Salvar alimentação</button>
               <div>
                 <div class="log-summary">
-                  <h2 id="meal-log-title">AlimentaÃ§Ã£o lanÃ§ada hoje</h2>
+                  <h2 id="meal-log-title">Alimentação lançada hoje</h2>
                   <div class="macro-summary" id="meal-log-total">
                     <div>0 kcal</div>
                     <div>0g pro</div>
@@ -1567,7 +1304,7 @@
               <button class="button" id="save-expense">Salvar atividade</button>
               <div>
                 <div class="log-summary">
-                  <h2 id="expense-log-title">Atividades lanÃ§adas hoje</h2>
+                  <h2 id="expense-log-title">Atividades lançadas hoje</h2>
                   <div class="macro-summary" id="expense-log-total">
                     <div>0 kcal</div>
                   </div>
@@ -1580,7 +1317,7 @@
           <section id="perfil" class="hidden">
             <div class="card profile-card">
               <h2>Perfil e meta</h2>
-              <div class="muted">Esses dados ajudam a estimar gasto diÃ¡rio e uma faixa de meta.</div>
+              <div class="muted">Esses dados ajudam a estimar gasto diário e uma faixa de meta.</div>
               <label>Nome <input id="profile-name" placeholder="Ex: Robson" /></label>
               <label>Peso atual em kg <input id="profile-weight" inputmode="decimal" placeholder="Ex: 88.4" /></label>
               <label>Altura em cm <input id="profile-height" inputmode="decimal" placeholder="Ex: 168" /></label>
@@ -1591,40 +1328,39 @@
                   <option value="female">Feminino</option>
                 </select>
               </label>
-              <label>Meta mÃ­nima diÃ¡ria em kcal <input id="profile-target" inputmode="decimal" placeholder="Calculada automaticamente" /></label>
+              <label>Meta mínima diária em kcal <input id="profile-target" inputmode="decimal" placeholder="Calculada automaticamente" /></label>
               <button class="button" id="save-profile">Salvar perfil</button>
-              <div class="muted" id="profile-basal-info">Gasto diÃ¡rio estimado: -- kcal/dia.</div>
+              <div class="muted" id="profile-basal-info">Gasto diário estimado: -- kcal/dia.</div>
             </div>
           </section>
 
           <section id="refeicao-detalhe" class="hidden">
             <div class="meal-detail-header">
               <div class="back-row">
-                <button class="back-button" type="button" id="meal-detail-back">â€¹</button>
+                <button class="back-button" type="button" id="meal-detail-back">‹</button>
                 <div>
-                  <h2>RefeiÃ§Ã£o</h2>
-                  <div class="muted">Modo visualizaÃ§Ã£o</div>
+                  <h2>Refeição</h2>
+                  <div class="muted">Modo visualização</div>
                 </div>
               </div>
               <div>
                 <span class="status-pill" id="meal-detail-status">Pendente</span>
               </div>
               <div class="meal-time-editor">
-                <span>â± HorÃ¡rio</span>
+                <span>⏱ Horário</span>
                 <input id="meal-detail-time" type="time" />
               </div>
               <div class="meal-detail-title">
                 <div>
-                  <h2 id="meal-detail-title">CafÃ© da manhÃ£</h2>
-                  <div class="muted" id="meal-detail-subtitle">Escolha uma opÃ§Ã£o ou registre manualmente</div>
+                  <h2 id="meal-detail-title">Café da manhã</h2>
+                  <div class="muted" id="meal-detail-subtitle">Escolha uma opção ou registre manualmente</div>
                 </div>
-                <div class="meal-detail-icon" id="meal-detail-icon">â˜•</div>
+                <div class="meal-detail-icon" id="meal-detail-icon">☕</div>
               </div>
             </div>
 
             <div class="recommendation-carousel" id="recommendation-carousel"></div>
             <div class="carousel-dots" id="recommendation-dots"></div>
-            <button class="add-recommendation-item" type="button" id="meal-compensate-later" style="width:100%; margin-top: 14px;">Compensar mais tarde</button>
             <button class="button" type="button" id="meal-detail-register" style="margin-top: 18px;">Registrar dieta</button>
           </section>
 
@@ -1634,12 +1370,12 @@
   <div class="substitute-modal hidden" id="substitute-modal" role="dialog" aria-modal="true" aria-labelledby="substitute-title">
     <div class="substitute-sheet">
       <div class="sheet-handle"></div>
-      <button class="sheet-close" type="button" id="substitute-close" aria-label="Fechar substitutos">Ã—</button>
+      <button class="sheet-close" type="button" id="substitute-close" aria-label="Fechar substitutos">×</button>
       <div class="substitute-head">
-        <div class="substitute-head-icon">ðŸ½ï¸</div>
+        <div class="substitute-head-icon">🍽️</div>
         <h2 id="substitute-title">Alimentos Substitutos</h2>
         <div class="muted" id="substitute-description">Selecione um alimento para substituir.</div>
-        <div class="muted">Se atente Ã s quantidades.</div>
+        <div class="muted">Se atente às quantidades.</div>
       </div>
       <div class="substitute-list" id="substitute-list"></div>
     </div>
@@ -1654,9 +1390,6 @@
     const profileButton = document.getElementById("profile-button");
     const profileWeightLabel = document.getElementById("profile-weight-label");
     const profileHeightLabel = document.getElementById("profile-height-label");
-    const dietProfileWeight = document.getElementById("diet-profile-weight");
-    const dietProfileHeight = document.getElementById("diet-profile-height");
-    const dietDashboard = document.getElementById("diet-dashboard");
     const goalBannerValue = document.getElementById("goal-banner-value");
     const goalPercent = document.getElementById("goal-percent");
     const goalAlert = document.getElementById("goal-alert");
@@ -1685,7 +1418,6 @@
     const recommendationCarousel = document.getElementById("recommendation-carousel");
     const recommendationDots = document.getElementById("recommendation-dots");
     const mealDetailRegister = document.getElementById("meal-detail-register");
-    const mealCompensateLater = document.getElementById("meal-compensate-later");
     const substituteModal = document.getElementById("substitute-modal");
     const substituteClose = document.getElementById("substitute-close");
     const substituteTitle = document.getElementById("substitute-title");
@@ -1762,14 +1494,14 @@
         foods = dataModule.foods;
       }
     } catch (error) {
-      console.warn("Base de alimentos nÃ£o carregou.", error);
+      console.warn("Base de alimentos não carregou.", error);
     }
     const activityPresets = [
       { id: "caminhada", name: "Caminhada", caloriesPerHour: 240 },
-      { id: "trabalho-sentado", name: "Trabalho em EscritÃ³rio", caloriesPerHour: 120 },
+      { id: "trabalho-sentado", name: "Trabalho em Escritório", caloriesPerHour: 120 },
       { id: "academia", name: "Academia", caloriesPerHour: 420 },
       { id: "sono", name: "Sono", caloriesPerHour: 60 },
-      { id: "trabalho-em-pe", name: "Trabalho em pÃ©", caloriesPerHour: 140 },
+      { id: "trabalho-em-pe", name: "Trabalho em pé", caloriesPerHour: 140 },
       { id: "limpeza-de-casa", name: "Limpeza de casa", caloriesPerHour: 180 },
       { id: "deitar-com-forninho", name: "Deitar com Forninho", caloriesPerHour: 70 },
       { id: "corrida-leve", name: "Corrida leve", caloriesPerHour: 520 },
@@ -1777,16 +1509,16 @@
       { id: "inserir-manual", name: "Inserir manual", manualCalories: true }
     ];
     const mealTypes = [
-      { id: "cafe", name: "CafÃ©", icon: "â˜•", defaultTime: "09:00" },
-      { id: "lanche-manha", name: "Lanche", icon: "ðŸ", defaultTime: "11:00" },
-      { id: "almoco", name: "AlmoÃ§o", icon: "ðŸ²", defaultTime: "13:00" },
-      { id: "lanche-tarde", name: "Lanche", icon: "ðŸ¥ª", defaultTime: "16:00" },
-      { id: "jantar", name: "Jantar", icon: "ðŸ½ï¸", defaultTime: "21:00" }
+      { id: "cafe", name: "Café", icon: "☕", defaultTime: "09:00" },
+      { id: "lanche-manha", name: "Lanche", icon: "🍏", defaultTime: "11:00" },
+      { id: "almoco", name: "Almoço", icon: "🍲", defaultTime: "13:00" },
+      { id: "lanche-tarde", name: "Lanche", icon: "🥪", defaultTime: "16:00" },
+      { id: "jantar", name: "Jantar", icon: "🍽️", defaultTime: "21:00" }
     ];
     const mealDetailLabels = {
-      cafe: "CafÃ© da manhÃ£",
-      "lanche-manha": "Lanche da manhÃ£",
-      almoco: "AlmoÃ§o",
+      cafe: "Café da manhã",
+      "lanche-manha": "Lanche da manhã",
+      almoco: "Almoço",
       "lanche-tarde": "Lanche da tarde",
       jantar: "Jantar"
     };
@@ -1795,27 +1527,27 @@
         {
           kcal: 305,
           items: [
-            { icon: "ðŸ“", name: "Morango", amount: "180g" },
-            { icon: "ðŸ¥›", name: "Iogurte desnatado", amount: "160 ml" },
-            { icon: "ðŸ³", name: "Omelete", amount: "2 ovos" }
+            { icon: "🍓", name: "Morango", amount: "180g" },
+            { icon: "🥛", name: "Iogurte desnatado", amount: "160 ml" },
+            { icon: "🍳", name: "Omelete", amount: "2 ovos" }
           ]
         },
         {
           kcal: 305,
           items: [
-            { icon: "ðŸ¥–", name: "PÃ£o de forma", amount: "2 fatias" },
-            { icon: "ðŸŠ", name: "Laranja lima", amount: "1 unidade" },
-            { icon: "ðŸ¥›", name: "Iogurte desnatado", amount: "160 ml" },
-            { icon: "ðŸ§€", name: "Queijo prato", amount: "1 fatia" }
+            { icon: "🥖", name: "Pão de forma", amount: "2 fatias" },
+            { icon: "🍊", name: "Laranja lima", amount: "1 unidade" },
+            { icon: "🥛", name: "Iogurte desnatado", amount: "160 ml" },
+            { icon: "🧀", name: "Queijo prato", amount: "1 fatia" }
           ]
         },
         {
           kcal: 305,
           items: [
-            { icon: "ðŸ¥–", name: "PÃ£o francÃªs", amount: "1 unidade" },
-            { icon: "ðŸŒ", name: "Banana prata", amount: "1 unidade" },
-            { icon: "ðŸ¥›", name: "Iogurte desnatado", amount: "160 ml" },
-            { icon: "ðŸ¥š", name: "Ovo mexido", amount: "1 unidade" }
+            { icon: "🥖", name: "Pão francês", amount: "1 unidade" },
+            { icon: "🍌", name: "Banana prata", amount: "1 unidade" },
+            { icon: "🥛", name: "Iogurte desnatado", amount: "160 ml" },
+            { icon: "🥚", name: "Ovo mexido", amount: "1 unidade" }
           ]
         }
       ],
@@ -1823,19 +1555,19 @@
         {
           kcal: 71,
           items: [
-            { icon: "ðŸ", name: "Abacaxi", amount: "150g" }
+            { icon: "🍍", name: "Abacaxi", amount: "150g" }
           ]
         },
         {
           kcal: 71,
           items: [
-            { icon: "ðŸŠ", name: "Laranja Lima", amount: "1 unidade" }
+            { icon: "🍊", name: "Laranja Lima", amount: "1 unidade" }
           ]
         },
         {
           kcal: 89,
           items: [
-            { icon: "ðŸŒ", name: "Banana Prata", amount: "1 unidade" }
+            { icon: "🍌", name: "Banana Prata", amount: "1 unidade" }
           ]
         }
       ],
@@ -1843,44 +1575,44 @@
         {
           kcal: 225,
           items: [
-            { icon: "ðŸ…", name: "Tomate-cereja cru", amount: "Ã  vontade" },
-            { icon: "ðŸ¥”", name: "Batata inglesa em cubos com temperos", amount: "70g" },
-            { icon: "ðŸ—", name: "CoraÃ§Ã£o de frango", amount: "75g" }
+            { icon: "🍅", name: "Tomate-cereja cru", amount: "à vontade" },
+            { icon: "🥔", name: "Batata inglesa em cubos com temperos", amount: "70g" },
+            { icon: "🍗", name: "Coração de frango", amount: "75g" }
           ]
         },
         {
           kcal: 383,
           items: [
-            { icon: "ðŸš", name: "Arroz", amount: "85g" },
-            { icon: "ðŸ¥”", name: "Batata inglesa", amount: "95g" },
-            { icon: "ðŸ¥¬", name: "Salada de alface e tomate", amount: "Ã  vontade" },
-            { icon: "ðŸ¥©", name: "Carne bovina magra", amount: "100g" }
+            { icon: "🍚", name: "Arroz", amount: "85g" },
+            { icon: "🥔", name: "Batata inglesa", amount: "95g" },
+            { icon: "🥬", name: "Salada de alface e tomate", amount: "à vontade" },
+            { icon: "🥩", name: "Carne bovina magra", amount: "100g" }
           ]
         },
         {
           kcal: 383,
           items: [
-            { icon: "ðŸš", name: "Arroz", amount: "90g" },
-            { icon: "ðŸ¥¬", name: "Salada de alface e tomate", amount: "Ã  vontade" },
-            { icon: "ðŸ¥©", name: "Carne bovina mÃºsculo", amount: "120g" },
-            { icon: "ðŸ«˜", name: "FeijÃ£o preto", amount: "50g" }
+            { icon: "🍚", name: "Arroz", amount: "90g" },
+            { icon: "🥬", name: "Salada de alface e tomate", amount: "à vontade" },
+            { icon: "🥩", name: "Carne bovina músculo", amount: "120g" },
+            { icon: "🫘", name: "Feijão preto", amount: "50g" }
           ]
         },
         {
           kcal: 382,
           items: [
-            { icon: "ðŸ—", name: "Peito de frango", amount: "150g" },
-            { icon: "ðŸ", name: "MacarrÃ£o", amount: "115g" }
+            { icon: "🍗", name: "Peito de frango", amount: "150g" },
+            { icon: "🍝", name: "Macarrão", amount: "115g" }
           ]
         },
         {
           kcal: 515,
           items: [
-            { icon: "ðŸ¥©", name: "Carne moÃ­da", amount: "100g" },
-            { icon: "ðŸš", name: "Arroz", amount: "100g" },
-            { icon: "ðŸ¥š", name: "Ovos cozidos", amount: "2 unidades" },
-            { icon: "ðŸ…", name: "Tomate cereja", amount: "Ã  vontade" },
-            { icon: "ðŸ¥¬", name: "Couve", amount: "Ã  vontade" }
+            { icon: "🥩", name: "Carne moída", amount: "100g" },
+            { icon: "🍚", name: "Arroz", amount: "100g" },
+            { icon: "🥚", name: "Ovos cozidos", amount: "2 unidades" },
+            { icon: "🍅", name: "Tomate cereja", amount: "à vontade" },
+            { icon: "🥬", name: "Couve", amount: "à vontade" }
           ]
         }
       ],
@@ -1888,37 +1620,37 @@
         {
           kcal: 305,
           items: [
-            { icon: "ðŸ¥–", name: "PÃ£o francÃªs", amount: "1 unidade" },
-            { icon: "ðŸŠ", name: "Laranja lima", amount: "1 unidade" },
-            { icon: "ðŸ¥›", name: "Iogurte desnatado", amount: "160 ml" },
-            { icon: "ðŸ¥š", name: "Ovo mexido", amount: "1 unidade" }
+            { icon: "🥖", name: "Pão francês", amount: "1 unidade" },
+            { icon: "🍊", name: "Laranja lima", amount: "1 unidade" },
+            { icon: "🥛", name: "Iogurte desnatado", amount: "160 ml" },
+            { icon: "🥚", name: "Ovo mexido", amount: "1 unidade" }
           ]
         },
         {
           kcal: 307,
           items: [
-            { icon: "ðŸ¥–", name: "PÃ£o de forma", amount: "2 fatias" },
-            { icon: "ðŸŒ", name: "Banana prata", amount: "1 unidade" },
-            { icon: "ðŸ¥›", name: "Iogurte desnatado", amount: "160 ml" },
-            { icon: "ðŸ—", name: "Frango desfiado", amount: "40g" }
+            { icon: "🥖", name: "Pão de forma", amount: "2 fatias" },
+            { icon: "🍌", name: "Banana prata", amount: "1 unidade" },
+            { icon: "🥛", name: "Iogurte desnatado", amount: "160 ml" },
+            { icon: "🍗", name: "Frango desfiado", amount: "40g" }
           ]
         },
         {
           kcal: 310,
           items: [
-            { icon: "ðŸ¥–", name: "PÃ£o de forma", amount: "2 fatias" },
-            { icon: "ðŸ“", name: "Morango", amount: "100g" },
-            { icon: "ðŸ¥›", name: "Iogurte desnatado", amount: "160 ml" },
-            { icon: "ðŸ§€", name: "Queijo prato", amount: "1 fatia" }
+            { icon: "🥖", name: "Pão de forma", amount: "2 fatias" },
+            { icon: "🍓", name: "Morango", amount: "100g" },
+            { icon: "🥛", name: "Iogurte desnatado", amount: "160 ml" },
+            { icon: "🧀", name: "Queijo prato", amount: "1 fatia" }
           ]
         },
         {
           kcal: 364,
           items: [
-            { icon: "ðŸ§€", name: "Queijo prato", amount: "1 fatia" },
-            { icon: "ðŸ—", name: "Frango desfiado", amount: "40g" },
-            { icon: "ðŸ³", name: "Rap10", amount: "50g" },
-            { icon: "ðŸ¬", name: "Bombom", amount: "20g" }
+            { icon: "🧀", name: "Queijo prato", amount: "1 fatia" },
+            { icon: "🍗", name: "Frango desfiado", amount: "40g" },
+            { icon: "🍳", name: "Rap10", amount: "50g" },
+            { icon: "🍬", name: "Bombom", amount: "20g" }
           ]
         }
       ],
@@ -1926,43 +1658,43 @@
         {
           kcal: 355,
           items: [
-            { icon: "ðŸ", name: "MacarrÃ£o", amount: "105g" },
-            { icon: "ðŸ—", name: "Peito de frango", amount: "140g" }
+            { icon: "🍝", name: "Macarrão", amount: "105g" },
+            { icon: "🍗", name: "Peito de frango", amount: "140g" }
           ]
         },
         {
           kcal: 355,
           items: [
-            { icon: "ðŸ«˜", name: "FeijÃ£o preto", amount: "50g" },
-            { icon: "ðŸš", name: "Arroz", amount: "80g" },
-            { icon: "ðŸ¥¬", name: "Salada de alface e tomate", amount: "Ã  vontade" },
-            { icon: "ðŸ¥©", name: "Carne bovina mÃºsculo", amount: "110g" }
+            { icon: "🫘", name: "Feijão preto", amount: "50g" },
+            { icon: "🍚", name: "Arroz", amount: "80g" },
+            { icon: "🥬", name: "Salada de alface e tomate", amount: "à vontade" },
+            { icon: "🥩", name: "Carne bovina músculo", amount: "110g" }
           ]
         },
         {
           kcal: 361,
           items: [
-            { icon: "ðŸ¥©", name: "Carne bovina mÃºsculo", amount: "110g" },
-            { icon: "ðŸš", name: "Arroz", amount: "80g" },
-            { icon: "ðŸ¥¬", name: "Salada de alface e tomate", amount: "Ã  vontade" },
-            { icon: "ðŸ¥”", name: "Batata inglesa", amount: "85g" }
+            { icon: "🥩", name: "Carne bovina músculo", amount: "110g" },
+            { icon: "🍚", name: "Arroz", amount: "80g" },
+            { icon: "🥬", name: "Salada de alface e tomate", amount: "à vontade" },
+            { icon: "🥔", name: "Batata inglesa", amount: "85g" }
           ]
         },
         {
           kcal: 615,
           items: [
-            { icon: "ðŸ…", name: "Tomate cereja", amount: "1 unidade, Ã  vontade" },
-            { icon: "ðŸ³", name: "Omelete", amount: "7 ovos" }
+            { icon: "🍅", name: "Tomate cereja", amount: "1 unidade, à vontade" },
+            { icon: "🍳", name: "Omelete", amount: "7 ovos" }
           ]
         },
         {
           kcal: 515,
           items: [
-            { icon: "ðŸ¥©", name: "Carne moÃ­da", amount: "100g" },
-            { icon: "ðŸš", name: "Arroz", amount: "100g" },
-            { icon: "ðŸ¥š", name: "Ovos cozidos", amount: "2 unidades" },
-            { icon: "ðŸ…", name: "Tomate cereja", amount: "Ã  vontade" },
-            { icon: "ðŸ¥¬", name: "Couve", amount: "Ã  vontade" }
+            { icon: "🥩", name: "Carne moída", amount: "100g" },
+            { icon: "🍚", name: "Arroz", amount: "100g" },
+            { icon: "🥚", name: "Ovos cozidos", amount: "2 unidades" },
+            { icon: "🍅", name: "Tomate cereja", amount: "à vontade" },
+            { icon: "🥬", name: "Couve", amount: "à vontade" }
           ]
         }
       ]
@@ -1970,238 +1702,169 @@
 
     const substituteCatalog = {
       "iogurte desnatado": [
-        { icon: "ðŸ¥›", name: "Leite", amount: "135g", kcal: 81 },
-        { icon: "ðŸ¥›", name: "Leite desnatado", amount: "235g", kcal: 82 },
-        { icon: "ðŸ¥¤", name: "Whey Protein", amount: "20g", kcal: 80 }
+        { icon: "🥛", name: "Leite", amount: "135g", kcal: 81 },
+        { icon: "🥛", name: "Leite desnatado", amount: "235g", kcal: 82 },
+        { icon: "🥤", name: "Whey Protein", amount: "20g", kcal: 80 }
       ],
       "pao frances": [
-        { icon: "ðŸž", name: "PÃ£o", amount: "1 unidade", kcal: 125 },
-        { icon: "ðŸž", name: "PÃ£o de forma", amount: "1 unidade", kcal: 127 }
+        { icon: "🍞", name: "Pão", amount: "1 unidade", kcal: 125 },
+        { icon: "🍞", name: "Pão de forma", amount: "1 unidade", kcal: 127 }
       ],
       "pao de forma": [
-        { icon: "ðŸž", name: "PÃ£o", amount: "1 unidade", kcal: 125 },
-        { icon: "ðŸ¥–", name: "PÃ£o francÃªs", amount: "1 unidade", kcal: 125 }
+        { icon: "🍞", name: "Pão", amount: "1 unidade", kcal: 125 },
+        { icon: "🥖", name: "Pão francês", amount: "1 unidade", kcal: 125 }
       ],
       "banana prata": [
-        { icon: "ðŸŽ", name: "MaÃ§Ã£", amount: "135g", kcal: 70 },
-        { icon: "ðŸ¥­", name: "MamÃ£o", amount: "165g", kcal: 71 },
-        { icon: "ðŸŠ", name: "Laranja", amount: "150g", kcal: 71 },
-        { icon: "ðŸ", name: "Abacaxi", amount: "140g", kcal: 70 }
+        { icon: "🍎", name: "Maçã", amount: "135g", kcal: 70 },
+        { icon: "🥭", name: "Mamão", amount: "165g", kcal: 71 },
+        { icon: "🍊", name: "Laranja", amount: "150g", kcal: 71 },
+        { icon: "🍍", name: "Abacaxi", amount: "140g", kcal: 70 }
       ],
       "abacaxi": [
-        { icon: "ðŸŒ", name: "Banana", amount: "75g", kcal: 67 },
-        { icon: "ðŸŽ", name: "MaÃ§Ã£", amount: "130g", kcal: 68 },
-        { icon: "ðŸŠ", name: "Laranja", amount: "145g", kcal: 68 },
-        { icon: "ðŸ¥­", name: "MamÃ£o", amount: "160g", kcal: 69 },
-        { icon: "ðŸ“", name: "Morango", amount: "210g", kcal: 67 }
+        { icon: "🍌", name: "Banana", amount: "75g", kcal: 67 },
+        { icon: "🍎", name: "Maçã", amount: "130g", kcal: 68 },
+        { icon: "🍊", name: "Laranja", amount: "145g", kcal: 68 },
+        { icon: "🥭", name: "Mamão", amount: "160g", kcal: 69 },
+        { icon: "🍓", name: "Morango", amount: "210g", kcal: 67 }
       ],
       "morango": [
-        { icon: "ðŸŒ", name: "Banana", amount: "50g", kcal: 45 },
-        { icon: "ðŸŽ", name: "MaÃ§Ã£", amount: "85g", kcal: 44 },
-        { icon: "ðŸŠ", name: "Laranja", amount: "95g", kcal: 45 },
-        { icon: "ðŸ", name: "Abacaxi", amount: "90g", kcal: 45 },
-        { icon: "ðŸ¥­", name: "MamÃ£o", amount: "105g", kcal: 45 }
+        { icon: "🍌", name: "Banana", amount: "50g", kcal: 45 },
+        { icon: "🍎", name: "Maçã", amount: "85g", kcal: 44 },
+        { icon: "🍊", name: "Laranja", amount: "95g", kcal: 45 },
+        { icon: "🍍", name: "Abacaxi", amount: "90g", kcal: 45 },
+        { icon: "🥭", name: "Mamão", amount: "105g", kcal: 45 }
       ],
       "maca argentina": [
-        { icon: "ðŸŒ", name: "Banana", amount: "35g", kcal: 31 },
-        { icon: "ðŸŠ", name: "Laranja", amount: "60g", kcal: 28 }
+        { icon: "🍌", name: "Banana", amount: "35g", kcal: 31 },
+        { icon: "🍊", name: "Laranja", amount: "60g", kcal: 28 }
       ],
       "maca": [
-        { icon: "ðŸŒ", name: "Banana", amount: "35g", kcal: 31 },
-        { icon: "ðŸŠ", name: "Laranja", amount: "60g", kcal: 28 }
+        { icon: "🍌", name: "Banana", amount: "35g", kcal: 31 },
+        { icon: "🍊", name: "Laranja", amount: "60g", kcal: 28 }
       ],
       "laranja lima": [
-        { icon: "ðŸŒ", name: "Banana", amount: "30g", kcal: 27 },
-        { icon: "ðŸŽ", name: "MaÃ§Ã£", amount: "50g", kcal: 26 }
+        { icon: "🍌", name: "Banana", amount: "30g", kcal: 27 },
+        { icon: "🍎", name: "Maçã", amount: "50g", kcal: 26 }
       ],
       "queijo prato": [
-        { icon: "ðŸ§€", name: "Queijo cottage", amount: "75g", kcal: 74 },
-        { icon: "ðŸ§€", name: "Queijo branco", amount: "30g", kcal: 72 }
+        { icon: "🧀", name: "Queijo cottage", amount: "75g", kcal: 74 },
+        { icon: "🧀", name: "Queijo branco", amount: "30g", kcal: 72 }
       ],
       "ovo mexido": [
-        { icon: "ðŸ¥š", name: "Ovo", amount: "1 unidade", kcal: 78 },
-        { icon: "ðŸ³", name: "Omelete", amount: "1 unidade", kcal: 78 },
-        { icon: "ðŸ—", name: "Frango desfiado", amount: "50g", kcal: 83 }
+        { icon: "🥚", name: "Ovo", amount: "1 unidade", kcal: 78 },
+        { icon: "🍳", name: "Omelete", amount: "1 unidade", kcal: 78 },
+        { icon: "🍗", name: "Frango desfiado", amount: "50g", kcal: 83 }
       ],
       "ovo": [
-        { icon: "ðŸ¥š", name: "Ovo", amount: "1 unidade", kcal: 78 },
-        { icon: "ðŸ³", name: "Omelete", amount: "1 unidade", kcal: 78 },
-        { icon: "ðŸ—", name: "Frango desfiado", amount: "50g", kcal: 83 }
+        { icon: "🥚", name: "Ovo", amount: "1 unidade", kcal: 78 },
+        { icon: "🍳", name: "Omelete", amount: "1 unidade", kcal: 78 },
+        { icon: "🍗", name: "Frango desfiado", amount: "50g", kcal: 83 }
       ],
       "omelete": [
-        { icon: "ðŸ¥š", name: "Ovo", amount: "1 unidade", kcal: 78 },
-        { icon: "ðŸ³", name: "Omelete", amount: "1 unidade", kcal: 78 },
-        { icon: "ðŸ—", name: "Frango desfiado", amount: "50g", kcal: 83 }
+        { icon: "🥚", name: "Ovo", amount: "1 unidade", kcal: 78 },
+        { icon: "🍳", name: "Omelete", amount: "1 unidade", kcal: 78 },
+        { icon: "🍗", name: "Frango desfiado", amount: "50g", kcal: 83 }
       ],
       "peito de frango": [
-        { icon: "ðŸ—", name: "Frango", amount: "145g", kcal: 239 },
-        { icon: "ðŸ—", name: "Frango desfiado", amount: "145g", kcal: 239 },
-        { icon: "ðŸ¥©", name: "Carne", amount: "95g", kcal: 238 },
-        { icon: "ðŸŸ", name: "Peixe", amount: "160g", kcal: 240 },
-        { icon: "ðŸŸ", name: "Atum", amount: "160g", kcal: 240 },
-        { icon: "ðŸ¥š", name: "Ovo", amount: "155g", kcal: 240 }
+        { icon: "🍗", name: "Frango", amount: "145g", kcal: 239 },
+        { icon: "🍗", name: "Frango desfiado", amount: "145g", kcal: 239 },
+        { icon: "🥩", name: "Carne", amount: "95g", kcal: 238 },
+        { icon: "🐟", name: "Peixe", amount: "160g", kcal: 240 },
+        { icon: "🐟", name: "Atum", amount: "160g", kcal: 240 },
+        { icon: "🥚", name: "Ovo", amount: "155g", kcal: 240 }
       ],
       "frango desfiado": [
-        { icon: "ðŸ—", name: "Frango", amount: "145g", kcal: 239 },
-        { icon: "ðŸ—", name: "Peito de frango", amount: "145g", kcal: 239 },
-        { icon: "ðŸ¥©", name: "Carne", amount: "95g", kcal: 238 },
-        { icon: "ðŸŸ", name: "Peixe", amount: "160g", kcal: 240 },
-        { icon: "ðŸŸ", name: "Atum", amount: "160g", kcal: 240 },
-        { icon: "ðŸ¥š", name: "Ovo", amount: "155g", kcal: 240 }
+        { icon: "🍗", name: "Frango", amount: "145g", kcal: 239 },
+        { icon: "🍗", name: "Peito de frango", amount: "145g", kcal: 239 },
+        { icon: "🥩", name: "Carne", amount: "95g", kcal: 238 },
+        { icon: "🐟", name: "Peixe", amount: "160g", kcal: 240 },
+        { icon: "🐟", name: "Atum", amount: "160g", kcal: 240 },
+        { icon: "🥚", name: "Ovo", amount: "155g", kcal: 240 }
       ],
       "feijao preto": [
-        { icon: "ðŸ«˜", name: "FeijÃ£o", amount: "50g", kcal: 39 },
-        { icon: "ðŸ«˜", name: "FeijÃ£o carioca", amount: "50g", kcal: 38 }
+        { icon: "🫘", name: "Feijão", amount: "50g", kcal: 39 },
+        { icon: "🫘", name: "Feijão carioca", amount: "50g", kcal: 38 }
       ],
       "carne bovina musculo": [
-        { icon: "ðŸ¥©", name: "Carne", amount: "90g", kcal: 225 },
-        { icon: "ðŸ—", name: "Frango", amount: "140g", kcal: 231 },
-        { icon: "ðŸ—", name: "Peito de frango", amount: "140g", kcal: 231 },
-        { icon: "ðŸŸ", name: "Peixe", amount: "155g", kcal: 233 },
-        { icon: "ðŸŸ", name: "Atum", amount: "155g", kcal: 233 },
-        { icon: "ðŸ¥š", name: "Ovo", amount: "150g", kcal: 233 },
-        { icon: "ðŸ³", name: "Omelete", amount: "150g", kcal: 233 }
+        { icon: "🥩", name: "Carne", amount: "90g", kcal: 225 },
+        { icon: "🍗", name: "Frango", amount: "140g", kcal: 231 },
+        { icon: "🍗", name: "Peito de frango", amount: "140g", kcal: 231 },
+        { icon: "🐟", name: "Peixe", amount: "155g", kcal: 233 },
+        { icon: "🐟", name: "Atum", amount: "155g", kcal: 233 },
+        { icon: "🥚", name: "Ovo", amount: "150g", kcal: 233 },
+        { icon: "🍳", name: "Omelete", amount: "150g", kcal: 233 }
       ],
       "carne bovina magra": [
-        { icon: "ðŸ¥©", name: "Carne", amount: "90g", kcal: 225 },
-        { icon: "ðŸ—", name: "Frango", amount: "135g", kcal: 223 },
-        { icon: "ðŸ—", name: "Peito de frango", amount: "135g", kcal: 223 },
-        { icon: "ðŸŸ", name: "Peixe", amount: "150g", kcal: 225 },
-        { icon: "ðŸŸ", name: "Atum", amount: "150g", kcal: 225 },
-        { icon: "ðŸ¥š", name: "Ovo", amount: "145g", kcal: 225 },
-        { icon: "ðŸ³", name: "Omelete", amount: "145g", kcal: 225 }
+        { icon: "🥩", name: "Carne", amount: "90g", kcal: 225 },
+        { icon: "🍗", name: "Frango", amount: "135g", kcal: 223 },
+        { icon: "🍗", name: "Peito de frango", amount: "135g", kcal: 223 },
+        { icon: "🐟", name: "Peixe", amount: "150g", kcal: 225 },
+        { icon: "🐟", name: "Atum", amount: "150g", kcal: 225 },
+        { icon: "🥚", name: "Ovo", amount: "145g", kcal: 225 },
+        { icon: "🍳", name: "Omelete", amount: "145g", kcal: 225 }
       ],
       "arroz": [
-        { icon: "ðŸ¥”", name: "Batata", amount: "140g", kcal: 112 },
-        { icon: "ðŸ ", name: "Batata doce", amount: "130g", kcal: 112 },
-        { icon: "ðŸŒ¿", name: "Mandioca", amount: "90g", kcal: 113 },
-        { icon: "ðŸŒ¾", name: "Quinoa", amount: "30g", kcal: 110 },
-        { icon: "ðŸŒ½", name: "Cuscuz", amount: "100g", kcal: 112 },
-        { icon: "ðŸ", name: "MacarrÃ£o", amount: "85g", kcal: 111 },
-        { icon: "ðŸ", name: "MacarrÃ£o cozido", amount: "85g", kcal: 111 }
+        { icon: "🥔", name: "Batata", amount: "140g", kcal: 112 },
+        { icon: "🍠", name: "Batata doce", amount: "130g", kcal: 112 },
+        { icon: "🌿", name: "Mandioca", amount: "90g", kcal: 113 },
+        { icon: "🌾", name: "Quinoa", amount: "30g", kcal: 110 },
+        { icon: "🌽", name: "Cuscuz", amount: "100g", kcal: 112 },
+        { icon: "🍝", name: "Macarrão", amount: "85g", kcal: 111 },
+        { icon: "🍝", name: "Macarrão cozido", amount: "85g", kcal: 111 }
       ],
       "batata inglesa": [
-        { icon: "ðŸ¥”", name: "Batata", amount: "60g", kcal: 48 },
-        { icon: "ðŸ¥”", name: "Batata cozida", amount: "60g", kcal: 48 }
+        { icon: "🥔", name: "Batata", amount: "60g", kcal: 48 },
+        { icon: "🥔", name: "Batata cozida", amount: "60g", kcal: 48 }
       ],
       "batata inglesa em cubos com temperos": [
-        { icon: "ðŸ¥”", name: "Batata", amount: "60g", kcal: 48 },
-        { icon: "ðŸ¥”", name: "Batata cozida", amount: "60g", kcal: 48 }
+        { icon: "🥔", name: "Batata", amount: "60g", kcal: 48 },
+        { icon: "🥔", name: "Batata cozida", amount: "60g", kcal: 48 }
       ],
       "coracao de frango": [
-        { icon: "ðŸ—", name: "Peito de frango", amount: "90g", kcal: 149 },
-        { icon: "ðŸ—", name: "Frango desfiado", amount: "90g", kcal: 149 },
-        { icon: "ðŸ¥©", name: "Carne", amount: "60g", kcal: 150 },
-        { icon: "ðŸŸ", name: "Peixe", amount: "100g", kcal: 150 },
-        { icon: "ðŸŸ", name: "Atum", amount: "100g", kcal: 150 },
-        { icon: "ðŸ¥š", name: "Ovo", amount: "95g", kcal: 147 },
-        { icon: "ðŸ³", name: "Ovo mexido", amount: "95g", kcal: 147 },
-        { icon: "ðŸ³", name: "Omelete", amount: "95g", kcal: 147 }
+        { icon: "🍗", name: "Peito de frango", amount: "90g", kcal: 149 },
+        { icon: "🍗", name: "Frango desfiado", amount: "90g", kcal: 149 },
+        { icon: "🥩", name: "Carne", amount: "60g", kcal: 150 },
+        { icon: "🐟", name: "Peixe", amount: "100g", kcal: 150 },
+        { icon: "🐟", name: "Atum", amount: "100g", kcal: 150 },
+        { icon: "🥚", name: "Ovo", amount: "95g", kcal: 147 },
+        { icon: "🍳", name: "Ovo mexido", amount: "95g", kcal: 147 },
+        { icon: "🍳", name: "Omelete", amount: "95g", kcal: 147 }
       ],
       "macarrao": [
-        { icon: "ðŸ ", name: "Batata doce", amount: "155g", kcal: 133 },
-        { icon: "ðŸ¥”", name: "Batata inglesa", amount: "165g", kcal: 132 },
-        { icon: "ðŸ«˜", name: "Lentilhas", amount: "115g", kcal: 133 },
-        { icon: "ðŸŒ¿", name: "Mandioca", amount: "105g", kcal: 131 },
-        { icon: "ðŸŒ½", name: "Cuscuz", amount: "120g", kcal: 134 },
-        { icon: "ðŸ«˜", name: "FeijÃ£o", amount: "170g", kcal: 131 },
-        { icon: "ðŸ«˜", name: "GrÃ£o de bico", amount: "80g", kcal: 131 },
-        { icon: "ðŸ¥Ÿ", name: "Tapioca", amount: "40g", kcal: 134 },
-        { icon: "ðŸš", name: "Arroz cozido", amount: "100g", kcal: 130 },
-        { icon: "ðŸ ", name: "Inhame", amount: "110g", kcal: 130 },
-        { icon: "ðŸ¥–", name: "PÃ£o francÃªs", amount: "45g", kcal: 135 },
-        { icon: "ðŸŒ¾", name: "Aveia", amount: "35g", kcal: 136 },
-        { icon: "ðŸŒ¾", name: "Quinoa", amount: "35g", kcal: 129 }
+        { icon: "🍠", name: "Batata doce", amount: "155g", kcal: 133 },
+        { icon: "🥔", name: "Batata inglesa", amount: "165g", kcal: 132 },
+        { icon: "🫘", name: "Lentilhas", amount: "115g", kcal: 133 },
+        { icon: "🌿", name: "Mandioca", amount: "105g", kcal: 131 },
+        { icon: "🌽", name: "Cuscuz", amount: "120g", kcal: 134 },
+        { icon: "🫘", name: "Feijão", amount: "170g", kcal: 131 },
+        { icon: "🫘", name: "Grão de bico", amount: "80g", kcal: 131 },
+        { icon: "🥟", name: "Tapioca", amount: "40g", kcal: 134 },
+        { icon: "🍚", name: "Arroz cozido", amount: "100g", kcal: 130 },
+        { icon: "🍠", name: "Inhame", amount: "110g", kcal: 130 },
+        { icon: "🥖", name: "Pão francês", amount: "45g", kcal: 135 },
+        { icon: "🌾", name: "Aveia", amount: "35g", kcal: 136 },
+        { icon: "🌾", name: "Quinoa", amount: "35g", kcal: 129 }
       ],
       "macarrao cozido": [
-        { icon: "ðŸ ", name: "Batata doce", amount: "155g", kcal: 133 },
-        { icon: "ðŸ¥”", name: "Batata inglesa", amount: "165g", kcal: 132 },
-        { icon: "ðŸ«˜", name: "Lentilhas", amount: "115g", kcal: 133 },
-        { icon: "ðŸŒ¿", name: "Mandioca", amount: "105g", kcal: 131 },
-        { icon: "ðŸŒ½", name: "Cuscuz", amount: "120g", kcal: 134 },
-        { icon: "ðŸ«˜", name: "FeijÃ£o", amount: "170g", kcal: 131 },
-        { icon: "ðŸ«˜", name: "GrÃ£o de bico", amount: "80g", kcal: 131 },
-        { icon: "ðŸ¥Ÿ", name: "Tapioca", amount: "40g", kcal: 134 },
-        { icon: "ðŸš", name: "Arroz cozido", amount: "100g", kcal: 130 },
-        { icon: "ðŸ ", name: "Inhame", amount: "110g", kcal: 130 },
-        { icon: "ðŸ¥–", name: "PÃ£o francÃªs", amount: "45g", kcal: 135 },
-        { icon: "ðŸŒ¾", name: "Aveia", amount: "35g", kcal: 136 },
-        { icon: "ðŸŒ¾", name: "Quinoa", amount: "35g", kcal: 129 }
+        { icon: "🍠", name: "Batata doce", amount: "155g", kcal: 133 },
+        { icon: "🥔", name: "Batata inglesa", amount: "165g", kcal: 132 },
+        { icon: "🫘", name: "Lentilhas", amount: "115g", kcal: 133 },
+        { icon: "🌿", name: "Mandioca", amount: "105g", kcal: 131 },
+        { icon: "🌽", name: "Cuscuz", amount: "120g", kcal: 134 },
+        { icon: "🫘", name: "Feijão", amount: "170g", kcal: 131 },
+        { icon: "🫘", name: "Grão de bico", amount: "80g", kcal: 131 },
+        { icon: "🥟", name: "Tapioca", amount: "40g", kcal: 134 },
+        { icon: "🍚", name: "Arroz cozido", amount: "100g", kcal: 130 },
+        { icon: "🍠", name: "Inhame", amount: "110g", kcal: 130 },
+        { icon: "🥖", name: "Pão francês", amount: "45g", kcal: 135 },
+        { icon: "🌾", name: "Aveia", amount: "35g", kcal: 136 },
+        { icon: "🌾", name: "Quinoa", amount: "35g", kcal: 129 }
       ]
     };
 
     if (new URLSearchParams(window.location.search).get("clear") === "1") {
       localStorage.removeItem(storageKey);
       history.replaceState(null, "", window.location.pathname);
-    }
-
-    function escapeHTML(value = "") {
-      return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-    }
-
-    function renderDietDashboard() {
-      if (!dietDashboard) return;
-      dietProfileWeight.textContent = profileWeightLabel.textContent;
-      dietProfileHeight.textContent = profileHeightLabel.textContent;
-      dietDashboard.innerHTML = mealTypes
-        .map((mealType) => {
-          const options = mealRecommendations[mealType.id] || [];
-          const selectedIndex = Math.min(dietSelectedOptions[mealType.id] || 0, Math.max(0, options.length - 1));
-          const selectedOptionRaw = options[selectedIndex] || { kcal: 0, items: [] };
-          const selectedOption = {
-            ...selectedOptionRaw,
-            items: selectedOptionRaw.items.map((item) => hydrateRecommendationItem(item, selectedOptionRaw))
-          };
-          const optionTabs = options.map((option, index) => `
-            <button
-              class="diet-option-tab ${index === selectedIndex ? "active" : ""}"
-              type="button"
-              data-diet-meal="${mealType.id}"
-              data-diet-option="${index}"
-            >OpÃ§Ã£o ${index + 1}</button>
-          `).join("");
-          const foodsList = selectedOption.items.map((item, itemIndex) => `
-            <div class="diet-food-row">
-              <span class="diet-check">âœ“</span>
-              <span class="diet-food-name">
-                ${escapeHTML(item.name)}
-                <span class="diet-food-detail">${escapeHTML(item.amount)}${item.kcal ? ` • ${round(item.kcal)} kcal` : ""}</span>
-              </span>
-              <span class="diet-food-amount">${item.kcal ? `${round(item.kcal)} kcal` : escapeHTML(item.amount)}</span>
-              <button
-                class="item-edit-button"
-                type="button"
-                data-diet-edit-meal="${mealType.id}"
-                data-diet-edit-option="${selectedIndex}"
-                data-diet-edit-item="${itemIndex}"
-              >Editar</button>
-            </div>
-          `).join("");
-          return `
-            <article class="diet-card">
-              <div class="diet-card-inner">
-                <div class="diet-card-header">
-                  <div class="diet-card-icon">${mealType.icon}</div>
-                  <div>
-                    <div class="diet-card-title">${mealDetailLabels[mealType.id] || mealType.name}</div>
-                    <div class="diet-card-time">${appData.mealTimes?.[mealType.id] || mealType.defaultTime}</div>
-                  </div>
-                  <div class="diet-card-kcal">${selectedOption.kcal || 0} kcal</div>
-                </div>
-                <div class="diet-card-divider"></div>
-                <div class="diet-option-tabs">${optionTabs}</div>
-                <div class="diet-food-list">${foodsList}</div>
-              </div>
-              <div class="diet-prep"><span>â–¤</span><span>Ver preparo</span></div>
-            </article>
-          `;
-        })
-        .join("");
     }
 
     const defaultProfile = {
@@ -2218,7 +1881,6 @@
     appData = {
       meals: Array.isArray(appData.meals) ? appData.meals : [],
       expenses: Array.isArray(appData.expenses) ? appData.expenses : [],
-      compensations: Array.isArray(appData.compensations) ? appData.compensations : [],
       water: appData.water && typeof appData.water === "object" ? appData.water : {},
       mealTimes: { ...defaultMealTimes, ...(appData.mealTimes || {}) },
       profile: { ...defaultProfile, ...(appData.profile || {}) }
@@ -2259,8 +1921,6 @@
     let selectedRecommendationIndex = null;
     let currentRecommendationOptions = [];
     let substituteTarget = null;
-    let dietSelectedOptions = {};
-    let editingMealType = null;
 
     mealDate.value = todayISO();
     expenseDate.value = todayISO();
@@ -2299,7 +1959,7 @@
       const basal = calculateBasal(profile);
       const targetRange = dailyTargetRange();
       const firstName = (profile.name || "Robson").trim().split(" ")[0] || "Robson";
-      greetingTitle.textContent = `OlÃ¡, ${firstName}`;
+      greetingTitle.textContent = `Olá, ${firstName}`;
       profileButton.textContent = firstName.slice(0, 1).toUpperCase();
       profileWeightLabel.textContent = profile.weightKg ? `${String(profile.weightKg).replace(".", ",")}kg` : "-- kg";
       profileHeightLabel.textContent = profile.heightCm ? `${round(Number(profile.heightCm) / 100).toString().replace(".", ",")}m` : "-- m";
@@ -2312,7 +1972,7 @@
       goalBannerValue.textContent = `${targetRange.min} - ${targetRange.max} kcal`;
       profileBasalInfo.textContent = basal
         ? `Gasto basal estimado: ${basal} kcal/dia. Meta usada: ${targetRange.min} - ${targetRange.max} kcal/dia.`
-        : "Informe peso, altura e idade para estimar o gasto diÃ¡rio.";
+        : "Informe peso, altura e idade para estimar o gasto diário.";
     }
 
     function waterTarget() {
@@ -2330,108 +1990,6 @@
 
     function mealKcalTarget(mealId) {
       return Math.round(dailyTarget() * (mealTargetWeights[mealId] || (1 / mealTypes.length)));
-    }
-
-    function mealOrderIndex(mealId) {
-      return mealTypes.findIndex((item) => item.id === mealId);
-    }
-
-    function mealLabel(mealId) {
-      return mealDetailLabels[mealId] || mealTypes.find((item) => item.id === mealId)?.name || "RefeiÃ§Ã£o";
-    }
-
-    function pendingCompensationsForToday() {
-      return appData.compensations.filter((item) => item.date === todayISO() && item.status === "pending");
-    }
-
-    function compensationForMeal(mealId) {
-      return appData.compensations.find((item) => item.date === todayISO() && item.mealType === mealId);
-    }
-
-    function pendingCompensationsForMealDetail(mealId) {
-      const currentOrder = mealOrderIndex(mealId);
-      return pendingCompensationsForToday().filter((item) => mealOrderIndex(item.mealType) < currentOrder);
-    }
-
-    function createCompensationOption(compensation) {
-      const originalMeal = mealTypes.find((item) => item.id === compensation.mealType) || mealTypes[0];
-      const baseOption = (mealRecommendations[compensation.mealType] || [])[0] || { kcal: mealKcalTarget(compensation.mealType), items: [] };
-      const option = {
-        ...baseOption,
-        compensationFor: compensation.id,
-        compensationMealType: compensation.mealType,
-        compensationLabel: mealLabel(compensation.mealType),
-        items: baseOption.items.map((item) => hydrateRecommendationItem(item, baseOption))
-      };
-      option.kcal = option.items.reduce((total, item) => total + (Number(item.kcal) || 0), 0) || baseOption.kcal || mealKcalTarget(originalMeal.id);
-      return option;
-    }
-
-    function markCompensationCompleted(compensationId, compensatedAtMealType) {
-      const compensation = appData.compensations.find((item) => item.id === compensationId);
-      if (!compensation) return;
-      compensation.status = "done";
-      compensation.compensatedAt = new Date().toISOString();
-      compensation.compensatedMealType = compensatedAtMealType;
-    }
-
-    function compensateCurrentMealLater() {
-      const mealType = mealTypes.find((item) => item.id === currentMealDetail);
-      if (!mealType || compensationForMeal(mealType.id)) return;
-      appData.compensations.unshift({
-        id: `${Date.now()}`,
-        date: todayISO(),
-        mealType: mealType.id,
-        mealTypeName: mealType.name,
-        status: "pending",
-        createdAt: new Date().toISOString()
-      });
-      saveData();
-      renderAll();
-      openTab("hoje");
-    }
-
-    function showMealRecommendationOptions(mealType) {
-      const options = mealRecommendations[mealType.id] || [];
-      currentRecommendationOptions = options.map((option) => ({
-        ...option,
-        items: option.items.map((item) => hydrateRecommendationItem(item, option))
-      }));
-      if (editingMealType !== mealType.id) {
-        currentRecommendationOptions = [
-          ...pendingCompensationsForMealDetail(mealType.id).map(createCompensationOption),
-          ...currentRecommendationOptions
-        ];
-      }
-      renderRecommendationOptions();
-      openTab("refeicao-detalhe");
-    }
-
-    function openDietItemEditor(mealTypeId, optionIndex, itemIndex) {
-      const mealType = mealTypes.find((item) => item.id === mealTypeId) || mealTypes[0];
-      const options = mealRecommendations[mealType.id] || [];
-      const safeOptionIndex = Math.max(0, Math.min(Number(optionIndex) || 0, Math.max(0, options.length - 1)));
-      currentMealDetail = mealType.id;
-      selectedMealType = mealType.id;
-      selectedRecommendationIndex = safeOptionIndex;
-      editingMealType = appData.meals.some((item) => item.date === todayISO() && item.mealType === mealType.id)
-        ? mealType.id
-        : null;
-      mealDetailTitle.textContent = mealDetailLabels[mealType.id] || mealType.name;
-      mealDetailIcon.textContent = mealType.icon;
-      mealDetailTime.value = appData.mealTimes?.[mealType.id] || mealType.defaultTime;
-      mealDetailStatus.textContent = "Editando";
-      mealDetailSubtitle.textContent = "Ajuste ou substitua o alimento selecionado";
-      mealDetailRegister.textContent = editingMealType ? "Salvar edição" : "Registrar dieta";
-      mealCompensateLater.classList.add("hidden");
-      currentRecommendationOptions = options.map((option) => ({
-        ...option,
-        items: option.items.map((item) => hydrateRecommendationItem(item, option))
-      }));
-      renderRecommendationOptions();
-      mealDetailRegister.classList.remove("hidden");
-      openTab("refeicao-detalhe");
-      requestAnimationFrame(() => openSubstituteModal(safeOptionIndex, Number(itemIndex) || 0));
     }
 
     function minutesFromTime(time = "00:00") {
@@ -2469,14 +2027,14 @@
       const score = Math.max(0, Math.min(100, Math.round(calorieScore * 0.6 + mealScoreData.score * 0.25 + waterScore * 0.15)));
       const alerts = [];
       if (consumed > adjustedTarget + 150) {
-        alerts.push({ level: "danger", text: `VocÃª passou da meta em ${round(consumed - adjustedTarget)} kcal.` });
+        alerts.push({ level: "danger", text: `Você passou da meta em ${round(consumed - adjustedTarget)} kcal.` });
       }
       if (mealScoreData.alert) alerts.push(mealScoreData.alert);
       if (waterScore < 70) {
-        alerts.push({ level: "warn", text: `Ãgua abaixo do esperado para este horÃ¡rio: ${waterNow}ml de ${waterExpected}ml.` });
+        alerts.push({ level: "warn", text: `Água abaixo do esperado para este horário: ${waterNow}ml de ${waterExpected}ml.` });
       }
       if (expectedDayProgress() > 0.45 && calorieScore < 70 && consumed <= adjustedTarget) {
-        alerts.push({ level: "warn", text: "Consumo calÃ³rico baixo para este horÃ¡rio." });
+        alerts.push({ level: "warn", text: "Consumo calórico baixo para este horário." });
       }
       const alert = alerts.find((item) => item.level === "danger") || alerts[0] || { level: "ok", text: "Dia no controle. Continue assim." };
       return { score, alert };
@@ -2495,11 +2053,6 @@
         const weight = 100 / mealTypes.length;
         totalWeight += weight;
         const registered = todayMeals.find((item) => item.mealType === meal.id);
-        const compensation = compensationForMeal(meal.id);
-        if (!registered && compensation?.status === "done") {
-          earned += weight;
-          return;
-        }
         if (registered) {
           const registeredMinute = minutesFromTime(registered.mealTime || time);
           const delay = Math.max(0, registeredMinute - mealMinute);
@@ -2509,20 +2062,15 @@
           }
           return;
         }
-        if (compensation?.status === "pending") {
-          earned += weight * 0.45;
-          worstAlert = worstAlert || { level: "warn", text: `${meal.name} pendente para compensar mais tarde.` };
-          return;
-        }
         const delayNow = now - mealMinute;
         if (delayNow <= 30) {
           earned += weight * 0.95;
         } else if (delayNow <= 90) {
           earned += weight * 0.55;
-          worstAlert = worstAlert || { level: "warn", text: `${meal.name} ainda nÃ£o registrada.` };
+          worstAlert = worstAlert || { level: "warn", text: `${meal.name} ainda não registrada.` };
         } else {
           earned += weight * 0.15;
-          worstAlert = { level: "danger", text: `${meal.name} passou do horÃ¡rio e nÃ£o foi registrada.` };
+          worstAlert = { level: "danger", text: `${meal.name} passou do horário e não foi registrada.` };
         }
       });
       const score = totalWeight ? Math.round((earned / totalWeight) * 100) : 100;
@@ -2544,20 +2092,15 @@
     function renderMealsProgress() {
       const todayMeals = appData.meals.filter((item) => item.date === todayISO());
       const completed = new Set(todayMeals.map((item) => item.mealType).filter(Boolean));
-      appData.compensations
-        .filter((item) => item.date === todayISO() && item.status === "done")
-        .forEach((item) => completed.add(item.mealType));
-      const pending = new Set(pendingCompensationsForToday().map((item) => item.mealType));
       const count = completed.size;
       const percent = Math.round((count / mealTypes.length) * 100);
       mealProgressCount.textContent = `${count}/${mealTypes.length}`;
       mealProgressFill.style.setProperty("--width", `${percent}%`);
       mealProgressList.innerHTML = mealTypes.map((meal) => {
         const done = completed.has(meal.id);
-        const waiting = !done && pending.has(meal.id);
         const time = appData.mealTimes?.[meal.id] || meal.defaultTime;
         const kcal = mealKcalTarget(meal.id);
-        return `<button type="button" class="meal-step ${done ? "done" : waiting ? "pending" : ""}" data-open-meal-detail="${meal.id}"><div class="meal-icon">${meal.icon}</div><div>${meal.name}</div><div class="meal-kcal-target">${kcal} kcal</div><div class="muted">${waiting ? "Compensar" : time}</div></button>`;
+        return `<button type="button" class="meal-step ${done ? "done" : ""}" data-open-meal-detail="${meal.id}"><div class="meal-icon">${meal.icon}</div><div>${meal.name}</div><div class="meal-kcal-target">${kcal} kcal</div><div class="muted">${time}</div></button>`;
       }).join("");
       mealProgressList.querySelectorAll("[data-open-meal-detail]").forEach((button) => {
         button.addEventListener("click", () => openMealDetail(button.dataset.openMealDetail));
@@ -2566,37 +2109,19 @@
 
     function openMealDetail(mealTypeId) {
       currentMealDetail = mealTypeId;
-      editingMealType = null;
       selectedRecommendationIndex = null;
       mealDetailRegister.classList.add("hidden");
-      mealDetailRegister.textContent = "Registrar dieta";
-      mealCompensateLater.classList.remove("hidden");
-      mealCompensateLater.disabled = false;
-      mealCompensateLater.textContent = "Compensar mais tarde";
       const mealType = mealTypes.find((item) => item.id === mealTypeId) || mealTypes[0];
       selectedMealType = mealType.id;
       const registeredMeals = appData.meals.filter((item) => item.date === todayISO() && item.mealType === mealType.id);
       const alreadyDone = registeredMeals.length > 0;
-      const compensation = compensationForMeal(mealType.id);
       mealDetailTitle.textContent = mealDetailLabels[mealType.id] || mealType.name;
       mealDetailIcon.textContent = mealType.icon;
       mealDetailTime.value = appData.mealTimes?.[mealType.id] || mealType.defaultTime;
-      mealDetailStatus.textContent = alreadyDone ? "ConcluÃ­da" : "Pendente";
+      mealDetailStatus.textContent = alreadyDone ? "Concluída" : "Pendente";
       mealDetailSubtitle.textContent = alreadyDone
-        ? "VocÃª jÃ¡ registrou essa refeiÃ§Ã£o hoje"
-        : "Escolha uma sugestÃ£o ou crie sua prÃ³pria refeiÃ§Ã£o";
-      if (alreadyDone || compensation?.status === "done") {
-        mealCompensateLater.classList.add("hidden");
-      } else if (compensation?.status === "pending") {
-        mealCompensateLater.textContent = "CompensaÃ§Ã£o pendente";
-        mealCompensateLater.disabled = true;
-      }
-      mealDetailStatus.textContent = alreadyDone || compensation?.status === "done" ? "ConcluÃ­da" : compensation?.status === "pending" ? "Compensar" : "Pendente";
-      mealDetailSubtitle.textContent = alreadyDone || compensation?.status === "done"
-        ? "VocÃª jÃ¡ registrou essa refeiÃ§Ã£o hoje"
-        : compensation?.status === "pending"
-        ? "Esta refeiÃ§Ã£o ficou pendente para compensar mais tarde"
-        : "Escolha uma sugestÃ£o ou crie sua prÃ³pria refeiÃ§Ã£o";
+        ? "Você já registrou essa refeição hoje"
+        : "Escolha uma sugestão ou crie sua própria refeição";
       if (alreadyDone) {
         recommendationCarousel.innerHTML = registeredMeals.map((item) => {
           const portionLabel = item.servingId === "dieta-sugerida"
@@ -2620,25 +2145,17 @@
             </div>
           `;
         }).join("");
-        recommendationCarousel.innerHTML += `
-          <button class="button" type="button" id="edit-registered-meal" style="margin-top: 14px;">Editar refeiÃ§Ã£o</button>
-        `;
         recommendationDots.innerHTML = "";
-        const editButton = document.getElementById("edit-registered-meal");
-        editButton?.addEventListener("click", () => {
-          editingMealType = mealType.id;
-          selectedRecommendationIndex = null;
-          mealDetailStatus.textContent = "Editando";
-          mealDetailSubtitle.textContent = "Escolha uma nova opÃ§Ã£o para substituir o lanÃ§amento atual";
-          mealDetailRegister.textContent = "Salvar ediÃ§Ã£o";
-          mealDetailRegister.classList.add("hidden");
-          mealCompensateLater.classList.add("hidden");
-          showMealRecommendationOptions(mealType);
-        });
         openTab("refeicao-detalhe");
         return;
       }
-      showMealRecommendationOptions(mealType);
+      const options = mealRecommendations[mealType.id] || [];
+      currentRecommendationOptions = options.map((option) => ({
+        ...option,
+        items: option.items.map((item) => hydrateRecommendationItem(item, option))
+      }));
+      renderRecommendationOptions();
+      openTab("refeicao-detalhe");
     }
 
     function renderRecommendationOptions() {
@@ -2647,9 +2164,8 @@
           <div class="recommendation-card ${index === selectedRecommendationIndex ? "selected" : ""}" data-recommendation-index="${index}">
             <div class="recommendation-head">
               <button class="selected-pill" type="button" data-select-rec="${index}">
-                ${index === selectedRecommendationIndex ? "âœ“ Selecionada" : "Selecionar"}
+                ${index === selectedRecommendationIndex ? "✓ Selecionada" : "Selecionar"}
               </button>
-              ${option.compensationFor ? `<span class="compensation-pill">Compensar ${option.compensationLabel}</span>` : ""}
               <span class="kcal-pill">${option.kcal} kcal</span>
             </div>
             ${option.items.map((item, itemIndex) => `
@@ -2658,28 +2174,27 @@
                 <div>
                   <div class="meal-name">${item.name}</div>
                   <div class="item-detail-row">
-                    <div class="muted">${item.amount}${item.kcal ? ` â€¢ ${round(item.kcal)} kcal` : ""}</div>
+                    <div class="muted">${item.amount}${item.kcal ? ` • ${round(item.kcal)} kcal` : ""}</div>
                     ${canAdjustItemAmount(item) ? `
                       <span class="quantity-controls" aria-label="Ajustar quantidade de ${item.name}">
-                        <span class="qty-button" role="button" tabindex="0" data-adjust-rec="${index}" data-adjust-item="${itemIndex}" data-adjust-delta="-1">âˆ’</span>
+                        <span class="qty-button" role="button" tabindex="0" data-adjust-rec="${index}" data-adjust-item="${itemIndex}" data-adjust-delta="-1">−</span>
                         <span class="qty-button" role="button" tabindex="0" data-adjust-rec="${index}" data-adjust-item="${itemIndex}" data-adjust-delta="1">+</span>
                       </span>
                     ` : ""}
                   </div>
                 </div>
-                <span class="swap-icon" aria-hidden="true">â‡„</span>
-                <span class="item-edit-button" role="button" tabindex="0" data-substitute-rec="${index}" data-substitute-item="${itemIndex}">Editar</span>
+                <span class="swap-icon" aria-hidden="true">⇄</span>
               </button>
             `).join("")}
             <button class="add-recommendation-item" type="button" data-add-item-rec="${index}">+ Adicionar item</button>
-            <button class="recipe-button" type="button">ðŸ´ Ver preparo</button>
+            <button class="recipe-button" type="button">🍴 Ver preparo</button>
           </div>
         `),
         `<div class="recommendation-card empty">
           <div>
             <button class="avatar-button" type="button">+</button>
-            <h2 style="margin-top: 18px;">Criar nova opÃ§Ã£o</h2>
-            <div class="muted">Adicione sua prÃ³pria refeiÃ§Ã£o</div>
+            <h2 style="margin-top: 18px;">Criar nova opção</h2>
+            <div class="muted">Adicione sua própria refeição</div>
           </div>
         </div>`
       ].join("");
@@ -2844,19 +2359,19 @@
 
     function iconForFoodName(name = "") {
       const normalized = normalizeText(name);
-      if (normalized.includes("banana")) return "ðŸŒ";
-      if (normalized.includes("maca")) return "ðŸŽ";
-      if (normalized.includes("laranja")) return "ðŸŠ";
-      if (normalized.includes("tomate")) return "ðŸ…";
-      if (normalized.includes("arroz")) return "ðŸš";
-      if (normalized.includes("feijao")) return "ðŸ«˜";
-      if (normalized.includes("frango")) return "ðŸ—";
-      if (normalized.includes("carne") || normalized.includes("bife")) return "ðŸ¥©";
-      if (normalized.includes("ovo") || normalized.includes("omelete")) return "ðŸ³";
-      if (normalized.includes("queijo")) return "ðŸ§€";
-      if (normalized.includes("pao")) return "ðŸ¥–";
-      if (normalized.includes("macarrao") || normalized.includes("massa")) return "ðŸ";
-      return "ðŸ½ï¸";
+      if (normalized.includes("banana")) return "🍌";
+      if (normalized.includes("maca")) return "🍎";
+      if (normalized.includes("laranja")) return "🍊";
+      if (normalized.includes("tomate")) return "🍅";
+      if (normalized.includes("arroz")) return "🍚";
+      if (normalized.includes("feijao")) return "🫘";
+      if (normalized.includes("frango")) return "🍗";
+      if (normalized.includes("carne") || normalized.includes("bife")) return "🥩";
+      if (normalized.includes("ovo") || normalized.includes("omelete")) return "🍳";
+      if (normalized.includes("queijo")) return "🧀";
+      if (normalized.includes("pao")) return "🥖";
+      if (normalized.includes("macarrao") || normalized.includes("massa")) return "🍝";
+      return "🍽️";
     }
 
     function foodToRecommendationItem(food) {
@@ -2892,15 +2407,15 @@
       const substitutes = substitutesForItemName(item.name);
       substituteTarget = { mode: "substitute", recommendationIndex, itemIndex };
       substituteTitle.textContent = "Alimentos Substitutos";
-      substituteDescription.textContent = `Esses sÃ£o os alimentos que vocÃª pode substituir por ${item.name}. Se atente Ã s quantidades.`;
+      substituteDescription.textContent = `Esses são os alimentos que você pode substituir por ${item.name}. Se atente às quantidades.`;
       const substituteOptionsHtml = substitutes.length === 0
-        ? '<div class="muted" style="text-align:center;">Ainda nÃ£o hÃ¡ substitutos cadastrados para este alimento.</div>'
+        ? '<div class="muted" style="text-align:center;">Ainda não há substitutos cadastrados para este alimento.</div>'
         : substitutes.map((substitute, index) => `
           <button class="substitute-option" type="button" data-substitute-index="${index}">
             <div class="recommended-item-icon">${substitute.icon}</div>
             <div>
               <div class="meal-name">${substitute.name}</div>
-              <div class="muted">${substitute.amount} â€¢ ${substitute.kcal} kcal</div>
+              <div class="muted">${substitute.amount} • ${substitute.kcal} kcal</div>
             </div>
             <div class="substitute-info">i</div>
           </button>
@@ -2908,12 +2423,12 @@
       substituteList.innerHTML = `
         ${substituteOptionsHtml}
         <button class="substitute-option" type="button" data-ignore-item="1">
-          <div class="recommended-item-icon">ðŸš«</div>
+          <div class="recommended-item-icon">🚫</div>
           <div>
             <div class="meal-name">Desconsiderar item</div>
-            <div class="muted">Remover ${item.name} desta refeiÃ§Ã£o</div>
+            <div class="muted">Remover ${item.name} desta refeição</div>
           </div>
-          <div class="substitute-info">âˆ’</div>
+          <div class="substitute-info">−</div>
         </button>
       `;
       substituteList.querySelectorAll("[data-substitute-index]").forEach((button) => {
@@ -2928,7 +2443,7 @@
       if (!option) return;
       substituteTarget = { mode: "add", recommendationIndex };
       substituteTitle.textContent = "Adicionar item";
-      substituteDescription.textContent = "Selecione um alimento para incluir nesta refeiÃ§Ã£o.";
+      substituteDescription.textContent = "Selecione um alimento para incluir nesta refeição.";
       const foodOptions = [...foods].sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
       substituteList.innerHTML = foodOptions.map((food, index) => {
         const item = foodToRecommendationItem(food);
@@ -2937,7 +2452,7 @@
             <div class="recommended-item-icon">${item.icon}</div>
             <div>
               <div class="meal-name">${item.name}</div>
-              <div class="muted">${item.amount} â€¢ ${item.kcal} kcal</div>
+              <div class="muted">${item.amount} • ${item.kcal} kcal</div>
             </div>
             <div class="substitute-info">+</div>
           </button>
@@ -2987,10 +2502,8 @@
     }
 
     function registerSelectedRecommendation() {
+      const mealType = mealTypes.find((item) => item.id === currentMealDetail) || mealTypes[0];
       const option = currentRecommendationOptions[selectedRecommendationIndex];
-      const mealType = option?.compensationMealType
-        ? mealTypes.find((item) => item.id === option.compensationMealType) || mealTypes[0]
-        : mealTypes.find((item) => item.id === currentMealDetail) || mealTypes[0];
       if (!option) {
         selectedMealType = currentMealDetail;
         renderMealTypeOptions();
@@ -3000,17 +2513,14 @@
       const itemsLabel = option.items.map((item) => `${item.name} (${item.amount})`).join(", ") || "Sem itens";
       const proteinTotal = option.items.reduce((total, item) => total + (Number(item.protein) || 0), 0);
       const carbsTotal = option.items.reduce((total, item) => total + (Number(item.carbs) || 0), 0);
-      if (editingMealType === mealType.id) {
-        appData.meals = appData.meals.filter((item) => !(item.date === todayISO() && item.mealType === mealType.id));
-      }
       appData.meals.unshift({
         id: `${Date.now()}`,
         date: todayISO(),
         foodId: `sugestao-${mealType.id}-${Date.now()}`,
-        foodName: `${option.compensationFor ? "CompensaÃ§Ã£o - " : ""}${mealDetailLabels[mealType.id] || mealType.name}: ${itemsLabel}`,
+        foodName: `${mealDetailLabels[mealType.id] || mealType.name}: ${itemsLabel}`,
         mealType: mealType.id,
         mealTypeName: mealType.name,
-        mealTime: appData.mealTimes?.[currentMealDetail] || defaultMealTimes[currentMealDetail],
+        mealTime: appData.mealTimes?.[mealType.id] || defaultMealTimes[mealType.id],
         grams: 0,
         quantity: 1,
         servingName: "Dieta sugerida",
@@ -3019,15 +2529,7 @@
         protein: round(proteinTotal),
         carbs: round(carbsTotal)
       });
-      if (option.compensationFor) {
-        markCompensationCompleted(option.compensationFor, currentMealDetail);
-      } else {
-        const pendingForMeal = appData.compensations.find((item) => item.date === todayISO() && item.mealType === mealType.id && item.status === "pending");
-        if (pendingForMeal) markCompensationCompleted(pendingForMeal.id, currentMealDetail);
-      }
       saveData();
-      editingMealType = null;
-      mealDetailRegister.textContent = "Registrar dieta";
       currentPeriod = "hoje";
       periodButtons.forEach((item) => item.classList.toggle("active", item.dataset.period === "hoje"));
       renderAll();
@@ -3055,7 +2557,7 @@
     function periodStart(period) {
       const date = appDayDate();
       if (period === "hoje") return todayISO();
-      if (period === "Ãºltimos 7 dias") {
+      if (period === "últimos 7 dias") {
         date.setDate(date.getDate() - 6);
         return localISODate(date);
       }
@@ -3065,7 +2567,7 @@
         date.setDate(date.getDate() - daysSinceMonday);
         return localISODate(date);
       }
-      if (period === "mÃªs") {
+      if (period === "mês") {
         date.setDate(1);
         return localISODate(date);
       }
@@ -3125,7 +2627,7 @@
       const serving = selectedServing();
       mealQuantityLabel.childNodes[0].textContent = serving?.grams === 1 ? "Quantidade em gramas " : `Quantidade em ${serving.name.toLowerCase()} `;
       mealGrams.placeholder = serving?.grams === 1 ? "Ex: 150" : "Ex: 1";
-      servingHint.textContent = serving?.grams === 1 ? "Digite o peso em gramas." : `ReferÃªncia: 1 ${serving.name.toLowerCase()} = ${serving.grams}g.`;
+      servingHint.textContent = serving?.grams === 1 ? "Digite o peso em gramas." : `Referência: 1 ${serving.name.toLowerCase()} = ${serving.grams}g.`;
       servingOptions.querySelectorAll("[data-serving-id]").forEach((button) => {
         button.addEventListener("click", () => {
           selectedServingId = button.dataset.servingId;
@@ -3163,7 +2665,7 @@
 
       if (source.length === 0) {
         foodOptions.innerHTML = mode === "popular"
-          ? '<div class="muted">Nenhum item usado ainda. Entre em "Todos itens" para lanÃ§ar a primeira alimentaÃ§Ã£o.</div>'
+          ? '<div class="muted">Nenhum item usado ainda. Entre em "Todos itens" para lançar a primeira alimentação.</div>'
           : '<div class="muted">Nenhum alimento encontrado nessa busca.</div>';
         foodSearchWrap.classList.toggle("hidden", mode !== "all");
         foodHint.classList.add("hidden");
@@ -3212,7 +2714,7 @@
       if (isManual) {
         expensePreview.textContent = rawTime
           ? `Valor manual: ${round(rawTime)} kcal.`
-          : "Informe quantas kcal deseja lanÃ§ar.";
+          : "Informe quantas kcal deseja lançar.";
         return;
       }
       const minutes = selectedTimeUnit === "hours" ? rawTime * 60 : rawTime;
@@ -3239,7 +2741,7 @@
       const chartPeriod = period === "hoje" ? "total" : period;
       const data = seriesForPeriod(chartPeriod);
       if (data.length === 0) {
-        chart.innerHTML = '<div class="muted">Registre alimentaÃ§Ã£o e atividades para gerar o grÃ¡fico.</div>';
+        chart.innerHTML = '<div class="muted">Registre alimentação e atividades para gerar o gráfico.</div>';
         return;
       }
       const maxAbs = Math.max(...data.map((item) => Math.abs(item.daily)), 1);
@@ -3296,10 +2798,10 @@
     }
 
     function renderConsumption(period = currentPeriod) {
-      consumoTitle.textContent = periodTitle("AlimentaÃ§Ã£o", period);
+      consumoTitle.textContent = periodTitle("Alimentação", period);
       const data = periodMeals(period);
       if (data.length === 0) {
-        consumoResumo.innerHTML = '<div class="muted">Nenhuma alimentaÃ§Ã£o registrada neste perÃ­odo.</div>';
+        consumoResumo.innerHTML = '<div class="muted">Nenhuma alimentação registrada neste período.</div>';
         return;
       }
       consumoResumo.innerHTML = data.map((item) => {
@@ -3308,8 +2810,8 @@
           : item.quantity && item.servingName && item.servingName !== "Gramas"
           ? `${item.quantity} ${item.servingName.toLowerCase()} (${item.grams}g)`
           : `${item.grams}g`;
-        const mealTypeLabel = item.mealTypeName ? `${item.mealTypeName} ${item.mealTime || ""} Ã¢â‚¬Â¢ ` : "";
-        const mealIcon = mealTypes.find((meal) => meal.id === item.mealType)?.icon || "ðŸ´";
+        const mealTypeLabel = item.mealTypeName ? `${item.mealTypeName} ${item.mealTime || ""} â€¢ ` : "";
+        const mealIcon = mealTypes.find((meal) => meal.id === item.mealType)?.icon || "🍴";
         return `<div class="meal"><div class="meal-list-left"><div class="recommended-item-icon">${mealIcon}</div><div><div class="meal-name">${item.foodName}</div><div class="muted">${mealTypeLabel}${portionLabel}</div></div></div><div class="macro-summary"><div>${item.calories} kcal</div><div>${item.protein}g pro</div><div>${item.carbs}g carb</div></div></div>`;
       }).join("");
     }
@@ -3322,10 +2824,10 @@
         protein: round(acc.protein + (Number(item.protein) || 0)),
         carbs: round(acc.carbs + (Number(item.carbs) || 0))
       }), { calories: 0, protein: 0, carbs: 0 });
-      mealLogTitle.textContent = `AlimentaÃ§Ã£o lanÃ§ada ${dateLabel(selectedDate)}`;
+      mealLogTitle.textContent = `Alimentação lançada ${dateLabel(selectedDate)}`;
       mealLogTotal.innerHTML = `<div>${total.calories} kcal</div><div>${total.protein}g pro</div><div>${total.carbs}g carb</div>`;
       if (meals.length === 0) {
-        mealLog.innerHTML = '<div class="muted">Nenhuma alimentaÃ§Ã£o lanÃ§ada nesta data.</div>';
+        mealLog.innerHTML = '<div class="muted">Nenhuma alimentação lançada nesta data.</div>';
         return;
       }
       mealLog.innerHTML = meals.map((item) => {
@@ -3334,14 +2836,14 @@
           : item.quantity && item.servingName && item.servingName !== "Gramas"
           ? `${item.quantity} ${item.servingName.toLowerCase()} (${item.grams}g)`
           : `${item.grams}g`;
-        const mealTypeLabel = item.mealTypeName ? `${item.mealTypeName} ${item.mealTime || ""} â€¢ ` : "";
+        const mealTypeLabel = item.mealTypeName ? `${item.mealTypeName} ${item.mealTime || ""} • ` : "";
         return `<div class="meal"><div><div class="meal-name">${item.foodName}</div><div class="muted">${mealTypeLabel}${portionLabel}</div></div><div class="macro-summary"><div>${item.calories} kcal</div><div>${item.protein}g pro</div><div>${item.carbs}g carb</div><button class="edit-button" data-edit-meal="${item.id}">Editar</button><button class="delete-button" data-delete-meal="${item.id}">Excluir</button></div></div>`;
       }).join("");
       mealLog.querySelectorAll("[data-edit-meal]").forEach((button) => {
         button.addEventListener("click", () => {
           const meal = appData.meals.find((item) => item.id === button.dataset.editMeal);
           if (!meal) return;
-          if (!confirm("Editar esta alimentaÃ§Ã£o? O lanÃ§amento atual serÃ¡ removido e voltarÃ¡ para o formulÃ¡rio.")) return;
+          if (!confirm("Editar esta alimentação? O lançamento atual será removido e voltará para o formulário.")) return;
           const food = foods.find((item) => item.id === meal.foodId);
           const servings = servingsForFood(food);
           selectedFoodId = meal.foodId;
@@ -3363,7 +2865,7 @@
       });
       mealLog.querySelectorAll("[data-delete-meal]").forEach((button) => {
         button.addEventListener("click", () => {
-          if (!confirm("Tem certeza que quer excluir esta alimentaÃ§Ã£o?")) return;
+          if (!confirm("Tem certeza que quer excluir esta alimentação?")) return;
           appData.meals = appData.meals.filter((meal) => meal.id !== button.dataset.deleteMeal);
           saveData();
           renderFoodOptions(currentFoodMode);
@@ -3376,7 +2878,7 @@
       gastoTitle.textContent = periodTitle("Atividades", period);
       const data = periodExpenses(period);
       if (data.length === 0) {
-        gastoResumo.innerHTML = '<div class="muted">Nenhuma atividade registrada neste perÃ­odo.</div>';
+        gastoResumo.innerHTML = '<div class="muted">Nenhuma atividade registrada neste período.</div>';
         return;
       }
       gastoResumo.innerHTML = data.map((item) => {
@@ -3390,10 +2892,10 @@
       const selectedDate = expenseDate.value || todayISO();
       const expenses = appData.expenses.filter((item) => item.date === selectedDate);
       const total = round(expenses.reduce((sum, item) => sum + (Number(item.calories) || 0), 0));
-      expenseLogTitle.textContent = `Atividades lanÃ§adas ${dateLabel(selectedDate)}`;
+      expenseLogTitle.textContent = `Atividades lançadas ${dateLabel(selectedDate)}`;
       expenseLogTotal.innerHTML = `<div>${total} kcal</div>`;
       if (expenses.length === 0) {
-        expenseLog.innerHTML = '<div class="muted">Nenhuma atividade lanÃ§ada nesta data.</div>';
+        expenseLog.innerHTML = '<div class="muted">Nenhuma atividade lançada nesta data.</div>';
         return;
       }
       expenseLog.innerHTML = expenses.map((item) => {
@@ -3405,7 +2907,7 @@
         button.addEventListener("click", () => {
           const expense = appData.expenses.find((item) => item.id === button.dataset.editExpense);
           if (!expense) return;
-          if (!confirm("Editar esta atividade? O lanÃ§amento atual serÃ¡ removido e voltarÃ¡ para o formulÃ¡rio.")) return;
+          if (!confirm("Editar esta atividade? O lançamento atual será removido e voltará para o formulário.")) return;
           const activity = activityPresets.find((item) => item.id === expense.activityId);
           selectedActivityId = expense.activityId;
           expenseDate.value = expense.date;
@@ -3443,7 +2945,6 @@
       renderExpenses(currentPeriod);
       renderMealLog();
       renderExpenseLog();
-      renderDietDashboard();
     }
 
     tabs.forEach((tab) => {
@@ -3477,35 +2978,11 @@
     mealDetailRegister.addEventListener("click", () => {
       registerSelectedRecommendation();
     });
-    mealCompensateLater.addEventListener("click", () => {
-      compensateCurrentMealLater();
-    });
     mealProgressList.addEventListener("click", (event) => {
       const mealButton = event.target.closest("[data-open-meal-detail]");
       if (!mealButton) return;
       event.preventDefault();
       openMealDetail(mealButton.dataset.openMealDetail);
-    });
-    dietDashboard.addEventListener("click", (event) => {
-      const editButton = event.target.closest("[data-diet-edit-meal]");
-      if (editButton) {
-        event.preventDefault();
-        event.stopPropagation();
-        openDietItemEditor(
-          editButton.dataset.dietEditMeal,
-          editButton.dataset.dietEditOption,
-          editButton.dataset.dietEditItem
-        );
-        return;
-      }
-      const optionButton = event.target.closest("[data-diet-meal][data-diet-option]");
-      if (!optionButton) return;
-      dietSelectedOptions[optionButton.dataset.dietMeal] = Number(optionButton.dataset.dietOption) || 0;
-      renderDietDashboard();
-      requestAnimationFrame(() => {
-        const activeOption = dietDashboard.querySelector(`[data-diet-meal="${optionButton.dataset.dietMeal}"][data-diet-option="${optionButton.dataset.dietOption}"]`);
-        activeOption?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
-      });
     });
     recommendationCarousel.addEventListener("click", (event) => {
       if (event.target.closest(".recommendation-card.empty")) {
@@ -3574,7 +3051,7 @@
         foodId: food.id,
         foodName: food.name,
         mealType: selectedMealType,
-        mealTypeName: mealTypes.find((item) => item.id === selectedMealType)?.name || "RefeiÃ§Ã£o",
+        mealTypeName: mealTypes.find((item) => item.id === selectedMealType)?.name || "Refeição",
         mealTime: appData.mealTimes?.[selectedMealType] || defaultMealTimes[selectedMealType],
         grams,
         quantity,
@@ -3637,11 +3114,10 @@
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
         navigator.serviceWorker.register("./service-worker.js").catch((error) => {
-          console.warn("Service worker nÃ£o registrado.", error);
+          console.warn("Service worker não registrado.", error);
         });
       });
     }
   </script>
 </body>
 </html>
-
