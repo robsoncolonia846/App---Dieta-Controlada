@@ -2823,6 +2823,12 @@
     mealDetailRegister.addEventListener("click", () => {
       registerSelectedRecommendation();
     });
+    mealProgressList.addEventListener("click", (event) => {
+      const mealButton = event.target.closest("[data-open-meal-detail]");
+      if (!mealButton) return;
+      event.preventDefault();
+      openMealDetail(mealButton.dataset.openMealDetail);
+    });
     recommendationCarousel.addEventListener("click", (event) => {
       if (event.target.closest(".recommendation-card.empty")) {
         selectedMealType = currentMealDetail;
