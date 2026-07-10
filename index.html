@@ -720,6 +720,34 @@
       pointer-events: none;
     }
 
+    .item-detail-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .quantity-controls {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .qty-button {
+      width: 30px;
+      height: 30px;
+      border: 1px solid #d8e8d8;
+      background: #f7fbf7;
+      color: #209b26;
+      border-radius: 50%;
+      font-weight: 950;
+      font-size: 18px;
+      line-height: 1;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
     .substitute-modal {
       position: fixed;
       inset: 0;
@@ -1645,6 +1673,20 @@
         { icon: "🍊", name: "Laranja", amount: "150g", kcal: 71 },
         { icon: "🍍", name: "Abacaxi", amount: "140g", kcal: 70 }
       ],
+      "abacaxi": [
+        { icon: "🍌", name: "Banana", amount: "75g", kcal: 67 },
+        { icon: "🍎", name: "Maçã", amount: "130g", kcal: 68 },
+        { icon: "🍊", name: "Laranja", amount: "145g", kcal: 68 },
+        { icon: "🥭", name: "Mamão", amount: "160g", kcal: 69 },
+        { icon: "🍓", name: "Morango", amount: "210g", kcal: 67 }
+      ],
+      "morango": [
+        { icon: "🍌", name: "Banana", amount: "50g", kcal: 45 },
+        { icon: "🍎", name: "Maçã", amount: "85g", kcal: 44 },
+        { icon: "🍊", name: "Laranja", amount: "95g", kcal: 45 },
+        { icon: "🍍", name: "Abacaxi", amount: "90g", kcal: 45 },
+        { icon: "🥭", name: "Mamão", amount: "105g", kcal: 45 }
+      ],
       "maca argentina": [
         { icon: "🍌", name: "Banana", amount: "35g", kcal: 31 },
         { icon: "🍊", name: "Laranja", amount: "60g", kcal: 28 }
@@ -1986,7 +2028,15 @@
                 <div class="recommended-item-icon">${item.icon}</div>
                 <div>
                   <div class="meal-name">${item.name}</div>
-                  <div class="muted">${item.amount}${item.kcal ? ` • ${item.kcal} kcal` : ""}</div>
+                  <div class="item-detail-row">
+                    <div class="muted">${item.amount}${item.kcal ? ` • ${round(item.kcal)} kcal` : ""}</div>
+                    ${canAdjustItemAmount(item) ? `
+                      <span class="quantity-controls" aria-label="Ajustar quantidade de ${item.name}">
+                        <span class="qty-button" role="button" tabindex="0" data-adjust-rec="${index}" data-adjust-item="${itemIndex}" data-adjust-delta="-1">−</span>
+                        <span class="qty-button" role="button" tabindex="0" data-adjust-rec="${index}" data-adjust-item="${itemIndex}" data-adjust-delta="1">+</span>
+                      </span>
+                    ` : ""}
+                  </div>
                 </div>
                 <span class="swap-icon" aria-hidden="true">⇄</span>
               </button>
@@ -2074,11 +2124,21 @@
       };
     }
 
+    function substitutesForItemName(name) {
+      const key = normalizeText(name);
+      return substituteCatalog[key]
+        || (key.includes("abacaxi") ? substituteCatalog.abacaxi : null)
+        || (key.includes("morango") ? substituteCatalog.morango : null)
+        || (key.includes("banana") ? substituteCatalog["banana prata"] : null)
+        || (key.includes("laranja") ? substituteCatalog["laranja lima"] : null)
+        || (key.includes("maca") ? substituteCatalog.maca : null)
+        || [];
+    }
+
     function openSubstituteModal(recommendationIndex, itemIndex) {
       const item = currentRecommendationOptions?.[recommendationIndex]?.items?.[itemIndex];
       if (!item) return;
-      const key = normalizeText(item.name);
-      const substitutes = substituteCatalog[key] || [];
+      const substitutes = substitutesForItemName(item.name);
       substituteTarget = { mode: "substitute", recommendationIndex, itemIndex };
       substituteTitle.textContent = "Alimentos Substitutos";
       substituteDescription.textContent = `Esses são os alimentos que você pode substituir por ${item.name}. Se atente às quantidades.`;
