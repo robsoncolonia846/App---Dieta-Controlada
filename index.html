@@ -1267,8 +1267,44 @@
 
     .diet-food-list {
       display: grid;
-      gap: 18px;
+      gap: 14px;
       padding-bottom: 24px;
+    }
+
+    .diet-option-list {
+      display: grid;
+      gap: 16px;
+    }
+
+    .diet-option-card {
+      border: 1px solid #edf0f5;
+      border-radius: 18px;
+      background: #fafbf8;
+      overflow: hidden;
+    }
+
+    .diet-option-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      background: #f4f7f2;
+      border-bottom: 1px solid #edf0f5;
+      font-weight: 950;
+    }
+
+    .diet-option-name {
+      color: #1fa12e;
+    }
+
+    .diet-option-kcal {
+      color: #111827;
+      white-space: nowrap;
+    }
+
+    .diet-option-card .diet-food-list {
+      padding: 16px;
     }
 
     .diet-food-row {
@@ -2135,6 +2171,19 @@
       history.replaceState(null, "", window.location.pathname);
     }
 
+    function cloneDietOption(option) {
+      return {
+        ...option,
+        items: Array.isArray(option?.items) ? option.items.map((item) => ({ ...item })) : []
+      };
+    }
+
+    function recommendationsForMeal(mealId) {
+      const saved = appData?.dietRecommendations?.[mealId];
+      const source = Array.isArray(saved) && saved.length ? saved : (mealRecommendations[mealId] || []);
+      return source.map(cloneDietOption);
+    }
+
     function escapeHTML(value = "") {
       return String(value)
         .replace(/&/g, "&amp;")
@@ -2150,38 +2199,40 @@
       dietProfileHeight.textContent = profileHeightLabel.textContent;
       dietDashboard.innerHTML = mealTypes
         .map((mealType) => {
-          const options = mealRecommendations[mealType.id] || [];
-          const selectedIndex = Math.min(dietSelectedOptions[mealType.id] || 0, Math.max(0, options.length - 1));
-          const selectedOptionRaw = options[selectedIndex] || { kcal: 0, items: [] };
-          const selectedOption = {
-            ...selectedOptionRaw,
-            items: selectedOptionRaw.items.map((item) => hydrateRecommendationItem(item, selectedOptionRaw))
-          };
-          const optionTabs = options.map((option, index) => `
-            <button
-              class="diet-option-tab ${index === selectedIndex ? "active" : ""}"
-              type="button"
-              data-diet-meal="${mealType.id}"
-              data-diet-option="${index}"
-            >Opção ${index + 1}</button>
-          `).join("");
-          const foodsList = selectedOption.items.map((item, itemIndex) => `
-            <div class="diet-food-row">
-              <span class="diet-check">✓</span>
-              <span class="diet-food-name">
-                ${escapeHTML(item.name)}
-                <span class="diet-food-detail">${escapeHTML(item.amount)}${item.kcal ? ` • ${round(item.kcal)} kcal` : ""}</span>
-              </span>
-              <span class="diet-food-amount">${item.kcal ? `${round(item.kcal)} kcal` : escapeHTML(item.amount)}</span>
-              <button
-                class="item-edit-button"
-                type="button"
-                data-diet-edit-meal="${mealType.id}"
-                data-diet-edit-option="${selectedIndex}"
-                data-diet-edit-item="${itemIndex}"
-              >Editar</button>
-            </div>
-          `).join("");
+          const options = recommendationsForMeal(mealType.id);
+          const optionCards = options.map((optionRaw, optionIndex) => {
+            const option = {
+              ...optionRaw,
+              items: optionRaw.items.map((item) => hydrateRecommendationItem(item, optionRaw))
+            };
+            const kcal = option.items.reduce((total, item) => total + (Number(item.kcal) || 0), 0) || option.kcal || 0;
+            const foodsList = option.items.map((item, itemIndex) => `
+              <div class="diet-food-row">
+                <span class="diet-check">✓</span>
+                <span class="diet-food-name">
+                  ${escapeHTML(item.name)}
+                  <span class="diet-food-detail">${escapeHTML(item.amount)}${item.kcal ? ` • ${round(item.kcal)} kcal` : ""}</span>
+                </span>
+                <span class="diet-food-amount">${item.kcal ? `${round(item.kcal)} kcal` : escapeHTML(item.amount)}</span>
+                <button
+                  class="item-edit-button"
+                  type="button"
+                  data-diet-edit-meal="${mealType.id}"
+                  data-diet-edit-option="${optionIndex}"
+                  data-diet-edit-item="${itemIndex}"
+                >Editar</button>
+              </div>
+            `).join("");
+            return `
+              <div class="diet-option-card">
+                <div class="diet-option-head">
+                  <span class="diet-option-name">Opção ${optionIndex + 1}</span>
+                  <span class="diet-option-kcal">${round(kcal)} kcal</span>
+                </div>
+                <div class="diet-food-list">${foodsList}</div>
+              </div>
+            `;
+          }).join("");
           return `
             <article class="diet-card">
               <div class="diet-card-inner">
@@ -2191,11 +2242,10 @@
                     <div class="diet-card-title">${mealDetailLabels[mealType.id] || mealType.name}</div>
                     <div class="diet-card-time">${appData.mealTimes?.[mealType.id] || mealType.defaultTime}</div>
                   </div>
-                  <div class="diet-card-kcal">${selectedOption.kcal || 0} kcal</div>
+                  <div class="diet-card-kcal">${options.length} opções</div>
                 </div>
                 <div class="diet-card-divider"></div>
-                <div class="diet-option-tabs">${optionTabs}</div>
-                <div class="diet-food-list">${foodsList}</div>
+                <div class="diet-option-list">${optionCards}</div>
               </div>
               <div class="diet-prep"><span>▤</span><span>Ver preparo</span></div>
             </article>
@@ -2219,6 +2269,7 @@
       meals: Array.isArray(appData.meals) ? appData.meals : [],
       expenses: Array.isArray(appData.expenses) ? appData.expenses : [],
       compensations: Array.isArray(appData.compensations) ? appData.compensations : [],
+      dietRecommendations: appData.dietRecommendations && typeof appData.dietRecommendations === "object" ? appData.dietRecommendations : {},
       water: appData.water && typeof appData.water === "object" ? appData.water : {},
       mealTimes: { ...defaultMealTimes, ...(appData.mealTimes || {}) },
       profile: { ...defaultProfile, ...(appData.profile || {}) }
@@ -2261,6 +2312,7 @@
     let substituteTarget = null;
     let dietSelectedOptions = {};
     let editingMealType = null;
+    let editingDietTemplate = null;
 
     mealDate.value = todayISO();
     expenseDate.value = todayISO();
@@ -2355,7 +2407,7 @@
 
     function createCompensationOption(compensation) {
       const originalMeal = mealTypes.find((item) => item.id === compensation.mealType) || mealTypes[0];
-      const baseOption = (mealRecommendations[compensation.mealType] || [])[0] || { kcal: mealKcalTarget(compensation.mealType), items: [] };
+      const baseOption = (recommendationsForMeal(compensation.mealType) || [])[0] || { kcal: mealKcalTarget(compensation.mealType), items: [] };
       const option = {
         ...baseOption,
         compensationFor: compensation.id,
@@ -2392,7 +2444,7 @@
     }
 
     function showMealRecommendationOptions(mealType) {
-      const options = mealRecommendations[mealType.id] || [];
+      const options = recommendationsForMeal(mealType.id);
       currentRecommendationOptions = options.map((option) => ({
         ...option,
         items: option.items.map((item) => hydrateRecommendationItem(item, option))
@@ -2409,20 +2461,19 @@
 
     function openDietItemEditor(mealTypeId, optionIndex, itemIndex) {
       const mealType = mealTypes.find((item) => item.id === mealTypeId) || mealTypes[0];
-      const options = mealRecommendations[mealType.id] || [];
+      const options = recommendationsForMeal(mealType.id);
       const safeOptionIndex = Math.max(0, Math.min(Number(optionIndex) || 0, Math.max(0, options.length - 1)));
       currentMealDetail = mealType.id;
       selectedMealType = mealType.id;
       selectedRecommendationIndex = safeOptionIndex;
-      editingMealType = appData.meals.some((item) => item.date === todayISO() && item.mealType === mealType.id)
-        ? mealType.id
-        : null;
+      editingMealType = null;
+      editingDietTemplate = { mealTypeId: mealType.id, optionIndex: safeOptionIndex };
       mealDetailTitle.textContent = mealDetailLabels[mealType.id] || mealType.name;
       mealDetailIcon.textContent = mealType.icon;
       mealDetailTime.value = appData.mealTimes?.[mealType.id] || mealType.defaultTime;
       mealDetailStatus.textContent = "Editando";
-      mealDetailSubtitle.textContent = "Ajuste ou substitua o alimento selecionado";
-      mealDetailRegister.textContent = editingMealType ? "Salvar edição" : "Registrar dieta";
+      mealDetailSubtitle.textContent = "Ajuste o cadastro fixo desta opção de dieta";
+      mealDetailRegister.textContent = "Salvar opção";
       mealCompensateLater.classList.add("hidden");
       currentRecommendationOptions = options.map((option) => ({
         ...option,
@@ -2567,6 +2618,7 @@
     function openMealDetail(mealTypeId) {
       currentMealDetail = mealTypeId;
       editingMealType = null;
+      editingDietTemplate = null;
       selectedRecommendationIndex = null;
       mealDetailRegister.classList.add("hidden");
       mealDetailRegister.textContent = "Registrar dieta";
@@ -2627,6 +2679,7 @@
         const editButton = document.getElementById("edit-registered-meal");
         editButton?.addEventListener("click", () => {
           editingMealType = mealType.id;
+          editingDietTemplate = null;
           selectedRecommendationIndex = null;
           mealDetailStatus.textContent = "Editando";
           mealDetailSubtitle.textContent = "Escolha uma nova opção para substituir o lançamento atual";
@@ -2986,6 +3039,35 @@
       closeSubstituteModal();
     }
 
+    function saveDietTemplateOption() {
+      if (!editingDietTemplate) return false;
+      const option = currentRecommendationOptions[selectedRecommendationIndex];
+      if (!option) return false;
+      const mealTypeId = editingDietTemplate.mealTypeId;
+      const optionIndex = editingDietTemplate.optionIndex;
+      const currentOptions = recommendationsForMeal(mealTypeId);
+      currentOptions[optionIndex] = {
+        kcal: round(option.kcal || option.items.reduce((total, item) => total + (Number(item.kcal) || 0), 0)),
+        items: option.items.map((item) => ({
+          icon: item.icon,
+          name: item.name,
+          amount: item.amount,
+          kcal: Number(item.kcal) || undefined,
+          protein: Number(item.protein) || undefined,
+          carbs: Number(item.carbs) || undefined
+        }))
+      };
+      appData.dietRecommendations[mealTypeId] = currentOptions.map(cloneDietOption);
+      saveData();
+      editingDietTemplate = null;
+      selectedRecommendationIndex = null;
+      mealDetailRegister.textContent = "Registrar dieta";
+      mealDetailRegister.classList.add("hidden");
+      renderAll();
+      openTab("refeicao");
+      return true;
+    }
+
     function registerSelectedRecommendation() {
       const option = currentRecommendationOptions[selectedRecommendationIndex];
       const mealType = option?.compensationMealType
@@ -2995,6 +3077,10 @@
         selectedMealType = currentMealDetail;
         renderMealTypeOptions();
         openTab("refeicao");
+        return;
+      }
+      if (editingDietTemplate) {
+        saveDietTemplateOption();
         return;
       }
       const itemsLabel = option.items.map((item) => `${item.name} (${item.amount})`).join(", ") || "Sem itens";
@@ -3644,4 +3730,3 @@
   </script>
 </body>
 </html>
-
