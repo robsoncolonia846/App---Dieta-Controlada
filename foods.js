@@ -658,7 +658,7 @@ export const foods = [
     carbsPer100g: 56,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "fatia", name: "Fatia", grams: 50 }
+      { id: "porcao-50g", name: "Porção de 50g", grams: 50 }
     ]
   },
   {

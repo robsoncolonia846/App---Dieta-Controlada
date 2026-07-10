@@ -398,6 +398,94 @@
       color: #a02b2b;
     }
 
+    .calorie-range {
+      display: grid;
+      gap: 8px;
+      margin-top: 2px;
+      padding: 12px;
+      border-radius: 14px;
+      background: #f6f8f4;
+    }
+
+    .calorie-range-head,
+    .calorie-range-labels {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .calorie-range-head span {
+      color: #748167;
+    }
+
+    .calorie-range-head strong {
+      color: #243119;
+    }
+
+    .calorie-range-track {
+      position: relative;
+      height: 10px;
+      border-radius: 999px;
+      background: #e4e4e8;
+      overflow: visible;
+    }
+
+    .calorie-range-fill {
+      height: 100%;
+      width: var(--width, 0%);
+      border-radius: inherit;
+      background: #2f80ed;
+      transition: width 0.2s ease, background-color 0.2s ease;
+    }
+
+    .calorie-range.good .calorie-range-fill {
+      background: #209b26;
+    }
+
+    .calorie-range.warn .calorie-range-fill {
+      background: #f2c94c;
+    }
+
+    .calorie-range.danger .calorie-range-fill {
+      background: #d94b4b;
+    }
+
+    .calorie-range-marker {
+      position: absolute;
+      top: -4px;
+      left: var(--left, 0%);
+      width: 3px;
+      height: 18px;
+      border-radius: 999px;
+      background: #243119;
+      transform: translateX(-50%);
+    }
+
+    .calorie-range-marker.max {
+      transform: translateX(-100%);
+    }
+
+    .calorie-range-labels {
+      position: relative;
+      height: 16px;
+      color: #748167;
+      font-size: 11px;
+    }
+
+    .calorie-range-labels span {
+      position: absolute;
+      left: var(--left, 0%);
+      transform: translateX(-50%);
+      white-space: nowrap;
+    }
+
+    .calorie-range-labels span:last-child {
+      transform: translateX(-100%);
+    }
+
     .progress-row {
       display: grid;
       gap: 4px;
@@ -1477,6 +1565,21 @@
                 </div>
               </div>
               <div class="goal-alert" id="goal-alert">Dia no controle. Continue assim.</div>
+              <div class="calorie-range" id="calorie-range">
+                <div class="calorie-range-head">
+                  <span>Faixa diária</span>
+                  <strong id="calorie-range-current">0 kcal</strong>
+                </div>
+                <div class="calorie-range-track" aria-label="Faixa de calorias entre 1400 e 1900 kcal">
+                  <div class="calorie-range-fill" id="calorie-range-fill"></div>
+                  <span class="calorie-range-marker min" style="--left: 73.7%;"></span>
+                  <span class="calorie-range-marker max" style="--left: 100%;"></span>
+                </div>
+                <div class="calorie-range-labels">
+                  <span style="--left: 73.7%;">1400 kcal</span>
+                  <span style="--left: 100%;">1900 kcal</span>
+                </div>
+              </div>
               <div class="summary-footer">
                 <div>
                   <div class="muted">Restante</div>
@@ -1704,6 +1807,9 @@
     const goalBannerValue = document.getElementById("goal-banner-value");
     const goalPercent = document.getElementById("goal-percent");
     const goalAlert = document.getElementById("goal-alert");
+    const calorieRange = document.getElementById("calorie-range");
+    const calorieRangeCurrent = document.getElementById("calorie-range-current");
+    const calorieRangeFill = document.getElementById("calorie-range-fill");
     const calorieRing = document.getElementById("calorie-ring");
     const calorieFill = document.getElementById("calorie-fill");
     const proteinFill = document.getElementById("protein-fill");
@@ -1784,6 +1890,8 @@
     const normalizeText = (value) => value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
     const sortByName = (items) => [...items].sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
     const round = (value) => Math.round(value * 10) / 10;
+    const calorieRangeMin = 1400;
+    const calorieRangeMax = 1900;
     const dayStartsAtHour = 6;
     const localISODate = (date = new Date()) => {
       const year = date.getFullYear();
@@ -3429,6 +3537,18 @@
       proteinFill.style.setProperty("--width", `${proteinPercent}%`);
       carbsFill.style.setProperty("--width", `${carbsPercent}%`);
       spentFill.style.setProperty("--width", `${spentPercent}%`);
+      renderCalorieRange(consumed);
+    }
+
+    function renderCalorieRange(consumed) {
+      const width = Math.max(0, Math.min(100, Math.round((consumed / calorieRangeMax) * 100)));
+      const greenStart = calorieRangeMin - 200;
+      const yellowStart = calorieRangeMax - 200;
+      calorieRangeCurrent.textContent = `${consumed.toLocaleString("pt-BR")} kcal`;
+      calorieRangeFill.style.setProperty("--width", `${width}%`);
+      calorieRange.classList.toggle("good", consumed >= greenStart && consumed < yellowStart);
+      calorieRange.classList.toggle("warn", consumed >= yellowStart && consumed < calorieRangeMax);
+      calorieRange.classList.toggle("danger", consumed >= calorieRangeMax);
     }
 
     function renderConsumption(period = currentPeriod) {
