@@ -2007,7 +2007,7 @@
       const options = mealRecommendations[mealType.id] || [];
       currentRecommendationOptions = options.map((option) => ({
         ...option,
-        items: option.items.map((item) => ({ ...item }))
+        items: option.items.map((item) => hydrateRecommendationItem(item, option))
       }));
       renderRecommendationOptions();
       openTab("refeicao-detalhe");
@@ -2076,6 +2076,22 @@
           openAddItemModal(Number(button.dataset.addItemRec));
         });
       });
+      recommendationCarousel.querySelectorAll("[data-adjust-rec]").forEach((button) => {
+        const runAdjustment = (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          event.stopImmediatePropagation?.();
+          adjustRecommendationItemAmount(
+            Number(button.dataset.adjustRec),
+            Number(button.dataset.adjustItem),
+            Number(button.dataset.adjustDelta)
+          );
+        };
+        button.addEventListener("click", runAdjustment);
+        button.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") runAdjustment(event);
+        });
+      });
     }
 
     function selectRecommendation(index) {
@@ -2089,6 +2105,105 @@
 
     function recalculateRecommendation(option) {
       option.kcal = option.items.reduce((total, item) => total + (Number(item.kcal) || 0), 0);
+    }
+
+    function parseAmount(amount = "") {
+      const text = String(amount).trim().toLowerCase();
+      const match = text.match(/([\d,.]+)/);
+      if (!match) return null;
+      const value = Number(match[1].replace(",", "."));
+      if (!Number.isFinite(value)) return null;
+      if (text.includes("ml")) return { value, unit: "ml", step: 50, label: "ml" };
+      if (text.includes("g")) return { value, unit: "g", step: 50, label: "g" };
+      if (text.includes("fatia")) return { value, unit: "fatia", step: 1, label: value === 1 ? "fatia" : "fatias" };
+      if (text.includes("ovo")) return { value, unit: "ovo", step: 1, label: value === 1 ? "ovo" : "ovos" };
+      if (text.includes("colher")) return { value, unit: "colher", step: 1, label: value === 1 ? "colher" : "colheres" };
+      if (text.includes("concha")) return { value, unit: "concha", step: 1, label: value === 1 ? "concha" : "conchas" };
+      if (text.includes("unidade") || text.includes("unid")) return { value, unit: "unidade", step: 1, label: value === 1 ? "unidade" : "unidades" };
+      return { value, unit: "unidade", step: 1, label: value === 1 ? "unidade" : "unidades" };
+    }
+
+    function formatAdjustedAmount(parsed, value) {
+      const roundedValue = parsed.unit === "g" || parsed.unit === "ml" ? Math.round(value) : value;
+      if (parsed.unit === "g" || parsed.unit === "ml") return `${roundedValue}${parsed.unit}`;
+      const pluralByUnit = {
+        fatia: "fatias",
+        ovo: "ovos",
+        colher: "colheres",
+        concha: "conchas",
+        unidade: "unidades"
+      };
+      const singularByUnit = {
+        fatia: "fatia",
+        ovo: "ovo",
+        colher: "colher",
+        concha: "concha",
+        unidade: "unidade"
+      };
+      const label = roundedValue === 1
+        ? (singularByUnit[parsed.unit] || parsed.label.replace(/s$/, ""))
+        : (pluralByUnit[parsed.unit] || parsed.label);
+      return `${roundedValue} ${label}`;
+    }
+
+    function findFoodByName(name = "") {
+      const key = normalizeText(name);
+      return foods.find((food) => normalizeText(food.name) === key)
+        || foods.find((food) => key.includes(normalizeText(food.name)) || normalizeText(food.name).includes(key));
+    }
+
+    function estimateKcalFromFood(item) {
+      const parsed = parseAmount(item.amount);
+      const food = findFoodByName(item.name);
+      if (!parsed || !food) return 0;
+      let grams = parsed.value;
+      if (parsed.unit !== "g" && parsed.unit !== "ml") {
+        const serving = food.servings?.find((option) => normalizeText(option.name).includes(parsed.unit));
+        grams = parsed.value * (Number(serving?.grams) || 50);
+      }
+      return Math.round((Number(food.caloriesPer100g) || 0) * grams / 100);
+    }
+
+    function hydrateRecommendationItem(item, option) {
+      const hydrated = { ...item };
+      const parsed = parseAmount(hydrated.amount);
+      if (!parsed) return hydrated;
+      if (!Number(hydrated.kcal)) {
+        hydrated.kcal = estimateKcalFromFood(hydrated) || Math.round((Number(option.kcal) || 0) / Math.max(1, option.items.length));
+      }
+      hydrated.baseAmountValue = parsed.value;
+      hydrated.baseAmountUnit = parsed.unit;
+      hydrated.baseKcal = Number(hydrated.kcal) || 0;
+      hydrated.baseProtein = Number(hydrated.protein) || 0;
+      hydrated.baseCarbs = Number(hydrated.carbs) || 0;
+      return hydrated;
+    }
+
+    function canAdjustItemAmount(item) {
+      return Boolean(parseAmount(item.amount));
+    }
+
+    function adjustRecommendationItemAmount(recommendationIndex, itemIndex, direction) {
+      const option = currentRecommendationOptions?.[recommendationIndex];
+      const item = option?.items?.[itemIndex];
+      const parsed = parseAmount(item?.amount);
+      if (!option || !item || !parsed || !direction) return;
+      if (!item.baseAmountValue || item.baseAmountUnit !== parsed.unit) {
+        item.baseAmountValue = parsed.value;
+        item.baseAmountUnit = parsed.unit;
+        item.baseKcal = Number(item.kcal) || estimateKcalFromFood(item) || 0;
+        item.baseProtein = Number(item.protein) || 0;
+        item.baseCarbs = Number(item.carbs) || 0;
+      }
+      const minValue = parsed.unit === "g" || parsed.unit === "ml" ? parsed.step : 1;
+      const nextValue = Math.max(minValue, parsed.value + parsed.step * direction);
+      const ratio = item.baseAmountValue ? nextValue / item.baseAmountValue : 1;
+      item.amount = formatAdjustedAmount(parsed, nextValue);
+      if (item.baseKcal) item.kcal = Math.round(item.baseKcal * ratio);
+      if (item.baseProtein) item.protein = Number((item.baseProtein * ratio).toFixed(1));
+      if (item.baseCarbs) item.carbs = Number((item.baseCarbs * ratio).toFixed(1));
+      recalculateRecommendation(option);
+      renderRecommendationOptions();
     }
 
     function iconForFoodName(name = "") {
@@ -2208,7 +2323,7 @@
       const { recommendationIndex, itemIndex } = substituteTarget;
       const option = currentRecommendationOptions?.[recommendationIndex];
       if (!option?.items?.[itemIndex]) return;
-      option.items[itemIndex] = { ...substitute, substituted: true };
+      option.items[itemIndex] = hydrateRecommendationItem({ ...substitute, substituted: true }, option);
       recalculateRecommendation(option);
       renderRecommendationOptions();
       closeSubstituteModal();
@@ -2229,7 +2344,7 @@
       if (!substituteTarget || !food) return;
       const option = currentRecommendationOptions?.[substituteTarget.recommendationIndex];
       if (!option) return;
-      option.items.push(foodToRecommendationItem(food));
+      option.items.push(hydrateRecommendationItem(foodToRecommendationItem(food), option));
       recalculateRecommendation(option);
       renderRecommendationOptions();
       closeSubstituteModal();
