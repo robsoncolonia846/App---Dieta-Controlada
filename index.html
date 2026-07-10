@@ -491,6 +491,15 @@
       border-color: #25a330;
     }
 
+    .meal-step.pending .meal-icon {
+      background: #fff7dc;
+      border-color: #e6ad23;
+    }
+
+    .meal-step.pending .meal-kcal-target {
+      color: #8a6100;
+    }
+
     .meal-step.done .meal-icon::after {
       content: "✓";
       position: absolute;
@@ -885,6 +894,15 @@
       font-weight: 950;
       cursor: pointer;
       touch-action: manipulation;
+    }
+
+    .compensation-pill {
+      border: 1.5px solid #e6ad23;
+      border-radius: 12px;
+      color: #8a6100;
+      background: #fff7dc;
+      padding: 8px 12px;
+      font-weight: 950;
     }
 
     .carousel-dots {
@@ -1361,6 +1379,7 @@
 
             <div class="recommendation-carousel" id="recommendation-carousel"></div>
             <div class="carousel-dots" id="recommendation-dots"></div>
+            <button class="add-recommendation-item" type="button" id="meal-compensate-later" style="width:100%; margin-top: 14px;">Compensar mais tarde</button>
             <button class="button" type="button" id="meal-detail-register" style="margin-top: 18px;">Registrar dieta</button>
           </section>
 
@@ -1418,6 +1437,7 @@
     const recommendationCarousel = document.getElementById("recommendation-carousel");
     const recommendationDots = document.getElementById("recommendation-dots");
     const mealDetailRegister = document.getElementById("meal-detail-register");
+    const mealCompensateLater = document.getElementById("meal-compensate-later");
     const substituteModal = document.getElementById("substitute-modal");
     const substituteClose = document.getElementById("substitute-close");
     const substituteTitle = document.getElementById("substitute-title");
@@ -1881,6 +1901,7 @@
     appData = {
       meals: Array.isArray(appData.meals) ? appData.meals : [],
       expenses: Array.isArray(appData.expenses) ? appData.expenses : [],
+      compensations: Array.isArray(appData.compensations) ? appData.compensations : [],
       water: appData.water && typeof appData.water === "object" ? appData.water : {},
       mealTimes: { ...defaultMealTimes, ...(appData.mealTimes || {}) },
       profile: { ...defaultProfile, ...(appData.profile || {}) }
@@ -1992,6 +2013,65 @@
       return Math.round(dailyTarget() * (mealTargetWeights[mealId] || (1 / mealTypes.length)));
     }
 
+    function mealOrderIndex(mealId) {
+      return mealTypes.findIndex((item) => item.id === mealId);
+    }
+
+    function mealLabel(mealId) {
+      return mealDetailLabels[mealId] || mealTypes.find((item) => item.id === mealId)?.name || "Refeição";
+    }
+
+    function pendingCompensationsForToday() {
+      return appData.compensations.filter((item) => item.date === todayISO() && item.status === "pending");
+    }
+
+    function compensationForMeal(mealId) {
+      return appData.compensations.find((item) => item.date === todayISO() && item.mealType === mealId);
+    }
+
+    function pendingCompensationsForMealDetail(mealId) {
+      const currentOrder = mealOrderIndex(mealId);
+      return pendingCompensationsForToday().filter((item) => mealOrderIndex(item.mealType) < currentOrder);
+    }
+
+    function createCompensationOption(compensation) {
+      const originalMeal = mealTypes.find((item) => item.id === compensation.mealType) || mealTypes[0];
+      const baseOption = (mealRecommendations[compensation.mealType] || [])[0] || { kcal: mealKcalTarget(compensation.mealType), items: [] };
+      const option = {
+        ...baseOption,
+        compensationFor: compensation.id,
+        compensationMealType: compensation.mealType,
+        compensationLabel: mealLabel(compensation.mealType),
+        items: baseOption.items.map((item) => hydrateRecommendationItem(item, baseOption))
+      };
+      option.kcal = option.items.reduce((total, item) => total + (Number(item.kcal) || 0), 0) || baseOption.kcal || mealKcalTarget(originalMeal.id);
+      return option;
+    }
+
+    function markCompensationCompleted(compensationId, compensatedAtMealType) {
+      const compensation = appData.compensations.find((item) => item.id === compensationId);
+      if (!compensation) return;
+      compensation.status = "done";
+      compensation.compensatedAt = new Date().toISOString();
+      compensation.compensatedMealType = compensatedAtMealType;
+    }
+
+    function compensateCurrentMealLater() {
+      const mealType = mealTypes.find((item) => item.id === currentMealDetail);
+      if (!mealType || compensationForMeal(mealType.id)) return;
+      appData.compensations.unshift({
+        id: `${Date.now()}`,
+        date: todayISO(),
+        mealType: mealType.id,
+        mealTypeName: mealType.name,
+        status: "pending",
+        createdAt: new Date().toISOString()
+      });
+      saveData();
+      renderAll();
+      openTab("hoje");
+    }
+
     function minutesFromTime(time = "00:00") {
       const [hours, minutes] = String(time).split(":").map(Number);
       return (hours || 0) * 60 + (minutes || 0);
@@ -2053,6 +2133,11 @@
         const weight = 100 / mealTypes.length;
         totalWeight += weight;
         const registered = todayMeals.find((item) => item.mealType === meal.id);
+        const compensation = compensationForMeal(meal.id);
+        if (!registered && compensation?.status === "done") {
+          earned += weight;
+          return;
+        }
         if (registered) {
           const registeredMinute = minutesFromTime(registered.mealTime || time);
           const delay = Math.max(0, registeredMinute - mealMinute);
@@ -2060,6 +2145,11 @@
           if (delay > 30 && !worstAlert) {
             worstAlert = { level: "warn", text: `${meal.name} registrada com atraso.` };
           }
+          return;
+        }
+        if (compensation?.status === "pending") {
+          earned += weight * 0.45;
+          worstAlert = worstAlert || { level: "warn", text: `${meal.name} pendente para compensar mais tarde.` };
           return;
         }
         const delayNow = now - mealMinute;
@@ -2092,15 +2182,20 @@
     function renderMealsProgress() {
       const todayMeals = appData.meals.filter((item) => item.date === todayISO());
       const completed = new Set(todayMeals.map((item) => item.mealType).filter(Boolean));
+      appData.compensations
+        .filter((item) => item.date === todayISO() && item.status === "done")
+        .forEach((item) => completed.add(item.mealType));
+      const pending = new Set(pendingCompensationsForToday().map((item) => item.mealType));
       const count = completed.size;
       const percent = Math.round((count / mealTypes.length) * 100);
       mealProgressCount.textContent = `${count}/${mealTypes.length}`;
       mealProgressFill.style.setProperty("--width", `${percent}%`);
       mealProgressList.innerHTML = mealTypes.map((meal) => {
         const done = completed.has(meal.id);
+        const waiting = !done && pending.has(meal.id);
         const time = appData.mealTimes?.[meal.id] || meal.defaultTime;
         const kcal = mealKcalTarget(meal.id);
-        return `<button type="button" class="meal-step ${done ? "done" : ""}" data-open-meal-detail="${meal.id}"><div class="meal-icon">${meal.icon}</div><div>${meal.name}</div><div class="meal-kcal-target">${kcal} kcal</div><div class="muted">${time}</div></button>`;
+        return `<button type="button" class="meal-step ${done ? "done" : waiting ? "pending" : ""}" data-open-meal-detail="${meal.id}"><div class="meal-icon">${meal.icon}</div><div>${meal.name}</div><div class="meal-kcal-target">${kcal} kcal</div><div class="muted">${waiting ? "Compensar" : time}</div></button>`;
       }).join("");
       mealProgressList.querySelectorAll("[data-open-meal-detail]").forEach((button) => {
         button.addEventListener("click", () => openMealDetail(button.dataset.openMealDetail));
@@ -2111,16 +2206,32 @@
       currentMealDetail = mealTypeId;
       selectedRecommendationIndex = null;
       mealDetailRegister.classList.add("hidden");
+      mealCompensateLater.classList.remove("hidden");
+      mealCompensateLater.disabled = false;
+      mealCompensateLater.textContent = "Compensar mais tarde";
       const mealType = mealTypes.find((item) => item.id === mealTypeId) || mealTypes[0];
       selectedMealType = mealType.id;
       const registeredMeals = appData.meals.filter((item) => item.date === todayISO() && item.mealType === mealType.id);
       const alreadyDone = registeredMeals.length > 0;
+      const compensation = compensationForMeal(mealType.id);
       mealDetailTitle.textContent = mealDetailLabels[mealType.id] || mealType.name;
       mealDetailIcon.textContent = mealType.icon;
       mealDetailTime.value = appData.mealTimes?.[mealType.id] || mealType.defaultTime;
       mealDetailStatus.textContent = alreadyDone ? "Concluída" : "Pendente";
       mealDetailSubtitle.textContent = alreadyDone
         ? "Você já registrou essa refeição hoje"
+        : "Escolha uma sugestão ou crie sua própria refeição";
+      if (alreadyDone || compensation?.status === "done") {
+        mealCompensateLater.classList.add("hidden");
+      } else if (compensation?.status === "pending") {
+        mealCompensateLater.textContent = "Compensação pendente";
+        mealCompensateLater.disabled = true;
+      }
+      mealDetailStatus.textContent = alreadyDone || compensation?.status === "done" ? "Concluída" : compensation?.status === "pending" ? "Compensar" : "Pendente";
+      mealDetailSubtitle.textContent = alreadyDone || compensation?.status === "done"
+        ? "Você já registrou essa refeição hoje"
+        : compensation?.status === "pending"
+        ? "Esta refeição ficou pendente para compensar mais tarde"
         : "Escolha uma sugestão ou crie sua própria refeição";
       if (alreadyDone) {
         recommendationCarousel.innerHTML = registeredMeals.map((item) => {
@@ -2154,6 +2265,10 @@
         ...option,
         items: option.items.map((item) => hydrateRecommendationItem(item, option))
       }));
+      currentRecommendationOptions = [
+        ...pendingCompensationsForMealDetail(mealType.id).map(createCompensationOption),
+        ...currentRecommendationOptions
+      ];
       renderRecommendationOptions();
       openTab("refeicao-detalhe");
     }
@@ -2166,6 +2281,7 @@
               <button class="selected-pill" type="button" data-select-rec="${index}">
                 ${index === selectedRecommendationIndex ? "✓ Selecionada" : "Selecionar"}
               </button>
+              ${option.compensationFor ? `<span class="compensation-pill">Compensar ${option.compensationLabel}</span>` : ""}
               <span class="kcal-pill">${option.kcal} kcal</span>
             </div>
             ${option.items.map((item, itemIndex) => `
@@ -2502,8 +2618,10 @@
     }
 
     function registerSelectedRecommendation() {
-      const mealType = mealTypes.find((item) => item.id === currentMealDetail) || mealTypes[0];
       const option = currentRecommendationOptions[selectedRecommendationIndex];
+      const mealType = option?.compensationMealType
+        ? mealTypes.find((item) => item.id === option.compensationMealType) || mealTypes[0]
+        : mealTypes.find((item) => item.id === currentMealDetail) || mealTypes[0];
       if (!option) {
         selectedMealType = currentMealDetail;
         renderMealTypeOptions();
@@ -2517,10 +2635,10 @@
         id: `${Date.now()}`,
         date: todayISO(),
         foodId: `sugestao-${mealType.id}-${Date.now()}`,
-        foodName: `${mealDetailLabels[mealType.id] || mealType.name}: ${itemsLabel}`,
+        foodName: `${option.compensationFor ? "Compensação - " : ""}${mealDetailLabels[mealType.id] || mealType.name}: ${itemsLabel}`,
         mealType: mealType.id,
         mealTypeName: mealType.name,
-        mealTime: appData.mealTimes?.[mealType.id] || defaultMealTimes[mealType.id],
+        mealTime: appData.mealTimes?.[currentMealDetail] || defaultMealTimes[currentMealDetail],
         grams: 0,
         quantity: 1,
         servingName: "Dieta sugerida",
@@ -2529,6 +2647,12 @@
         protein: round(proteinTotal),
         carbs: round(carbsTotal)
       });
+      if (option.compensationFor) {
+        markCompensationCompleted(option.compensationFor, currentMealDetail);
+      } else {
+        const pendingForMeal = appData.compensations.find((item) => item.date === todayISO() && item.mealType === mealType.id && item.status === "pending");
+        if (pendingForMeal) markCompensationCompleted(pendingForMeal.id, currentMealDetail);
+      }
       saveData();
       currentPeriod = "hoje";
       periodButtons.forEach((item) => item.classList.toggle("active", item.dataset.period === "hoje"));
@@ -2977,6 +3101,9 @@
     });
     mealDetailRegister.addEventListener("click", () => {
       registerSelectedRecommendation();
+    });
+    mealCompensateLater.addEventListener("click", () => {
+      compensateCurrentMealLater();
     });
     mealProgressList.addEventListener("click", (event) => {
       const mealButton = event.target.closest("[data-open-meal-detail]");
