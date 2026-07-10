@@ -694,9 +694,95 @@
     }
 
     .swap-icon {
+      border: 0;
+      background: transparent;
       color: #209b26;
       font-size: 24px;
       font-weight: 900;
+      padding: 8px;
+      cursor: pointer;
+    }
+
+    .substitute-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 30;
+      display: grid;
+      align-items: end;
+      background: rgba(0, 0, 0, 0.62);
+    }
+
+    .substitute-sheet {
+      width: 100%;
+      max-width: 480px;
+      max-height: 82vh;
+      margin: 0 auto;
+      overflow-y: auto;
+      background: #fff;
+      border-radius: 24px 24px 0 0;
+      padding: 18px 22px 28px;
+      box-shadow: 0 -16px 32px rgba(0, 0, 0, 0.15);
+    }
+
+    .sheet-handle {
+      width: 54px;
+      height: 6px;
+      border-radius: 999px;
+      background: #e3e4e8;
+      margin: 0 auto 28px;
+    }
+
+    .sheet-close {
+      border: 0;
+      background: transparent;
+      color: #6d7080;
+      font-size: 42px;
+      line-height: 1;
+      float: right;
+    }
+
+    .substitute-head {
+      clear: both;
+      display: grid;
+      justify-items: center;
+      text-align: center;
+      gap: 12px;
+      padding: 12px 0 22px;
+    }
+
+    .substitute-head-icon {
+      font-size: 58px;
+    }
+
+    .substitute-list {
+      display: grid;
+      gap: 12px;
+      padding-top: 10px;
+    }
+
+    .substitute-option {
+      border: 1px solid #e4e5e9;
+      background: #fafbfc;
+      border-radius: 18px;
+      padding: 16px;
+      display: grid;
+      grid-template-columns: 54px 1fr auto;
+      align-items: center;
+      gap: 14px;
+      text-align: left;
+      font: inherit;
+      color: inherit;
+    }
+
+    .substitute-info {
+      color: #9b9da6;
+      border: 2px solid #c5c7ce;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      font-weight: 950;
     }
 
     .recipe-button {
@@ -1188,6 +1274,20 @@
         </main>
   </div>
 
+  <div class="substitute-modal hidden" id="substitute-modal" role="dialog" aria-modal="true" aria-labelledby="substitute-title">
+    <div class="substitute-sheet">
+      <div class="sheet-handle"></div>
+      <button class="sheet-close" type="button" id="substitute-close" aria-label="Fechar substitutos">×</button>
+      <div class="substitute-head">
+        <div class="substitute-head-icon">🍽️</div>
+        <h2 id="substitute-title">Alimentos Substitutos</h2>
+        <div class="muted" id="substitute-description">Selecione um alimento para substituir.</div>
+        <div class="muted">Se atente às quantidades.</div>
+      </div>
+      <div class="substitute-list" id="substitute-list"></div>
+    </div>
+  </div>
+
   <script type="module">
     const tabs = document.querySelectorAll(".tab");
     const sections = document.querySelectorAll("main > section");
@@ -1224,6 +1324,10 @@
     const recommendationCarousel = document.getElementById("recommendation-carousel");
     const recommendationDots = document.getElementById("recommendation-dots");
     const mealDetailRegister = document.getElementById("meal-detail-register");
+    const substituteModal = document.getElementById("substitute-modal");
+    const substituteClose = document.getElementById("substitute-close");
+    const substituteDescription = document.getElementById("substitute-description");
+    const substituteList = document.getElementById("substitute-list");
     const consumoTitle = document.getElementById("consumo-title");
     const consumoResumo = document.getElementById("consumo-resumo");
     const gastoTitle = document.getElementById("gasto-title");
@@ -1491,6 +1595,42 @@
       ]
     };
 
+    const substituteCatalog = {
+      "iogurte desnatado": [
+        { icon: "🥛", name: "Leite", amount: "135g", kcal: 81 },
+        { icon: "🥛", name: "Leite desnatado", amount: "235g", kcal: 82 },
+        { icon: "🥤", name: "Whey Protein", amount: "20g", kcal: 80 }
+      ],
+      "pao frances": [
+        { icon: "🍞", name: "Pão", amount: "1 unidade", kcal: 125 },
+        { icon: "🍞", name: "Pão de forma", amount: "1 unidade", kcal: 127 }
+      ],
+      "pao de forma": [
+        { icon: "🍞", name: "Pão", amount: "1 unidade", kcal: 125 },
+        { icon: "🥖", name: "Pão francês", amount: "1 unidade", kcal: 125 }
+      ],
+      "banana prata": [
+        { icon: "🍎", name: "Maçã", amount: "25g", kcal: 13 },
+        { icon: "🥭", name: "Mamão", amount: "30g", kcal: 13 },
+        { icon: "🍊", name: "Laranja", amount: "30g", kcal: 14 },
+        { icon: "🍍", name: "Abacaxi", amount: "25g", kcal: 13 }
+      ],
+      "laranja lima": [
+        { icon: "🍌", name: "Banana", amount: "30g", kcal: 27 },
+        { icon: "🍎", name: "Maçã", amount: "50g", kcal: 26 }
+      ],
+      "ovo mexido": [
+        { icon: "🥚", name: "Ovo", amount: "1 unidade", kcal: 78 },
+        { icon: "🍳", name: "Omelete", amount: "1 unidade", kcal: 78 },
+        { icon: "🍗", name: "Frango desfiado", amount: "50g", kcal: 83 }
+      ],
+      "omelete": [
+        { icon: "🥚", name: "Ovo", amount: "1 unidade", kcal: 78 },
+        { icon: "🍳", name: "Omelete", amount: "1 unidade", kcal: 78 },
+        { icon: "🍗", name: "Frango desfiado", amount: "50g", kcal: 83 }
+      ]
+    };
+
     if (new URLSearchParams(window.location.search).get("clear") === "1") {
       localStorage.removeItem(storageKey);
       history.replaceState(null, "", window.location.pathname);
@@ -1548,6 +1688,8 @@
     let currentPeriod = "hoje";
     let currentMealDetail = mealTypes[0].id;
     let selectedRecommendationIndex = null;
+    let currentRecommendationOptions = [];
+    let substituteTarget = null;
 
     mealDate.value = todayISO();
     expenseDate.value = todayISO();
@@ -1679,21 +1821,30 @@
         return;
       }
       const options = mealRecommendations[mealType.id] || [];
+      currentRecommendationOptions = options.map((option) => ({
+        ...option,
+        items: option.items.map((item) => ({ ...item }))
+      }));
+      renderRecommendationOptions();
+      openTab("refeicao-detalhe");
+    }
+
+    function renderRecommendationOptions() {
       recommendationCarousel.innerHTML = [
-        ...options.map((option, index) => `
-          <div class="recommendation-card" data-recommendation-index="${index}">
+        ...currentRecommendationOptions.map((option, index) => `
+          <div class="recommendation-card ${index === selectedRecommendationIndex ? "selected" : ""}" data-recommendation-index="${index}">
             <div class="recommendation-head">
               <span class="selected-pill">✓ Selecionada</span>
               <span class="kcal-pill">${option.kcal} kcal</span>
             </div>
-            ${option.items.map((item) => `
+            ${option.items.map((item, itemIndex) => `
               <div class="recommended-item">
                 <div class="recommended-item-icon">${item.icon}</div>
                 <div>
                   <div class="meal-name">${item.name}</div>
-                  <div class="muted">${item.amount}</div>
+                  <div class="muted">${item.amount}${item.kcal ? ` • ${item.kcal} kcal` : ""}</div>
                 </div>
-                <div class="swap-icon">⇄</div>
+                <button class="swap-icon" type="button" data-substitute-rec="${index}" data-substitute-item="${itemIndex}" aria-label="Substituir ${item.name}">⇄</button>
               </div>
             `).join("")}
             <button class="recipe-button" type="button">🍴 Ver preparo</button>
@@ -1707,11 +1858,16 @@
           </div>
         </div>`
       ].join("");
-      recommendationDots.innerHTML = Array.from({ length: options.length + 1 }, (_, index) => `<span class="carousel-dot ${index === 0 ? "active" : ""}"></span>`).join("");
+      recommendationDots.innerHTML = Array.from({ length: currentRecommendationOptions.length + 1 }, (_, index) => `<span class="carousel-dot ${index === selectedRecommendationIndex ? "active" : ""}"></span>`).join("");
       recommendationCarousel.querySelectorAll("[data-recommendation-index]").forEach((card) => {
         card.addEventListener("click", () => selectRecommendation(Number(card.dataset.recommendationIndex)));
       });
-      openTab("refeicao-detalhe");
+      recommendationCarousel.querySelectorAll("[data-substitute-rec]").forEach((button) => {
+        button.addEventListener("click", (event) => {
+          event.stopPropagation();
+          openSubstituteModal(Number(button.dataset.substituteRec), Number(button.dataset.substituteItem));
+        });
+      });
     }
 
     function selectRecommendation(index) {
@@ -1722,10 +1878,52 @@
       mealDetailRegister.classList.remove("hidden");
     }
 
+    function openSubstituteModal(recommendationIndex, itemIndex) {
+      const item = currentRecommendationOptions?.[recommendationIndex]?.items?.[itemIndex];
+      if (!item) return;
+      const key = normalizeText(item.name);
+      const substitutes = substituteCatalog[key] || [];
+      substituteTarget = { recommendationIndex, itemIndex };
+      substituteDescription.textContent = `Esses são os alimentos que você pode substituir por ${item.name}. Se atente às quantidades.`;
+      if (substitutes.length === 0) {
+        substituteList.innerHTML = '<div class="muted" style="text-align:center;">Ainda não há substitutos cadastrados para este alimento.</div>';
+      } else {
+        substituteList.innerHTML = substitutes.map((substitute, index) => `
+          <button class="substitute-option" type="button" data-substitute-index="${index}">
+            <div class="recommended-item-icon">${substitute.icon}</div>
+            <div>
+              <div class="meal-name">${substitute.name}</div>
+              <div class="muted">${substitute.amount} • ${substitute.kcal} kcal</div>
+            </div>
+            <div class="substitute-info">i</div>
+          </button>
+        `).join("");
+        substituteList.querySelectorAll("[data-substitute-index]").forEach((button) => {
+          button.addEventListener("click", () => applySubstitute(substitutes[Number(button.dataset.substituteIndex)]));
+        });
+      }
+      substituteModal.classList.remove("hidden");
+    }
+
+    function closeSubstituteModal() {
+      substituteModal.classList.add("hidden");
+      substituteTarget = null;
+    }
+
+    function applySubstitute(substitute) {
+      if (!substituteTarget || !substitute) return;
+      const { recommendationIndex, itemIndex } = substituteTarget;
+      const option = currentRecommendationOptions?.[recommendationIndex];
+      if (!option?.items?.[itemIndex]) return;
+      option.items[itemIndex] = { ...substitute, substituted: true };
+      selectRecommendation(recommendationIndex);
+      renderRecommendationOptions();
+      closeSubstituteModal();
+    }
+
     function registerSelectedRecommendation() {
       const mealType = mealTypes.find((item) => item.id === currentMealDetail) || mealTypes[0];
-      const options = mealRecommendations[mealType.id] || [];
-      const option = options[selectedRecommendationIndex];
+      const option = currentRecommendationOptions[selectedRecommendationIndex];
       if (!option) {
         selectedMealType = currentMealDetail;
         renderMealTypeOptions();
@@ -2182,6 +2380,10 @@
 
     profileButton.addEventListener("click", () => openTab("perfil"));
     mealDetailBack.addEventListener("click", () => openTab("hoje"));
+    substituteClose.addEventListener("click", closeSubstituteModal);
+    substituteModal.addEventListener("click", (event) => {
+      if (event.target === substituteModal) closeSubstituteModal();
+    });
     mealDetailTime.addEventListener("change", () => {
       appData.mealTimes[currentMealDetail] = mealDetailTime.value || defaultMealTimes[currentMealDetail];
       saveData();
