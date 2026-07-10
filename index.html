@@ -642,10 +642,6 @@
       box-shadow: 0 10px 24px rgba(32, 155, 38, 0.12);
     }
 
-    .recommendation-card:not(.selected) .selected-pill {
-      visibility: hidden;
-    }
-
     .recommendation-card.empty {
       border: 2px dashed #209b26;
       background: #eaf6ea;
@@ -666,6 +662,13 @@
       color: #209b26;
       padding: 8px 12px;
       font-weight: 950;
+      background: #fff;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .recommendation-card.selected .selected-pill {
+      background: #eaf6ea;
     }
 
     .kcal-pill {
@@ -678,9 +681,22 @@
 
     .recommended-item {
       display: grid;
-      grid-template-columns: 54px 1fr auto;
+      grid-template-columns: 54px 1fr;
       align-items: center;
       gap: 14px;
+      border: 0;
+      background: transparent;
+      text-align: left;
+      color: inherit;
+      width: 100%;
+      padding: 2px 0;
+      cursor: pointer;
+      touch-action: manipulation;
+      border-radius: 14px;
+    }
+
+    .recommended-item:active {
+      background: #f3f8f3;
     }
 
     .recommended-item-icon {
@@ -1814,7 +1830,6 @@
     let selectedRecommendationIndex = null;
     let currentRecommendationOptions = [];
     let substituteTarget = null;
-    let ignoreNextRecommendationClick = false;
 
     mealDate.value = todayISO();
     expenseDate.value = todayISO();
@@ -1959,18 +1974,19 @@
         ...currentRecommendationOptions.map((option, index) => `
           <div class="recommendation-card ${index === selectedRecommendationIndex ? "selected" : ""}" data-recommendation-index="${index}">
             <div class="recommendation-head">
-              <span class="selected-pill">✓ Selecionada</span>
+              <button class="selected-pill" type="button" data-select-rec="${index}">
+                ${index === selectedRecommendationIndex ? "✓ Selecionada" : "Selecionar"}
+              </button>
               <span class="kcal-pill">${option.kcal} kcal</span>
             </div>
             ${option.items.map((item, itemIndex) => `
-              <div class="recommended-item">
+              <button class="recommended-item" type="button" data-substitute-rec="${index}" data-substitute-item="${itemIndex}" aria-label="Substituir ${item.name}">
                 <div class="recommended-item-icon">${item.icon}</div>
                 <div>
                   <div class="meal-name">${item.name}</div>
                   <div class="muted">${item.amount}${item.kcal ? ` • ${item.kcal} kcal` : ""}</div>
                 </div>
-                <button class="swap-icon" type="button" data-substitute-rec="${index}" data-substitute-item="${itemIndex}" aria-label="Substituir ${item.name}">⇄</button>
-              </div>
+              </button>
             `).join("")}
             <button class="recipe-button" type="button">🍴 Ver preparo</button>
           </div>
@@ -1984,30 +2000,19 @@
         </div>`
       ].join("");
       recommendationDots.innerHTML = Array.from({ length: currentRecommendationOptions.length + 1 }, (_, index) => `<span class="carousel-dot ${index === selectedRecommendationIndex ? "active" : ""}"></span>`).join("");
-      recommendationCarousel.querySelectorAll("[data-recommendation-index]").forEach((card) => {
-        card.addEventListener("click", (event) => {
-          if (ignoreNextRecommendationClick) {
-            ignoreNextRecommendationClick = false;
-            return;
-          }
-          if (event.target.closest("[data-substitute-rec], .recipe-button")) return;
-          selectRecommendation(Number(card.dataset.recommendationIndex));
+      recommendationCarousel.querySelectorAll("[data-select-rec]").forEach((button) => {
+        button.addEventListener("click", (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          selectRecommendation(Number(button.dataset.selectRec));
         });
       });
       recommendationCarousel.querySelectorAll("[data-substitute-rec]").forEach((button) => {
-        button.addEventListener("pointerdown", (event) => {
-          event.preventDefault();
-          event.stopPropagation();
-          ignoreNextRecommendationClick = true;
-          openSubstituteModal(Number(button.dataset.substituteRec), Number(button.dataset.substituteItem));
-          window.setTimeout(() => {
-            ignoreNextRecommendationClick = false;
-          }, 350);
-        });
         button.addEventListener("click", (event) => {
           event.preventDefault();
           event.stopPropagation();
           event.stopImmediatePropagation();
+          openSubstituteModal(Number(button.dataset.substituteRec), Number(button.dataset.substituteItem));
         });
       });
     }
