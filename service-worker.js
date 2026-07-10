@@ -1,4 +1,4 @@
-﻿const CACHE_NAME = "dieta-controlada-pwa-v17";
+﻿const CACHE_NAME = "dieta-controlada-pwa-v25";
 
 const APP_SHELL = [
   "./",
@@ -56,3 +56,10 @@ self.addEventListener("fetch", (event) => {
     })
   );
 });
+
+
+
+
+
+
+
