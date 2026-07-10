@@ -1309,15 +1309,14 @@
 
     .diet-food-row {
       display: grid;
-      grid-template-columns: 26px 1fr auto auto;
+      grid-template-columns: 26px 1fr auto;
       align-items: center;
       gap: 12px;
       font-size: 17px;
       font-weight: 950;
     }
 
-    .diet-check,
-    .diet-food-amount {
+    .diet-check {
       color: #1fa12e;
       font-weight: 950;
     }
@@ -1333,12 +1332,6 @@
       font-size: 13px;
       font-weight: 800;
       line-height: 1.25;
-    }
-
-    .diet-food-amount {
-      text-align: right;
-      white-space: nowrap;
-      font-size: 15px;
     }
 
     .diet-prep {
@@ -2214,7 +2207,6 @@
                   ${escapeHTML(item.name)}
                   <span class="diet-food-detail">${escapeHTML(item.amount)}${item.kcal ? ` • ${round(item.kcal)} kcal` : ""}</span>
                 </span>
-                <span class="diet-food-amount">${item.kcal ? `${round(item.kcal)} kcal` : escapeHTML(item.amount)}</span>
                 <button
                   class="item-edit-button"
                   type="button"
