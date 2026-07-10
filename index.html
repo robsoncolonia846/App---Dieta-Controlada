@@ -1263,7 +1263,22 @@
     const normalizeText = (value) => value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
     const sortByName = (items) => [...items].sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
     const round = (value) => Math.round(value * 10) / 10;
-    const todayISO = () => new Date().toISOString().slice(0, 10);
+    const dayStartsAtHour = 6;
+    const localISODate = (date = new Date()) => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    };
+    const appDayDate = (date = new Date()) => {
+      const adjusted = new Date(date);
+      if (adjusted.getHours() < dayStartsAtHour) {
+        adjusted.setDate(adjusted.getDate() - 1);
+      }
+      return adjusted;
+    };
+    const appDayISO = (date = new Date()) => localISODate(appDayDate(date));
+    const todayISO = () => appDayISO();
     let foods = [];
     try {
       const dataModule = await import("./foods.js");
@@ -1490,6 +1505,31 @@
       mealTimes: { ...defaultMealTimes, ...(appData.mealTimes || {}) },
       profile: { ...defaultProfile, ...(appData.profile || {}) }
     };
+
+    function migrateOldUtcDates(items) {
+      let changed = false;
+      items.forEach((item) => {
+        const timestamp = Number(item.id);
+        if (!timestamp || !item.date) return;
+        const createdAt = new Date(timestamp);
+        if (Number.isNaN(createdAt.getTime())) return;
+        const oldUtcDate = createdAt.toISOString().slice(0, 10);
+        const correctAppDate = appDayISO(createdAt);
+        if (item.date === oldUtcDate && item.date !== correctAppDate) {
+          item.date = correctAppDate;
+          changed = true;
+        }
+      });
+      return changed;
+    }
+
+    const migratedMealDates = migrateOldUtcDates(appData.meals);
+    const migratedExpenseDates = migrateOldUtcDates(appData.expenses);
+    const migratedDates = migratedMealDates || migratedExpenseDates;
+    if (migratedDates) {
+      localStorage.setItem(storageKey, JSON.stringify(appData));
+    }
+
     let selectedFoodId = foods[0]?.id;
     let selectedServingId = "gramas";
     let selectedMealType = mealTypes[0].id;
@@ -1726,21 +1766,21 @@
     }
 
     function periodStart(period) {
-      const date = new Date();
+      const date = appDayDate();
       if (period === "hoje") return todayISO();
       if (period === "últimos 7 dias") {
         date.setDate(date.getDate() - 6);
-        return date.toISOString().slice(0, 10);
+        return localISODate(date);
       }
       if (period === "semana") {
         const day = date.getDay();
         const daysSinceMonday = day === 0 ? 6 : day - 1;
         date.setDate(date.getDate() - daysSinceMonday);
-        return date.toISOString().slice(0, 10);
+        return localISODate(date);
       }
       if (period === "mês") {
         date.setDate(1);
-        return date.toISOString().slice(0, 10);
+        return localISODate(date);
       }
       if (period === "total") return "";
       return "";
@@ -1758,9 +1798,9 @@
 
     function dateLabel(date) {
       if (date === todayISO()) return "hoje";
-      const yesterday = new Date();
+      const yesterday = appDayDate();
       yesterday.setDate(yesterday.getDate() - 1);
-      if (date === yesterday.toISOString().slice(0, 10)) return "ontem";
+      if (date === localISODate(yesterday)) return "ontem";
       return date.split("-").reverse().join("/");
     }
 
