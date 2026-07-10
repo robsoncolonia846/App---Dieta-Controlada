@@ -2201,10 +2201,10 @@
       }
       const minValue = parsed.unit === "g" || parsed.unit === "ml" ? parsed.step : 1;
       let nextValue = parsed.value + parsed.step * direction;
-      if ((parsed.unit === "g" || parsed.unit === "ml") && parsed.value % parsed.step !== 0) {
+      if (parsed.unit === "g" || parsed.unit === "ml") {
         nextValue = direction > 0
-          ? Math.ceil(parsed.value / parsed.step) * parsed.step
-          : Math.floor(parsed.value / parsed.step) * parsed.step;
+          ? Math.floor(parsed.value / parsed.step) * parsed.step + parsed.step
+          : Math.ceil(parsed.value / parsed.step) * parsed.step - parsed.step;
       }
       nextValue = Math.max(minValue, nextValue);
       const ratio = item.baseAmountValue ? nextValue / item.baseAmountValue : 1;
