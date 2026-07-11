@@ -1533,7 +1533,7 @@
                   <span class="calorie-range-marker max" style="--left: 100%;"></span>
                 </div>
                 <div class="calorie-range-labels">
-                  <span style="--left: 0%;">0</span>
+                  <span id="calorie-range-current-label" style="--left: 0%;">0</span>
                   <span id="calorie-range-min-label" style="--left: 0%;">0</span>
                   <span id="calorie-range-max-label" style="--left: 100%;">0</span>
                 </div>
@@ -1617,13 +1617,7 @@
 
             <div class="card home-extra" style="margin-top: 14px;">
               <h2>Evolução do saldo acumulado</h2>
-              <div class="period-filter">
-                <span class="period-button active" data-period="hoje">Hoje</span>
-                <span class="period-button" data-period="semana">Semana</span>
-                <span class="period-button" data-period="últimos 7 dias">Últ. 7 dias</span>
-                <span class="period-button" data-period="mês">Mês</span>
-                <span class="period-button" data-period="total">Total</span>
-              </div>
+              <div class="muted">Últimos 7 dias</div>
               <div class="chart" id="balance-chart" aria-label="Gráfico de saldo diário e acumulado">
               </div>
             </div>
@@ -1800,6 +1794,7 @@
     const goalPercent = document.getElementById("goal-percent");
     const goalAlert = document.getElementById("goal-alert");
     const calorieRange = document.getElementById("calorie-range");
+    const calorieRangeCurrentLabel = document.getElementById("calorie-range-current-label");
     const calorieRangeMinMarker = document.getElementById("calorie-range-min-marker");
     const calorieRangeMinLabel = document.getElementById("calorie-range-min-label");
     const calorieRangeMaxLabel = document.getElementById("calorie-range-max-label");
@@ -3523,26 +3518,26 @@
         : "Selecione uma atividade e informe o tempo.";
     }
 
-    function seriesForPeriod(period) {
-      const daily = {};
-      appData.meals.filter((item) => inPeriod(item, period)).forEach((meal) => {
-        daily[meal.date] = daily[meal.date] || 0;
-        daily[meal.date] += meal.calories;
+    function lastSevenDaysSeries() {
+      const dates = Array.from({ length: 7 }, (_, index) => {
+        const date = appDayDate();
+        date.setDate(date.getDate() - (6 - index));
+        return localISODate(date);
       });
-      appData.expenses.filter((item) => inPeriod(item, period)).forEach((expense) => {
-        daily[expense.date] = daily[expense.date] || 0;
-        daily[expense.date] -= expense.calories;
+      const daily = Object.fromEntries(dates.map((date) => [date, 0]));
+      appData.meals.forEach((meal) => {
+        if (daily[meal.date] === undefined) return;
+        daily[meal.date] += Number(meal.calories) || 0;
       });
-      return Object.keys(daily).sort().map((date) => ({ date: date.slice(5), daily: round(daily[date]) }));
+      appData.expenses.forEach((expense) => {
+        if (daily[expense.date] === undefined) return;
+        daily[expense.date] -= Number(expense.calories) || 0;
+      });
+      return dates.map((date) => ({ date: date.slice(5), daily: round(daily[date]) }));
     }
 
-    function renderChart(period = currentPeriod) {
-      const chartPeriod = period === "hoje" ? "total" : period;
-      const data = seriesForPeriod(chartPeriod);
-      if (data.length === 0) {
-        chart.innerHTML = '<div class="muted">Registre alimentação e atividades para gerar o gráfico.</div>';
-        return;
-      }
+    function renderChart() {
+      const data = lastSevenDaysSeries();
       const maxAbs = Math.max(...data.map((item) => Math.abs(item.daily)), 1);
       const barAreaHeight = 92;
       const bars = data.map((item) => {
@@ -3606,6 +3601,7 @@
       const width = Math.max(0, Math.min(100, (consumed / max) * 100));
       const minLeft = Math.max(0, Math.min(100, (min / max) * 100));
       const midpoint = min + ((max - min) / 2);
+      calorieRangeCurrentLabel.textContent = formatKcalValue(consumed);
       calorieRangeMinMarker.style.setProperty("--left", `${minLeft}%`);
       calorieRangeMinLabel.style.setProperty("--left", `${minLeft}%`);
       calorieRangeMinLabel.textContent = formatKcalValue(min);
@@ -3759,7 +3755,7 @@
       renderMealsProgress();
       renderWater();
       renderMealTypeOptions();
-      renderChart(currentPeriod);
+      renderChart();
       renderConsumption(currentPeriod);
       renderExpenses(currentPeriod);
       renderMealLog();
