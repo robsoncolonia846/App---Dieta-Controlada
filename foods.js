@@ -305,7 +305,7 @@ export const foods = [
     name: "Biscoito de Água e Sal",
     category: "Alimentação",
     caloriesPer100g: 432,
-    proteinPer100g: 10,
+    proteinPer100g: 10.1,
     carbsPer100g: 68.7,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
@@ -534,7 +534,7 @@ export const foods = [
     name: "Carne de Porco Lombo",
     category: "Alimentação",
     caloriesPer100g: 210,
-    proteinPer100g: 29,
+    proteinPer100g: 35.7,
     carbsPer100g: 0,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
@@ -605,9 +605,9 @@ export const foods = [
     id: "bergamota",
     name: "Bergamota",
     category: "Alimentação",
-    caloriesPer100g: 53,
+    caloriesPer100g: 38,
     proteinPer100g: 0.8,
-    carbsPer100g: 13.3,
+    carbsPer100g: 9.6,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
       { id: "unidade", name: "Unidade", grams: 100 }

@@ -3620,14 +3620,27 @@
         return;
       }
       consumoResumo.innerHTML = data.map((item) => {
-        const portionLabel = item.servingId === "dieta-sugerida"
-          ? "Dieta sugerida"
-          : item.quantity && item.servingName && item.servingName !== "Gramas"
-          ? `${item.quantity} ${item.servingName.toLowerCase()} (${item.grams}g)`
-          : `${item.grams}g`;
-        const mealTypeLabel = item.mealTypeName ? `${item.mealTypeName} ${item.mealTime || ""} • ` : "";
-        const mealIcon = mealTypes.find((meal) => meal.id === item.mealType)?.icon || "🍴";
-        return `<div class="meal"><div class="meal-list-left"><div class="recommended-item-icon">${mealIcon}</div><div><div class="meal-name">${item.foodName}</div><div class="muted">${mealTypeLabel}${portionLabel}</div></div></div><div class="macro-summary"><div>${item.calories} kcal</div><div>${item.protein}g pro</div><div>${item.carbs}g carb</div></div></div>`;
+        const option = savedMealToRecommendationOption(item);
+        const mealType = mealTypes.find((meal) => meal.id === item.mealType);
+        const mealTypeLabel = item.mealTypeName || mealType?.name || "Refeição";
+        const mealTime = item.mealTime ? ` ${item.mealTime}` : "";
+        return `
+          <div class="recommendation-card selected">
+            <div class="recommendation-head">
+              <span class="selected-pill">${mealType?.icon || "🍴"} ${mealTypeLabel}${mealTime}</span>
+              <span class="kcal-pill">${round(Number(item.calories) || 0)} kcal</span>
+            </div>
+            ${option.items.map((food) => `
+              <div class="recommended-item">
+                <div class="recommended-item-icon">${food.icon}</div>
+                <div>
+                  <div class="meal-name">${food.name}</div>
+                  <div class="muted">${food.amount}${food.kcal ? ` • ${round(food.kcal)} kcal` : ""}</div>
+                </div>
+              </div>
+            `).join("")}
+          </div>
+        `;
       }).join("");
     }
 
