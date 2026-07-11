@@ -452,13 +452,6 @@
       transform: translateX(-100%);
     }
 
-    .calorie-range-marker.current {
-      background: #111827;
-      height: 13px;
-      top: -4px;
-      z-index: 1;
-    }
-
     .calorie-range-labels {
       position: relative;
       height: 13px;
@@ -476,10 +469,6 @@
 
     .calorie-range-labels span:last-child {
       transform: translateX(-100%);
-    }
-
-    #calorie-range-current {
-      color: #243119;
     }
 
     .progress-row {
@@ -1530,16 +1519,14 @@
                 <span>→</span>
               </div>
               <div class="calorie-range" id="calorie-range">
-                <div class="calorie-range-track" aria-label="Faixa de calorias entre 1400 e 1900 kcal">
+                <div class="calorie-range-track" aria-label="Faixa de calorias da meta diária">
                   <div class="calorie-range-fill" id="calorie-range-fill"></div>
-                  <span class="calorie-range-marker min" style="--left: 73.7%;"></span>
-                  <span class="calorie-range-marker current" id="calorie-range-current-marker" style="--left: 0%;"></span>
+                  <span class="calorie-range-marker min" id="calorie-range-min-marker" style="--left: 0%;"></span>
                   <span class="calorie-range-marker max" style="--left: 100%;"></span>
                 </div>
                 <div class="calorie-range-labels">
-                  <span style="--left: 73.7%;">1400</span>
-                  <span id="calorie-range-current" style="--left: 0%;">0</span>
-                  <span style="--left: 100%;">1900</span>
+                  <span id="calorie-range-min-label" style="--left: 0%;">0</span>
+                  <span id="calorie-range-max-label" style="--left: 100%;">0</span>
                 </div>
               </div>
             </div>
@@ -1804,8 +1791,9 @@
     const goalPercent = document.getElementById("goal-percent");
     const goalAlert = document.getElementById("goal-alert");
     const calorieRange = document.getElementById("calorie-range");
-    const calorieRangeCurrent = document.getElementById("calorie-range-current");
-    const calorieRangeCurrentMarker = document.getElementById("calorie-range-current-marker");
+    const calorieRangeMinMarker = document.getElementById("calorie-range-min-marker");
+    const calorieRangeMinLabel = document.getElementById("calorie-range-min-label");
+    const calorieRangeMaxLabel = document.getElementById("calorie-range-max-label");
     const calorieRangeFill = document.getElementById("calorie-range-fill");
     const calorieRing = document.getElementById("calorie-ring");
     const calorieFill = document.getElementById("calorie-fill");
@@ -1887,8 +1875,7 @@
     const normalizeText = (value) => value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
     const sortByName = (items) => [...items].sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
     const round = (value) => Math.round(value * 10) / 10;
-    const calorieRangeMin = 1400;
-    const calorieRangeMax = 1900;
+    const formatKcalValue = (value) => Number(value).toLocaleString("pt-BR", { maximumFractionDigits: 1 });
     const dayStartsAtHour = 6;
     const localISODate = (date = new Date()) => {
       const year = date.getFullYear();
@@ -2442,12 +2429,12 @@
       const age = Number(profile.age) || 0;
       if (!weight || !height || !age) return 0;
       const base = 10 * weight + 6.25 * height - 5 * age;
-      return Math.round(base + (profile.sex === "female" ? -161 : 5));
+      return base + (profile.sex === "female" ? -161 : 5);
     }
 
     function maintenanceTarget() {
       const basal = calculateBasal();
-      return basal ? Math.round(basal * 1.2) : 1920;
+      return basal ? basal * 1.2 : 1920;
     }
 
     function dailyTarget() {
@@ -2476,9 +2463,9 @@
       profileAge.value = profile.age || "";
       profileSex.value = profile.sex || "male";
       profileTarget.value = profile.calorieTarget || "";
-      goalBannerValue.textContent = `${targetRange.min} - ${targetRange.max} kcal`;
+      goalBannerValue.textContent = `${formatKcalValue(targetRange.min)} - ${formatKcalValue(targetRange.max)} kcal`;
       profileBasalInfo.textContent = basal
-        ? `Gasto basal estimado: ${basal} kcal/dia. Meta usada: ${targetRange.min} - ${targetRange.max} kcal/dia.`
+        ? `Gasto basal estimado: ${formatKcalValue(basal)} kcal/dia. Meta usada: ${formatKcalValue(targetRange.min)} - ${formatKcalValue(targetRange.max)} kcal/dia.`
         : "Informe peso, altura e idade para estimar o gasto diário.";
     }
 
@@ -3587,7 +3574,7 @@
       metricSpent.textContent = `${spent} kcal`;
       metricProtein.textContent = `${protein} g`;
       metricCarbs.textContent = `${carbs} g`;
-      targetKcal.textContent = `${targetRange.min.toLocaleString("pt-BR")} - ${targetRange.max.toLocaleString("pt-BR")}`;
+      targetKcal.textContent = `${formatKcalValue(targetRange.min)} - ${formatKcalValue(targetRange.max)}`;
       remainingKcal.textContent = remaining.toLocaleString("pt-BR");
       goalPercent.textContent = `${dayScore.score}%`;
       calorieRing.style.setProperty("--progress", `${dayScore.score}%`);
@@ -3598,20 +3585,23 @@
       proteinFill.style.setProperty("--width", `${proteinPercent}%`);
       carbsFill.style.setProperty("--width", `${carbsPercent}%`);
       spentFill.style.setProperty("--width", `${spentPercent}%`);
-      renderCalorieRange(consumed);
+      renderCalorieRange(consumed, targetRange);
     }
 
-    function renderCalorieRange(consumed) {
-      const width = Math.max(0, Math.min(100, Math.round((consumed / calorieRangeMax) * 100)));
-      const greenStart = calorieRangeMin - 200;
-      const yellowStart = calorieRangeMax - 200;
-      calorieRangeCurrent.textContent = consumed.toLocaleString("pt-BR");
-      calorieRangeCurrent.style.setProperty("--left", `${width}%`);
-      calorieRangeCurrentMarker.style.setProperty("--left", `${width}%`);
+    function renderCalorieRange(consumed, targetRange = dailyTargetRange()) {
+      const min = Number(targetRange.min) || 0;
+      const max = Math.max(min + 1, Number(targetRange.max) || min + 1);
+      const width = Math.max(0, Math.min(100, (consumed / max) * 100));
+      const minLeft = Math.max(0, Math.min(100, (min / max) * 100));
+      const midpoint = min + ((max - min) / 2);
+      calorieRangeMinMarker.style.setProperty("--left", `${minLeft}%`);
+      calorieRangeMinLabel.style.setProperty("--left", `${minLeft}%`);
+      calorieRangeMinLabel.textContent = formatKcalValue(min);
+      calorieRangeMaxLabel.textContent = formatKcalValue(max);
       calorieRangeFill.style.setProperty("--width", `${width}%`);
-      calorieRange.classList.toggle("good", consumed >= greenStart && consumed < yellowStart);
-      calorieRange.classList.toggle("warn", consumed >= yellowStart && consumed < calorieRangeMax);
-      calorieRange.classList.toggle("danger", consumed >= calorieRangeMax);
+      calorieRange.classList.toggle("good", consumed >= min && consumed < midpoint);
+      calorieRange.classList.toggle("warn", consumed >= midpoint && consumed < max);
+      calorieRange.classList.toggle("danger", consumed >= max);
     }
 
     function renderConsumption(period = currentPeriod) {
