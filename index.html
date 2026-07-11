@@ -259,23 +259,30 @@
 
     .chart {
       position: relative;
-      min-height: 160px;
+      min-height: 188px;
       display: flex;
       align-items: end;
       justify-content: space-between;
       gap: 8px;
-      padding-top: 12px;
+      padding-top: 18px;
     }
 
-    .chart-svg {
+    .chart-target-line {
       position: absolute;
       left: 0;
       right: 0;
-      top: 8px;
-      width: 100%;
-      height: 128px;
+      bottom: calc(34px + var(--line-bottom, 0px));
+      height: 1px;
       pointer-events: none;
-      z-index: 2;
+      z-index: 0;
+    }
+
+    .chart-target-line.min {
+      background: rgba(32, 155, 38, 0.42);
+    }
+
+    .chart-target-line.max {
+      background: rgba(217, 75, 75, 0.38);
     }
 
     .chart-col {
@@ -299,8 +306,9 @@
     }
 
     .chart-bar {
-      width: 72%;
-      border-radius: 999px;
+      width: 82%;
+      max-width: 46px;
+      border-radius: 8px;
       background: #9fdc8a;
     }
 
@@ -1729,9 +1737,9 @@
             </div>
 
             <div class="card home-extra" style="margin-top: 14px;">
-              <h2>Evolução do saldo acumulado</h2>
+              <h2>Histórico</h2>
               <div class="muted">Últimos 7 dias</div>
-              <div class="chart" id="balance-chart" aria-label="Gráfico de saldo diário e acumulado">
+              <div class="chart" id="balance-chart" aria-label="Histórico dos últimos 7 dias">
               </div>
             </div>
 
@@ -3777,15 +3785,22 @@
 
     function renderChart() {
       const data = lastSevenDaysSeries();
-      const maxAbs = Math.max(...data.map((item) => Math.abs(item.daily)), 1);
-      const barAreaHeight = 92;
+      const targetRange = dailyTargetRange();
+      const maxAbs = Math.max(...data.map((item) => Math.abs(item.daily)), targetRange.max, 1);
+      const barAreaHeight = 122;
+      const minLineBottom = Math.min(barAreaHeight, Math.max(0, (targetRange.min / maxAbs) * barAreaHeight));
+      const maxLineBottom = Math.min(barAreaHeight, Math.max(0, (targetRange.max / maxAbs) * barAreaHeight));
+      const targetLines = `
+        <span class="chart-target-line min" style="--line-bottom: ${minLineBottom}px;"></span>
+        <span class="chart-target-line max" style="--line-bottom: ${maxLineBottom}px;"></span>
+      `;
       const bars = data.map((item) => {
         const height = Math.max(8, Math.abs(item.daily) / maxAbs * barAreaHeight);
         const positive = item.daily > 0;
         return `<div class="chart-col"><div class="chart-value ${positive ? "positive" : ""}">${formatSigned(item.daily)}</div><div class="chart-bar ${positive ? "positive" : ""}" style="height: ${height}px;"></div><div class="chart-date">${item.date}</div></div>`;
       }).join("");
 
-      chart.innerHTML = bars;
+      chart.innerHTML = `${targetLines}${bars}`;
     }
 
     function periodMeals(period = currentPeriod) {
