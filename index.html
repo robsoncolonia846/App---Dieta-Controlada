@@ -467,6 +467,10 @@
       white-space: nowrap;
     }
 
+    .calorie-range-labels span:first-child {
+      transform: translateX(0);
+    }
+
     .calorie-range-labels span:last-child {
       transform: translateX(-100%);
     }
@@ -509,6 +513,10 @@
       font-size: 22px;
       font-weight: 950;
       letter-spacing: -0.06em;
+    }
+
+    .summary-number.over {
+      color: #d94b4b;
     }
 
     .profile-card {
@@ -1525,6 +1533,7 @@
                   <span class="calorie-range-marker max" style="--left: 100%;"></span>
                 </div>
                 <div class="calorie-range-labels">
+                  <span style="--left: 0%;">0</span>
                   <span id="calorie-range-min-label" style="--left: 0%;">0</span>
                   <span id="calorie-range-max-label" style="--left: 100%;">0</span>
                 </div>
@@ -3575,7 +3584,10 @@
       metricProtein.textContent = `${protein} g`;
       metricCarbs.textContent = `${carbs} g`;
       targetKcal.textContent = `${formatKcalValue(targetRange.min)} - ${formatKcalValue(targetRange.max)}`;
-      remainingKcal.textContent = remaining.toLocaleString("pt-BR");
+      remainingKcal.textContent = remaining < 0
+        ? `+${Math.abs(remaining).toLocaleString("pt-BR")}`
+        : remaining.toLocaleString("pt-BR");
+      remainingKcal.classList.toggle("over", remaining < 0);
       goalPercent.textContent = `${dayScore.score}%`;
       calorieRing.style.setProperty("--progress", `${dayScore.score}%`);
       goalAlert.textContent = dayScore.alert.text;
