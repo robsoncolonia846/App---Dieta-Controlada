@@ -271,7 +271,7 @@
       position: absolute;
       left: 0;
       right: 0;
-      bottom: calc(34px + var(--line-bottom, 0px));
+      bottom: calc(18px + var(--line-bottom, 0px));
       height: 1px;
       pointer-events: none;
       z-index: 0;
@@ -3880,15 +3880,14 @@
       const max = Math.max(min + 1, Number(targetRange.max) || min + 1);
       const width = Math.max(0, Math.min(100, (consumed / max) * 100));
       const minLeft = Math.max(0, Math.min(100, (min / max) * 100));
-      const midpoint = min + ((max - min) / 2);
       calorieRangeCurrentLabel.textContent = formatKcalValue(consumed);
       calorieRangeMinMarker.style.setProperty("--left", `${minLeft}%`);
       calorieRangeMinLabel.style.setProperty("--left", `${minLeft}%`);
       calorieRangeMinLabel.textContent = formatKcalValue(min);
       calorieRangeMaxLabel.textContent = formatKcalValue(max);
       calorieRangeFill.style.setProperty("--width", `${width}%`);
-      calorieRange.classList.toggle("good", consumed >= min && consumed < midpoint);
-      calorieRange.classList.toggle("warn", consumed >= midpoint && consumed < max);
+      calorieRange.classList.toggle("good", consumed < min);
+      calorieRange.classList.toggle("warn", consumed >= min && consumed < max);
       calorieRange.classList.toggle("danger", consumed >= max);
     }
 
