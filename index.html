@@ -301,7 +301,11 @@
       font-weight: 900;
     }
 
-    .chart-value.positive {
+    .chart-value.range {
+      color: #8a6100;
+    }
+
+    .chart-value.over {
       color: #d94b4b;
     }
 
@@ -312,7 +316,11 @@
       background: #9fdc8a;
     }
 
-    .chart-bar.positive {
+    .chart-bar.range {
+      background: #f3cf67;
+    }
+
+    .chart-bar.over {
       background: #ff8f8f;
     }
 
@@ -429,7 +437,7 @@
       height: 100%;
       width: var(--width, 0%);
       border-radius: inherit;
-      background: #2f80ed;
+      background: #209b26;
       transition: width 0.2s ease, background-color 0.2s ease;
     }
 
@@ -3814,8 +3822,8 @@
       `;
       const bars = data.map((item) => {
         const height = Math.max(8, Math.abs(item.daily) / maxAbs * barAreaHeight);
-        const positive = item.daily > 0;
-        return `<div class="chart-col"><div class="chart-value ${positive ? "positive" : ""}">${formatSigned(item.daily)}</div><div class="chart-bar ${positive ? "positive" : ""}" style="height: ${height}px;"></div><div class="chart-date">${item.date}</div></div>`;
+        const status = item.daily > targetRange.max ? "over" : item.daily >= targetRange.min ? "range" : "low";
+        return `<div class="chart-col"><div class="chart-value ${status}">${formatSigned(item.daily)}</div><div class="chart-bar ${status}" style="height: ${height}px;"></div><div class="chart-date">${item.date}</div></div>`;
       }).join("");
 
       chart.innerHTML = `${targetLines}${bars}`;
