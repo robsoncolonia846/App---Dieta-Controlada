@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8" />
@@ -526,7 +526,7 @@
 
     .meal-progress-line {
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 4px;
       align-items: center;
       margin-top: 2px;
@@ -607,11 +607,19 @@
       border-radius: 0 0 10px 10px;
       background: #f1f1f3;
       opacity: 0.8;
+      border: 1px solid transparent;
     }
 
     .cup.filled {
-      background: #dce9ff;
-      border: 1px solid #9ab7ee;
+      background: #dff5e0;
+      border-color: #8bd68f;
+      opacity: 1;
+    }
+
+    .cup.pending {
+      background: #fff3c4;
+      border-color: #e7c85d;
+      opacity: 1;
     }
 
     .water-actions {
@@ -873,14 +881,24 @@
     }
 
     .swap-icon {
+      border: 0;
+      background: transparent;
       color: #209b26;
       font-size: 24px;
       font-weight: 900;
       width: 34px;
+      height: 34px;
       text-align: center;
       display: grid;
       place-items: center;
-      pointer-events: none;
+      cursor: pointer;
+      touch-action: manipulation;
+      border-radius: 50%;
+      padding: 0;
+    }
+
+    .swap-icon:active {
+      background: #eaf6ea;
     }
 
     .item-edit-button {
@@ -892,6 +910,27 @@
       font-size: 12px;
       font-weight: 950;
       white-space: nowrap;
+    }
+
+    .item-remove-button {
+      width: 36px;
+      height: 36px;
+      border: 0;
+      border-radius: 50%;
+      background: #fdecec;
+      color: #d94b4b;
+      display: grid;
+      place-items: center;
+      font-size: 22px;
+      font-weight: 950;
+      line-height: 1;
+      cursor: pointer;
+      touch-action: manipulation;
+      padding: 0;
+    }
+
+    .item-remove-button:active {
+      background: #fbd7d7;
     }
 
     .item-detail-row {
@@ -1046,15 +1085,6 @@
       font-weight: 950;
       cursor: pointer;
       touch-action: manipulation;
-    }
-
-    .compensation-pill {
-      border: 1.5px solid #e6ad23;
-      border-radius: 12px;
-      color: #8a6100;
-      background: #fff7dc;
-      padding: 8px 12px;
-      font-weight: 950;
     }
 
     .carousel-dots {
@@ -1673,7 +1703,7 @@
               <h2>Refeições</h2>
               <div class="muted">Progresso diário</div>
               <div class="progress-row">
-                <div class="progress-row-head"><span>Concluídas</span><strong id="meal-progress-count">0/5</strong></div>
+                <div class="progress-row-head"><span>Concluídas</span><strong id="meal-progress-count">0/4</strong></div>
                 <div class="progress-track"><div class="progress-fill" id="meal-progress-fill"></div></div>
               </div>
               <div class="meal-progress-line" id="meal-progress-list"></div>
@@ -1840,7 +1870,6 @@
 
             <div class="recommendation-carousel" id="recommendation-carousel"></div>
             <div class="carousel-dots" id="recommendation-dots"></div>
-            <button class="add-recommendation-item" type="button" id="meal-compensate-later" style="width:100%; margin-top: 14px;">Compensar mais tarde</button>
             <button class="add-recommendation-item hidden" type="button" id="meal-use-suggestion" style="width:100%; margin-top: 14px;">Usar Sugestão</button>
             <button class="button" type="button" id="meal-detail-register" style="margin-top: 18px;">Registrar dieta</button>
           </section>
@@ -1908,7 +1937,6 @@
     const recommendationCarousel = document.getElementById("recommendation-carousel");
     const recommendationDots = document.getElementById("recommendation-dots");
     const mealDetailRegister = document.getElementById("meal-detail-register");
-    const mealCompensateLater = document.getElementById("meal-compensate-later");
     const mealUseSuggestion = document.getElementById("meal-use-suggestion");
     const substituteModal = document.getElementById("substitute-modal");
     const substituteClose = document.getElementById("substitute-close");
@@ -2008,7 +2036,7 @@
       "cenoura crua": 0,
       "coracao de frango": 220,
       "couve": 0,
-      "doce de leite": 350,
+      "doce de leite": 70,
       "estrogonof": 150,
       "feijao": 80,
       "frango assada (sobrecoxa)": 250,
@@ -2016,33 +2044,33 @@
       "frango grelhado": 170,
       "frango sobrecoxa ao molho": 180,
       "goiabada": 308,
-      "iogurte zero": 30,
+      "iogurte zero": 60,
       "laranja": 80,
       "lazanha de carne moida": 200,
       "lazanha de frango": 200,
-      "leite desnatado": 37,
-      "leite integral": 62,
+      "leite desnatado": 74,
+      "leite integral": 124,
       "maca": 70,
       "macarrao": 150,
       "melancia": 30,
       "morango": 32,
       "omelete": 160,
       "omelete com queijo": 280,
-      "ovo cozido": 80,
-      "ovo frito": 120,
+      "ovo cozido": 160,
+      "ovo frito": 240,
       "panqueca (carne moida)": 190,
       "panqueca (frango)": 175,
-      "pao caseiro": 280,
-      "pao de forma": 70,
+      "pao caseiro": 300,
+      "pao de forma": 140,
       "pao frances": 300,
       "pao frances + ovo frito": 300,
       "pao frances + ovo mexido": 250,
       "peixe assado (anchova)": 160,
       "peixe assado (tainha)": 180,
-      "presunto": 200,
-      "queijo fatia": 320,
-      "queijo mucarela": 380,
-      "queijo parmesao": 460,
+      "presunto": 40,
+      "queijo fatia": 96,
+      "queijo mucarela": 95,
+      "queijo parmesao": 115,
       "repolho": 0,
       "tomate cereja": 0,
       "uva": 68
@@ -2061,14 +2089,12 @@
     ];
     const mealTypes = [
       { id: "cafe", name: "Café", icon: "☕", defaultTime: "09:00" },
-      { id: "lanche-manha", name: "Lanche", icon: "🍏", defaultTime: "11:00" },
       { id: "almoco", name: "Almoço", icon: "🍲", defaultTime: "13:00" },
       { id: "lanche-tarde", name: "Lanche", icon: "🥪", defaultTime: "16:00" },
       { id: "jantar", name: "Jantar", icon: "🍽️", defaultTime: "21:00" }
     ];
     const mealDetailLabels = {
       cafe: "Café da manhã",
-      "lanche-manha": "Lanche da manhã",
       almoco: "Almoço",
       "lanche-tarde": "Lanche da tarde",
       jantar: "Jantar"
@@ -2077,22 +2103,22 @@
       cafe: [
         { kcal: 0, items: [
           { icon: "🥖", name: "Pão Caseiro", amount: "50g" },
-          { icon: "🥚", name: "Ovo Cozido", amount: "100g" },
-          { icon: "🍊", name: "Bergamota", amount: "100g" },
-          { icon: "🥛", name: "Leite Desnatado", amount: "200ml" }
+          { icon: "🥚", name: "Ovo Cozido", amount: "2 ovos" },
+          { icon: "🍊", name: "Bergamota", amount: "1 unidade" },
+          { icon: "🥛", name: "Leite Desnatado", amount: "100ml" }
         ] },
         { kcal: 0, items: [
-          { icon: "🍞", name: "Pão De Forma", amount: "100g" },
+          { icon: "🍞", name: "Pão De Forma", amount: "2 fatias" },
           { icon: "🥓", name: "Presunto", amount: "30g" },
           { icon: "🧀", name: "Queijo Fatia", amount: "20g" },
-          { icon: "🍊", name: "Laranja", amount: "100g" },
+          { icon: "🍊", name: "Laranja", amount: "1 unidade" },
           { icon: "🥛", name: "Leite Desnatado", amount: "200ml" }
         ] },
         { kcal: 0, items: [
           { icon: "🥛", name: "Iogurte Zero", amount: "170g" },
           { icon: "🍓", name: "Morango", amount: "150g" },
-          { icon: "🍌", name: "Banana", amount: "100g" },
-          { icon: "🥖", name: "Pão Caseiro", amount: "50g" }
+          { icon: "🍌", name: "Banana", amount: "1 unidade" },
+          { icon: "🥖", name: "Pão Caseiro", amount: "60g" }
         ] },
         { kcal: 0, items: [
           { icon: "🍳", name: "Omelete com Queijo", amount: "100g" },
@@ -2100,33 +2126,21 @@
           { icon: "🥖", name: "Pão Caseiro", amount: "50g" }
         ] },
         { kcal: 0, items: [
-          { icon: "🥪", name: "Pão Frances + Ovo Mexido", amount: "70g" },
-          { icon: "🍎", name: "Maça", amount: "100g" },
+          { icon: "🥪", name: "Pão Frances + Ovo Mexido", amount: "0,7 unidade" },
+          { icon: "🍎", name: "Maça", amount: "1 unidade" },
           { icon: "🥛", name: "Leite Desnatado", amount: "200ml" },
           { icon: "🥖", name: "Pão Caseiro", amount: "20g" }
         ] },
         { kcal: 0, items: [
-          { icon: "🥛", name: "Leite Integral", amount: "200ml" },
-          { icon: "🥖", name: "Pão Caseiro", amount: "60g" },
+          { icon: "🥛", name: "Leite Integral", amount: "150ml" },
+          { icon: "🥖", name: "Pão Caseiro", amount: "55g" },
           { icon: "🍯", name: "Doce De Leite", amount: "20g" },
           { icon: "🍓", name: "Morango", amount: "100g" }
         ] },
         { kcal: 0, items: [
-          { icon: "🥪", name: "Pão Frances + Ovo Frito", amount: "80g" },
-          { icon: "🍇", name: "Uva", amount: "92g" },
+          { icon: "🥪", name: "Pão Frances + Ovo Frito", amount: "0,6 unidade" },
+          { icon: "🍇", name: "Uva", amount: "90g" },
           { icon: "🥛", name: "Leite Desnatado", amount: "200ml" }
-        ] }
-      ],
-      "lanche-manha": [
-        { kcal: 0, items: [{ icon: "🍉", name: "Melancia", amount: "200g" }] },
-        { kcal: 0, items: [{ icon: "🍍", name: "Abacaxi", amount: "150g" }] },
-        { kcal: 0, items: [{ icon: "🍇", name: "Uva", amount: "110g" }] },
-        { kcal: 0, items: [{ icon: "🍎", name: "Maça", amount: "95g" }] },
-        { kcal: 0, items: [{ icon: "🍊", name: "Bergamota", amount: "100g" }] },
-        { kcal: 0, items: [{ icon: "🍌", name: "Banana", amount: "100g" }] },
-        { kcal: 0, items: [
-          { icon: "🥛", name: "Iogurte Zero", amount: "170g" },
-          { icon: "🍓", name: "Morango", amount: "100g" }
         ] }
       ],
       almoco: [
@@ -2138,7 +2152,7 @@
           { icon: "🍅", name: "Tomate Cereja", amount: "à vontade" }
         ] },
         { kcal: 0, items: [
-          { icon: "🍚", name: "Arroz", amount: "100g" },
+          { icon: "🍚", name: "Arroz", amount: "120g" },
           { icon: "🥩", name: "Carne Moida", amount: "100g" },
           { icon: "🥦", name: "Brocolis", amount: "à vontade" },
           { icon: "🥕", name: "Cenoura Cozida/Assada", amount: "100g" }
@@ -2151,7 +2165,7 @@
           { icon: "🍅", name: "Tomate Cereja", amount: "à vontade" }
         ] },
         { kcal: 0, items: [
-          { icon: "🍝", name: "Macarrão", amount: "95g" },
+          { icon: "🍝", name: "Macarrão", amount: "90g" },
           { icon: "🍗", name: "Frango Desfiado", amount: "100g" },
           { icon: "🫘", name: "Feijão", amount: "70g" },
           { icon: "🥬", name: "Repolho", amount: "à vontade" }
@@ -2177,9 +2191,9 @@
       ],
       "lanche-tarde": [
         { kcal: 0, items: [
-          { icon: "🥖", name: "Pão Caseiro", amount: "50g" },
+          { icon: "🥖", name: "Pão Caseiro", amount: "30g" },
           { icon: "🥛", name: "Iogurte Zero", amount: "170g" },
-          { icon: "🍌", name: "Banana", amount: "100g" }
+          { icon: "🍌", name: "Banana", amount: "1 unidade" }
         ] },
         { kcal: 0, items: [
           { icon: "🥖", name: "Pão Caseiro", amount: "50g" },
@@ -2193,21 +2207,21 @@
         ] },
         { kcal: 0, items: [
           { icon: "🥛", name: "Leite Desnatado", amount: "200ml" },
-          { icon: "🥖", name: "Pão Caseiro", amount: "50g" }
+          { icon: "🥖", name: "Pão Caseiro", amount: "30g" }
         ] },
         { kcal: 0, items: [
           { icon: "🥛", name: "Iogurte Zero", amount: "170g" },
-          { icon: "🍌", name: "Banana", amount: "100g" },
+          { icon: "🍌", name: "Banana", amount: "1 unidade" },
           { icon: "🍇", name: "Uva", amount: "80g" }
         ] },
         { kcal: 0, items: [
-          { icon: "🥚", name: "Ovo Cozido", amount: "100g" },
-          { icon: "🍍", name: "Abacaxi", amount: "150g" }
+          { icon: "🥚", name: "Ovo Cozido", amount: "2 ovos" },
+          { icon: "🍍", name: "Abacaxi", amount: "145g" }
         ] },
         { kcal: 0, items: [
-          { icon: "🍞", name: "Pão De Forma", amount: "100g" },
+          { icon: "🍞", name: "Pão De Forma", amount: "2 fatias" },
           { icon: "🍗", name: "Frango Desfiado", amount: "70g" },
-          { icon: "🍊", name: "Bergamota", amount: "100g" }
+          { icon: "🍊", name: "Bergamota", amount: "1 unidade" }
         ] }
       ],
       jantar: [
@@ -2235,9 +2249,9 @@
           { icon: "🥦", name: "Brocolis", amount: "à vontade" }
         ] },
         { kcal: 0, items: [
-          { icon: "🥩", name: "Carne Moida", amount: "100g" },
-          { icon: "🍚", name: "Arroz", amount: "100g" },
-          { icon: "🥚", name: "Ovo Cozido", amount: "100g" },
+          { icon: "🥩", name: "Carne Moida", amount: "70g" },
+          { icon: "🍚", name: "Arroz", amount: "94g" },
+          { icon: "🥚", name: "Ovo Cozido", amount: "1 ovo" },
           { icon: "🍅", name: "Tomate Cereja", amount: "à vontade" },
           { icon: "🥬", name: "Couve", amount: "à vontade" }
         ] },
@@ -2264,43 +2278,43 @@
       ],
       "pao frances": [
         { icon: "🍞", name: "Pão", amount: "1 unidade", kcal: 125 },
-        { icon: "🍞", name: "Pão de forma", amount: "1 unidade", kcal: 127 }
+        { icon: "🍞", name: "Pão de forma", amount: "1 fatia", kcal: 127 }
       ],
       "pao de forma": [
         { icon: "🍞", name: "Pão", amount: "1 unidade", kcal: 125 },
         { icon: "🥖", name: "Pão francês", amount: "1 unidade", kcal: 125 }
       ],
       "banana prata": [
-        { icon: "🍎", name: "Maçã", amount: "135g", kcal: 70 },
+        { icon: "🍎", name: "Maçã", amount: "1,35 unidade", kcal: 70 },
         { icon: "🥭", name: "Mamão", amount: "165g", kcal: 71 },
-        { icon: "🍊", name: "Laranja", amount: "150g", kcal: 71 },
+        { icon: "🍊", name: "Laranja", amount: "1,5 unidade", kcal: 71 },
         { icon: "🍍", name: "Abacaxi", amount: "140g", kcal: 70 }
       ],
       "abacaxi": [
-        { icon: "🍌", name: "Banana", amount: "75g", kcal: 67 },
-        { icon: "🍎", name: "Maçã", amount: "130g", kcal: 68 },
-        { icon: "🍊", name: "Laranja", amount: "145g", kcal: 68 },
+        { icon: "🍌", name: "Banana", amount: "0,75 unidade", kcal: 67 },
+        { icon: "🍎", name: "Maçã", amount: "1,3 unidade", kcal: 68 },
+        { icon: "🍊", name: "Laranja", amount: "1,45 unidade", kcal: 68 },
         { icon: "🥭", name: "Mamão", amount: "160g", kcal: 69 },
         { icon: "🍓", name: "Morango", amount: "210g", kcal: 67 }
       ],
       "morango": [
-        { icon: "🍌", name: "Banana", amount: "50g", kcal: 45 },
-        { icon: "🍎", name: "Maçã", amount: "85g", kcal: 44 },
-        { icon: "🍊", name: "Laranja", amount: "95g", kcal: 45 },
+        { icon: "🍌", name: "Banana", amount: "0,5 unidade", kcal: 45 },
+        { icon: "🍎", name: "Maçã", amount: "0,85 unidade", kcal: 44 },
+        { icon: "🍊", name: "Laranja", amount: "0,95 unidade", kcal: 45 },
         { icon: "🍍", name: "Abacaxi", amount: "90g", kcal: 45 },
         { icon: "🥭", name: "Mamão", amount: "105g", kcal: 45 }
       ],
       "maca argentina": [
-        { icon: "🍌", name: "Banana", amount: "35g", kcal: 31 },
-        { icon: "🍊", name: "Laranja", amount: "60g", kcal: 28 }
+        { icon: "🍌", name: "Banana", amount: "0,35 unidade", kcal: 31 },
+        { icon: "🍊", name: "Laranja", amount: "0,6 unidade", kcal: 28 }
       ],
       "maca": [
-        { icon: "🍌", name: "Banana", amount: "35g", kcal: 31 },
-        { icon: "🍊", name: "Laranja", amount: "60g", kcal: 28 }
+        { icon: "🍌", name: "Banana", amount: "0,35 unidade", kcal: 31 },
+        { icon: "🍊", name: "Laranja", amount: "0,6 unidade", kcal: 28 }
       ],
       "laranja de umbigo": [
-        { icon: "🍌", name: "Banana", amount: "30g", kcal: 27 },
-        { icon: "🍎", name: "Maçã", amount: "50g", kcal: 26 }
+        { icon: "🍌", name: "Banana", amount: "0,3 unidade", kcal: 27 },
+        { icon: "🍎", name: "Maçã", amount: "0,5 unidade", kcal: 26 }
       ],
       "queijo prato": [
         { icon: "🧀", name: "Queijo cottage", amount: "75g", kcal: 74 },
@@ -2551,13 +2565,12 @@
       calorieTarget: ""
     };
     const defaultMealTimes = Object.fromEntries(mealTypes.map((item) => [item.id, item.defaultTime]));
-    const dietSuggestionPlanVersion = "1400-1500-v1";
+    const dietSuggestionPlanVersion = "1400-1500-4ref-v1";
 
     let appData = JSON.parse(localStorage.getItem(storageKey) || '{"meals":[],"expenses":[]}');
     appData = {
       meals: Array.isArray(appData.meals) ? appData.meals : [],
       expenses: Array.isArray(appData.expenses) ? appData.expenses : [],
-      compensations: Array.isArray(appData.compensations) ? appData.compensations : [],
       dietRecommendations: appData.dietRecommendations && typeof appData.dietRecommendations === "object" ? appData.dietRecommendations : {},
       dietSuggestionPlanVersion: appData.dietSuggestionPlanVersion || "",
       water: appData.water && typeof appData.water === "object" ? appData.water : {},
@@ -2565,7 +2578,7 @@
       profile: { ...defaultProfile, ...(appData.profile || {}) }
     };
     if (appData.dietSuggestionPlanVersion !== dietSuggestionPlanVersion) {
-      appData.dietRecommendations = {};
+      delete appData.dietRecommendations["lanche-manha"];
       appData.dietSuggestionPlanVersion = dietSuggestionPlanVersion;
       localStorage.setItem(storageKey, JSON.stringify(appData));
     }
@@ -2595,7 +2608,7 @@
     }
 
     let selectedFoodId = foods[0]?.id;
-    let selectedServingId = "gramas";
+    let selectedServingId = "";
     let selectedMealType = mealTypes[0].id;
     let selectedActivityId = activityPresets[0].id;
     let selectedTimeUnit = "minutes";
@@ -2670,10 +2683,9 @@
     }
 
     const mealTargetWeights = {
-      cafe: 0.22,
-      "lanche-manha": 0.08,
-      almoco: 0.32,
-      "lanche-tarde": 0.13,
+      cafe: 0.25,
+      almoco: 0.35,
+      "lanche-tarde": 0.15,
       jantar: 0.25
     };
 
@@ -2689,67 +2701,10 @@
       return mealDetailLabels[mealId] || mealTypes.find((item) => item.id === mealId)?.name || "Refeição";
     }
 
-    function pendingCompensationsForToday() {
-      return appData.compensations.filter((item) => item.date === todayISO() && item.status === "pending");
-    }
-
-    function compensationForMeal(mealId) {
-      return appData.compensations.find((item) => item.date === todayISO() && item.mealType === mealId);
-    }
-
-    function pendingCompensationsForMealDetail(mealId) {
-      const currentOrder = mealOrderIndex(mealId);
-      return pendingCompensationsForToday().filter((item) => mealOrderIndex(item.mealType) < currentOrder);
-    }
-
-    function createCompensationOption(compensation) {
-      const originalMeal = mealTypes.find((item) => item.id === compensation.mealType) || mealTypes[0];
-      const baseOption = (recommendationsForMeal(compensation.mealType) || [])[0] || { kcal: mealKcalTarget(compensation.mealType), items: [] };
-      const option = {
-        ...baseOption,
-        compensationFor: compensation.id,
-        compensationMealType: compensation.mealType,
-        compensationLabel: mealLabel(compensation.mealType),
-        items: baseOption.items.map((item) => hydrateRecommendationItem(item, baseOption))
-      };
-      option.kcal = option.items.reduce((total, item) => total + (Number(item.kcal) || 0), 0) || baseOption.kcal || mealKcalTarget(originalMeal.id);
-      return option;
-    }
-
-    function markCompensationCompleted(compensationId, compensatedAtMealType) {
-      const compensation = appData.compensations.find((item) => item.id === compensationId);
-      if (!compensation) return;
-      compensation.status = "done";
-      compensation.compensatedAt = new Date().toISOString();
-      compensation.compensatedMealType = compensatedAtMealType;
-    }
-
-    function compensateCurrentMealLater() {
-      const mealType = mealTypes.find((item) => item.id === currentMealDetail);
-      if (!mealType || compensationForMeal(mealType.id)) return;
-      appData.compensations.unshift({
-        id: `${Date.now()}`,
-        date: todayISO(),
-        mealType: mealType.id,
-        mealTypeName: mealType.name,
-        status: "pending",
-        createdAt: new Date().toISOString()
-      });
-      saveData();
-      renderAll();
-      openTab("hoje");
-    }
-
     function showMealRecommendationOptions(mealType) {
       mealUseSuggestion.classList.add("hidden");
       const options = recommendationsForMeal(mealType.id);
       currentRecommendationOptions = options.map(hydrateDietOption);
-      if (editingMealType !== mealType.id) {
-        currentRecommendationOptions = [
-          ...pendingCompensationsForMealDetail(mealType.id).map(createCompensationOption),
-          ...currentRecommendationOptions
-        ];
-      }
       renderRecommendationOptions();
       openTab("refeicao-detalhe");
     }
@@ -2770,7 +2725,6 @@
       mealDetailStatus.textContent = "Editando";
       mealDetailSubtitle.textContent = "Ajuste o cadastro fixo desta opção de dieta";
       mealDetailRegister.textContent = "Salvar opção";
-      mealCompensateLater.classList.add("hidden");
       mealUseSuggestion.classList.toggle("hidden", !mealRecommendations[mealType.id]?.[safeOptionIndex]);
       currentRecommendationOptions = options.map(hydrateDietOption);
       renderRecommendationOptions();
@@ -2796,12 +2750,19 @@
       return Math.max(0, Math.min(1, (now - start) / (end - start)));
     }
 
+    function expectedWaterProgress() {
+      const start = 9 * 60;
+      const end = 21 * 60;
+      const now = currentAppMinutes();
+      return Math.max(0, Math.min(1, (now - start) / (end - start)));
+    }
+
     function calculateDayScore(consumed, spent) {
       const today = todayISO();
       const target = dailyTarget();
       const adjustedTarget = Math.max(1, target + spent);
       const waterNow = Number(appData.water?.[today]) || 0;
-      const waterExpected = Math.max(250, Math.round(waterTarget() * expectedDayProgress()));
+      const waterExpected = Math.max(250, Math.round(waterTarget() * expectedWaterProgress()));
       const waterScore = Math.min(100, Math.round((waterNow / waterExpected) * 100));
       const mealScoreData = calculateMealTimingScore();
       const calorieRatio = consumed / adjustedTarget;
@@ -2811,7 +2772,7 @@
       } else if (expectedDayProgress() > 0.35 && calorieRatio < expectedDayProgress() * 0.55) {
         calorieScore = Math.max(30, Math.round((calorieRatio / Math.max(0.1, expectedDayProgress() * 0.55)) * 100));
       }
-      const score = Math.max(0, Math.min(100, Math.round(calorieScore * 0.6 + mealScoreData.score * 0.25 + waterScore * 0.15)));
+      const score = Math.max(0, Math.min(100, Math.round(calorieScore * 0.7 + mealScoreData.score * 0.3)));
       const alerts = [];
       if (consumed > adjustedTarget + 150) {
         alerts.push({ level: "danger", text: `Você passou da meta em ${round(consumed - adjustedTarget)} kcal.` });
@@ -2840,11 +2801,6 @@
         const weight = 100 / mealTypes.length;
         totalWeight += weight;
         const registered = todayMeals.find((item) => item.mealType === meal.id);
-        const compensation = compensationForMeal(meal.id);
-        if (!registered && compensation?.status === "done") {
-          earned += weight;
-          return;
-        }
         if (registered) {
           const registeredMinute = minutesFromTime(registered.mealTime || time);
           const delay = Math.max(0, registeredMinute - mealMinute);
@@ -2852,11 +2808,6 @@
           if (delay > 30 && !worstAlert) {
             worstAlert = { level: "warn", text: `${meal.name} registrada com atraso.` };
           }
-          return;
-        }
-        if (compensation?.status === "pending") {
-          earned += weight * 0.45;
-          worstAlert = worstAlert || { level: "warn", text: `${meal.name} pendente para compensar mais tarde.` };
           return;
         }
         const delayNow = now - mealMinute;
@@ -2889,20 +2840,18 @@
     function renderMealsProgress() {
       const todayMeals = appData.meals.filter((item) => item.date === todayISO());
       const completed = new Set(todayMeals.map((item) => item.mealType).filter(Boolean));
-      appData.compensations
-        .filter((item) => item.date === todayISO() && item.status === "done")
-        .forEach((item) => completed.add(item.mealType));
-      const pending = new Set(pendingCompensationsForToday().map((item) => item.mealType));
       const count = completed.size;
       const percent = Math.round((count / mealTypes.length) * 100);
       mealProgressCount.textContent = `${count}/${mealTypes.length}`;
       mealProgressFill.style.setProperty("--width", `${percent}%`);
       mealProgressList.innerHTML = mealTypes.map((meal) => {
         const done = completed.has(meal.id);
-        const waiting = !done && pending.has(meal.id);
         const time = appData.mealTimes?.[meal.id] || meal.defaultTime;
-        const kcal = mealKcalTarget(meal.id);
-        return `<button type="button" class="meal-step ${done ? "done" : waiting ? "pending" : ""}" data-open-meal-detail="${meal.id}"><div class="meal-icon">${meal.icon}</div><div>${meal.name}</div><div class="meal-kcal-target">${kcal} kcal</div><div class="muted">${waiting ? "Compensar" : time}</div></button>`;
+        const mealCalories = todayMeals
+          .filter((item) => item.mealType === meal.id)
+          .reduce((total, item) => total + (Number(item.calories) || 0), 0);
+        const kcalLine = done ? `<div class="meal-kcal-target">${round(mealCalories)} kcal</div>` : "";
+        return `<button type="button" class="meal-step ${done ? "done" : ""}" data-open-meal-detail="${meal.id}"><div class="meal-icon">${meal.icon}</div><div>${meal.name}</div>${kcalLine}<div class="muted">${time}</div></button>`;
       }).join("");
       mealProgressList.querySelectorAll("[data-open-meal-detail]").forEach((button) => {
         button.addEventListener("click", () => openMealDetail(button.dataset.openMealDetail));
@@ -2919,32 +2868,16 @@
       mealDetailRegister.classList.add("hidden");
       mealDetailRegister.textContent = "Registrar dieta";
       mealUseSuggestion.classList.add("hidden");
-      mealCompensateLater.classList.remove("hidden");
-      mealCompensateLater.disabled = false;
-      mealCompensateLater.textContent = "Compensar mais tarde";
       const mealType = mealTypes.find((item) => item.id === mealTypeId) || mealTypes[0];
       selectedMealType = mealType.id;
       const registeredMeals = appData.meals.filter((item) => item.date === todayISO() && item.mealType === mealType.id);
       const alreadyDone = registeredMeals.length > 0;
-      const compensation = compensationForMeal(mealType.id);
       mealDetailTitle.textContent = mealDetailLabels[mealType.id] || mealType.name;
       mealDetailIcon.textContent = mealType.icon;
       mealDetailTime.value = appData.mealTimes?.[mealType.id] || mealType.defaultTime;
       mealDetailStatus.textContent = alreadyDone ? "Concluída" : "Pendente";
       mealDetailSubtitle.textContent = alreadyDone
         ? "Você já registrou essa refeição hoje"
-        : "Escolha uma sugestão ou crie sua própria refeição";
-      if (alreadyDone || compensation?.status === "done") {
-        mealCompensateLater.classList.add("hidden");
-      } else if (compensation?.status === "pending") {
-        mealCompensateLater.textContent = "Compensação pendente";
-        mealCompensateLater.disabled = true;
-      }
-      mealDetailStatus.textContent = alreadyDone || compensation?.status === "done" ? "Concluída" : compensation?.status === "pending" ? "Compensar" : "Pendente";
-      mealDetailSubtitle.textContent = alreadyDone || compensation?.status === "done"
-        ? "Você já registrou essa refeição hoje"
-        : compensation?.status === "pending"
-        ? "Esta refeição ficou pendente para compensar mais tarde"
         : "Escolha uma sugestão ou crie sua própria refeição";
       if (alreadyDone) {
         recommendationCarousel.innerHTML = registeredMeals.map((item) => {
@@ -2991,7 +2924,6 @@
           mealDetailSubtitle.textContent = "Edite o registro salvo nesta refeição";
           mealDetailRegister.textContent = "Salvar edição";
           mealDetailRegister.classList.remove("hidden");
-          mealCompensateLater.classList.add("hidden");
           mealUseSuggestion.classList.add("hidden");
           renderRecommendationOptions();
         }));
@@ -3015,12 +2947,12 @@
           data-select-rec="${optionIndex}"
         ><span>Opção</span>${String(optionIndex + 1).padStart(2, "0")}</button>
       `).join("");
-      const optionEdited = option && !option.compensationFor && !editingMealId && isDietOptionEdited(currentMealDetail, index);
+      const optionEdited = option && !editingMealId && isDietOptionEdited(currentMealDetail, index);
       const optionCard = option ? `
         <div class="recommendation-card selected" data-recommendation-index="${index}">
           <div class="recommendation-head">
             <div class="recommendation-head-main">
-              ${option.compensationFor ? `<span class="compensation-pill">Compensar ${option.compensationLabel}</span>` : `<span class="selected-pill">Opção ${String(index + 1).padStart(2, "0")}</span>`}
+              <span class="selected-pill">Opção ${String(index + 1).padStart(2, "0")}</span>
               ${optionEdited ? '<span class="edited-pill">Editado</span>' : ""}
               ${optionEdited ? `<button class="diet-reset-button" type="button" data-reset-diet-meal="${currentMealDetail}" data-reset-diet-option="${index}">Usar Sugestão</button>` : ""}
               <span class="kcal-pill">${option.kcal} kcal</span>
@@ -3035,7 +2967,7 @@
             </div>
           ` : ""}
           ${option.items.map((item, itemIndex) => `
-            <button class="recommended-item" type="button" data-substitute-rec="${index}" data-substitute-item="${itemIndex}" aria-label="Substituir ${item.name}">
+            <div class="recommended-item">
               <div class="recommended-item-icon">${item.icon}</div>
               <div>
                 <div class="meal-name">${item.name}</div>
@@ -3049,9 +2981,9 @@
                   ` : ""}
                 </div>
               </div>
-              <span class="swap-icon" aria-hidden="true">⇄</span>
-              <span class="item-edit-button" role="button" tabindex="0" data-substitute-rec="${index}" data-substitute-item="${itemIndex}">Editar</span>
-            </button>
+              <button class="swap-icon" type="button" data-substitute-rec="${index}" data-substitute-item="${itemIndex}" aria-label="Trocar ${item.name}">⇄</button>
+              <button class="item-remove-button" type="button" data-ignore-rec="${index}" data-ignore-item="${itemIndex}" aria-label="Desconsiderar ${item.name}">×</button>
+            </div>
           `).join("")}
           <button class="add-recommendation-item" type="button" data-add-item-rec="${index}">+ Adicionar item</button>
         </div>
@@ -3092,6 +3024,14 @@
           event.stopPropagation();
           event.stopImmediatePropagation();
           openSubstituteModal(Number(button.dataset.substituteRec), Number(button.dataset.substituteItem));
+        });
+      });
+      recommendationCarousel.querySelectorAll("[data-ignore-rec]").forEach((button) => {
+        button.addEventListener("click", (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          event.stopImmediatePropagation();
+          removeRecommendationItem(Number(button.dataset.ignoreRec), Number(button.dataset.ignoreItem));
         });
       });
       recommendationCarousel.querySelectorAll("[data-adjust-rec]").forEach((button) => {
@@ -3289,8 +3229,15 @@
     function foodToRecommendationItem(food) {
       const preferredServing = food.servings?.find((serving) => serving.id !== "gramas") || food.servings?.[0];
       const grams = preferredServing?.id === "gramas" || !preferredServing ? 100 : Number(preferredServing.grams) || 100;
-      const amount = preferredServing?.id === "gramas" || !preferredServing
+      const isEggServing = preferredServing?.id === "unidade" && normalizeText(food.name).includes("ovo");
+      const amount = !preferredServing || preferredServing.id === "gramas"
         ? "100g"
+        : preferredServing.id === "excel"
+        ? preferredServing.name
+        : preferredServing.id === "a-vontade"
+        ? "à vontade"
+        : isEggServing
+        ? "1 ovo"
         : `1 ${preferredServing.name.toLowerCase()}`;
       return {
         icon: iconForFoodName(food.name),
@@ -3363,14 +3310,6 @@
       substituteList.innerHTML = `
         <input class="substitute-search" id="substitute-search" placeholder="Digite para filtrar..." autocomplete="off" />
         <div class="substitute-results" id="substitute-results"></div>
-        <button class="substitute-option" type="button" data-ignore-item="1">
-          <div class="recommended-item-icon">🚫</div>
-          <div>
-            <div class="meal-name">Desconsiderar item</div>
-            <div class="muted">Remover ${item.name} desta refeição</div>
-          </div>
-          <div class="substitute-info">−</div>
-        </button>
       `;
       const searchInput = document.getElementById("substitute-search");
       const results = document.getElementById("substitute-results");
@@ -3403,7 +3342,6 @@
       };
       searchInput.addEventListener("input", renderSubstituteResults);
       renderSubstituteResults();
-      substituteList.querySelector("[data-ignore-item]")?.addEventListener("click", ignoreRecommendationItem);
       substituteModal.classList.remove("hidden");
       requestAnimationFrame(() => searchInput.focus());
     }
@@ -3471,13 +3409,17 @@
     function ignoreRecommendationItem() {
       if (!substituteTarget) return;
       const { recommendationIndex, itemIndex } = substituteTarget;
+      removeRecommendationItem(recommendationIndex, itemIndex);
+      closeSubstituteModal();
+    }
+
+    function removeRecommendationItem(recommendationIndex, itemIndex) {
       const option = currentRecommendationOptions?.[recommendationIndex];
       if (!option?.items?.[itemIndex]) return;
       option.items.splice(itemIndex, 1);
       recalculateRecommendation(option);
       renderRecommendationOptions();
       updateRecommendationRegisterVisibility();
-      closeSubstituteModal();
     }
 
     function addRecommendationItem(food) {
@@ -3546,9 +3488,7 @@
 
     function registerSelectedRecommendation() {
       const option = currentRecommendationOptions[selectedRecommendationIndex];
-      const mealType = option?.compensationMealType
-        ? mealTypes.find((item) => item.id === option.compensationMealType) || mealTypes[0]
-        : mealTypes.find((item) => item.id === currentMealDetail) || mealTypes[0];
+      const mealType = mealTypes.find((item) => item.id === currentMealDetail) || mealTypes[0];
       if (!option) {
         selectedMealType = currentMealDetail;
         renderMealTypeOptions();
@@ -3594,7 +3534,7 @@
         id: `${Date.now()}`,
         date: todayISO(),
         foodId: `sugestao-${mealType.id}-${Date.now()}`,
-        foodName: `${option.compensationFor ? "Compensação - " : ""}${mealDetailLabels[mealType.id] || mealType.name}: ${itemsLabel}`,
+        foodName: `${mealDetailLabels[mealType.id] || mealType.name}: ${itemsLabel}`,
         mealType: mealType.id,
         mealTypeName: mealType.name,
         mealTime: appData.mealTimes?.[currentMealDetail] || defaultMealTimes[currentMealDetail],
@@ -3606,12 +3546,6 @@
         protein: round(proteinTotal),
         carbs: round(carbsTotal)
       });
-      if (option.compensationFor) {
-        markCompensationCompleted(option.compensationFor, currentMealDetail);
-      } else {
-        const pendingForMeal = appData.compensations.find((item) => item.date === todayISO() && item.mealType === mealType.id && item.status === "pending");
-        if (pendingForMeal) markCompensationCompleted(pendingForMeal.id, currentMealDetail);
-      }
       saveData();
       editingMealType = null;
       editingMealId = null;
@@ -3627,11 +3561,16 @@
       const today = todayISO();
       const total = Number(appData.water?.[today]) || 0;
       const target = waterTarget();
-      const cupCount = Math.max(12, Math.ceil(target / 250));
+      const targetCupCount = Math.ceil(target / 250);
+      const cupCount = Math.max(12, targetCupCount, Math.ceil(total / 250));
       const filled = Math.min(cupCount, Math.floor(total / 250));
+      const expected = Math.min(targetCupCount, Math.ceil(targetCupCount * expectedWaterProgress()));
       waterTotal.textContent = total.toLocaleString("pt-BR");
       waterGoal.textContent = `${target.toLocaleString("pt-BR")} ml`;
-      waterCups.innerHTML = Array.from({ length: cupCount }, (_, index) => `<div class="cup ${index < filled ? "filled" : ""}"></div>`).join("");
+      waterCups.innerHTML = Array.from({ length: cupCount }, (_, index) => {
+        const state = index < filled ? "filled" : index < expected ? "pending" : "";
+        return `<div class="cup ${state}"></div>`;
+      }).join("");
     }
 
     function addWater(amount) {
@@ -3697,6 +3636,11 @@
       return food?.servings?.length ? food.servings : [{ id: "gramas", name: "Gramas", grams: 1 }];
     }
 
+    function defaultServingIdForFood(food) {
+      const servings = servingsForFood(food);
+      return servings.find((item) => item.id !== "gramas")?.id || servings[0]?.id || "gramas";
+    }
+
     function selectedServing() {
       const food = selectedFood();
       return servingsForFood(food).find((item) => item.id === selectedServingId) || servingsForFood(food)[0];
@@ -3706,7 +3650,7 @@
       const food = selectedFood();
       const servings = servingsForFood(food);
       if (!servings.some((item) => item.id === selectedServingId)) {
-        selectedServingId = servings[0]?.id || "gramas";
+        selectedServingId = defaultServingIdForFood(food);
       }
       servingOptions.innerHTML = servings
         .map((item) => `<button type="button" data-serving-id="${item.id}" class="selector-tab ${item.id === selectedServingId ? "active" : ""}">${item.name}</button>`)
@@ -3748,6 +3692,7 @@
 
       if (!source.some((food) => food.id === selectedFoodId) && source[0]) {
         selectedFoodId = source[0].id;
+        selectedServingId = defaultServingIdForFood(source[0]);
       }
 
       if (source.length === 0) {
@@ -3768,6 +3713,7 @@
       foodOptions.querySelectorAll(".pill").forEach((item) => {
         item.addEventListener("click", () => {
           selectedFoodId = item.dataset.foodId;
+          selectedServingId = defaultServingIdForFood(selectedFood());
           foodOptions.querySelectorAll(".pill").forEach((pill) => pill.classList.remove("active"));
           item.classList.add("active");
           renderServingOptions();
@@ -4142,9 +4088,6 @@
     });
     mealUseSuggestion.addEventListener("click", () => {
       useDefaultDietSuggestion();
-    });
-    mealCompensateLater.addEventListener("click", () => {
-      compensateCurrentMealLater();
     });
     mealProgressList.addEventListener("click", (event) => {
       const mealButton = event.target.closest("[data-open-meal-detail]");
