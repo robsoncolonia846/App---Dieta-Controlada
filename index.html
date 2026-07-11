@@ -656,8 +656,8 @@
 
     .meal-detail-header {
       display: grid;
-      gap: 22px;
-      padding: 8px 0 18px;
+      gap: 10px;
+      padding: 0 0 10px;
     }
 
     #refeicao-detalhe {
@@ -689,35 +689,53 @@
     .back-row {
       display: flex;
       align-items: center;
-      gap: 14px;
+      justify-content: space-between;
+      gap: 10px;
     }
 
     .back-button {
-      width: 48px;
-      height: 48px;
+      width: 42px;
+      height: 42px;
       border: 1px solid #e7e7ec;
       border-radius: 50%;
       background: #fff;
-      font-size: 30px;
+      font-size: 27px;
       line-height: 1;
       box-shadow: 0 8px 18px rgba(36, 49, 25, 0.06);
+    }
+
+    .back-row-main {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .meal-detail-kicker h2 {
+      font-size: 23px;
+      line-height: 1.05;
+    }
+
+    .meal-detail-kicker .muted {
+      font-size: 13px;
+      line-height: 1.15;
     }
 
     .meal-detail-title {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      gap: 10px;
     }
 
     .meal-detail-title h2 {
-      font-size: 42px;
-      line-height: 0.95;
-      letter-spacing: -0.07em;
+      font-size: 34px;
+      line-height: 1;
+      letter-spacing: -0.04em;
     }
 
     .meal-detail-icon {
-      font-size: 58px;
+      font-size: 42px;
     }
 
     .status-pill {
@@ -738,25 +756,26 @@
     .meal-time-editor {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 6px;
       color: #8d8d92;
-      font-size: 15px;
+      font-size: 12px;
       font-weight: 800;
+      white-space: nowrap;
     }
 
     .meal-time-editor input {
-      width: 96px;
-      padding: 9px 10px;
-      border-radius: 12px;
+      width: 84px;
+      padding: 7px 8px;
+      border-radius: 10px;
       text-align: center;
       font-weight: 900;
     }
 
     .recommendation-carousel {
       display: grid;
-      gap: 12px;
+      gap: 9px;
       overflow-x: hidden;
-      padding: 8px 0 12px;
+      padding: 2px 0 10px;
       scrollbar-width: none;
     }
 
@@ -769,11 +788,11 @@
       min-width: 0;
       max-width: 100%;
       border: 1.5px solid #209b26;
-      border-radius: 28px;
+      border-radius: 24px;
       background: #fff;
-      padding: 20px;
+      padding: 16px;
       display: grid;
-      gap: 18px;
+      gap: 14px;
     }
 
     .recommendation-card:not(.empty) {
@@ -1873,19 +1892,19 @@
           <section id="refeicao-detalhe" class="hidden">
             <div class="meal-detail-header">
               <div class="back-row">
-                <button class="back-button" type="button" id="meal-detail-back">‹</button>
-                <div>
-                  <h2>Refeição</h2>
-                  <div class="muted">Modo visualização</div>
+                <div class="back-row-main">
+                  <button class="back-button" type="button" id="meal-detail-back">‹</button>
+                  <div class="meal-detail-kicker">
+                    <h2>Refeição</h2>
+                    <div class="muted">Modo visualização</div>
+                  </div>
+                </div>
+                <div class="meal-time-editor">
+                  <span>⏱</span>
+                  <input id="meal-detail-time" type="time" />
                 </div>
               </div>
-              <div>
-                <span class="status-pill" id="meal-detail-status">Pendente</span>
-              </div>
-              <div class="meal-time-editor">
-                <span>⏱ Horário</span>
-                <input id="meal-detail-time" type="time" />
-              </div>
+              <span class="status-pill hidden" id="meal-detail-status">Pendente</span>
               <div class="meal-detail-title">
                 <div>
                   <h2 id="meal-detail-title">Café da manhã</h2>
