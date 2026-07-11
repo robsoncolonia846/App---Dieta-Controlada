@@ -3257,6 +3257,26 @@
       };
     }
 
+    function splitSavedRecommendationItems(label = "") {
+      return String(label)
+        .split(/,\s+(?=[^)]*(?:\(|$))/)
+        .map((item) => item.trim())
+        .filter(Boolean);
+    }
+
+    function parseSavedRecommendationItem(part = "") {
+      const match = String(part).match(/^(.*)\s+\(([^()]*)\)$/);
+      const amount = match?.[2]?.trim();
+      const looksLikeAmount = amount && (
+        /[\d,.]/.test(amount)
+        || amount.toLowerCase().includes("vontade")
+      );
+      return {
+        name: (looksLikeAmount ? match[1] : part).trim(),
+        amount: looksLikeAmount ? amount : "100g"
+      };
+    }
+
     function savedMealToRecommendationOption(meal) {
       if (!meal) return { kcal: 0, items: [] };
       if (meal.servingId !== "dieta-sugerida") {
@@ -3279,11 +3299,9 @@
       const label = String(meal.foodName || "").includes(":")
         ? String(meal.foodName).split(":").slice(1).join(":").trim()
         : String(meal.foodName || "");
-      const parts = label.split(/,\s+/).filter(Boolean);
+      const parts = splitSavedRecommendationItems(label);
       const items = parts.map((part) => {
-        const match = part.match(/^(.*?)\s*\((.*?)\)$/);
-        const name = (match?.[1] || part).trim();
-        const amount = (match?.[2] || "100g").trim();
+        const { name, amount } = parseSavedRecommendationItem(part);
         return { icon: iconForFoodName(name), name, amount };
       });
       const option = {
