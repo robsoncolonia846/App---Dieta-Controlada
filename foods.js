@@ -1,613 +1,35 @@
-export const foods = [
-  {
-    id: "arroz-cozido",
-    name: "Arroz cozido",
-    category: "Alimentação",
-    caloriesPer100g: 128,
-    proteinPer100g: 2.5,
-    carbsPer100g: 28.1,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "colher", name: "Colher", grams: 25 }
-    ]
-  },
-  {
-    id: "feijao-cozido",
-    name: "Feijão cozido",
-    category: "Alimentação",
-    caloriesPer100g: 76,
-    proteinPer100g: 4.8,
-    carbsPer100g: 13.6,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "colher", name: "Colher", grams: 25 },
-      { id: "concha", name: "Concha", grams: 100 }
-    ]
-  },
-  {
-    id: "carne-moida-com-molho",
-    name: "Carne moída com molho",
-    category: "Alimentação",
-    caloriesPer100g: 180,
-    proteinPer100g: 18,
-    carbsPer100g: 3,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "colher", name: "Colher", grams: 30 }
-    ]
-  },
-  {
-    id: "ovo",
-    name: "Ovo",
-    category: "Alimentação",
-    caloriesPer100g: 146,
-    proteinPer100g: 13.3,
-    carbsPer100g: 0.6,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "unidade", name: "Unidade", grams: 50 }
-    ]
-  },
-  {
-    id: "tomate",
-    name: "Tomate",
-    category: "Alimentação",
-    caloriesPer100g: 15,
-    proteinPer100g: 1.1,
-    carbsPer100g: 3.1,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "unidade", name: "Unidade", grams: 100 }
-    ]
-  },
-  {
-    id: "tomate-cereja",
-    name: "Tomate cereja",
-    category: "Alimentação",
-    caloriesPer100g: 18,
-    proteinPer100g: 0.9,
-    carbsPer100g: 3.9,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "unidade", name: "Unidade", grams: 12 }
-    ]
-  },
-  {
-    id: "panqueca",
-    name: "Panqueca",
-    category: "Alimentação",
-    caloriesPer100g: 180,
-    proteinPer100g: 9,
-    carbsPer100g: 18,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "unidade", name: "Unidade", grams: 120 }
-    ]
-  },
-  {
-    id: "lasanha",
-    name: "Lasanha",
-    category: "Alimentação",
-    caloriesPer100g: 160,
-    proteinPer100g: 8,
-    carbsPer100g: 14,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "pedaco", name: "Pedaço", grams: 200 }
-    ]
-  },
-  {
-    id: "massa-alho-e-oleo",
-    name: "Massa alho e óleo",
-    category: "Alimentação",
-    caloriesPer100g: 210,
-    proteinPer100g: 6,
-    carbsPer100g: 30,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "colher", name: "Colher", grams: 30 }
-    ]
-  },
-  {
-    id: "massa-com-carne-moida",
-    name: "Massa com carne moída",
-    category: "Alimentação",
-    caloriesPer100g: 185,
-    proteinPer100g: 9,
-    carbsPer100g: 24,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "colher", name: "Colher", grams: 30 }
-    ]
-  },
-  {
-    id: "massa-com-carne-moida-e-queijos",
-    name: "Massa com carne moída e queijos",
-    category: "Alimentação",
-    caloriesPer100g: 220,
-    proteinPer100g: 11,
-    carbsPer100g: 22,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "colher", name: "Colher", grams: 30 }
-    ]
-  },
-  {
-    id: "massa-com-frango",
-    name: "Massa com frango",
-    category: "Alimentação",
-    caloriesPer100g: 175,
-    proteinPer100g: 12,
-    carbsPer100g: 24,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "colher", name: "Colher", grams: 30 }
-    ]
-  },
-  {
-    id: "bife-alcatra-coxao-mole",
-    name: "Bife de alcatra/coxão mole",
-    category: "Alimentação",
-    caloriesPer100g: 220,
-    proteinPer100g: 30,
-    carbsPer100g: 0,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "unidade", name: "Unidade", grams: 100 }
-    ]
-  },
-  {
-    id: "estrogonofe-carne-requeijao-creme-leite",
-    name: "Estrogonofe de carne com requeijão e creme de leite",
-    category: "Alimentação",
-    caloriesPer100g: 210,
-    proteinPer100g: 13,
-    carbsPer100g: 4,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "colher", name: "Colher", grams: 30 }
-    ]
-  },
-  {
-    id: "estrogonofe-frango-requeijao-creme-leite",
-    name: "Estrogonofe de frango com requeijão e creme de leite",
-    category: "Alimentação",
-    caloriesPer100g: 190,
-    proteinPer100g: 15,
-    carbsPer100g: 4,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "colher", name: "Colher", grams: 30 }
-    ]
-  },
-  {
-    id: "pao-queijo",
-    name: "Pão + Queijo",
-    category: "Alimentação",
-    caloriesPer100g: 315,
-    proteinPer100g: 13,
-    carbsPer100g: 42,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "unidade", name: "Unidade", grams: 70 }
-    ]
-  },
-  {
-    id: "pao-presunto-queijo",
-    name: "Pão + Presunto e Queijo",
-    category: "Alimentação",
-    caloriesPer100g: 275,
-    proteinPer100g: 14,
-    carbsPer100g: 34,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "unidade", name: "Unidade", grams: 85 }
-    ]
-  },
-  {
-    id: "pao-frango",
-    name: "Pão + Frango",
-    category: "Alimentação",
-    caloriesPer100g: 245,
-    proteinPer100g: 17,
-    carbsPer100g: 32,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "unidade", name: "Unidade", grams: 90 }
-    ]
-  },
-  {
-    id: "pao-ovo",
-    name: "Pão + Ovo",
-    category: "Alimentação",
-    caloriesPer100g: 250,
-    proteinPer100g: 12,
-    carbsPer100g: 29,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "unidade", name: "Unidade", grams: 95 }
-    ]
-  },
-  {
-    id: "tapioca-queijo",
-    name: "Tapioca de Queijo",
-    category: "Alimentação",
-    caloriesPer100g: 280,
-    proteinPer100g: 7,
-    carbsPer100g: 45,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "unidade", name: "Unidade", grams: 90 }
-    ]
-  },
-  {
-    id: "tapioca-frango",
-    name: "Tapioca de Frango",
-    category: "Alimentação",
-    caloriesPer100g: 210,
-    proteinPer100g: 14,
-    carbsPer100g: 31,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "unidade", name: "Unidade", grams: 110 }
-    ]
-  },
-  {
-    id: "cuscuz-ovo",
-    name: "Cuscuz + Ovo",
-    category: "Alimentação",
-    caloriesPer100g: 150,
-    proteinPer100g: 6,
-    carbsPer100g: 23,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "unidade", name: "Unidade", grams: 150 }
-    ]
-  },
-  {
-    id: "pao-de-queijo",
-    name: "Pão de Queijo",
-    category: "Alimentação",
-    caloriesPer100g: 363,
-    proteinPer100g: 5.1,
-    carbsPer100g: 34.2,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "unidade", name: "Unidade", grams: 30 }
-    ]
-  },
-  {
-    id: "uva",
-    name: "Uva",
-    category: "Alimentação",
-    caloriesPer100g: 53,
-    proteinPer100g: 0.7,
-    carbsPer100g: 13.6,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "unidade", name: "Unidade", grams: 8 }
-    ]
-  },
-  {
-    id: "iogurte",
-    name: "Iogurte",
-    category: "Alimentação",
-    caloriesPer100g: 51,
-    proteinPer100g: 4.1,
-    carbsPer100g: 1.9,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "unidade", name: "Unidade", grams: 170 }
-    ]
-  },
-  {
-    id: "biscoito-agua-sal",
-    name: "Biscoito de Água e Sal",
-    category: "Alimentação",
-    caloriesPer100g: 432,
-    proteinPer100g: 10.1,
-    carbsPer100g: 68.7,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "unidade", name: "Unidade", grams: 6 }
-    ]
-  },
-  {
-    id: "cuscuz",
-    name: "Cuscuz",
-    category: "Alimentação",
-    caloriesPer100g: 113,
-    proteinPer100g: 2.2,
-    carbsPer100g: 25.3,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "colher", name: "Colher", grams: 35 }
-    ]
-  },
-  {
-    id: "angu",
-    name: "Angu",
-    category: "Alimentação",
-    caloriesPer100g: 44,
-    proteinPer100g: 1,
-    carbsPer100g: 9,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "colher", name: "Colher", grams: 35 }
-    ]
-  },
-  {
-    id: "salada-legumes",
-    name: "Salada de Legumes",
-    category: "Alimentação",
-    caloriesPer100g: 35,
-    proteinPer100g: 1.5,
-    carbsPer100g: 7,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "porcao", name: "Porção", grams: 100 }
-    ]
-  },
-  {
-    id: "omelete",
-    name: "Omelete",
-    category: "Alimentação",
-    caloriesPer100g: 154,
-    proteinPer100g: 11,
-    carbsPer100g: 1.2,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "unidade", name: "Unidade", grams: 100 }
-    ]
-  },
-  {
-    id: "mamao",
-    name: "Mamão",
-    category: "Alimentação",
-    caloriesPer100g: 45,
-    proteinPer100g: 0.8,
-    carbsPer100g: 11.6,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "fatia", name: "Fatia", grams: 100 }
-    ]
-  },
-  {
-    id: "morango",
-    name: "Morango",
-    category: "Alimentação",
-    caloriesPer100g: 30,
-    proteinPer100g: 0.9,
-    carbsPer100g: 6.8,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "unidade", name: "Unidade", grams: 12 }
-    ]
-  },
-  {
-    id: "cafe-leite-desnatado",
-    name: "Café + Leite Desnatado",
-    category: "Alimentação",
-    caloriesPer100g: 35,
-    proteinPer100g: 3.4,
-    carbsPer100g: 5,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "copo", name: "Copo", grams: 200 }
-    ]
-  },
-  {
-    id: "melao",
-    name: "Melão",
-    category: "Alimentação",
-    caloriesPer100g: 29,
-    proteinPer100g: 0.7,
-    carbsPer100g: 7.5,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "fatia", name: "Fatia", grams: 115 }
-    ]
-  },
-  {
-    id: "whey-protein",
-    name: "Whey Protein",
-    category: "Alimentação",
-    caloriesPer100g: 400,
-    proteinPer100g: 80,
-    carbsPer100g: 8,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "scoop", name: "Scoop", grams: 30 }
-    ]
-  },
-  {
-    id: "biscoito-polvilho",
-    name: "Biscoito de Polvilho",
-    category: "Alimentação",
-    caloriesPer100g: 438,
-    proteinPer100g: 1.3,
-    carbsPer100g: 80.5,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "unidade", name: "Unidade", grams: 5 }
-    ]
-  },
-  {
-    id: "biscoito-arroz",
-    name: "Biscoito de Arroz",
-    category: "Alimentação",
-    caloriesPer100g: 387,
-    proteinPer100g: 8,
-    carbsPer100g: 81,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "unidade", name: "Unidade", grams: 9 }
-    ]
-  },
-  {
-    id: "feijao-preto",
-    name: "Feijão Preto",
-    category: "Alimentação",
-    caloriesPer100g: 77,
-    proteinPer100g: 4.5,
-    carbsPer100g: 14,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "colher", name: "Colher", grams: 25 },
-      { id: "concha", name: "Concha", grams: 100 }
-    ]
-  },
-  {
-    id: "polvilho-azedo",
-    name: "Polvilho Azedo",
-    category: "Alimentação",
-    caloriesPer100g: 351,
-    proteinPer100g: 0.5,
-    carbsPer100g: 87,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "colher", name: "Colher", grams: 15 }
-    ]
-  },
-  {
-    id: "macarrao",
-    name: "Macarrão",
-    category: "Alimentação",
-    caloriesPer100g: 158,
-    proteinPer100g: 5.8,
-    carbsPer100g: 30.9,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "colher", name: "Colher", grams: 30 }
-    ]
-  },
-  {
-    id: "batata-doce",
-    name: "Batata Doce",
-    category: "Alimentação",
-    caloriesPer100g: 77,
-    proteinPer100g: 0.6,
-    carbsPer100g: 18.4,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "unidade", name: "Unidade", grams: 120 }
-    ]
-  },
-  {
-    id: "mandioca",
-    name: "Mandioca",
-    category: "Alimentação",
-    caloriesPer100g: 125,
-    proteinPer100g: 0.6,
-    carbsPer100g: 30.1,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "pedaco", name: "Pedaço", grams: 80 }
-    ]
-  },
-  {
-    id: "abobora",
-    name: "Abóbora",
-    category: "Alimentação",
-    caloriesPer100g: 48,
-    proteinPer100g: 1.4,
-    carbsPer100g: 10.8,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "colher", name: "Colher", grams: 35 }
-    ]
-  },
-  {
-    id: "frango-grelhado",
-    name: "Frango Grelhado",
-    category: "Alimentação",
-    caloriesPer100g: 159,
-    proteinPer100g: 32,
-    carbsPer100g: 0,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "file", name: "Filé", grams: 100 }
-    ]
-  },
-  {
-    id: "carne-porco-lombo",
-    name: "Carne de Porco Lombo",
-    category: "Alimentação",
-    caloriesPer100g: 210,
-    proteinPer100g: 35.7,
-    carbsPer100g: 0,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "unidade", name: "Unidade", grams: 100 }
-    ]
-  },
-  {
-    id: "patinho-moido",
-    name: "Patinho Moído",
-    category: "Alimentação",
-    caloriesPer100g: 219,
-    proteinPer100g: 35.9,
-    carbsPer100g: 0,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "colher", name: "Colher", grams: 30 }
-    ]
-  },
-  {
-    id: "salada-alface-tomate",
-    name: "Salada de Alface e Tomate",
-    category: "Alimentação",
-    caloriesPer100g: 17,
-    proteinPer100g: 1,
-    carbsPer100g: 3.2,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "porcao", name: "Porção", grams: 100 }
-    ]
-  },
-  {
-    id: "cebola",
-    name: "Cebola",
-    category: "Alimentação",
-    caloriesPer100g: 39,
-    proteinPer100g: 1.7,
-    carbsPer100g: 8.9,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "unidade", name: "Unidade", grams: 70 }
-    ]
-  },
-  {
-    id: "melancia",
-    name: "Melancia",
-    category: "Alimentação",
-    caloriesPer100g: 33,
-    proteinPer100g: 0.9,
-    carbsPer100g: 8.1,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "fatia", name: "Fatia", grams: 150 }
-    ]
-  },
+﻿export const foods = [
   {
     id: "abacaxi",
     name: "Abacaxi",
     category: "Alimentação",
-    caloriesPer100g: 48,
-    proteinPer100g: 0.9,
-    carbsPer100g: 12.3,
+    caloriesPer100g: 50,
+    proteinPer100g: 0.6,
+    carbsPer100g: 13,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "fatia", name: "Fatia", grams: 75 }
+      { id: "porcao", name: "Porção", grams: 50 }
     ]
   },
   {
-    id: "bergamota",
-    name: "Bergamota",
+    id: "arroz",
+    name: "Arroz",
     category: "Alimentação",
-    caloriesPer100g: 38,
+    caloriesPer100g: 130,
+    proteinPer100g: 2.6,
+    carbsPer100g: 28,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "Porção", grams: 50 }
+    ]
+  },
+  {
+    id: "banana",
+    name: "Banana",
+    category: "Alimentação",
+    caloriesPer100g: 60,
     proteinPer100g: 0.8,
-    carbsPer100g: 9.6,
+    carbsPer100g: 15,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
       { id: "unidade", name: "Unidade", grams: 100 }
@@ -617,60 +39,505 @@ export const foods = [
     id: "batata-inglesa",
     name: "Batata Inglesa",
     category: "Alimentação",
-    caloriesPer100g: 52,
-    proteinPer100g: 1.2,
-    carbsPer100g: 11.9,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "unidade", name: "Unidade", grams: 120 }
-    ]
-  },
-  {
-    id: "inhame",
-    name: "Inhame",
-    category: "Alimentação",
-    caloriesPer100g: 97,
-    proteinPer100g: 2.1,
-    carbsPer100g: 23.2,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "unidade", name: "Unidade", grams: 100 }
-    ]
-  },
-  {
-    id: "couve",
-    name: "Couve",
-    category: "Alimentação",
-    caloriesPer100g: 27,
-    proteinPer100g: 2.9,
-    carbsPer100g: 4.3,
+    caloriesPer100g: 90,
+    proteinPer100g: 2,
+    carbsPer100g: 20,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
       { id: "porcao", name: "Porção", grams: 50 }
     ]
   },
   {
-    id: "pao-caseiro",
-    name: "Pão Caseiro",
+    id: "bergamota",
+    name: "Bergamota",
     category: "Alimentação",
-    caloriesPer100g: 280,
-    proteinPer100g: 8,
-    carbsPer100g: 56,
+    caloriesPer100g: 40,
+    proteinPer100g: 0.8,
+    carbsPer100g: 9.6,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "porcao-50g", name: "Porção de 50g", grams: 50 }
+      { id: "unidade", name: "Unidade", grams: 100 }
     ]
   },
   {
-    id: "peixe",
-    name: "Peixe",
+    id: "carne-de-panela-agulha",
+    name: "Carne de Panela (Agulha)",
     category: "Alimentação",
-    caloriesPer100g: 129,
+    caloriesPer100g: 240,
+    proteinPer100g: 24,
+    carbsPer100g: 0,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "Porção", grams: 50 }
+    ]
+  },
+  {
+    id: "carne-grelhada",
+    name: "Carne Grelhada",
+    category: "Alimentação",
+    caloriesPer100g: 216,
+    proteinPer100g: 30,
+    carbsPer100g: 0,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "Porção", grams: 50 }
+    ]
+  },
+  {
+    id: "carne-moida",
+    name: "Carne Moida",
+    category: "Alimentação",
+    caloriesPer100g: 250,
     proteinPer100g: 26,
     carbsPer100g: 0,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "file", name: "Filé", grams: 100 }
+      { id: "porcao", name: "Porção", grams: 50 }
+    ]
+  },
+  {
+    id: "coracao-de-frango",
+    name: "Coração de Frango",
+    category: "Alimentação",
+    caloriesPer100g: 220,
+    proteinPer100g: 26,
+    carbsPer100g: 0,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "Porção", grams: 50 }
+    ]
+  },
+  {
+    id: "doce-de-leite",
+    name: "Doce De Leite",
+    category: "Alimentação",
+    caloriesPer100g: 350,
+    proteinPer100g: 7.5,
+    carbsPer100g: 55,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "colher-de-sopa", name: "Colher de sopa", grams: 20 }
+    ]
+  },
+  {
+    id: "estrogonof",
+    name: "Estrogonof",
+    category: "Alimentação",
+    caloriesPer100g: 150,
+    proteinPer100g: 18,
+    carbsPer100g: 4,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "Porção", grams: 50 }
+    ]
+  },
+  {
+    id: "feijao",
+    name: "Feijão",
+    category: "Alimentação",
+    caloriesPer100g: 80,
+    proteinPer100g: 4.8,
+    carbsPer100g: 14,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "Porção", grams: 50 }
+    ]
+  },
+  {
+    id: "frango-assada-sobrecoxa",
+    name: "Frango Assada (Sobrecoxa)",
+    category: "Alimentação",
+    caloriesPer100g: 250,
+    proteinPer100g: 28,
+    carbsPer100g: 0,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "Porção", grams: 50 }
+    ]
+  },
+  {
+    id: "frango-desfiado",
+    name: "Frango Desfiado",
+    category: "Alimentação",
+    caloriesPer100g: 180,
+    proteinPer100g: 31,
+    carbsPer100g: 0,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "Porção", grams: 50 }
+    ]
+  },
+  {
+    id: "frango-grelhado",
+    name: "Frango Grelhado",
+    category: "Alimentação",
+    caloriesPer100g: 170,
+    proteinPer100g: 32,
+    carbsPer100g: 0,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "Porção", grams: 50 }
+    ]
+  },
+  {
+    id: "frango-sobrecoxa-ao-molho",
+    name: "Frango Sobrecoxa Ao Molho",
+    category: "Alimentação",
+    caloriesPer100g: 180,
+    proteinPer100g: 28,
+    carbsPer100g: 0,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "Porção", grams: 50 }
+    ]
+  },
+  {
+    id: "goiabada",
+    name: "Goiabada",
+    category: "Alimentação",
+    caloriesPer100g: 308,
+    proteinPer100g: 0.4,
+    carbsPer100g: 78,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "Porção", grams: 50 }
+    ]
+  },
+  {
+    id: "iogurte-zero",
+    name: "Iogurte Zero",
+    category: "Alimentação",
+    caloriesPer100g: 30,
+    proteinPer100g: 2.75,
+    carbsPer100g: 3.6,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "Porção", grams: 200 }
+    ]
+  },
+  {
+    id: "laranja",
+    name: "Laranja",
+    category: "Alimentação",
+    caloriesPer100g: 80,
+    proteinPer100g: 1.8,
+    carbsPer100g: 20,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "unidade", name: "Unidade", grams: 100 }
+    ]
+  },
+  {
+    id: "lazanha-de-carne-moida",
+    name: "Lazanha de Carne Moida",
+    category: "Alimentação",
+    caloriesPer100g: 200,
+    proteinPer100g: 12,
+    carbsPer100g: 18,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "Porção", grams: 50 }
+    ]
+  },
+  {
+    id: "lazanha-de-frango",
+    name: "Lazanha de Frango",
+    category: "Alimentação",
+    caloriesPer100g: 200,
+    proteinPer100g: 10,
+    carbsPer100g: 15,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "Porção", grams: 50 }
+    ]
+  },
+  {
+    id: "leite-desnatado",
+    name: "Leite Desnatado",
+    category: "Alimentação",
+    caloriesPer100g: 37,
+    proteinPer100g: 3.4,
+    carbsPer100g: 5,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "Porção", grams: 200 }
+    ]
+  },
+  {
+    id: "leite-integral",
+    name: "Leite Integral",
+    category: "Alimentação",
+    caloriesPer100g: 62,
+    proteinPer100g: 3.4,
+    carbsPer100g: 4.8,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "Porção", grams: 200 }
+    ]
+  },
+  {
+    id: "maca",
+    name: "Maça",
+    category: "Alimentação",
+    caloriesPer100g: 70,
+    proteinPer100g: 0.3,
+    carbsPer100g: 18,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "unidade", name: "Unidade", grams: 100 }
+    ]
+  },
+  {
+    id: "macarrao",
+    name: "Macarrão",
+    category: "Alimentação",
+    caloriesPer100g: 150,
+    proteinPer100g: 5.8,
+    carbsPer100g: 31,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "Porção", grams: 50 }
+    ]
+  },
+  {
+    id: "melancia",
+    name: "Melancia",
+    category: "Alimentação",
+    caloriesPer100g: 30,
+    proteinPer100g: 0.6,
+    carbsPer100g: 8,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "Porção", grams: 50 }
+    ]
+  },
+  {
+    id: "morango",
+    name: "Morango",
+    category: "Alimentação",
+    caloriesPer100g: 32,
+    proteinPer100g: 0.8,
+    carbsPer100g: 6.8,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "Porção", grams: 50 }
+    ]
+  },
+  {
+    id: "omelete",
+    name: "Omelete",
+    category: "Alimentação",
+    caloriesPer100g: 160,
+    proteinPer100g: 13,
+    carbsPer100g: 1,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "Porção", grams: 50 }
+    ]
+  },
+  {
+    id: "omelete-com-queijo",
+    name: "Omelete com Queijo",
+    category: "Alimentação",
+    caloriesPer100g: 280,
+    proteinPer100g: 16,
+    carbsPer100g: 0.6,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "Porção", grams: 50 }
+    ]
+  },
+  {
+    id: "panqueca-carne-moida",
+    name: "Panqueca (Carne Moida)",
+    category: "Alimentação",
+    caloriesPer100g: 190,
+    proteinPer100g: 12,
+    carbsPer100g: 16,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "Porção", grams: 100 }
+    ]
+  },
+  {
+    id: "panqueca-frango",
+    name: "Panqueca (Frango)",
+    category: "Alimentação",
+    caloriesPer100g: 175,
+    proteinPer100g: 14,
+    carbsPer100g: 16,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "Porção", grams: 100 }
+    ]
+  },
+  {
+    id: "pao-caseiro",
+    name: "Pão Caseiro",
+    category: "Alimentação",
+    caloriesPer100g: 300,
+    proteinPer100g: 18,
+    carbsPer100g: 110,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "unidade", name: "Unidade", grams: 50 }
+    ]
+  },
+  {
+    id: "pao-de-forma",
+    name: "Pão De Forma",
+    category: "Alimentação",
+    caloriesPer100g: 70,
+    proteinPer100g: 2.5,
+    carbsPer100g: 12,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "unidade", name: "Unidade", grams: 100 }
+    ]
+  },
+  {
+    id: "pao-frances",
+    name: "Pão Frances",
+    category: "Alimentação",
+    caloriesPer100g: 300,
+    proteinPer100g: 8,
+    carbsPer100g: 58,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "unidade", name: "Unidade", grams: 50 }
+    ]
+  },
+  {
+    id: "pao-frances-ovo-frito",
+    name: "Pão Frances + Ovo Frito",
+    category: "Alimentação",
+    caloriesPer100g: 300,
+    proteinPer100g: 11,
+    carbsPer100g: 30,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "unidade", name: "Unidade", grams: 100 }
+    ]
+  },
+  {
+    id: "pao-frances-ovo-mexido",
+    name: "Pão Frances + Ovo Mexido",
+    category: "Alimentação",
+    caloriesPer100g: 250,
+    proteinPer100g: 11,
+    carbsPer100g: 30,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "unidade", name: "Unidade", grams: 100 }
+    ]
+  },
+  {
+    id: "peixe-assado-anchova",
+    name: "Peixe Assado (Anchova)",
+    category: "Alimentação",
+    caloriesPer100g: 160,
+    proteinPer100g: 26,
+    carbsPer100g: 0,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "Porção", grams: 50 }
+    ]
+  },
+  {
+    id: "peixe-assado-tainha",
+    name: "Peixe Assado (Tainha)",
+    category: "Alimentação",
+    caloriesPer100g: 180,
+    proteinPer100g: 26,
+    carbsPer100g: 0,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "Porção", grams: 50 }
+    ]
+  },
+  {
+    id: "presunto",
+    name: "Presunto",
+    category: "Alimentação",
+    caloriesPer100g: 200,
+    proteinPer100g: 20,
+    carbsPer100g: 2.5,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "unidade", name: "Unidade", grams: 20 }
+    ]
+  },
+  {
+    id: "queijo-fatia",
+    name: "Queijo Fatia",
+    category: "Alimentação",
+    caloriesPer100g: 320,
+    proteinPer100g: 73.33,
+    carbsPer100g: 10,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "unidade", name: "Unidade", grams: 30 }
+    ]
+  },
+  {
+    id: "queijo-mucarela",
+    name: "Queijo Muçarela",
+    category: "Alimentação",
+    caloriesPer100g: 380,
+    proteinPer100g: 24,
+    carbsPer100g: 4,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "Porção", grams: 25 }
+    ]
+  },
+  {
+    id: "queijo-parmesao",
+    name: "Queijo Parmesão",
+    category: "Alimentação",
+    caloriesPer100g: 460,
+    proteinPer100g: 40,
+    carbsPer100g: 4,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "Porção", grams: 25 }
+    ]
+  },
+  {
+    id: "uva",
+    name: "Uva",
+    category: "Alimentação",
+    caloriesPer100g: 68,
+    proteinPer100g: 0.8,
+    carbsPer100g: 18,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "Porção", grams: 50 }
+    ]
+  },
+  {
+    id: "ovo-cozido",
+    name: "Ovo Cozido",
+    category: "Alimentação",
+    caloriesPer100g: 80,
+    proteinPer100g: 7,
+    carbsPer100g: 1,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "unidade", name: "Unidade", grams: 100 }
+    ]
+  },
+  {
+    id: "ovo-frito",
+    name: "Ovo Frito",
+    category: "Alimentação",
+    caloriesPer100g: 120,
+    proteinPer100g: 7,
+    carbsPer100g: 1,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "unidade", name: "Unidade", grams: 100 }
     ]
   }
 ];
+

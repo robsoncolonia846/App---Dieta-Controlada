@@ -790,6 +790,33 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 8px;
+      position: relative;
+    }
+
+    .recommendation-head-main {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .delete-record-button {
+      border: 0;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      background: #ffe9e9;
+      color: #d94b4b;
+      font-size: 20px;
+      font-weight: 950;
+      line-height: 1;
+      flex: 0 0 auto;
+      cursor: pointer;
     }
 
     .selected-pill {
@@ -2768,8 +2795,11 @@
           return `
             <div class="recommendation-card selected">
               <div class="recommendation-head">
-                <span class="selected-pill">Registrada</span>
-                <span class="kcal-pill">${item.calories} kcal</span>
+                <div class="recommendation-head-main">
+                  <span class="selected-pill">Registrada</span>
+                  <span class="kcal-pill">${item.calories} kcal</span>
+                </div>
+                <button class="delete-record-button" type="button" data-delete-saved-meal="${item.id}" aria-label="Apagar registro">×</button>
               </div>
               <div class="recommended-item">
                 <div class="recommended-item-icon">${mealType.icon}</div>
@@ -2783,6 +2813,11 @@
           `;
         }).join("");
         recommendationDots.innerHTML = "";
+        recommendationCarousel.querySelectorAll("[data-delete-saved-meal]").forEach((button) => button.addEventListener("click", (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          deleteMealRecord(button.dataset.deleteSavedMeal);
+        }));
         recommendationCarousel.querySelectorAll("[data-edit-saved-meal]").forEach((button) => button.addEventListener("click", () => {
           const meal = registeredMeals.find((item) => item.id === button.dataset.editSavedMeal);
           if (!meal) return;
@@ -2809,11 +2844,15 @@
         ...currentRecommendationOptions.map((option, index) => `
           <div class="recommendation-card ${index === selectedRecommendationIndex ? "selected" : ""}" data-recommendation-index="${index}">
             <div class="recommendation-head">
-              <button class="selected-pill" type="button" data-select-rec="${index}">
-                ${index === selectedRecommendationIndex ? "✓ Selecionada" : "Selecionar"}
-              </button>
-              ${option.compensationFor ? `<span class="compensation-pill">Compensar ${option.compensationLabel}</span>` : ""}
-              <span class="kcal-pill">${option.kcal} kcal</span>
+              <div class="recommendation-head-main">
+                <button class="selected-pill" type="button" data-select-rec="${index}">
+                  ${index === selectedRecommendationIndex ? "✓ Selecionada" : "Selecionar"}
+                </button>
+                ${option.compensationFor ? `<span class="compensation-pill">Compensar ${option.compensationLabel}</span>` : ""}
+                <span class="kcal-pill">${option.kcal} kcal</span>
+                ${editingMealId && index === selectedRecommendationIndex ? `<button class="item-edit-button" type="button" data-add-item-rec="${index}">+ Item</button>` : ""}
+              </div>
+              ${editingMealId && index === selectedRecommendationIndex ? `<button class="delete-record-button" type="button" data-delete-editing-meal="${editingMealId}" aria-label="Apagar registro">×</button>` : ""}
             </div>
             ${option.items.length === 0 ? `
               <div class="empty-recommendation-state">
@@ -2857,6 +2896,13 @@
         event.preventDefault();
         createCustomRecommendationOption();
       });
+      recommendationCarousel.querySelectorAll("[data-delete-editing-meal]").forEach((button) => {
+        button.addEventListener("click", (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          deleteMealRecord(button.dataset.deleteEditingMeal);
+        });
+      });
       recommendationCarousel.querySelectorAll("[data-select-rec]").forEach((button) => {
         button.addEventListener("click", (event) => {
           event.preventDefault();
@@ -2870,13 +2916,6 @@
           event.stopPropagation();
           event.stopImmediatePropagation();
           openSubstituteModal(Number(button.dataset.substituteRec), Number(button.dataset.substituteItem));
-        });
-      });
-      recommendationCarousel.querySelectorAll("[data-add-item-rec]").forEach((button) => {
-        button.addEventListener("click", (event) => {
-          event.preventDefault();
-          event.stopPropagation();
-          openAddItemModal(Number(button.dataset.addItemRec));
         });
       });
       recommendationCarousel.querySelectorAll("[data-adjust-rec]").forEach((button) => {
@@ -3040,18 +3079,29 @@
 
     function iconForFoodName(name = "") {
       const normalized = normalizeText(name);
+      if (normalized.includes("estrogonof")) return "🍛";
+      if (normalized.includes("pao") && normalized.includes("ovo")) return "🥪";
+      if (normalized.includes("pao")) return "🥖";
+      if (normalized.includes("queijo")) return "🧀";
+      if (normalized.includes("presunto")) return "🥓";
+      if (normalized.includes("doce de leite")) return "🍯";
+      if (normalized.includes("goiabada")) return "🍬";
+      if (normalized.includes("leite") || normalized.includes("iogurte")) return "🥛";
+      if (normalized.includes("morango")) return "🍓";
+      if (normalized.includes("uva")) return "🍇";
+      if (normalized.includes("abacaxi")) return "🍍";
+      if (normalized.includes("melancia")) return "🍉";
       if (normalized.includes("banana")) return "🍌";
       if (normalized.includes("maca")) return "🍎";
       if (normalized.includes("laranja") || normalized.includes("bergamota") || normalized.includes("mexerica") || normalized.includes("tangerina")) return "🍊";
+      if (normalized.includes("batata")) return "🥔";
       if (normalized.includes("tomate")) return "🍅";
       if (normalized.includes("arroz")) return "🍚";
       if (normalized.includes("feijao")) return "🫘";
+      if (normalized.includes("macarrao") || normalized.includes("massa")) return "🍝";
       if (normalized.includes("frango")) return "🍗";
       if (normalized.includes("carne") || normalized.includes("bife")) return "🥩";
       if (normalized.includes("ovo") || normalized.includes("omelete")) return "🍳";
-      if (normalized.includes("queijo")) return "🧀";
-      if (normalized.includes("pao")) return "🥖";
-      if (normalized.includes("macarrao") || normalized.includes("massa")) return "🍝";
       return "🍽️";
     }
 
@@ -3160,9 +3210,10 @@
     }
 
     function openAddItemModal(recommendationIndex) {
-      const option = currentRecommendationOptions?.[recommendationIndex];
+      const safeIndex = Number.isFinite(recommendationIndex) ? recommendationIndex : selectedRecommendationIndex;
+      const option = currentRecommendationOptions?.[safeIndex];
       if (!option) return;
-      substituteTarget = { mode: "add", recommendationIndex };
+      substituteTarget = { mode: "add", recommendationIndex: safeIndex };
       substituteTitle.textContent = "Adicionar item";
       substituteDescription.textContent = "Selecione um alimento para incluir nesta refeição.";
       const foodOptions = [...foods].sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
@@ -3612,6 +3663,29 @@
       calorieRange.classList.toggle("danger", consumed >= max);
     }
 
+    function deleteMealRecord(mealId) {
+      if (!mealId) return;
+      const meal = appData.meals.find((item) => item.id === mealId);
+      if (!meal) return;
+      if (!confirm("Apagar este registro de alimentação?")) return;
+      appData.meals = appData.meals.filter((item) => item.id !== mealId);
+      saveData();
+      const deletedCurrentEdit = editingMealId === mealId;
+      editingMealType = null;
+      editingMealId = null;
+      editingDietTemplate = null;
+      selectedRecommendationIndex = null;
+      mealDetailRegister.textContent = "Registrar dieta";
+      mealDetailRegister.classList.add("hidden");
+      renderAll();
+      if (visibleSectionId() === "refeicao-detalhe") {
+        const mealTypeId = meal.mealType || currentMealDetail;
+        if (deletedCurrentEdit || currentMealDetail === mealTypeId) {
+          openMealDetail(mealTypeId);
+        }
+      }
+    }
+
     function renderConsumption(period = currentPeriod) {
       consumoTitle.textContent = periodTitle("Alimentação", period);
       const data = periodMeals(period);
@@ -3627,8 +3701,11 @@
         return `
           <div class="recommendation-card selected">
             <div class="recommendation-head">
-              <span class="selected-pill">${mealType?.icon || "🍴"} ${mealTypeLabel}${mealTime}</span>
-              <span class="kcal-pill">${round(Number(item.calories) || 0)} kcal</span>
+              <div class="recommendation-head-main">
+                <span class="selected-pill">${mealType?.icon || "🍴"} ${mealTypeLabel}${mealTime}</span>
+                <span class="kcal-pill">${round(Number(item.calories) || 0)} kcal</span>
+              </div>
+              <button class="delete-record-button" type="button" data-delete-saved-meal="${item.id}" aria-label="Apagar registro">×</button>
             </div>
             ${option.items.map((food) => `
               <div class="recommended-item">
@@ -3642,6 +3719,11 @@
           </div>
         `;
       }).join("");
+      consumoResumo.querySelectorAll("[data-delete-saved-meal]").forEach((button) => button.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        deleteMealRecord(button.dataset.deleteSavedMeal);
+      }));
     }
 
     function renderMealLog() {
@@ -3693,11 +3775,7 @@
       });
       mealLog.querySelectorAll("[data-delete-meal]").forEach((button) => {
         button.addEventListener("click", () => {
-          if (!confirm("Tem certeza que quer excluir esta alimentação?")) return;
-          appData.meals = appData.meals.filter((meal) => meal.id !== button.dataset.deleteMeal);
-          saveData();
-          renderFoodOptions(currentFoodMode);
-          renderAll();
+          deleteMealRecord(button.dataset.deleteMeal);
         });
       });
     }
@@ -3850,6 +3928,13 @@
       });
     });
     recommendationCarousel.addEventListener("click", (event) => {
+      const addItemButton = event.target.closest("[data-add-item-rec]");
+      if (addItemButton) {
+        event.preventDefault();
+        event.stopPropagation();
+        openAddItemModal(Number(addItemButton.dataset.addItemRec));
+        return;
+      }
       if (event.target.closest(".recommendation-card.empty")) {
         event.preventDefault();
       }
