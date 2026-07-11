@@ -495,7 +495,7 @@
     id: "pao-caseiro",
     name: "Pão Caseiro",
     category: "Alimentação",
-    caloriesPer100g: 300,
+    caloriesPer100g: 280,
     proteinPer100g: 18,
     carbsPer100g: 110,
     servings: [
