@@ -977,10 +977,28 @@
       font-size: 58px;
     }
 
+    .substitute-search {
+      width: 100%;
+      border: 1px solid #e4e5e9;
+      border-radius: 16px;
+      background: #f5f6fa;
+      padding: 14px 16px;
+      font: inherit;
+      font-size: 16px;
+      font-weight: 800;
+      color: #243119;
+      outline: none;
+    }
+
     .substitute-list {
       display: grid;
       gap: 12px;
       padding-top: 10px;
+    }
+
+    .substitute-results {
+      display: grid;
+      gap: 12px;
     }
 
     .substitute-option {
@@ -1342,21 +1360,18 @@
     }
 
     .diet-option-tabs {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      overflow-y: hidden;
-      border-radius: 999px;
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 4px;
+      overflow: hidden;
+      border-radius: 18px;
       background: #f4f5f7;
-      padding: 6px;
+      padding: 4px;
       margin-bottom: 20px;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: thin;
-      scroll-snap-type: x proximity;
     }
 
     .diet-option-tabs::-webkit-scrollbar {
-      height: 5px;
+      display: none;
     }
 
     .diet-option-tabs::-webkit-scrollbar-thumb {
@@ -1365,27 +1380,36 @@
     }
 
     .diet-option-tabs::after {
-      content: "";
-      flex: 0 0 18px;
+      display: none;
     }
 
     .diet-option-tab {
-      flex: 0 0 auto;
       border: 0;
-      border-radius: 999px;
+      border-radius: 14px;
       background: transparent;
       color: #8b8f98;
-      min-width: 112px;
-      padding: 14px 12px;
+      min-width: 0;
+      padding: 7px 2px;
       font-weight: 950;
-      font-size: 14px;
-      white-space: nowrap;
-      scroll-snap-align: start;
+      font-size: 11px;
+      line-height: 1.05;
+      white-space: normal;
+      text-align: center;
     }
 
     .diet-option-tab.active {
       color: #fff;
       background: #1fa12e;
+    }
+
+    .diet-option-tab span {
+      display: block;
+      font-size: 9px;
+      font-weight: 900;
+    }
+
+    .meal-detail-option-tabs {
+      grid-template-columns: repeat(var(--option-count, 7), minmax(0, 1fr));
     }
 
     .diet-food-list {
@@ -1424,6 +1448,38 @@
     .diet-option-kcal {
       color: #111827;
       white-space: nowrap;
+    }
+
+    .diet-option-title-line,
+    .diet-option-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .edited-pill {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      background: #fff7dc;
+      color: #8a6100;
+      padding: 5px 8px;
+      font-size: 11px;
+      font-weight: 950;
+      line-height: 1;
+    }
+
+    .diet-reset-button {
+      border: 0;
+      border-radius: 999px;
+      background: #eaf6ea;
+      color: #10931f;
+      padding: 7px 10px;
+      font-size: 12px;
+      font-weight: 950;
+      white-space: nowrap;
+      cursor: pointer;
     }
 
     .diet-option-card .diet-food-list {
@@ -1785,6 +1841,7 @@
             <div class="recommendation-carousel" id="recommendation-carousel"></div>
             <div class="carousel-dots" id="recommendation-dots"></div>
             <button class="add-recommendation-item" type="button" id="meal-compensate-later" style="width:100%; margin-top: 14px;">Compensar mais tarde</button>
+            <button class="add-recommendation-item hidden" type="button" id="meal-use-suggestion" style="width:100%; margin-top: 14px;">Usar Sugestão</button>
             <button class="button" type="button" id="meal-detail-register" style="margin-top: 18px;">Registrar dieta</button>
           </section>
 
@@ -1852,6 +1909,7 @@
     const recommendationDots = document.getElementById("recommendation-dots");
     const mealDetailRegister = document.getElementById("meal-detail-register");
     const mealCompensateLater = document.getElementById("meal-compensate-later");
+    const mealUseSuggestion = document.getElementById("meal-use-suggestion");
     const substituteModal = document.getElementById("substitute-modal");
     const substituteClose = document.getElementById("substitute-close");
     const substituteTitle = document.getElementById("substitute-title");
@@ -1932,6 +1990,63 @@
     } catch (error) {
       console.warn("Base de alimentos não carregou.", error);
     }
+    const fallbackCaloriesPer100g = {
+      "abacaxi": 50,
+      "alface": 0,
+      "arroz": 130,
+      "banana": 60,
+      "batata inglesa": 90,
+      "bergamota": 40,
+      "beterraba cozida/assada": 56,
+      "beterraba crua": 0,
+      "bife frito": 240,
+      "brocolis": 0,
+      "carne de panela (agulha)": 240,
+      "carne grelhada": 216,
+      "carne moida": 250,
+      "cenoura cozida/assada": 54,
+      "cenoura crua": 0,
+      "coracao de frango": 220,
+      "couve": 0,
+      "doce de leite": 350,
+      "estrogonof": 150,
+      "feijao": 80,
+      "frango assada (sobrecoxa)": 250,
+      "frango desfiado": 180,
+      "frango grelhado": 170,
+      "frango sobrecoxa ao molho": 180,
+      "goiabada": 308,
+      "iogurte zero": 30,
+      "laranja": 80,
+      "lazanha de carne moida": 200,
+      "lazanha de frango": 200,
+      "leite desnatado": 37,
+      "leite integral": 62,
+      "maca": 70,
+      "macarrao": 150,
+      "melancia": 30,
+      "morango": 32,
+      "omelete": 160,
+      "omelete com queijo": 280,
+      "ovo cozido": 80,
+      "ovo frito": 120,
+      "panqueca (carne moida)": 190,
+      "panqueca (frango)": 175,
+      "pao caseiro": 280,
+      "pao de forma": 70,
+      "pao frances": 300,
+      "pao frances + ovo frito": 300,
+      "pao frances + ovo mexido": 250,
+      "peixe assado (anchova)": 160,
+      "peixe assado (tainha)": 180,
+      "presunto": 200,
+      "queijo fatia": 320,
+      "queijo mucarela": 380,
+      "queijo parmesao": 460,
+      "repolho": 0,
+      "tomate cereja": 0,
+      "uva": 68
+    };
     const activityPresets = [
       { id: "caminhada", name: "Caminhada", caloriesPerHour: 240 },
       { id: "trabalho-sentado", name: "Trabalho em Escritório", caloriesPerHour: 120 },
@@ -1961,176 +2076,261 @@
     const mealRecommendations = {
       cafe: [
         {
-          kcal: 305,
+          kcal: 0,
           items: [
-            { icon: "🍓", name: "Morango", amount: "180g" },
-            { icon: "🥛", name: "Iogurte desnatado", amount: "160 ml" },
-            { icon: "🍳", name: "Omelete", amount: "2 ovos" }
+            { icon: "🥖", name: "Pão Caseiro", amount: "50g" },
+            { icon: "🥚", name: "Ovo Cozido", amount: "2 unidades" },
+            { icon: "🍊", name: "Bergamota", amount: "1 unidade" },
+            { icon: "🥛", name: "Leite Desnatado", amount: "200ml" }
           ]
         },
         {
-          kcal: 305,
+          kcal: 0,
           items: [
-            { icon: "🥖", name: "Pão de forma", amount: "2 fatias" },
-            { icon: "🍊", name: "Laranja de umbigo", amount: "1 unidade" },
-            { icon: "🥛", name: "Iogurte desnatado", amount: "160 ml" },
-            { icon: "🧀", name: "Queijo prato", amount: "1 fatia" }
+            { icon: "🥛", name: "Iogurte Zero", amount: "170g" },
+            { icon: "🍓", name: "Morango", amount: "150g" },
+            { icon: "🍌", name: "Banana", amount: "1 unidade" },
+            { icon: "🧀", name: "Queijo Muçarela", amount: "20g" }
           ]
         },
         {
-          kcal: 305,
+          kcal: 0,
           items: [
-            { icon: "🥖", name: "Pão francês", amount: "1 unidade" },
-            { icon: "🍌", name: "Banana prata", amount: "1 unidade" },
-            { icon: "🥛", name: "Iogurte desnatado", amount: "160 ml" },
-            { icon: "🥚", name: "Ovo mexido", amount: "1 unidade" }
+            { icon: "🥪", name: "Pão Frances + Ovo Mexido", amount: "1 unidade" },
+            { icon: "🍎", name: "Maça", amount: "1 unidade" }
+          ]
+        },
+        {
+          kcal: 0,
+          items: [
+            { icon: "🍞", name: "Pão De Forma", amount: "2 fatias" },
+            { icon: "🥓", name: "Presunto", amount: "30g" },
+            { icon: "🧀", name: "Queijo Fatia", amount: "20g" },
+            { icon: "🍊", name: "Laranja", amount: "1 unidade" }
+          ]
+        },
+        {
+          kcal: 0,
+          items: [
+            { icon: "🍳", name: "Omelete com Queijo", amount: "150g" },
+            { icon: "🍅", name: "Tomate Cereja", amount: "à vontade" },
+            { icon: "🥖", name: "Pão Caseiro", amount: "50g" }
+          ]
+        },
+        {
+          kcal: 0,
+          items: [
+            { icon: "🥛", name: "Leite Integral", amount: "200ml" },
+            { icon: "🥖", name: "Pão Caseiro", amount: "50g" },
+            { icon: "🍯", name: "Doce De Leite", amount: "20g" }
+          ]
+        },
+        {
+          kcal: 0,
+          items: [
+            { icon: "🥪", name: "Pão Frances + Ovo Frito", amount: "1 unidade" },
+            { icon: "🍇", name: "Uva", amount: "100g" }
           ]
         }
       ],
       "lanche-manha": [
+        { kcal: 0, items: [{ icon: "🍊", name: "Bergamota", amount: "1 unidade" }] },
+        { kcal: 0, items: [{ icon: "🍌", name: "Banana", amount: "1 unidade" }] },
         {
-          kcal: 71,
+          kcal: 0,
           items: [
-            { icon: "🍍", name: "Abacaxi", amount: "150g" }
+            { icon: "🥛", name: "Iogurte Zero", amount: "170g" },
+            { icon: "🍓", name: "Morango", amount: "100g" }
           ]
         },
+        { kcal: 0, items: [{ icon: "🍉", name: "Melancia", amount: "200g" }] },
         {
-          kcal: 71,
+          kcal: 0,
           items: [
-            { icon: "🍊", name: "Laranja de umbigo", amount: "1 unidade" }
+            { icon: "🍎", name: "Maça", amount: "1 unidade" },
+            { icon: "🧀", name: "Queijo Fatia", amount: "20g" }
           ]
         },
-        {
-          kcal: 89,
-          items: [
-            { icon: "🍌", name: "Banana Prata", amount: "1 unidade" }
-          ]
-        }
+        { kcal: 0, items: [{ icon: "🍇", name: "Uva", amount: "120g" }] },
+        { kcal: 0, items: [{ icon: "🍍", name: "Abacaxi", amount: "150g" }] }
       ],
       almoco: [
         {
-          kcal: 225,
+          kcal: 0,
           items: [
-            { icon: "🍅", name: "Tomate-cereja cru", amount: "à vontade" },
-            { icon: "🥔", name: "Batata inglesa em cubos com temperos", amount: "70g" },
-            { icon: "🍗", name: "Coração de frango", amount: "75g" }
+            { icon: "🍚", name: "Arroz", amount: "100g" },
+            { icon: "🫘", name: "Feijão", amount: "70g" },
+            { icon: "🍗", name: "Frango Grelhado", amount: "120g" },
+            { icon: "🥬", name: "Couve", amount: "à vontade" },
+            { icon: "🍅", name: "Tomate Cereja", amount: "à vontade" }
           ]
         },
         {
-          kcal: 383,
-          items: [
-            { icon: "🍚", name: "Arroz", amount: "85g" },
-            { icon: "🥔", name: "Batata inglesa", amount: "95g" },
-            { icon: "🥬", name: "Salada de alface e tomate", amount: "à vontade" },
-            { icon: "🥩", name: "Carne bovina magra", amount: "100g" }
-          ]
-        },
-        {
-          kcal: 383,
+          kcal: 0,
           items: [
             { icon: "🍚", name: "Arroz", amount: "90g" },
-            { icon: "🥬", name: "Salada de alface e tomate", amount: "à vontade" },
-            { icon: "🥩", name: "Carne bovina músculo", amount: "120g" },
-            { icon: "🫘", name: "Feijão preto", amount: "50g" }
+            { icon: "🥩", name: "Carne Moida", amount: "100g" },
+            { icon: "🥦", name: "Brocolis", amount: "à vontade" },
+            { icon: "🥕", name: "Cenoura Cozida/Assada", amount: "80g" }
           ]
         },
         {
-          kcal: 382,
+          kcal: 0,
           items: [
-            { icon: "🍗", name: "Peito de frango", amount: "150g" },
-            { icon: "🍝", name: "Macarrão", amount: "115g" }
+            { icon: "🥔", name: "Batata Inglesa", amount: "160g" },
+            { icon: "🥩", name: "Carne Grelhada", amount: "100g" },
+            { icon: "🥬", name: "Alface", amount: "à vontade" },
+            { icon: "🍅", name: "Tomate Cereja", amount: "à vontade" }
           ]
         },
         {
-          kcal: 515,
+          kcal: 0,
           items: [
-            { icon: "🥩", name: "Carne moída", amount: "100g" },
-            { icon: "🍚", name: "Arroz", amount: "100g" },
-            { icon: "🥚", name: "Ovos cozidos", amount: "2 unidades" },
-            { icon: "🍅", name: "Tomate cereja", amount: "à vontade" },
-            { icon: "🥬", name: "Couve", amount: "à vontade" }
+            { icon: "🍝", name: "Macarrão", amount: "120g" },
+            { icon: "🍗", name: "Frango Desfiado", amount: "100g" },
+            { icon: "🥬", name: "Repolho", amount: "à vontade" }
+          ]
+        },
+        {
+          kcal: 0,
+          items: [
+            { icon: "🍚", name: "Arroz", amount: "90g" },
+            { icon: "🫘", name: "Feijão", amount: "60g" },
+            { icon: "🐟", name: "Peixe Assado (Tainha)", amount: "120g" },
+            { icon: "🟣", name: "Beterraba Cozida/Assada", amount: "80g" }
+          ]
+        },
+        {
+          kcal: 0,
+          items: [
+            { icon: "🥞", name: "Panqueca (Frango)", amount: "1 porção" },
+            { icon: "🥬", name: "Alface", amount: "à vontade" },
+            { icon: "🥕", name: "Cenoura Crua", amount: "à vontade" }
+          ]
+        },
+        {
+          kcal: 0,
+          items: [
+            { icon: "🍛", name: "Estrogonof", amount: "120g" },
+            { icon: "🍚", name: "Arroz", amount: "90g" },
+            { icon: "🥦", name: "Brocolis", amount: "à vontade" }
           ]
         }
       ],
       "lanche-tarde": [
         {
-          kcal: 305,
+          kcal: 0,
           items: [
-            { icon: "🥖", name: "Pão francês", amount: "1 unidade" },
-            { icon: "🍊", name: "Laranja de umbigo", amount: "1 unidade" },
-            { icon: "🥛", name: "Iogurte desnatado", amount: "160 ml" },
-            { icon: "🥚", name: "Ovo mexido", amount: "1 unidade" }
+            { icon: "🥖", name: "Pão Caseiro", amount: "50g" },
+            { icon: "🧀", name: "Queijo Muçarela", amount: "20g" },
+            { icon: "🍓", name: "Morango", amount: "100g" }
           ]
         },
         {
-          kcal: 307,
+          kcal: 0,
           items: [
-            { icon: "🥖", name: "Pão de forma", amount: "2 fatias" },
-            { icon: "🍌", name: "Banana prata", amount: "1 unidade" },
-            { icon: "🥛", name: "Iogurte desnatado", amount: "160 ml" },
-            { icon: "🍗", name: "Frango desfiado", amount: "40g" }
+            { icon: "🍞", name: "Pão De Forma", amount: "2 fatias" },
+            { icon: "🍗", name: "Frango Desfiado", amount: "60g" },
+            { icon: "🍊", name: "Bergamota", amount: "1 unidade" }
           ]
         },
         {
-          kcal: 310,
+          kcal: 0,
           items: [
-            { icon: "🥖", name: "Pão de forma", amount: "2 fatias" },
-            { icon: "🍓", name: "Morango", amount: "100g" },
-            { icon: "🥛", name: "Iogurte desnatado", amount: "160 ml" },
-            { icon: "🧀", name: "Queijo prato", amount: "1 fatia" }
+            { icon: "🥛", name: "Iogurte Zero", amount: "170g" },
+            { icon: "🍌", name: "Banana", amount: "1 unidade" },
+            { icon: "🍇", name: "Uva", amount: "80g" }
           ]
         },
         {
-          kcal: 364,
+          kcal: 0,
           items: [
-            { icon: "🧀", name: "Queijo prato", amount: "1 fatia" },
-            { icon: "🍗", name: "Frango desfiado", amount: "40g" },
-            { icon: "🍳", name: "Rap10", amount: "50g" },
-            { icon: "🍬", name: "Bombom", amount: "20g" }
+            { icon: "🥪", name: "Pão Frances + Ovo Mexido", amount: "1 unidade" },
+            { icon: "🍉", name: "Melancia", amount: "150g" }
+          ]
+        },
+        {
+          kcal: 0,
+          items: [
+            { icon: "🥖", name: "Pão Frances", amount: "1 unidade" },
+            { icon: "🥓", name: "Presunto", amount: "30g" },
+            { icon: "🧀", name: "Queijo Fatia", amount: "20g" }
+          ]
+        },
+        {
+          kcal: 0,
+          items: [
+            { icon: "🍎", name: "Maça", amount: "1 unidade" },
+            { icon: "🥛", name: "Leite Desnatado", amount: "200ml" }
+          ]
+        },
+        {
+          kcal: 0,
+          items: [
+            { icon: "🥚", name: "Ovo Cozido", amount: "2 unidades" },
+            { icon: "🍍", name: "Abacaxi", amount: "150g" }
           ]
         }
       ],
       jantar: [
         {
-          kcal: 355,
+          kcal: 0,
           items: [
-            { icon: "🍝", name: "Macarrão", amount: "105g" },
-            { icon: "🍗", name: "Peito de frango", amount: "140g" }
-          ]
-        },
-        {
-          kcal: 355,
-          items: [
-            { icon: "🫘", name: "Feijão preto", amount: "50g" },
-            { icon: "🍚", name: "Arroz", amount: "80g" },
-            { icon: "🥬", name: "Salada de alface e tomate", amount: "à vontade" },
-            { icon: "🥩", name: "Carne bovina músculo", amount: "110g" }
-          ]
-        },
-        {
-          kcal: 361,
-          items: [
-            { icon: "🥩", name: "Carne bovina músculo", amount: "110g" },
-            { icon: "🍚", name: "Arroz", amount: "80g" },
-            { icon: "🥬", name: "Salada de alface e tomate", amount: "à vontade" },
-            { icon: "🥔", name: "Batata inglesa", amount: "85g" }
-          ]
-        },
-        {
-          kcal: 615,
-          items: [
-            { icon: "🍅", name: "Tomate cereja", amount: "1 unidade, à vontade" },
-            { icon: "🍳", name: "Omelete", amount: "7 ovos" }
-          ]
-        },
-        {
-          kcal: 515,
-          items: [
-            { icon: "🥩", name: "Carne moída", amount: "100g" },
-            { icon: "🍚", name: "Arroz", amount: "100g" },
-            { icon: "🥚", name: "Ovos cozidos", amount: "2 unidades" },
-            { icon: "🍅", name: "Tomate cereja", amount: "à vontade" },
+            { icon: "🍝", name: "Macarrão", amount: "100g" },
+            { icon: "🍗", name: "Frango Grelhado", amount: "120g" },
             { icon: "🥬", name: "Couve", amount: "à vontade" }
+          ]
+        },
+        {
+          kcal: 0,
+          items: [
+            { icon: "🍚", name: "Arroz", amount: "80g" },
+            { icon: "🫘", name: "Feijão", amount: "60g" },
+            { icon: "🥩", name: "Carne de Panela (Agulha)", amount: "100g" },
+            { icon: "🥬", name: "Alface", amount: "à vontade" }
+          ]
+        },
+        {
+          kcal: 0,
+          items: [
+            { icon: "🥩", name: "Carne Grelhada", amount: "100g" },
+            { icon: "🍚", name: "Arroz", amount: "80g" },
+            { icon: "🥔", name: "Batata Inglesa", amount: "85g" },
+            { icon: "🍅", name: "Tomate Cereja", amount: "à vontade" }
+          ]
+        },
+        {
+          kcal: 0,
+          items: [
+            { icon: "🍳", name: "Omelete", amount: "200g" },
+            { icon: "🥬", name: "Repolho", amount: "à vontade" },
+            { icon: "🥕", name: "Cenoura Crua", amount: "à vontade" }
+          ]
+        },
+        {
+          kcal: 0,
+          items: [
+            { icon: "🥩", name: "Carne Moida", amount: "100g" },
+            { icon: "🍚", name: "Arroz", amount: "100g" },
+            { icon: "🥚", name: "Ovo Cozido", amount: "2 unidades" },
+            { icon: "🍅", name: "Tomate Cereja", amount: "à vontade" },
+            { icon: "🥬", name: "Couve", amount: "à vontade" }
+          ]
+        },
+        {
+          kcal: 0,
+          items: [
+            { icon: "🐟", name: "Peixe Assado (Anchova)", amount: "120g" },
+            { icon: "🥔", name: "Batata Inglesa", amount: "120g" },
+            { icon: "🥦", name: "Brocolis", amount: "à vontade" }
+          ]
+        },
+        {
+          kcal: 0,
+          items: [
+            { icon: "🥞", name: "Panqueca (Carne Moida)", amount: "1 porção" },
+            { icon: "🥬", name: "Alface", amount: "à vontade" },
+            { icon: "🟣", name: "Beterraba Crua", amount: "à vontade" }
           ]
         }
       ]
@@ -2310,9 +2510,35 @@
       };
     }
 
+    function hydrateDietOption(optionRaw) {
+      const option = cloneDietOption(optionRaw || { items: [], kcal: 0 });
+      option.items = option.items.map((item) => hydrateRecommendationItem(item, option));
+      option.kcal = round(option.items.reduce((total, item) => total + (Number(item.kcal) || 0), 0)) || round(Number(option.kcal) || 0);
+      return option;
+    }
+
+    function dietOptionSignature(optionRaw) {
+      const option = hydrateDietOption(optionRaw);
+      return JSON.stringify(option.items.map((item) => ({
+        name: normalizeText(item.name || ""),
+        amount: normalizeText(item.amount || ""),
+        kcal: round(Number(item.kcal) || 0)
+      })));
+    }
+
+    function isDietOptionEdited(mealTypeId, optionIndex) {
+      const saved = appData?.dietRecommendations?.[mealTypeId];
+      const defaultOption = mealRecommendations[mealTypeId]?.[optionIndex];
+      if (!Array.isArray(saved) || !saved[optionIndex] || !defaultOption) return false;
+      return dietOptionSignature(saved[optionIndex]) !== dietOptionSignature(defaultOption);
+    }
+
     function recommendationsForMeal(mealId) {
       const saved = appData?.dietRecommendations?.[mealId];
-      const source = Array.isArray(saved) && saved.length ? saved : (mealRecommendations[mealId] || []);
+      const defaults = mealRecommendations[mealId] || [];
+      const source = Array.isArray(saved) && saved.length
+        ? [...saved, ...defaults.slice(saved.length)]
+        : defaults;
       return source.map(cloneDietOption);
     }
 
@@ -2332,38 +2558,50 @@
       dietDashboard.innerHTML = mealTypes
         .map((mealType) => {
           const options = recommendationsForMeal(mealType.id);
-          const optionCards = options.map((optionRaw, optionIndex) => {
-            const option = {
-              ...optionRaw,
-              items: optionRaw.items.map((item) => hydrateRecommendationItem(item, optionRaw))
-            };
-            const kcal = option.items.reduce((total, item) => total + (Number(item.kcal) || 0), 0) || option.kcal || 0;
-            const foodsList = option.items.map((item, itemIndex) => `
-              <div class="diet-food-row">
-                <span class="diet-check">✓</span>
-                <span class="diet-food-name">
-                  ${escapeHTML(item.name)}
-                  <span class="diet-food-detail">${escapeHTML(item.amount)}${item.kcal ? ` • ${round(item.kcal)} kcal` : ""}</span>
-                </span>
-                <button
-                  class="item-edit-button"
-                  type="button"
-                  data-diet-edit-meal="${mealType.id}"
-                  data-diet-edit-option="${optionIndex}"
-                  data-diet-edit-item="${itemIndex}"
-                >Editar</button>
-              </div>
-            `).join("");
-            return `
-              <div class="diet-option-card">
-                <div class="diet-option-head">
-                  <span class="diet-option-name">Opção ${optionIndex + 1}</span>
+          const savedOptionIndex = Number(dietSelectedOptions[mealType.id]) || 0;
+          const selectedOptionIndex = Math.max(0, Math.min(savedOptionIndex, Math.max(options.length - 1, 0)));
+          const optionTabs = options.map((_, optionIndex) => `
+            <button
+              class="diet-option-tab ${optionIndex === selectedOptionIndex ? "active" : ""}"
+              type="button"
+              data-diet-meal="${mealType.id}"
+              data-diet-option="${optionIndex}"
+            ><span>Opção</span>${String(optionIndex + 1).padStart(2, "0")}</button>
+          `).join("");
+          const option = hydrateDietOption(options[selectedOptionIndex]);
+          const kcal = option.kcal || 0;
+          const optionEdited = isDietOptionEdited(mealType.id, selectedOptionIndex);
+          const foodsList = option.items.map((item, itemIndex) => `
+            <div class="diet-food-row">
+              <span class="diet-check">✓</span>
+              <span class="diet-food-name">
+                ${escapeHTML(item.name)}
+                <span class="diet-food-detail">${escapeHTML(item.amount)}${item.kcal ? ` • ${round(item.kcal)} kcal` : ""}</span>
+              </span>
+              <button
+                class="item-edit-button"
+                type="button"
+                data-diet-edit-meal="${mealType.id}"
+                data-diet-edit-option="${selectedOptionIndex}"
+                data-diet-edit-item="${itemIndex}"
+              >Editar</button>
+            </div>
+          `).join("");
+          const optionCard = `
+            <div class="diet-option-card">
+              <div class="diet-option-head">
+                <div class="diet-option-title-line">
+                  <span class="diet-option-name">Opção ${String(selectedOptionIndex + 1).padStart(2, "0")}</span>
+                  ${optionEdited ? '<span class="edited-pill">Editado</span>' : ""}
+                  ${optionEdited ? `<button class="diet-reset-button" type="button" data-reset-diet-meal="${mealType.id}" data-reset-diet-option="${selectedOptionIndex}">Usar Sugestão</button>` : ""}
+                </div>
+                <div class="diet-option-actions">
                   <span class="diet-option-kcal">${round(kcal)} kcal</span>
                 </div>
-                <div class="diet-food-list">${foodsList}</div>
               </div>
-            `;
-          }).join("");
+              <div class="diet-food-list">${foodsList}</div>
+            </div>
+          `;
           return `
             <article class="diet-card">
               <div class="diet-card-inner">
@@ -2373,12 +2611,11 @@
                     <div class="diet-card-title">${mealDetailLabels[mealType.id] || mealType.name}</div>
                     <div class="diet-card-time">${appData.mealTimes?.[mealType.id] || mealType.defaultTime}</div>
                   </div>
-                  <div class="diet-card-kcal">${options.length} opções</div>
                 </div>
                 <div class="diet-card-divider"></div>
-                <div class="diet-option-list">${optionCards}</div>
+                <div class="diet-option-tabs">${optionTabs}</div>
+                <div class="diet-option-list">${optionCard}</div>
               </div>
-              <div class="diet-prep"><span>▤</span><span>Ver preparo</span></div>
             </article>
           `;
         })
@@ -2577,11 +2814,9 @@
     }
 
     function showMealRecommendationOptions(mealType) {
+      mealUseSuggestion.classList.add("hidden");
       const options = recommendationsForMeal(mealType.id);
-      currentRecommendationOptions = options.map((option) => ({
-        ...option,
-        items: option.items.map((item) => hydrateRecommendationItem(item, option))
-      }));
+      currentRecommendationOptions = options.map(hydrateDietOption);
       if (editingMealType !== mealType.id) {
         currentRecommendationOptions = [
           ...pendingCompensationsForMealDetail(mealType.id).map(createCompensationOption),
@@ -2609,10 +2844,8 @@
       mealDetailSubtitle.textContent = "Ajuste o cadastro fixo desta opção de dieta";
       mealDetailRegister.textContent = "Salvar opção";
       mealCompensateLater.classList.add("hidden");
-      currentRecommendationOptions = options.map((option) => ({
-        ...option,
-        items: option.items.map((item) => hydrateRecommendationItem(item, option))
-      }));
+      mealUseSuggestion.classList.toggle("hidden", !mealRecommendations[mealType.id]?.[safeOptionIndex]);
+      currentRecommendationOptions = options.map(hydrateDietOption);
       renderRecommendationOptions();
       mealDetailRegister.classList.remove("hidden");
       openTab("refeicao-detalhe");
@@ -2758,6 +2991,7 @@
       selectedRecommendationIndex = null;
       mealDetailRegister.classList.add("hidden");
       mealDetailRegister.textContent = "Registrar dieta";
+      mealUseSuggestion.classList.add("hidden");
       mealCompensateLater.classList.remove("hidden");
       mealCompensateLater.disabled = false;
       mealCompensateLater.textContent = "Compensar mais tarde";
@@ -2831,6 +3065,7 @@
           mealDetailRegister.textContent = "Salvar edição";
           mealDetailRegister.classList.remove("hidden");
           mealCompensateLater.classList.add("hidden");
+          mealUseSuggestion.classList.add("hidden");
           renderRecommendationOptions();
         }));
         openTab("refeicao-detalhe");
@@ -2840,49 +3075,63 @@
     }
 
     function renderRecommendationOptions() {
-      recommendationCarousel.innerHTML = [
-        ...currentRecommendationOptions.map((option, index) => `
-          <div class="recommendation-card ${index === selectedRecommendationIndex ? "selected" : ""}" data-recommendation-index="${index}">
-            <div class="recommendation-head">
-              <div class="recommendation-head-main">
-                <button class="selected-pill" type="button" data-select-rec="${index}">
-                  ${index === selectedRecommendationIndex ? "✓ Selecionada" : "Selecionar"}
-                </button>
-                ${option.compensationFor ? `<span class="compensation-pill">Compensar ${option.compensationLabel}</span>` : ""}
-                <span class="kcal-pill">${option.kcal} kcal</span>
-                ${editingMealId && index === selectedRecommendationIndex ? `<button class="item-edit-button" type="button" data-add-item-rec="${index}">+ Item</button>` : ""}
-              </div>
-              ${editingMealId && index === selectedRecommendationIndex ? `<button class="delete-record-button" type="button" data-delete-editing-meal="${editingMealId}" aria-label="Apagar registro">×</button>` : ""}
+      const optionCount = currentRecommendationOptions.length;
+      if (optionCount && (selectedRecommendationIndex === null || selectedRecommendationIndex >= optionCount)) {
+        selectedRecommendationIndex = 0;
+      }
+      const index = selectedRecommendationIndex;
+      const option = currentRecommendationOptions[index];
+      const optionTabs = currentRecommendationOptions.map((_, optionIndex) => `
+        <button
+          class="diet-option-tab ${optionIndex === selectedRecommendationIndex ? "active" : ""}"
+          type="button"
+          data-select-rec="${optionIndex}"
+        ><span>Opção</span>${String(optionIndex + 1).padStart(2, "0")}</button>
+      `).join("");
+      const optionEdited = option && !option.compensationFor && !editingMealId && isDietOptionEdited(currentMealDetail, index);
+      const optionCard = option ? `
+        <div class="recommendation-card selected" data-recommendation-index="${index}">
+          <div class="recommendation-head">
+            <div class="recommendation-head-main">
+              ${option.compensationFor ? `<span class="compensation-pill">Compensar ${option.compensationLabel}</span>` : `<span class="selected-pill">Opção ${String(index + 1).padStart(2, "0")}</span>`}
+              ${optionEdited ? '<span class="edited-pill">Editado</span>' : ""}
+              ${optionEdited ? `<button class="diet-reset-button" type="button" data-reset-diet-meal="${currentMealDetail}" data-reset-diet-option="${index}">Usar Sugestão</button>` : ""}
+              <span class="kcal-pill">${option.kcal} kcal</span>
+              ${editingMealId ? `<button class="item-edit-button" type="button" data-add-item-rec="${index}">+ Item</button>` : ""}
             </div>
-            ${option.items.length === 0 ? `
-              <div class="empty-recommendation-state">
-                <div>Nenhum item adicionado ainda.</div>
-                <div>Use o botão abaixo para montar esta opção item por item.</div>
-              </div>
-            ` : ""}
-            ${option.items.map((item, itemIndex) => `
-              <button class="recommended-item" type="button" data-substitute-rec="${index}" data-substitute-item="${itemIndex}" aria-label="Substituir ${item.name}">
-                <div class="recommended-item-icon">${item.icon}</div>
-                <div>
-                  <div class="meal-name">${item.name}</div>
-                  <div class="item-detail-row">
-                    <div class="muted">${item.amount}${item.kcal ? ` • ${round(item.kcal)} kcal` : ""}</div>
-                    ${canAdjustItemAmount(item) ? `
-                      <span class="quantity-controls" aria-label="Ajustar quantidade de ${item.name}">
-                        <span class="qty-button" role="button" tabindex="0" data-adjust-rec="${index}" data-adjust-item="${itemIndex}" data-adjust-delta="-1">−</span>
-                        <span class="qty-button" role="button" tabindex="0" data-adjust-rec="${index}" data-adjust-item="${itemIndex}" data-adjust-delta="1">+</span>
-                      </span>
-                    ` : ""}
-                  </div>
-                </div>
-                <span class="swap-icon" aria-hidden="true">⇄</span>
-                <span class="item-edit-button" role="button" tabindex="0" data-substitute-rec="${index}" data-substitute-item="${itemIndex}">Editar</span>
-              </button>
-            `).join("")}
-            <button class="add-recommendation-item" type="button" data-add-item-rec="${index}">+ Adicionar item</button>
-            <button class="recipe-button" type="button">🍴 Ver preparo</button>
+            ${editingMealId ? `<button class="delete-record-button" type="button" data-delete-editing-meal="${editingMealId}" aria-label="Apagar registro">×</button>` : ""}
           </div>
-        `),
+          ${option.items.length === 0 ? `
+            <div class="empty-recommendation-state">
+              <div>Nenhum item adicionado ainda.</div>
+              <div>Use o botão abaixo para montar esta opção item por item.</div>
+            </div>
+          ` : ""}
+          ${option.items.map((item, itemIndex) => `
+            <button class="recommended-item" type="button" data-substitute-rec="${index}" data-substitute-item="${itemIndex}" aria-label="Substituir ${item.name}">
+              <div class="recommended-item-icon">${item.icon}</div>
+              <div>
+                <div class="meal-name">${item.name}</div>
+                <div class="item-detail-row">
+                  <div class="muted">${item.amount}${item.kcal ? ` • ${round(item.kcal)} kcal` : ""}</div>
+                  ${canAdjustItemAmount(item) ? `
+                    <span class="quantity-controls" aria-label="Ajustar quantidade de ${item.name}">
+                      <span class="qty-button" role="button" tabindex="0" data-adjust-rec="${index}" data-adjust-item="${itemIndex}" data-adjust-delta="-1">−</span>
+                      <span class="qty-button" role="button" tabindex="0" data-adjust-rec="${index}" data-adjust-item="${itemIndex}" data-adjust-delta="1">+</span>
+                    </span>
+                  ` : ""}
+                </div>
+              </div>
+              <span class="swap-icon" aria-hidden="true">⇄</span>
+              <span class="item-edit-button" role="button" tabindex="0" data-substitute-rec="${index}" data-substitute-item="${itemIndex}">Editar</span>
+            </button>
+          `).join("")}
+          <button class="add-recommendation-item" type="button" data-add-item-rec="${index}">+ Adicionar item</button>
+        </div>
+      ` : "";
+      recommendationCarousel.innerHTML = [
+        optionTabs ? `<div class="diet-option-tabs meal-detail-option-tabs" style="--option-count: ${optionCount};">${optionTabs}</div>` : "",
+        optionCard,
         `<button class="recommendation-card empty" type="button" data-create-custom-option="1">
           <div>
             <span class="avatar-button" aria-hidden="true">+</span>
@@ -2891,7 +3140,7 @@
           </div>
         </button>`
       ].join("");
-      recommendationDots.innerHTML = Array.from({ length: currentRecommendationOptions.length + 1 }, (_, index) => `<span class="carousel-dot ${index === selectedRecommendationIndex ? "active" : ""}"></span>`).join("");
+      recommendationDots.innerHTML = "";
       recommendationCarousel.querySelector("[data-create-custom-option]")?.addEventListener("click", (event) => {
         event.preventDefault();
         createCustomRecommendationOption();
@@ -2961,10 +3210,7 @@
     }
 
     function selectRecommendation(index) {
-      selectedRecommendationIndex = selectedRecommendationIndex === index ? null : index;
-      recommendationCarousel.querySelectorAll("[data-recommendation-index]").forEach((card) => {
-        card.classList.toggle("selected", Number(card.dataset.recommendationIndex) === selectedRecommendationIndex);
-      });
+      selectedRecommendationIndex = Math.max(0, Math.min(Number(index) || 0, Math.max(currentRecommendationOptions.length - 1, 0)));
       renderRecommendationOptions();
     }
 
@@ -3017,16 +3263,24 @@
         || foods.find((food) => key.includes(normalizeText(food.name)) || normalizeText(food.name).includes(key));
     }
 
+    function fallbackCaloriesForName(name = "") {
+      const key = normalizeText(name);
+      if (Object.prototype.hasOwnProperty.call(fallbackCaloriesPer100g, key)) return fallbackCaloriesPer100g[key];
+      const matchKey = Object.keys(fallbackCaloriesPer100g).find((itemKey) => key.includes(itemKey) || itemKey.includes(key));
+      return matchKey ? fallbackCaloriesPer100g[matchKey] : 0;
+    }
+
     function estimateKcalFromFood(item) {
       const parsed = parseAmount(item.amount);
       const food = findFoodByName(item.name);
-      if (!parsed || !food) return 0;
+      if (!parsed) return 0;
       let grams = parsed.value;
       if (parsed.unit !== "g" && parsed.unit !== "ml") {
-        const serving = food.servings?.find((option) => normalizeText(option.name).includes(parsed.unit));
+        const serving = food?.servings?.find((option) => normalizeText(option.name).includes(parsed.unit));
         grams = parsed.value * (Number(serving?.grams) || 50);
       }
-      return Math.round((Number(food.caloriesPer100g) || 0) * grams / 100);
+      const caloriesPer100g = Number(food?.caloriesPer100g) || fallbackCaloriesForName(item.name);
+      return Math.round(caloriesPer100g * grams / 100);
     }
 
     function hydrateRecommendationItem(item, option) {
@@ -3175,24 +3429,13 @@
     function openSubstituteModal(recommendationIndex, itemIndex) {
       const item = currentRecommendationOptions?.[recommendationIndex]?.items?.[itemIndex];
       if (!item) return;
-      const substitutes = substitutesForItemName(item.name);
       substituteTarget = { mode: "substitute", recommendationIndex, itemIndex };
-      substituteTitle.textContent = "Alimentos Substitutos";
-      substituteDescription.textContent = `Esses são os alimentos que você pode substituir por ${item.name}. Se atente às quantidades.`;
-      const substituteOptionsHtml = substitutes.length === 0
-        ? '<div class="muted" style="text-align:center;">Ainda não há substitutos cadastrados para este alimento.</div>'
-        : substitutes.map((substitute, index) => `
-          <button class="substitute-option" type="button" data-substitute-index="${index}">
-            <div class="recommended-item-icon">${substitute.icon}</div>
-            <div>
-              <div class="meal-name">${substitute.name}</div>
-              <div class="muted">${substitute.amount} • ${substitute.kcal} kcal</div>
-            </div>
-            <div class="substitute-info">i</div>
-          </button>
-        `).join("");
+      substituteTitle.textContent = "Trocar alimento";
+      substituteDescription.textContent = `Escolha qualquer alimento da base para substituir ${item.name}.`;
+      const foodOptions = [...foods].sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
       substituteList.innerHTML = `
-        ${substituteOptionsHtml}
+        <input class="substitute-search" id="substitute-search" placeholder="Digite para filtrar..." autocomplete="off" />
+        <div class="substitute-results" id="substitute-results"></div>
         <button class="substitute-option" type="button" data-ignore-item="1">
           <div class="recommended-item-icon">🚫</div>
           <div>
@@ -3202,11 +3445,40 @@
           <div class="substitute-info">−</div>
         </button>
       `;
-      substituteList.querySelectorAll("[data-substitute-index]").forEach((button) => {
-        button.addEventListener("click", () => applySubstitute(substitutes[Number(button.dataset.substituteIndex)]));
-      });
+      const searchInput = document.getElementById("substitute-search");
+      const results = document.getElementById("substitute-results");
+      const renderSubstituteResults = () => {
+        const term = normalizeText(searchInput.value.trim());
+        const visibleFoods = term
+          ? foodOptions.filter((food) => normalizeText(food.name).includes(term))
+          : foodOptions;
+        results.innerHTML = visibleFoods.length
+          ? visibleFoods.map((food) => {
+              const substitute = foodToRecommendationItem(food);
+              return `
+                <button class="substitute-option" type="button" data-substitute-food-id="${food.id}">
+                  <div class="recommended-item-icon">${substitute.icon}</div>
+                  <div>
+                    <div class="meal-name">${substitute.name}</div>
+                    <div class="muted">${substitute.amount} • ${substitute.kcal} kcal</div>
+                  </div>
+                  <div class="substitute-info">⇄</div>
+                </button>
+              `;
+            }).join("")
+          : '<div class="muted" style="text-align:center;">Nenhum alimento encontrado.</div>';
+        results.querySelectorAll("[data-substitute-food-id]").forEach((button) => {
+          button.addEventListener("click", () => {
+            const food = foodOptions.find((item) => item.id === button.dataset.substituteFoodId);
+            applySubstitute(foodToRecommendationItem(food));
+          });
+        });
+      };
+      searchInput.addEventListener("input", renderSubstituteResults);
+      renderSubstituteResults();
       substituteList.querySelector("[data-ignore-item]")?.addEventListener("click", ignoreRecommendationItem);
       substituteModal.classList.remove("hidden");
+      requestAnimationFrame(() => searchInput.focus());
     }
 
     function openAddItemModal(recommendationIndex) {
@@ -3217,23 +3489,40 @@
       substituteTitle.textContent = "Adicionar item";
       substituteDescription.textContent = "Selecione um alimento para incluir nesta refeição.";
       const foodOptions = [...foods].sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
-      substituteList.innerHTML = foodOptions.map((food, index) => {
-        const item = foodToRecommendationItem(food);
-        return `
-          <button class="substitute-option" type="button" data-add-food-index="${index}">
-            <div class="recommended-item-icon">${item.icon}</div>
-            <div>
-              <div class="meal-name">${item.name}</div>
-              <div class="muted">${item.amount} • ${item.kcal} kcal</div>
-            </div>
-            <div class="substitute-info">+</div>
-          </button>
-        `;
-      }).join("");
-      substituteList.querySelectorAll("[data-add-food-index]").forEach((button) => {
-        button.addEventListener("click", () => addRecommendationItem(foodOptions[Number(button.dataset.addFoodIndex)]));
-      });
+      substituteList.innerHTML = `
+        <input class="substitute-search" id="add-item-search" placeholder="Digite para filtrar..." autocomplete="off" />
+        <div class="substitute-results" id="add-item-results"></div>
+      `;
+      const searchInput = document.getElementById("add-item-search");
+      const results = document.getElementById("add-item-results");
+      const renderAddItemResults = () => {
+        const term = normalizeText(searchInput.value.trim());
+        const visibleFoods = term
+          ? foodOptions.filter((food) => normalizeText(food.name).includes(term))
+          : foodOptions;
+        results.innerHTML = visibleFoods.length
+          ? visibleFoods.map((food) => {
+              const item = foodToRecommendationItem(food);
+              return `
+                <button class="substitute-option" type="button" data-add-food-id="${food.id}">
+                  <div class="recommended-item-icon">${item.icon}</div>
+                  <div>
+                    <div class="meal-name">${item.name}</div>
+                    <div class="muted">${item.amount} • ${item.kcal} kcal</div>
+                  </div>
+                  <div class="substitute-info">+</div>
+                </button>
+              `;
+            }).join("")
+          : '<div class="muted" style="text-align:center;">Nenhum alimento encontrado.</div>';
+        results.querySelectorAll("[data-add-food-id]").forEach((button) => {
+          button.addEventListener("click", () => addRecommendationItem(foodOptions.find((food) => food.id === button.dataset.addFoodId)));
+        });
+      };
+      searchInput.addEventListener("input", renderAddItemResults);
+      renderAddItemResults();
       substituteModal.classList.remove("hidden");
+      requestAnimationFrame(() => searchInput.focus());
     }
 
     function closeSubstituteModal() {
@@ -3299,9 +3588,33 @@
       selectedRecommendationIndex = null;
       mealDetailRegister.textContent = "Registrar dieta";
       mealDetailRegister.classList.add("hidden");
+      mealUseSuggestion.classList.add("hidden");
       renderAll();
       openTab("refeicao");
       return true;
+    }
+
+    function restoreDietOptionToDefault(mealTypeId, optionIndex) {
+      const defaultOption = mealRecommendations[mealTypeId]?.[optionIndex];
+      if (!defaultOption) return;
+      if (!confirm("Voltar esta opção para a sugestão padrão? As alterações salvas nesta opção serão perdidas.")) return;
+      const currentOptions = recommendationsForMeal(mealTypeId);
+      currentOptions[optionIndex] = cloneDietOption(defaultOption);
+      appData.dietRecommendations[mealTypeId] = currentOptions.map(cloneDietOption);
+      saveData();
+      if (editingDietTemplate?.mealTypeId === mealTypeId) {
+        currentRecommendationOptions = recommendationsForMeal(mealTypeId).map(hydrateDietOption);
+        selectedRecommendationIndex = Math.max(0, Math.min(optionIndex, Math.max(currentRecommendationOptions.length - 1, 0)));
+        renderRecommendationOptions();
+        mealUseSuggestion.classList.add("hidden");
+      }
+      renderDietDashboard();
+      mealDetailSubtitle.textContent = "Sugestão padrão aplicada nesta opção";
+    }
+
+    function useDefaultDietSuggestion() {
+      if (!editingDietTemplate) return;
+      restoreDietOptionToDefault(editingDietTemplate.mealTypeId, editingDietTemplate.optionIndex);
     }
 
     function registerSelectedRecommendation() {
@@ -3345,6 +3658,7 @@
         editingMealType = null;
         editingMealId = null;
         mealDetailRegister.textContent = "Registrar dieta";
+        mealUseSuggestion.classList.add("hidden");
         renderAll();
         openMealDetail(mealType.id);
         return;
@@ -3375,6 +3689,7 @@
       editingMealType = null;
       editingMealId = null;
       mealDetailRegister.textContent = "Registrar dieta";
+      mealUseSuggestion.classList.add("hidden");
       currentPeriod = "hoje";
       periodButtons.forEach((item) => item.classList.toggle("active", item.dataset.period === "hoje"));
       renderAll();
@@ -3677,6 +3992,7 @@
       selectedRecommendationIndex = null;
       mealDetailRegister.textContent = "Registrar dieta";
       mealDetailRegister.classList.add("hidden");
+      mealUseSuggestion.classList.add("hidden");
       renderAll();
       if (visibleSectionId() === "refeicao-detalhe") {
         const mealTypeId = meal.mealType || currentMealDetail;
@@ -3897,6 +4213,9 @@
     mealDetailRegister.addEventListener("click", () => {
       registerSelectedRecommendation();
     });
+    mealUseSuggestion.addEventListener("click", () => {
+      useDefaultDietSuggestion();
+    });
     mealCompensateLater.addEventListener("click", () => {
       compensateCurrentMealLater();
     });
@@ -3907,6 +4226,13 @@
       openMealDetail(mealButton.dataset.openMealDetail);
     });
     dietDashboard.addEventListener("click", (event) => {
+      const resetButton = event.target.closest("[data-reset-diet-meal][data-reset-diet-option]");
+      if (resetButton) {
+        event.preventDefault();
+        event.stopPropagation();
+        restoreDietOptionToDefault(resetButton.dataset.resetDietMeal, Number(resetButton.dataset.resetDietOption) || 0);
+        return;
+      }
       const editButton = event.target.closest("[data-diet-edit-meal]");
       if (editButton) {
         event.preventDefault();
@@ -3928,6 +4254,13 @@
       });
     });
     recommendationCarousel.addEventListener("click", (event) => {
+      const resetButton = event.target.closest("[data-reset-diet-meal][data-reset-diet-option]");
+      if (resetButton) {
+        event.preventDefault();
+        event.stopPropagation();
+        restoreDietOptionToDefault(resetButton.dataset.resetDietMeal, Number(resetButton.dataset.resetDietOption) || 0);
+        return;
+      }
       const addItemButton = event.target.closest("[data-add-item-rec]");
       if (addItemButton) {
         event.preventDefault();
