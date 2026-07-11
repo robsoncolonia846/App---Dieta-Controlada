@@ -12,6 +12,18 @@
     ]
   },
   {
+    id: "alface",
+    name: "Alface",
+    category: "Alimentação",
+    caloriesPer100g: 0,
+    proteinPer100g: 0,
+    carbsPer100g: 0,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "a-vontade", name: "A Vontade", grams: 100 }
+    ]
+  },
+  {
     id: "arroz",
     name: "Arroz",
     category: "Alimentação",
@@ -60,6 +72,54 @@
     ]
   },
   {
+    id: "beterraba-cozida-assada",
+    name: "Beterraba Cozida/Assada",
+    category: "Alimentação",
+    caloriesPer100g: 56,
+    proteinPer100g: 2,
+    carbsPer100g: 12,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "Porção", grams: 50 }
+    ]
+  },
+  {
+    id: "beterraba-crua",
+    name: "Beterraba Crua",
+    category: "Alimentação",
+    caloriesPer100g: 0,
+    proteinPer100g: 0,
+    carbsPer100g: 0,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "a-vontade", name: "A Vontade", grams: 100 }
+    ]
+  },
+  {
+    id: "bife-frito",
+    name: "Bife Frito",
+    category: "Alimentação",
+    caloriesPer100g: 240,
+    proteinPer100g: 30,
+    carbsPer100g: 0,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "Porção", grams: 50 }
+    ]
+  },
+  {
+    id: "brocolis",
+    name: "Brocolis",
+    category: "Alimentação",
+    caloriesPer100g: 0,
+    proteinPer100g: 0,
+    carbsPer100g: 0,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "a-vontade", name: "A Vontade", grams: 100 }
+    ]
+  },
+  {
     id: "carne-de-panela-agulha",
     name: "Carne de Panela (Agulha)",
     category: "Alimentação",
@@ -96,6 +156,30 @@
     ]
   },
   {
+    id: "cenoura-cozida-assada",
+    name: "Cenoura Cozida/Assada",
+    category: "Alimentação",
+    caloriesPer100g: 54,
+    proteinPer100g: 1,
+    carbsPer100g: 12,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "Porção", grams: 50 }
+    ]
+  },
+  {
+    id: "cenoura-crua",
+    name: "Cenoura Crua",
+    category: "Alimentação",
+    caloriesPer100g: 0,
+    proteinPer100g: 0,
+    carbsPer100g: 0,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "a-vontade", name: "A Vontade", grams: 100 }
+    ]
+  },
+  {
     id: "coracao-de-frango",
     name: "Coração de Frango",
     category: "Alimentação",
@@ -105,6 +189,18 @@
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
       { id: "porcao", name: "Porção", grams: 50 }
+    ]
+  },
+  {
+    id: "couve",
+    name: "Couve",
+    category: "Alimentação",
+    caloriesPer100g: 0,
+    proteinPer100g: 0,
+    carbsPer100g: 0,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "a-vontade", name: "A Vontade", grams: 100 }
     ]
   },
   {
@@ -348,6 +444,30 @@
     ]
   },
   {
+    id: "ovo-cozido",
+    name: "Ovo Cozido",
+    category: "Alimentação",
+    caloriesPer100g: 80,
+    proteinPer100g: 7,
+    carbsPer100g: 1,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "unidade", name: "Unidade", grams: 100 }
+    ]
+  },
+  {
+    id: "ovo-frito",
+    name: "Ovo Frito",
+    category: "Alimentação",
+    caloriesPer100g: 120,
+    proteinPer100g: 7,
+    carbsPer100g: 1,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "unidade", name: "Unidade", grams: 100 }
+    ]
+  },
+  {
     id: "panqueca-carne-moida",
     name: "Panqueca (Carne Moida)",
     category: "Alimentação",
@@ -504,6 +624,30 @@
     ]
   },
   {
+    id: "repolho",
+    name: "Repolho",
+    category: "Alimentação",
+    caloriesPer100g: 0,
+    proteinPer100g: 0,
+    carbsPer100g: 0,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "a-vontade", name: "A Vontade", grams: 100 }
+    ]
+  },
+  {
+    id: "tomate-cereja",
+    name: "Tomate Cereja",
+    category: "Alimentação",
+    caloriesPer100g: 0,
+    proteinPer100g: 0,
+    carbsPer100g: 0,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "a-vontade", name: "A Vontade", grams: 100 }
+    ]
+  },
+  {
     id: "uva",
     name: "Uva",
     category: "Alimentação",
@@ -513,30 +657,6 @@
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
       { id: "porcao", name: "Porção", grams: 50 }
-    ]
-  },
-  {
-    id: "ovo-cozido",
-    name: "Ovo Cozido",
-    category: "Alimentação",
-    caloriesPer100g: 80,
-    proteinPer100g: 7,
-    carbsPer100g: 1,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "unidade", name: "Unidade", grams: 100 }
-    ]
-  },
-  {
-    id: "ovo-frito",
-    name: "Ovo Frito",
-    category: "Alimentação",
-    caloriesPer100g: 120,
-    proteinPer100g: 7,
-    carbsPer100g: 1,
-    servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "unidade", name: "Unidade", grams: 100 }
     ]
   }
 ];
