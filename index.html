@@ -321,16 +321,21 @@
     }
 
     .goal-banner {
+      display: grid;
+      gap: 8px;
+      background: #fff;
+      border-radius: 18px;
+      padding: 10px 12px 9px;
+      font-size: 13px;
+      font-weight: 950;
+      box-shadow: 0 10px 24px rgba(36, 49, 25, 0.05);
+    }
+
+    .goal-banner-main {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 14px;
-      background: #fff;
-      border-radius: 999px;
-      padding: 10px 14px;
-      font-size: 13px;
-      font-weight: 950;
-      box-shadow: 0 10px 24px rgba(36, 49, 25, 0.05);
     }
 
     .summary-body {
@@ -400,34 +405,13 @@
 
     .calorie-range {
       display: grid;
-      gap: 8px;
-      margin-top: 2px;
-      padding: 12px;
-      border-radius: 14px;
-      background: #f6f8f4;
-    }
-
-    .calorie-range-head,
-    .calorie-range-labels {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      font-size: 12px;
-      font-weight: 900;
-    }
-
-    .calorie-range-head span {
-      color: #748167;
-    }
-
-    .calorie-range-head strong {
-      color: #243119;
+      gap: 5px;
+      padding: 0 2px 1px;
     }
 
     .calorie-range-track {
       position: relative;
-      height: 10px;
+      height: 5px;
       border-radius: 999px;
       background: #e4e4e8;
       overflow: visible;
@@ -455,10 +439,10 @@
 
     .calorie-range-marker {
       position: absolute;
-      top: -4px;
+      top: -3px;
       left: var(--left, 0%);
-      width: 3px;
-      height: 18px;
+      width: 2px;
+      height: 11px;
       border-radius: 999px;
       background: #243119;
       transform: translateX(-50%);
@@ -468,11 +452,19 @@
       transform: translateX(-100%);
     }
 
+    .calorie-range-marker.current {
+      background: #111827;
+      height: 13px;
+      top: -4px;
+      z-index: 1;
+    }
+
     .calorie-range-labels {
       position: relative;
-      height: 16px;
+      height: 13px;
       color: #748167;
-      font-size: 11px;
+      font-size: 9px;
+      font-weight: 900;
     }
 
     .calorie-range-labels span {
@@ -484,6 +476,10 @@
 
     .calorie-range-labels span:last-child {
       transform: translateX(-100%);
+    }
+
+    #calorie-range-current {
+      color: #243119;
     }
 
     .progress-row {
@@ -1529,8 +1525,23 @@
         <main>
           <section id="hoje">
             <div class="goal-banner">
-              <span>🔥 Meta do dia: <span id="goal-banner-value">0 - 0 kcal</span></span>
-              <span>→</span>
+              <div class="goal-banner-main">
+                <span>🔥 Meta do dia: <span id="goal-banner-value">0 - 0 kcal</span></span>
+                <span>→</span>
+              </div>
+              <div class="calorie-range" id="calorie-range">
+                <div class="calorie-range-track" aria-label="Faixa de calorias entre 1400 e 1900 kcal">
+                  <div class="calorie-range-fill" id="calorie-range-fill"></div>
+                  <span class="calorie-range-marker min" style="--left: 73.7%;"></span>
+                  <span class="calorie-range-marker current" id="calorie-range-current-marker" style="--left: 0%;"></span>
+                  <span class="calorie-range-marker max" style="--left: 100%;"></span>
+                </div>
+                <div class="calorie-range-labels">
+                  <span style="--left: 73.7%;">1400</span>
+                  <span id="calorie-range-current" style="--left: 0%;">0</span>
+                  <span style="--left: 100%;">1900</span>
+                </div>
+              </div>
             </div>
 
             <div class="hero">
@@ -1565,21 +1576,6 @@
                 </div>
               </div>
               <div class="goal-alert" id="goal-alert">Dia no controle. Continue assim.</div>
-              <div class="calorie-range" id="calorie-range">
-                <div class="calorie-range-head">
-                  <span>Faixa diária</span>
-                  <strong id="calorie-range-current">0 kcal</strong>
-                </div>
-                <div class="calorie-range-track" aria-label="Faixa de calorias entre 1400 e 1900 kcal">
-                  <div class="calorie-range-fill" id="calorie-range-fill"></div>
-                  <span class="calorie-range-marker min" style="--left: 73.7%;"></span>
-                  <span class="calorie-range-marker max" style="--left: 100%;"></span>
-                </div>
-                <div class="calorie-range-labels">
-                  <span style="--left: 73.7%;">1400 kcal</span>
-                  <span style="--left: 100%;">1900 kcal</span>
-                </div>
-              </div>
               <div class="summary-footer">
                 <div>
                   <div class="muted">Restante</div>
@@ -1809,6 +1805,7 @@
     const goalAlert = document.getElementById("goal-alert");
     const calorieRange = document.getElementById("calorie-range");
     const calorieRangeCurrent = document.getElementById("calorie-range-current");
+    const calorieRangeCurrentMarker = document.getElementById("calorie-range-current-marker");
     const calorieRangeFill = document.getElementById("calorie-range-fill");
     const calorieRing = document.getElementById("calorie-ring");
     const calorieFill = document.getElementById("calorie-fill");
@@ -2428,6 +2425,7 @@
     let substituteTarget = null;
     let dietSelectedOptions = {};
     let editingMealType = null;
+    let editingMealId = null;
     let editingDietTemplate = null;
     let detailReturnTab = "hoje";
 
@@ -2737,6 +2735,7 @@
       detailReturnTab = "hoje";
       currentMealDetail = mealTypeId;
       editingMealType = null;
+      editingMealId = null;
       editingDietTemplate = null;
       selectedRecommendationIndex = null;
       mealDetailRegister.classList.add("hidden");
@@ -2788,25 +2787,26 @@
                   <div class="muted">${portionLabel}</div>
                 </div>
               </div>
+              <button class="add-recommendation-item" type="button" data-edit-saved-meal="${item.id}">Editar este registro</button>
             </div>
           `;
         }).join("");
-        recommendationCarousel.innerHTML += `
-          <button class="button" type="button" id="edit-registered-meal" style="margin-top: 14px;">Editar refeição</button>
-        `;
         recommendationDots.innerHTML = "";
-        const editButton = document.getElementById("edit-registered-meal");
-        editButton?.addEventListener("click", () => {
+        recommendationCarousel.querySelectorAll("[data-edit-saved-meal]").forEach((button) => button.addEventListener("click", () => {
+          const meal = registeredMeals.find((item) => item.id === button.dataset.editSavedMeal);
+          if (!meal) return;
           editingMealType = mealType.id;
+          editingMealId = meal.id;
           editingDietTemplate = null;
-          selectedRecommendationIndex = null;
+          currentRecommendationOptions = [savedMealToRecommendationOption(meal)];
+          selectedRecommendationIndex = 0;
           mealDetailStatus.textContent = "Editando";
-          mealDetailSubtitle.textContent = "Escolha uma nova opção para substituir o lançamento atual";
+          mealDetailSubtitle.textContent = "Edite o registro salvo nesta refeição";
           mealDetailRegister.textContent = "Salvar edição";
-          mealDetailRegister.classList.add("hidden");
+          mealDetailRegister.classList.remove("hidden");
           mealCompensateLater.classList.add("hidden");
-          showMealRecommendationOptions(mealType);
-        });
+          renderRecommendationOptions();
+        }));
         openTab("refeicao-detalhe");
         return;
       }
@@ -3080,6 +3080,46 @@
       };
     }
 
+    function savedMealToRecommendationOption(meal) {
+      if (!meal) return { kcal: 0, items: [] };
+      if (meal.servingId !== "dieta-sugerida") {
+        const amount = meal.quantity && meal.servingName && meal.servingName !== "Gramas"
+          ? `${meal.quantity} ${meal.servingName.toLowerCase()}`
+          : `${meal.grams || 0}g`;
+        return {
+          kcal: Number(meal.calories) || 0,
+          savedMealId: meal.id,
+          items: [{
+            icon: iconForFoodName(meal.foodName),
+            name: meal.foodName,
+            amount,
+            kcal: Number(meal.calories) || 0,
+            protein: Number(meal.protein) || 0,
+            carbs: Number(meal.carbs) || 0
+          }]
+        };
+      }
+      const label = String(meal.foodName || "").includes(":")
+        ? String(meal.foodName).split(":").slice(1).join(":").trim()
+        : String(meal.foodName || "");
+      const parts = label.split(/,\s+/).filter(Boolean);
+      const items = parts.map((part) => {
+        const match = part.match(/^(.*?)\s*\((.*?)\)$/);
+        const name = (match?.[1] || part).trim();
+        const amount = (match?.[2] || "100g").trim();
+        return { icon: iconForFoodName(name), name, amount };
+      });
+      const option = {
+        kcal: Number(meal.calories) || 0,
+        savedMealId: meal.id,
+        items
+      };
+      option.items = option.items.map((item) => hydrateRecommendationItem(item, option));
+      recalculateRecommendation(option);
+      if (!option.kcal && meal.calories) option.kcal = Number(meal.calories) || 0;
+      return option;
+    }
+
     function substitutesForItemName(name) {
       const key = normalizeText(name);
       return substituteCatalog[key]
@@ -3244,8 +3284,28 @@
       const itemsLabel = option.items.map((item) => `${item.name} (${item.amount})`).join(", ") || "Sem itens";
       const proteinTotal = option.items.reduce((total, item) => total + (Number(item.protein) || 0), 0);
       const carbsTotal = option.items.reduce((total, item) => total + (Number(item.carbs) || 0), 0);
-      if (editingMealType === mealType.id) {
-        appData.meals = appData.meals.filter((item) => !(item.date === todayISO() && item.mealType === mealType.id));
+      if (editingMealId) {
+        const existingMeal = appData.meals.find((item) => item.id === editingMealId);
+        if (!existingMeal) return;
+        existingMeal.foodId = existingMeal.foodId || `sugestao-${mealType.id}-${Date.now()}`;
+        existingMeal.foodName = `${mealDetailLabels[mealType.id] || mealType.name}: ${itemsLabel}`;
+        existingMeal.mealType = mealType.id;
+        existingMeal.mealTypeName = mealType.name;
+        existingMeal.mealTime = appData.mealTimes?.[currentMealDetail] || defaultMealTimes[currentMealDetail];
+        existingMeal.grams = 0;
+        existingMeal.quantity = 1;
+        existingMeal.servingName = "Dieta sugerida";
+        existingMeal.servingId = "dieta-sugerida";
+        existingMeal.calories = round(option.kcal || 0);
+        existingMeal.protein = round(proteinTotal);
+        existingMeal.carbs = round(carbsTotal);
+        saveData();
+        editingMealType = null;
+        editingMealId = null;
+        mealDetailRegister.textContent = "Registrar dieta";
+        renderAll();
+        openMealDetail(mealType.id);
+        return;
       }
       appData.meals.unshift({
         id: `${Date.now()}`,
@@ -3271,6 +3331,7 @@
       }
       saveData();
       editingMealType = null;
+      editingMealId = null;
       mealDetailRegister.textContent = "Registrar dieta";
       currentPeriod = "hoje";
       periodButtons.forEach((item) => item.classList.toggle("active", item.dataset.period === "hoje"));
@@ -3544,7 +3605,9 @@
       const width = Math.max(0, Math.min(100, Math.round((consumed / calorieRangeMax) * 100)));
       const greenStart = calorieRangeMin - 200;
       const yellowStart = calorieRangeMax - 200;
-      calorieRangeCurrent.textContent = `${consumed.toLocaleString("pt-BR")} kcal`;
+      calorieRangeCurrent.textContent = consumed.toLocaleString("pt-BR");
+      calorieRangeCurrent.style.setProperty("--left", `${width}%`);
+      calorieRangeCurrentMarker.style.setProperty("--left", `${width}%`);
       calorieRangeFill.style.setProperty("--width", `${width}%`);
       calorieRange.classList.toggle("good", consumed >= greenStart && consumed < yellowStart);
       calorieRange.classList.toggle("warn", consumed >= yellowStart && consumed < calorieRangeMax);
