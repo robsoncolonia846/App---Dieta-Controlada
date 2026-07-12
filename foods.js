@@ -36,6 +36,18 @@ export const foods = [
     ]
   },
   {
+    id: "arroz-com-carne",
+    name: "Arroz com Carne",
+    category: "Alimenta??o",
+    caloriesPer100g: 120,
+    proteinPer100g: 6.5,
+    carbsPer100g: 15,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "100g", grams: 100 }
+    ]
+  },
+  {
     id: "banana",
     name: "Banana",
     category: "Alimenta??o",
