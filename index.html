@@ -2129,7 +2129,6 @@
       "peixe assado (anchova)": 160,
       "peixe assado (tainha)": 180,
       "presunto": 133.3333,
-      "queijo fatia": 480,
       "queijo mucarela": 475,
       "queijo parmesao": 383.3333,
       "repolho": 0,
@@ -2164,14 +2163,14 @@
       cafe: [
         { kcal: 0, items: [
           { icon: "🥖", name: "Pão Caseiro", amount: "50g" },
-          { icon: "🥚", name: "Ovo Cozido", amount: "2 ovos" },
+          { icon: "🥚", name: "Ovo Cozido", amount: "2 unidades" },
           { icon: "🍊", name: "Bergamota", amount: "1 unidade" },
           { icon: "🥛", name: "Leite Desnatado", amount: "100ml" }
         ] },
         { kcal: 0, items: [
           { icon: "🍞", name: "Pão De Forma", amount: "2 fatias" },
           { icon: "🥓", name: "Presunto", amount: "1 fatia" },
-          { icon: "🧀", name: "Queijo Fatia", amount: "1 fatia" },
+          { icon: "🧀", name: "Queijo Muçarela", amount: "1 fatia" },
           { icon: "🍊", name: "Laranja", amount: "1 unidade" },
           { icon: "🥛", name: "Leite Desnatado", amount: "200ml" }
         ] },
@@ -2264,7 +2263,7 @@
         { kcal: 0, items: [
           { icon: "🥖", name: "Pão Frances", amount: "45g" },
           { icon: "🥓", name: "Presunto", amount: "1 fatia" },
-          { icon: "🧀", name: "Queijo Fatia", amount: "1 fatia" }
+          { icon: "🧀", name: "Queijo Muçarela", amount: "1 fatia" }
         ] },
         { kcal: 0, items: [
           { icon: "🥛", name: "Leite Desnatado", amount: "200ml" },
@@ -2276,7 +2275,7 @@
           { icon: "🍇", name: "Uva", amount: "80g" }
         ] },
         { kcal: 0, items: [
-          { icon: "🥚", name: "Ovo Cozido", amount: "2 ovos" },
+          { icon: "🥚", name: "Ovo Cozido", amount: "2 unidades" },
           { icon: "🍍", name: "Abacaxi", amount: "145g" }
         ] },
         { kcal: 0, items: [
@@ -2312,7 +2311,7 @@
         { kcal: 0, items: [
           { icon: "🥩", name: "Carne Moida", amount: "70g" },
           { icon: "🍚", name: "Arroz", amount: "94g" },
-          { icon: "🥚", name: "Ovo Cozido", amount: "1 ovo" },
+          { icon: "🥚", name: "Ovo Cozido", amount: "1 unidade" },
           { icon: "🍅", name: "Tomate Cereja", amount: "à vontade" },
           { icon: "🥬", name: "Couve", amount: "à vontade" }
         ] },
@@ -3289,15 +3288,12 @@
     function foodToRecommendationItem(food) {
       const preferredServing = food.servings?.find((serving) => serving.id !== "gramas") || food.servings?.[0];
       const grams = preferredServing?.id === "gramas" || !preferredServing ? 100 : Number(preferredServing.grams) || 100;
-      const isEggServing = preferredServing?.id === "unidade" && normalizeText(food.name).includes("ovo");
       const amount = !preferredServing || preferredServing.id === "gramas"
         ? "100g"
         : preferredServing.id === "excel"
         ? preferredServing.name
         : preferredServing.id === "a-vontade"
         ? "à vontade"
-        : isEggServing
-        ? "1 ovo"
         : `1 ${preferredServing.name.toLowerCase()}`;
       return {
         icon: iconForFoodName(food.name),
