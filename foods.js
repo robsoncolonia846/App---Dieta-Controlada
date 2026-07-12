@@ -303,12 +303,12 @@ export const foods = [
     id: "iogurte-zero",
     name: "Iogurte Zero",
     category: "Alimenta??o",
-    caloriesPer100g: 60,
-    proteinPer100g: 5.5,
-    carbsPer100g: 7.2,
+    caloriesPer100g: 26,
+    proteinPer100g: 2.75,
+    carbsPer100g: 3.6,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "porcao-na", name: "Por??o", grams: 100 }
+      { id: "excel", name: "200ml", grams: 200 }
     ]
   },
   {
@@ -351,24 +351,24 @@ export const foods = [
     id: "leite-desnatado",
     name: "Leite Desnatado",
     category: "Alimenta??o",
-    caloriesPer100g: 74,
-    proteinPer100g: 6.8,
-    carbsPer100g: 10,
+    caloriesPer100g: 37,
+    proteinPer100g: 3.4,
+    carbsPer100g: 5,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "porcao-na", name: "Por??o", grams: 100 }
+      { id: "excel", name: "200ml", grams: 200 }
     ]
   },
   {
     id: "leite-integral",
     name: "Leite Integral",
     category: "Alimenta??o",
-    caloriesPer100g: 124,
-    proteinPer100g: 6.8,
-    carbsPer100g: 9.6,
+    caloriesPer100g: 62,
+    proteinPer100g: 3.4,
+    carbsPer100g: 4.8,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "porcao-na", name: "Por??o", grams: 100 }
+      { id: "excel", name: "200ml", grams: 200 }
     ]
   },
   {
@@ -476,7 +476,7 @@ export const foods = [
     carbsPer100g: 16,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "porcao-na", name: "Por??o", grams: 100 }
+      { id: "excel", name: "100g", grams: 100 }
     ]
   },
   {
@@ -488,7 +488,7 @@ export const foods = [
     carbsPer100g: 16,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "porcao-na", name: "Por??o", grams: 100 }
+      { id: "excel", name: "100g", grams: 100 }
     ]
   },
   {
@@ -579,48 +579,48 @@ export const foods = [
     id: "presunto",
     name: "Presunto",
     category: "Alimenta??o",
-    caloriesPer100g: 40,
-    proteinPer100g: 4,
-    carbsPer100g: 0.5,
+    caloriesPer100g: 133.3333,
+    proteinPer100g: 13.3333,
+    carbsPer100g: 1.6667,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "porcao-na", name: "Por??o", grams: 100 }
+      { id: "fatia", name: "Fatia", grams: 30 }
     ]
   },
   {
     id: "queijo-fatia",
     name: "Queijo Fatia",
     category: "Alimenta??o",
-    caloriesPer100g: 96,
-    proteinPer100g: 22,
-    carbsPer100g: 3,
+    caloriesPer100g: 480,
+    proteinPer100g: 110,
+    carbsPer100g: 15,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "porcao-na", name: "Por??o", grams: 100 }
+      { id: "fatia", name: "Fatia", grams: 20 }
     ]
   },
   {
     id: "queijo-mucarela",
     name: "Queijo Muçarela",
     category: "Alimenta??o",
-    caloriesPer100g: 95,
-    proteinPer100g: 6,
-    carbsPer100g: 1,
+    caloriesPer100g: 475,
+    proteinPer100g: 30,
+    carbsPer100g: 5,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "porcao-na", name: "Por??o", grams: 100 }
+      { id: "fatia", name: "Fatia", grams: 20 }
     ]
   },
   {
     id: "queijo-parmesao",
     name: "Queijo Parmesão",
     category: "Alimenta??o",
-    caloriesPer100g: 115,
-    proteinPer100g: 10,
-    carbsPer100g: 1,
+    caloriesPer100g: 383.3333,
+    proteinPer100g: 33.3333,
+    carbsPer100g: 3.3333,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "porcao-na", name: "Por??o", grams: 100 }
+      { id: "fatia", name: "Fatia", grams: 30 }
     ]
   },
   {
@@ -658,5 +658,5 @@ export const foods = [
       { id: "gramas", name: "Gramas", grams: 1 },
       { id: "excel", name: "50g", grams: 50 }
     ]
-  }
+  },
 ];
