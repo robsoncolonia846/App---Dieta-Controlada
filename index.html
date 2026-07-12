@@ -1005,69 +1005,71 @@
       inset: 0;
       z-index: 30;
       display: grid;
-      align-items: end;
+      align-items: start;
       background: rgba(0, 0, 0, 0.62);
+      padding-top: max(6px, env(safe-area-inset-top));
     }
 
     .substitute-sheet {
       width: 100%;
       max-width: 480px;
-      max-height: 92vh;
+      max-height: calc(100vh - max(6px, env(safe-area-inset-top)));
       margin: 0 auto;
       overflow-y: auto;
       background: #fff;
-      border-radius: 20px 20px 0 0;
-      padding: 8px 18px 22px;
-      box-shadow: 0 -16px 32px rgba(0, 0, 0, 0.15);
+      border-radius: 0 0 20px 20px;
+      padding: 5px 16px 20px;
+      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.15);
     }
 
     .sheet-handle {
       width: 54px;
-      height: 5px;
+      height: 4px;
       border-radius: 999px;
       background: #e3e4e8;
-      margin: 0 auto 8px;
+      margin: 0 auto 4px;
     }
 
     .sheet-close {
       border: 0;
       background: transparent;
       color: #6d7080;
-      font-size: 34px;
+      font-size: 28px;
       line-height: 1;
       float: right;
-      padding: 2px 4px;
+      padding: 0 2px;
     }
 
     .substitute-head {
       clear: both;
-      display: grid;
-      justify-items: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 0 34px 7px;
       text-align: center;
-      gap: 5px;
-      padding: 0 0 10px;
     }
 
     .substitute-head-icon {
-      font-size: 34px;
+      font-size: 24px;
+      line-height: 1;
     }
 
     .substitute-head h2 {
-      font-size: 23px;
-      line-height: 1.05;
+      font-size: 20px;
+      line-height: 1;
     }
 
     .substitute-head .muted {
-      font-size: 13px;
-      line-height: 1.25;
+      display: none;
     }
 
     .substitute-search {
       width: 100%;
       border: 1px solid #e4e5e9;
-      border-radius: 16px;
+      border-radius: 14px;
       background: #f5f6fa;
-      padding: 11px 14px;
+      padding: 10px 13px;
       font: inherit;
       font-size: 15px;
       font-weight: 800;
@@ -1930,8 +1932,7 @@
       <div class="substitute-head">
         <div class="substitute-head-icon">🍽️</div>
         <h2 id="substitute-title">Alimentos Substitutos</h2>
-        <div class="muted" id="substitute-description">Selecione um alimento para substituir.</div>
-        <div class="muted">Se atente às quantidades.</div>
+        <div class="muted hidden" id="substitute-description"></div>
       </div>
       <div class="substitute-list" id="substitute-list"></div>
     </div>
@@ -3370,7 +3371,7 @@
       if (!item) return;
       substituteTarget = { mode: "substitute", recommendationIndex, itemIndex };
       substituteTitle.textContent = "Trocar alimento";
-      substituteDescription.textContent = `Substituir ${item.name}.`;
+      substituteDescription.textContent = "";
       const foodOptions = [...foods].sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
       substituteList.innerHTML = `
         <input class="substitute-search" id="substitute-search" placeholder="Digite para filtrar..." autocomplete="off" />
@@ -3417,7 +3418,7 @@
       if (!option) return;
       substituteTarget = { mode: "add", recommendationIndex: safeIndex };
       substituteTitle.textContent = "Adicionar item";
-      substituteDescription.textContent = "Escolha um alimento da base.";
+      substituteDescription.textContent = "";
       const foodOptions = [...foods].sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
       substituteList.innerHTML = `
         <input class="substitute-search" id="add-item-search" placeholder="Digite para filtrar..." autocomplete="off" />
