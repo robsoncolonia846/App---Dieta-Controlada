@@ -809,7 +809,8 @@
     .recommendation-card.empty {
       border: 2px dashed #209b26;
       background: #eaf6ea;
-      min-height: 250px;
+      min-height: 56px;
+      padding: 12px 16px;
       place-items: center;
       text-align: center;
     }
@@ -817,6 +818,18 @@
     .recommendation-card.empty .avatar-button {
       display: inline-grid;
       place-items: center;
+      width: 28px;
+      height: 28px;
+      min-width: 28px;
+    }
+
+    .create-option-content {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-weight: 950;
+      color: #209b26;
     }
 
     .empty-recommendation-state {
@@ -2069,7 +2082,7 @@
       "abacaxi": 50,
       "alface": 0,
       "arroz": 130,
-      "arroz com carne": 120,
+      "arroz com carne": 140,
       "banana": 60,
       "batata inglesa": 90,
       "bergamota": 40,
@@ -3040,10 +3053,9 @@
         optionTabs ? `<div class="diet-option-tabs meal-detail-option-tabs" style="--option-count: ${optionCount};">${optionTabs}</div>` : "",
         optionCard,
         `<button class="recommendation-card empty" type="button" data-create-custom-option="1">
-          <div>
+          <div class="create-option-content">
             <span class="avatar-button" aria-hidden="true">+</span>
-            <h2 style="margin-top: 18px;">Criar nova opção</h2>
-            <div class="muted">Adicione sua própria refeição</div>
+            <span>Criar nova opção</span>
           </div>
         </button>`
       ].join("");
