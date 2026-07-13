@@ -3111,12 +3111,14 @@
         button.addEventListener("click", (event) => {
           event.preventDefault();
           event.stopPropagation();
-          selectRecommendation(Number(button.dataset.selectRec), 0, true);
+          const optionIndex = Number(button.dataset.selectRec);
+          const shouldArmRegister = optionIndex !== selectedRecommendationIndex || !recommendationRegisterArmed;
+          selectRecommendation(optionIndex, 0, shouldArmRegister);
         });
       });
       recommendationCarousel.querySelector(`[data-recommendation-index="${index}"]`)?.addEventListener("click", (event) => {
         if (event.target.closest("button, input, select, textarea, [role='button']")) return;
-        armRecommendationRegister();
+        toggleRecommendationRegister();
       });
       recommendationCarousel.querySelectorAll("[data-substitute-rec]").forEach((button) => {
         button.addEventListener("click", (event) => {
@@ -3190,8 +3192,19 @@
       }
     }
 
-    function armRecommendationRegister() {
-      recommendationRegisterArmed = true;
+    function toggleRecommendationRegister() {
+      recommendationRegisterArmed = !recommendationRegisterArmed;
+      updateRecommendationRegisterVisibility();
+    }
+
+    function disarmRecommendationRegisterOnOutsideClick(event) {
+      if (!recommendationRegisterArmed) return;
+      if (editingMealId || editingDietTemplate) return;
+      if (document.getElementById("refeicao-detalhe")?.classList.contains("hidden")) return;
+      if (event.target.closest("#meal-detail-register, [data-select-rec]")) return;
+      const selectedCard = recommendationCarousel.querySelector(`[data-recommendation-index="${selectedRecommendationIndex}"]`);
+      if (selectedCard?.contains(event.target)) return;
+      recommendationRegisterArmed = false;
       updateRecommendationRegisterVisibility();
     }
 
@@ -4308,6 +4321,7 @@
       if (Math.abs(deltaX) < 55 || Math.abs(deltaX) < Math.abs(deltaY) * 1.25) return;
       swipeRecommendation(deltaX < 0 ? 1 : -1);
     }, { passive: true });
+    document.addEventListener("click", disarmRecommendationRegisterOnOutsideClick, true);
     addWaterQuick.addEventListener("click", () => addWater(250));
     removeWater.addEventListener("click", () => addWater(-250));
     waterButtons.forEach((button) => {
