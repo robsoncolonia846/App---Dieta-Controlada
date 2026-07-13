@@ -120,6 +120,18 @@ export const foods = [
     ]
   },
   {
+    id: "bolo-de-banana-com-canela",
+    name: "Bolo de Banana com Canela",
+    category: "Alimenta??o",
+    caloriesPer100g: 360,
+    proteinPer100g: 4,
+    carbsPer100g: 40,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "25g", grams: 25 }
+    ]
+  },
+  {
     id: "brocolis",
     name: "Brocolis",
     category: "Alimenta??o",
