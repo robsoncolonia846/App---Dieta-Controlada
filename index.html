@@ -3111,9 +3111,7 @@
         button.addEventListener("click", (event) => {
           event.preventDefault();
           event.stopPropagation();
-          const optionIndex = Number(button.dataset.selectRec);
-          const shouldArmRegister = optionIndex !== selectedRecommendationIndex || !recommendationRegisterArmed;
-          selectRecommendation(optionIndex, 0, shouldArmRegister);
+          selectRecommendation(Number(button.dataset.selectRec), 0, false);
         });
       });
       recommendationCarousel.querySelector(`[data-recommendation-index="${index}"]`)?.addEventListener("click", (event) => {

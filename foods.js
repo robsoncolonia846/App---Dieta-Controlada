@@ -128,7 +128,7 @@ export const foods = [
     carbsPer100g: 40,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "excel", name: "25g", grams: 25 }
+      { id: "excel", name: "50g", grams: 50 }
     ]
   },
   {
