@@ -1753,8 +1753,9 @@
             <div>
               <h1 id="greeting-title">Olá, Robson</h1>
               <div class="profile-meta">
-                <span id="profile-weight-label">-- kg</span>
+                <span id="profile-age-label">-- anos</span>
                 <span id="profile-height-label">-- m</span>
+                <span id="profile-weight-label">-- kg</span>
               </div>
             </div>
             <button class="avatar-button" id="profile-button" type="button" aria-label="Abrir perfil">R</button>
@@ -2020,6 +2021,7 @@
     const chart = document.getElementById("balance-chart");
     const greetingTitle = document.getElementById("greeting-title");
     const profileButton = document.getElementById("profile-button");
+    const profileAgeLabel = document.getElementById("profile-age-label");
     const profileWeightLabel = document.getElementById("profile-weight-label");
     const profileHeightLabel = document.getElementById("profile-height-label");
     const dietProfileWeight = document.getElementById("diet-profile-weight");
@@ -2784,8 +2786,11 @@
       const firstName = (profile.name || "Robson").trim().split(" ")[0] || "Robson";
       greetingTitle.textContent = `Olá, ${firstName}`;
       profileButton.textContent = firstName.slice(0, 1).toUpperCase();
+      profileAgeLabel.textContent = profile.age ? `${profile.age} anos` : "-- anos";
       profileWeightLabel.textContent = profile.weightKg ? `${String(profile.weightKg).replace(".", ",")}kg` : "-- kg";
-      profileHeightLabel.textContent = profile.heightCm ? `${round(Number(profile.heightCm) / 100).toString().replace(".", ",")}m` : "-- m";
+      profileHeightLabel.textContent = profile.heightCm
+        ? `${(Number(profile.heightCm) / 100).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}m`
+        : "-- m";
       profileName.value = profile.name || "";
       profileWeight.value = profile.weightKg || "";
       profileHeight.value = profile.heightCm || "";
@@ -3001,28 +3006,26 @@
         : "Escolha uma sugestão ou crie sua própria refeição";
       if (alreadyDone) {
         recommendationCarousel.innerHTML = registeredMeals.map((item) => {
-          const portionLabel = item.servingId === "dieta-sugerida"
-            ? "Dieta sugerida"
-            : item.quantity && item.servingName && item.servingName !== "Gramas"
-            ? `${item.quantity} ${item.servingName.toLowerCase()} (${item.grams}g)`
-            : `${item.grams}g`;
+          const savedOption = savedMealToRecommendationOption(item);
           return `
             <div class="recommendation-card selected">
               <div class="recommendation-head">
                 <div class="recommendation-head-main">
                   <span class="selected-pill">Registrada</span>
-                  <span class="kcal-pill">${item.calories} kcal</span>
+                  <span class="kcal-pill">${round(Number(savedOption.kcal) || Number(item.calories) || 0)} kcal</span>
                 </div>
                 <button class="delete-record-button" type="button" data-delete-saved-meal="${item.id}" aria-label="Apagar registro">×</button>
               </div>
-              <div class="recommended-item">
-                <div class="recommended-item-icon">${mealType.icon}</div>
-                <div>
-                  <div class="meal-name">${item.foodName}</div>
-                  <div class="muted">${portionLabel}</div>
+              ${savedOption.items.map((food) => `
+                <div class="recommended-item">
+                  <div class="recommended-item-icon">${food.icon}</div>
+                  <div>
+                    <div class="meal-name">${food.name}</div>
+                    <div class="muted">${food.amount}${food.kcal ? ` • ${round(food.kcal)} kcal` : ""}</div>
+                  </div>
                 </div>
-              </div>
-              <button class="add-recommendation-item" type="button" data-edit-saved-meal="${item.id}">Editar este registro</button>
+              `).join("")}
+              <button class="add-recommendation-item" type="button" data-edit-saved-meal="${item.id}">Editar refeição</button>
             </div>
           `;
         }).join("");
