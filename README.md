@@ -1,62 +1,44 @@
 # Dieta Controlada
 
-App mobile para controle de dieta, alimentação diária, atividades e relatórios por período.
+Aplicativo PWA para Android e navegador, voltado ao acompanhamento de alimentação, hidratação, atividades, metas e histórico diário.
 
-## Funcionalidades da primeira versão
+## Funcionalidades
 
-- Base de alimentos cadastrada manualmente no projeto.
-- Base de atividades pré-cadastrada no projeto.
-- Registro de alimentação por data, item e quantidade.
-- Registro de atividades por tempo ou kcal manual.
-- Resumo de alimentação x atividades.
-- Filtros: hoje, semana, últimos 7 dias, mês e total.
-- Gráfico de saldo diário e saldo acumulado.
-- Dados de uso salvos localmente no celular.
+- Perfil com idade, altura, peso, gasto basal e meta calórica.
+- Sugestões de refeições por horário.
+- Troca, inclusão, exclusão e ajuste da quantidade dos alimentos.
+- Registro de alimentação e atividades.
+- Controle de hidratação em intervalos de 250 ml.
+- Resumo diário com indicador de desempenho.
+- Histórico salvo localmente no navegador ou celular.
+- Instalação como aplicativo e funcionamento básico offline.
 
-## Cadastro de itens
+## Arquivos do projeto
 
-O usuário final não cadastra alimentos ou atividades pelo celular. A base é mantida no código, começando com alimentos vazios para cadastro manual:
+- `index.html`: interface e funcionamento do aplicativo.
+- `foods.js`: cadastro de alimentos.
+- `manifest.webmanifest`: configuração de instalação da PWA.
+- `service-worker.js`: cache e funcionamento offline.
+- `favicon.ico`, `icon-192.png` e `icon-512.png`: ícones do aplicativo.
+
+## Publicar no GitHub Pages
+
+Envie todos os arquivos desta pasta para a raiz do repositório. Depois, no GitHub:
+
+1. Abra `Settings`.
+2. Entre em `Pages`.
+3. Em `Build and deployment`, escolha `Deploy from a branch`.
+4. Selecione a branch `main` e a pasta `/ (root)`.
+5. Clique em `Save`.
+
+O endereço será semelhante a:
 
 ```text
-src/data/foods.js
-src/data/activities.js
+https://SEU-USUARIO.github.io/NOME-DO-REPOSITORIO/
 ```
 
-Para adicionar novos itens, edite esses arquivos e publique uma nova versão no GitHub.
+No Chrome do Android, abra o endereço e use `Adicionar à tela inicial` ou `Instalar app`.
 
-## Como rodar
+## Atualizar alimentos
 
-Antes de rodar, instale:
-
-- Node.js LTS
-- Git
-- Expo Go no celular
-
-Depois, no terminal:
-
-```bash
-npm install
-npm start
-```
-
-Escaneie o QR Code com o app Expo Go.
-
-## Publicar no GitHub
-
-```bash
-git init
-git add .
-git commit -m "Primeira versão do app Dieta Controlada"
-git branch -M main
-git remote add origin URL_DO_SEU_REPOSITORIO
-git push -u origin main
-```
-
-## Próximos passos sugeridos
-
-- Login de usuário.
-- Backup em nuvem.
-- Leitura de código de barras.
-- Metas diárias de calorias e proteína.
-- Mais alimentos brasileiros pré-cadastrados.
-- Exportação de relatório em PDF.
+Edite o arquivo `foods.js`, publique novamente no GitHub e atualize o aplicativo. Os registros do usuário continuam salvos localmente no navegador ou celular.

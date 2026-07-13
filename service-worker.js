@@ -1,4 +1,4 @@
-﻿const CACHE_NAME = "dieta-controlada-pwa-v39";
+const CACHE_NAME = "dieta-controlada-pwa-v41";
 
 const APP_SHELL = [
   "./",
@@ -6,8 +6,6 @@ const APP_SHELL = [
   "./manifest.webmanifest",
   "./favicon.ico",
   "./foods.js",
-  "./activities.js",
-  "./nutrition.js",
   "./icon-192.png",
   "./icon-512.png"
 ];
@@ -56,40 +54,3 @@ self.addEventListener("fetch", (event) => {
     })
   );
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

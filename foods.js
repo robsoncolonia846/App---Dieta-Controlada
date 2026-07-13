@@ -2,7 +2,7 @@ export const foods = [
   {
     id: "abacaxi",
     name: "Abacaxi",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 50,
     proteinPer100g: 0.6,
     carbsPer100g: 13,
@@ -14,7 +14,7 @@ export const foods = [
   {
     id: "alface",
     name: "Alface",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 0,
     proteinPer100g: 0,
     carbsPer100g: 0,
@@ -26,7 +26,7 @@ export const foods = [
   {
     id: "arroz",
     name: "Arroz",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 130,
     proteinPer100g: 2.6,
     carbsPer100g: 28,
@@ -38,7 +38,7 @@ export const foods = [
   {
     id: "arroz-com-carne",
     name: "Arroz com Carne",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 140,
     proteinPer100g: 6.5,
     carbsPer100g: 15,
@@ -50,7 +50,7 @@ export const foods = [
   {
     id: "banana",
     name: "Banana",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 60,
     proteinPer100g: 0.8,
     carbsPer100g: 15,
@@ -62,7 +62,7 @@ export const foods = [
   {
     id: "batata-inglesa",
     name: "Batata Inglesa",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 90,
     proteinPer100g: 2,
     carbsPer100g: 20,
@@ -74,7 +74,7 @@ export const foods = [
   {
     id: "bergamota",
     name: "Bergamota",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 40,
     proteinPer100g: 0.8,
     carbsPer100g: 9.6,
@@ -86,7 +86,7 @@ export const foods = [
   {
     id: "beterraba-cozida-assada",
     name: "Beterraba Cozida/Assada",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 56,
     proteinPer100g: 2,
     carbsPer100g: 12,
@@ -98,7 +98,7 @@ export const foods = [
   {
     id: "beterraba-crua",
     name: "Beterraba Crua",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 0,
     proteinPer100g: 0,
     carbsPer100g: 0,
@@ -110,7 +110,7 @@ export const foods = [
   {
     id: "bife-frito",
     name: "Bife Frito",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 240,
     proteinPer100g: 30,
     carbsPer100g: 0,
@@ -122,7 +122,7 @@ export const foods = [
   {
     id: "bolo-de-banana-com-canela",
     name: "Bolo de Banana com Canela",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 360,
     proteinPer100g: 4,
     carbsPer100g: 40,
@@ -134,7 +134,7 @@ export const foods = [
   {
     id: "brocolis",
     name: "Brocolis",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 0,
     proteinPer100g: 0,
     carbsPer100g: 0,
@@ -146,7 +146,7 @@ export const foods = [
   {
     id: "carne-de-panela-agulha",
     name: "Carne de Panela (Agulha)",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 240,
     proteinPer100g: 24,
     carbsPer100g: 0,
@@ -158,7 +158,7 @@ export const foods = [
   {
     id: "carne-grelhada",
     name: "Carne Grelhada",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 216,
     proteinPer100g: 30,
     carbsPer100g: 0,
@@ -170,7 +170,7 @@ export const foods = [
   {
     id: "carne-moida",
     name: "Carne Moida",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 250,
     proteinPer100g: 26,
     carbsPer100g: 0,
@@ -182,7 +182,7 @@ export const foods = [
   {
     id: "cenoura-cozida-assada",
     name: "Cenoura Cozida/Assada",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 54,
     proteinPer100g: 1,
     carbsPer100g: 12,
@@ -194,7 +194,7 @@ export const foods = [
   {
     id: "cenoura-crua",
     name: "Cenoura Crua",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 0,
     proteinPer100g: 0,
     carbsPer100g: 0,
@@ -206,7 +206,7 @@ export const foods = [
   {
     id: "coracao-de-frango",
     name: "Coração de Frango",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 220,
     proteinPer100g: 26,
     carbsPer100g: 0,
@@ -218,7 +218,7 @@ export const foods = [
   {
     id: "couve",
     name: "Couve",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 0,
     proteinPer100g: 0,
     carbsPer100g: 0,
@@ -230,19 +230,19 @@ export const foods = [
   {
     id: "doce-de-leite",
     name: "Doce De Leite",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 70,
     proteinPer100g: 1.5,
     carbsPer100g: 11,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "porcao-na", name: "Por??o", grams: 100 }
+      { id: "porcao-na", name: "Porção", grams: 100 }
     ]
   },
   {
     id: "estrogonof",
     name: "Estrogonof",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 150,
     proteinPer100g: 18,
     carbsPer100g: 4,
@@ -254,7 +254,7 @@ export const foods = [
   {
     id: "feijao",
     name: "Feijão",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 80,
     proteinPer100g: 4.8,
     carbsPer100g: 14,
@@ -266,7 +266,7 @@ export const foods = [
   {
     id: "frango-assada-sobrecoxa",
     name: "Frango Assada (Sobrecoxa)",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 250,
     proteinPer100g: 28,
     carbsPer100g: 0,
@@ -278,7 +278,7 @@ export const foods = [
   {
     id: "frango-desfiado",
     name: "Frango Desfiado",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 180,
     proteinPer100g: 31,
     carbsPer100g: 0,
@@ -290,7 +290,7 @@ export const foods = [
   {
     id: "frango-grelhado",
     name: "Frango Grelhado",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 170,
     proteinPer100g: 32,
     carbsPer100g: 0,
@@ -302,7 +302,7 @@ export const foods = [
   {
     id: "frango-sobrecoxa-ao-molho",
     name: "Frango Sobrecoxa Ao Molho",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 180,
     proteinPer100g: 28,
     carbsPer100g: 0,
@@ -314,7 +314,7 @@ export const foods = [
   {
     id: "goiabada",
     name: "Goiabada",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 308,
     proteinPer100g: 0.4,
     carbsPer100g: 78,
@@ -326,7 +326,7 @@ export const foods = [
   {
     id: "iogurte-zero",
     name: "Iogurte Zero",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 26,
     proteinPer100g: 2.75,
     carbsPer100g: 3.6,
@@ -338,7 +338,7 @@ export const foods = [
   {
     id: "laranja",
     name: "Laranja",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 80,
     proteinPer100g: 1.8,
     carbsPer100g: 20,
@@ -350,7 +350,7 @@ export const foods = [
   {
     id: "lazanha-de-carne-moida",
     name: "Lazanha de Carne Moida",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 200,
     proteinPer100g: 12,
     carbsPer100g: 18,
@@ -362,7 +362,7 @@ export const foods = [
   {
     id: "lazanha-de-frango",
     name: "Lazanha de Frango",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 200,
     proteinPer100g: 10,
     carbsPer100g: 15,
@@ -374,7 +374,7 @@ export const foods = [
   {
     id: "leite-desnatado",
     name: "Leite Desnatado",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 37,
     proteinPer100g: 3.4,
     carbsPer100g: 5,
@@ -386,7 +386,7 @@ export const foods = [
   {
     id: "leite-integral",
     name: "Leite Integral",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 62,
     proteinPer100g: 3.4,
     carbsPer100g: 4.8,
@@ -398,7 +398,7 @@ export const foods = [
   {
     id: "maca",
     name: "Maça",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 70,
     proteinPer100g: 0.3,
     carbsPer100g: 18,
@@ -410,7 +410,7 @@ export const foods = [
   {
     id: "macarrao",
     name: "Macarrão",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 150,
     proteinPer100g: 5.8,
     carbsPer100g: 31,
@@ -422,7 +422,7 @@ export const foods = [
   {
     id: "melancia",
     name: "Melancia",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 30,
     proteinPer100g: 0.6,
     carbsPer100g: 8,
@@ -434,7 +434,7 @@ export const foods = [
   {
     id: "morango",
     name: "Morango",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 32,
     proteinPer100g: 0.8,
     carbsPer100g: 6.8,
@@ -446,7 +446,7 @@ export const foods = [
   {
     id: "omelete",
     name: "Omelete",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 160,
     proteinPer100g: 13,
     carbsPer100g: 1,
@@ -458,7 +458,7 @@ export const foods = [
   {
     id: "omelete-com-queijo",
     name: "Omelete com Queijo",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 280,
     proteinPer100g: 16,
     carbsPer100g: 0.6,
@@ -470,7 +470,7 @@ export const foods = [
   {
     id: "ovo-cozido",
     name: "Ovo Cozido",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 160,
     proteinPer100g: 14,
     carbsPer100g: 2,
@@ -482,7 +482,7 @@ export const foods = [
   {
     id: "ovo-frito",
     name: "Ovo Frito",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 240,
     proteinPer100g: 14,
     carbsPer100g: 2,
@@ -494,7 +494,7 @@ export const foods = [
   {
     id: "panqueca-carne-moida",
     name: "Panqueca (Carne Moida)",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 190,
     proteinPer100g: 12,
     carbsPer100g: 16,
@@ -506,7 +506,7 @@ export const foods = [
   {
     id: "panqueca-frango",
     name: "Panqueca (Frango)",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 175,
     proteinPer100g: 14,
     carbsPer100g: 16,
@@ -518,7 +518,7 @@ export const foods = [
   {
     id: "pao-caseiro",
     name: "Pão Caseiro",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 300,
     proteinPer100g: 18,
     carbsPer100g: 110,
@@ -530,7 +530,7 @@ export const foods = [
   {
     id: "pao-de-forma",
     name: "Pão De Forma",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 140,
     proteinPer100g: 5,
     carbsPer100g: 24,
@@ -542,7 +542,7 @@ export const foods = [
   {
     id: "pao-frances",
     name: "Pão Frances",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 300,
     proteinPer100g: 8,
     carbsPer100g: 58,
@@ -554,7 +554,7 @@ export const foods = [
   {
     id: "pao-frances-ovo-frito",
     name: "Pão Frances + Ovo Frito",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 300,
     proteinPer100g: 11,
     carbsPer100g: 30,
@@ -566,7 +566,7 @@ export const foods = [
   {
     id: "pao-frances-ovo-mexido",
     name: "Pão Frances + Ovo Mexido",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 250,
     proteinPer100g: 11,
     carbsPer100g: 30,
@@ -578,7 +578,7 @@ export const foods = [
   {
     id: "peixe-assado-anchova",
     name: "Peixe Assado (Anchova)",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 160,
     proteinPer100g: 26,
     carbsPer100g: 0,
@@ -590,7 +590,7 @@ export const foods = [
   {
     id: "peixe-assado-tainha",
     name: "Peixe Assado (Tainha)",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 180,
     proteinPer100g: 26,
     carbsPer100g: 0,
@@ -602,7 +602,7 @@ export const foods = [
   {
     id: "pizza",
     name: "Pizza",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 300,
     proteinPer100g: 15,
     carbsPer100g: 35,
@@ -614,7 +614,7 @@ export const foods = [
   {
     id: "presunto",
     name: "Presunto",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 133.3333,
     proteinPer100g: 13.3333,
     carbsPer100g: 1.6667,
@@ -626,7 +626,7 @@ export const foods = [
   {
     id: "queijo-mucarela",
     name: "Queijo Muçarela",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 475,
     proteinPer100g: 30,
     carbsPer100g: 5,
@@ -638,7 +638,7 @@ export const foods = [
   {
     id: "queijo-parmesao",
     name: "Queijo Parmesão",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 383.3333,
     proteinPer100g: 33.3333,
     carbsPer100g: 3.3333,
@@ -650,7 +650,7 @@ export const foods = [
   {
     id: "repolho",
     name: "Repolho",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 0,
     proteinPer100g: 0,
     carbsPer100g: 0,
@@ -662,7 +662,7 @@ export const foods = [
   {
     id: "tomate-cereja",
     name: "Tomate Cereja",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 0,
     proteinPer100g: 0,
     carbsPer100g: 0,
@@ -674,7 +674,7 @@ export const foods = [
   {
     id: "uva",
     name: "Uva",
-    category: "Alimenta??o",
+    category: "Alimentação",
     caloriesPer100g: 68,
     proteinPer100g: 0.8,
     carbsPer100g: 18,

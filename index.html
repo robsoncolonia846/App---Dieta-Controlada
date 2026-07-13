@@ -81,12 +81,6 @@
       box-shadow: 0 12px 24px rgba(36, 49, 25, 0.18);
     }
 
-    .subtitle {
-      color: #607052;
-      margin-top: 7px;
-      font-size: 14px;
-    }
-
     .tabs {
       display: flex;
       gap: 0;
@@ -167,13 +161,6 @@
       letter-spacing: -0.06em;
     }
 
-    .period-filter {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-      margin-top: 13px;
-    }
-
     .period-button {
       border-radius: 999px;
       background: #334923;
@@ -198,40 +185,6 @@
       color: #909090;
     }
 
-    .hero-metrics {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-top: 14px;
-    }
-
-    .hero-metrics .metric {
-      background: #f6f6f6;
-      border: 1px solid #eeeeee;
-      border-radius: 16px;
-      box-shadow: none;
-      padding: 10px;
-    }
-
-    .hero-metrics .metric-label {
-      color: #888;
-      font-size: 11px;
-    }
-
-    .hero-metrics .metric-value {
-      color: #111;
-      font-size: 16px;
-      margin-top: 4px;
-      letter-spacing: -0.03em;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .metric,
     .card {
       background: #fff;
       border-radius: 20px;
@@ -239,22 +192,6 @@
       width: 100%;
       min-width: 0;
       max-width: 100%;
-    }
-
-    .metric {
-      padding: 15px;
-    }
-
-    .metric-label {
-      color: #748167;
-      font-size: 13px;
-    }
-
-    .metric-value {
-      margin-top: 6px;
-      font-size: 22px;
-      font-weight: 900;
-      letter-spacing: -0.04em;
     }
 
     .chart {
@@ -735,6 +672,74 @@
       background: #fff;
       color: #d94b4b;
       box-shadow: none;
+    }
+
+    .water-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .water-summary-setting {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      min-width: 0;
+      color: #273123;
+      font-size: 12px;
+      font-weight: 800;
+      text-align: right;
+    }
+
+    .water-score-toggle {
+      width: 54px;
+      height: 28px;
+      flex: 0 0 auto;
+      position: relative;
+      border: 0;
+      border-radius: 999px;
+      background: #209b26;
+      color: #fff;
+      transition: background 160ms ease;
+    }
+
+    .water-score-toggle::before {
+      content: "ON";
+      position: absolute;
+      left: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 9px;
+      font-weight: 950;
+    }
+
+    .water-score-toggle::after {
+      content: "";
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      right: 3px;
+      top: 3px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+      transition: transform 160ms ease;
+    }
+
+    .water-score-toggle[aria-checked="false"] {
+      background: #a7ada4;
+    }
+
+    .water-score-toggle[aria-checked="false"]::before {
+      content: "OFF";
+      left: auto;
+      right: 6px;
+    }
+
+    .water-score-toggle[aria-checked="false"]::after {
+      transform: translateX(-26px);
     }
 
     .meal-detail-header {
@@ -1218,16 +1223,6 @@
       font-weight: 950;
     }
 
-    .recipe-button {
-      border: 0;
-      border-radius: 999px;
-      background: #f2f2f4;
-      color: #8d8d92;
-      padding: 14px;
-      font-size: 17px;
-      font-weight: 950;
-    }
-
     .add-recommendation-item {
       border: 1.5px dashed #209b26;
       border-radius: 999px;
@@ -1244,18 +1239,6 @@
       display: none;
       justify-content: center;
       gap: 8px;
-    }
-
-    .carousel-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 999px;
-      background: #e3e4e8;
-    }
-
-    .carousel-dot.active {
-      width: 34px;
-      background: #209b26;
     }
 
     h2 {
@@ -1308,19 +1291,6 @@
       min-width: 0;
       flex: 1;
       color: #466b2d;
-    }
-
-    .meal-list-left {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-width: 0;
-    }
-
-    .meal-kcal {
-      color: #466b2d;
-      font-weight: 950;
-      white-space: nowrap;
     }
 
     .macro-summary {
@@ -1432,60 +1402,6 @@
       letter-spacing: -1px;
     }
 
-    .diet-top-tabs {
-      display: flex;
-      gap: 12px;
-      overflow-x: auto;
-      padding: 6px 0 2px;
-      scrollbar-width: none;
-    }
-
-    .diet-top-tabs::-webkit-scrollbar {
-      display: none;
-    }
-
-    .diet-top-pill {
-      border: 1px solid #edf0f5;
-      border-radius: 999px;
-      background: #fff;
-      padding: 14px 24px;
-      font-size: 18px;
-      font-weight: 900;
-      color: #111827;
-      white-space: nowrap;
-      box-shadow: 0 1px 4px rgba(15, 23, 42, 0.04);
-    }
-
-    .diet-top-pill.active {
-      background: #1fa12e;
-      border-color: #1fa12e;
-      color: #fff;
-    }
-
-    .diet-renew {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      border-radius: 28px;
-      background: #fff;
-      padding: 18px 22px;
-      font-size: 16px;
-      font-weight: 900;
-      box-shadow: 0 1px 4px rgba(15, 23, 42, 0.04);
-    }
-
-    .diet-info-button {
-      justify-self: end;
-      border: 0;
-      border-radius: 999px;
-      background: #1fa12e;
-      color: #fff;
-      padding: 14px 18px;
-      font-weight: 950;
-      font-size: 14px;
-    }
-
     .diet-card {
       border-radius: 18px;
       background: #fff;
@@ -1527,13 +1443,6 @@
       color: #1fa12e;
       font-weight: 950;
       font-size: 14px;
-    }
-
-    .diet-card-kcal {
-      font-size: 24px;
-      font-weight: 950;
-      letter-spacing: -0.7px;
-      white-space: nowrap;
     }
 
     .diet-card-divider {
@@ -1696,16 +1605,6 @@
       line-height: 1.25;
     }
 
-    .diet-prep {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      border-top: 1px solid #eceff3;
-      padding: 18px 22px;
-      font-size: 20px;
-      font-weight: 950;
-    }
-
     .legacy-manual-meal {
       display: none !important;
     }
@@ -1857,7 +1756,13 @@
                 </div>
               </div>
               <div class="water-grid" id="water-cups"></div>
-              <div class="muted">Meta diária: <strong id="water-goal">3000 ml</strong></div>
+              <div class="water-footer">
+                <div class="muted">Meta diária: <strong id="water-goal">3000 ml</strong></div>
+                <div class="water-summary-setting">
+                  <span>Incluir no resumo diário</span>
+                  <button class="water-score-toggle" type="button" id="water-score-toggle" role="switch" aria-checked="true" aria-label="Incluir hidratação no resumo diário"></button>
+                </div>
+              </div>
             </div>
 
             <div class="card home-extra" style="margin-top: 14px;">
@@ -2049,6 +1954,7 @@
     const waterCups = document.getElementById("water-cups");
     const addWaterQuick = document.getElementById("add-water-quick");
     const removeWater = document.getElementById("remove-water");
+    const waterScoreToggle = document.getElementById("water-score-toggle");
     const mealDetailStatus = document.getElementById("meal-detail-status");
     const mealDetailTitle = document.getElementById("meal-detail-title");
     const mealDetailSubtitle = document.getElementById("meal-detail-subtitle");
@@ -2695,6 +2601,10 @@
       dietRecommendations: appData.dietRecommendations && typeof appData.dietRecommendations === "object" ? appData.dietRecommendations : {},
       dietSuggestionPlanVersion: appData.dietSuggestionPlanVersion || "",
       water: appData.water && typeof appData.water === "object" ? appData.water : {},
+      settings: {
+        ...(appData.settings && typeof appData.settings === "object" ? appData.settings : {}),
+        includeWaterInSummary: appData.settings?.includeWaterInSummary !== false
+      },
       mealTimes: { ...defaultMealTimes, ...(appData.mealTimes || {}) },
       profile: { ...defaultProfile, ...(appData.profile || {}) }
     };
@@ -2808,25 +2718,6 @@
       return weight ? Math.round(weight * 35) : 3000;
     }
 
-    const mealTargetWeights = {
-      cafe: 0.25,
-      almoco: 0.35,
-      "lanche-tarde": 0.15,
-      jantar: 0.25
-    };
-
-    function mealKcalTarget(mealId) {
-      return Math.round(dailyTarget() * (mealTargetWeights[mealId] || (1 / mealTypes.length)));
-    }
-
-    function mealOrderIndex(mealId) {
-      return mealTypes.findIndex((item) => item.id === mealId);
-    }
-
-    function mealLabel(mealId) {
-      return mealDetailLabels[mealId] || mealTypes.find((item) => item.id === mealId)?.name || "Refeição";
-    }
-
     function showMealRecommendationOptions(mealType) {
       mealUseSuggestion.classList.add("hidden");
       const options = recommendationsForMeal(mealType.id);
@@ -2892,6 +2783,7 @@
       const waterNow = Number(appData.water?.[today]) || 0;
       const waterExpected = Math.max(250, Math.round(waterTarget() * expectedWaterProgress()));
       const waterScore = Math.min(100, Math.round((waterNow / waterExpected) * 100));
+      const includeWater = appData.settings?.includeWaterInSummary !== false;
       const mealScoreData = calculateMealTimingScore();
       const calorieRatio = consumed / adjustedTarget;
       let calorieScore = 100;
@@ -2900,13 +2792,17 @@
       } else if (expectedDayProgress() > 0.35 && calorieRatio < expectedDayProgress() * 0.55) {
         calorieScore = Math.max(30, Math.round((calorieRatio / Math.max(0.1, expectedDayProgress() * 0.55)) * 100));
       }
-      const score = Math.max(0, Math.min(100, Math.round(calorieScore * 0.7 + mealScoreData.score * 0.3)));
+      const score = Math.max(0, Math.min(100, Math.round(
+        includeWater
+          ? calorieScore * 0.55 + mealScoreData.score * 0.25 + waterScore * 0.2
+          : calorieScore * 0.7 + mealScoreData.score * 0.3
+      )));
       const alerts = [];
       if (consumed > adjustedTarget + 150) {
         alerts.push({ level: "danger", text: `Você passou da meta em ${round(consumed - adjustedTarget)} kcal.` });
       }
       if (mealScoreData.alert) alerts.push(mealScoreData.alert);
-      if (waterScore < 70) {
+      if (includeWater && waterScore < 70) {
         alerts.push({ level: "warn", text: `Água abaixo do esperado para este horário: ${waterNow}ml de ${waterExpected}ml.` });
       }
       if (expectedDayProgress() > 0.45 && calorieScore < 70 && consumed <= adjustedTarget) {
@@ -3469,17 +3365,6 @@
       return option;
     }
 
-    function substitutesForItemName(name) {
-      const key = normalizeText(name);
-      return substituteCatalog[key]
-        || (key.includes("abacaxi") ? substituteCatalog.abacaxi : null)
-        || (key.includes("morango") ? substituteCatalog.morango : null)
-        || (key.includes("banana") ? substituteCatalog["banana prata"] : null)
-        || (key.includes("laranja") ? substituteCatalog["laranja de umbigo"] : null)
-        || (key.includes("maca") ? substituteCatalog.maca : null)
-        || [];
-    }
-
     function openSubstituteModal(recommendationIndex, itemIndex) {
       const item = currentRecommendationOptions?.[recommendationIndex]?.items?.[itemIndex];
       if (!item) return;
@@ -3583,13 +3468,6 @@
       option.items[itemIndex] = hydrateRecommendationItem({ ...substitute, substituted: true }, option);
       recalculateRecommendation(option);
       renderRecommendationOptions();
-      closeSubstituteModal();
-    }
-
-    function ignoreRecommendationItem() {
-      if (!substituteTarget) return;
-      const { recommendationIndex, itemIndex } = substituteTarget;
-      removeRecommendationItem(recommendationIndex, itemIndex);
       closeSubstituteModal();
     }
 
@@ -3747,6 +3625,7 @@
       const expected = Math.min(targetCupCount, Math.ceil(targetCupCount * expectedWaterProgress()));
       waterTotal.textContent = total.toLocaleString("pt-BR");
       waterGoal.textContent = `${target.toLocaleString("pt-BR")} ml`;
+      waterScoreToggle.setAttribute("aria-checked", String(appData.settings?.includeWaterInSummary !== false));
       waterCups.innerHTML = Array.from({ length: cupCount }, (_, index) => {
         const state = index < filled ? "filled" : index < expected ? "pending" : "";
         return `<div class="cup ${state}"></div>`;
@@ -4352,6 +4231,11 @@
     document.addEventListener("click", disarmRecommendationRegisterOnOutsideClick, true);
     addWaterQuick.addEventListener("click", () => addWater(250));
     removeWater.addEventListener("click", () => addWater(-250));
+    waterScoreToggle.addEventListener("click", () => {
+      appData.settings.includeWaterInSummary = !(appData.settings.includeWaterInSummary !== false);
+      saveData();
+      renderAll();
+    });
 
     saveProfile.addEventListener("click", () => {
       appData.profile = {
