@@ -2678,6 +2678,7 @@
     let currentMealDetail = mealTypes[0].id;
     let selectedRecommendationIndex = null;
     let currentRecommendationOptions = [];
+    let recommendationSwipeStart = null;
     let substituteTarget = null;
     let dietSelectedOptions = {};
     let editingMealType = null;
@@ -3139,6 +3140,13 @@
     function selectRecommendation(index) {
       selectedRecommendationIndex = Math.max(0, Math.min(Number(index) || 0, Math.max(currentRecommendationOptions.length - 1, 0)));
       renderRecommendationOptions();
+    }
+
+    function swipeRecommendation(direction) {
+      if (!currentRecommendationOptions.length || selectedRecommendationIndex === null) return;
+      const nextIndex = selectedRecommendationIndex + direction;
+      if (nextIndex < 0 || nextIndex >= currentRecommendationOptions.length) return;
+      selectRecommendation(nextIndex);
     }
 
     function recalculateRecommendation(option) {
@@ -4223,6 +4231,24 @@
         event.preventDefault();
       }
     });
+    recommendationCarousel.addEventListener("touchstart", (event) => {
+      if (event.touches.length !== 1) return;
+      if (event.target.closest("button, input, select, textarea, [role='button']")) {
+        recommendationSwipeStart = null;
+        return;
+      }
+      const touch = event.touches[0];
+      recommendationSwipeStart = { x: touch.clientX, y: touch.clientY };
+    }, { passive: true });
+    recommendationCarousel.addEventListener("touchend", (event) => {
+      if (!recommendationSwipeStart || event.changedTouches.length !== 1) return;
+      const touch = event.changedTouches[0];
+      const deltaX = touch.clientX - recommendationSwipeStart.x;
+      const deltaY = touch.clientY - recommendationSwipeStart.y;
+      recommendationSwipeStart = null;
+      if (Math.abs(deltaX) < 55 || Math.abs(deltaX) < Math.abs(deltaY) * 1.25) return;
+      swipeRecommendation(deltaX < 0 ? 1 : -1);
+    }, { passive: true });
     addWaterQuick.addEventListener("click", () => addWater(250));
     removeWater.addEventListener("click", () => addWater(-250));
     waterButtons.forEach((button) => {
