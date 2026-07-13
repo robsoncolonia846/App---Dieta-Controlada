@@ -225,11 +225,38 @@
     .chart-col {
       flex: 1;
       display: grid;
+      grid-template-rows: auto 122px auto;
       justify-items: center;
       align-content: end;
       gap: 6px;
       min-width: 0;
       z-index: 1;
+    }
+
+    .chart-bar-area {
+      position: relative;
+      width: 100%;
+      height: 122px;
+      display: flex;
+      align-items: end;
+      justify-content: center;
+    }
+
+    .chart-day-target {
+      position: absolute;
+      left: 2px;
+      right: 2px;
+      bottom: var(--target-bottom, 0px);
+      height: 1px;
+      pointer-events: none;
+    }
+
+    .chart-day-target.min {
+      background: rgba(32, 155, 38, 0.5);
+    }
+
+    .chart-day-target.max {
+      background: rgba(217, 75, 75, 0.42);
     }
 
     .chart-value {
@@ -1619,6 +1646,24 @@
       margin-top: 2px;
     }
 
+    .meal-card-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .meal-card-heading h2 {
+      margin: 0;
+    }
+
+    .meal-card-heading #open-meal-tab {
+      flex: 1;
+      font-size: 10px;
+      text-align: right;
+      white-space: nowrap;
+    }
+
     .training-card-body {
       display: grid;
       gap: 16px;
@@ -1841,9 +1886,11 @@
             </div>
 
             <div class="card" style="margin-top: 14px;">
-              <h2>Refeições</h2>
+              <div class="meal-card-heading">
+                <h2>Refeições</h2>
+                <div class="muted" id="open-meal-tab">Escolha a refeição a registrar</div>
+              </div>
               <div class="meal-progress-line" id="meal-progress-list"></div>
-              <div class="muted" id="open-meal-tab">Escolha a refeição a registrar</div>
             </div>
 
             <div class="card" style="margin-top: 14px;">
@@ -2058,12 +2105,19 @@
   <script src="./firebase-config.js"></script>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+    import { doc, getDoc, getFirestore, serverTimestamp, setDoc } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
     import { getMessaging, getToken, isSupported, onMessage } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-messaging.js";
 
     const firebaseApp = initializeApp(window.DIETA_FIREBASE_CONFIG);
+    const firebaseAuth = getAuth(firebaseApp);
+    const firestore = getFirestore(firebaseApp);
     let firebaseMessaging = null;
     let firebaseForegroundListenerReady = false;
     let notificationConnectionError = "";
+    let cloudUser = null;
+    let cloudReady = false;
+    let cloudSyncTimer = null;
 
     const tabs = document.querySelectorAll(".tab");
     const sections = document.querySelectorAll("main > section");
@@ -2252,7 +2306,9 @@
       "uva": 68
     };
     const activityPresets = [
-      { id: "beach-tennis", name: "Beach Tennis", icon: "🏖️", caloriesPerHour: 500 },
+      { id: "beach-tennis-leve", name: "Beach Tennis (Leve)", icon: "🏖️", caloriesPerHour: 360 },
+      { id: "beach-tennis-moderado", name: "Beach Tennis (Moderado)", icon: "🏖️", caloriesPerHour: 480 },
+      { id: "beach-tennis-intenso", name: "Beach Tennis (Intenso)", icon: "🏖️", caloriesPerHour: 600 },
       { id: "bicicleta-ergometrica-leve", name: "Bicicleta ergométrica (Leve)", icon: "🚲", caloriesPerHour: 200 },
       { id: "bicicleta-ergometrica-moderada", name: "Bicicleta ergométrica (Moderada)", icon: "🚲", caloriesPerHour: 400 },
       { id: "bicicleta-ergometrica-intensa", name: "Bicicleta ergométrica (Intensa)", icon: "🚲", caloriesPerHour: 600 }
@@ -2809,6 +2865,95 @@
 
     function saveData() {
       localStorage.setItem(storageKey, JSON.stringify(appData));
+      scheduleCloudSync();
+    }
+
+    function cloudSafeData() {
+      return JSON.parse(JSON.stringify(appData));
+    }
+
+    function cloudNotificationSummary() {
+      const today = todayISO();
+      const completedMealTypes = [...new Set(
+        appData.meals
+          .filter((item) => item.date === today && item.mealType)
+          .map((item) => item.mealType)
+      )];
+      return {
+        active: true,
+        timezone: "America/Sao_Paulo",
+        fcmToken: appData.settings?.fcmToken || "",
+        notificationsEnabled: appData.settings?.notificationsEnabled === true,
+        mealNotifications: appData.settings?.mealNotifications === true,
+        waterNotifications: appData.settings?.waterNotifications === true,
+        mealTimes: { ...defaultMealTimes, ...(appData.mealTimes || {}) },
+        todayKey: today,
+        completedMealTypes,
+        waterConsumedMl: Number(appData.water?.[today]) || 0,
+        waterTargetMl: waterTarget(),
+        updatedAt: serverTimestamp()
+      };
+    }
+
+    async function syncCloudNow() {
+      if (!cloudReady || !cloudUser) return;
+      const uid = cloudUser.uid;
+      await Promise.all([
+        setDoc(doc(firestore, "users", uid), cloudNotificationSummary(), { merge: true }),
+        setDoc(doc(firestore, "users", uid, "data", "appState"), {
+          data: cloudSafeData(),
+          updatedAt: serverTimestamp()
+        }, { merge: true })
+      ]);
+    }
+
+    function scheduleCloudSync() {
+      if (!cloudReady || !cloudUser) return;
+      window.clearTimeout(cloudSyncTimer);
+      cloudSyncTimer = window.setTimeout(() => {
+        syncCloudNow().catch((error) => console.warn("Sincronizacao com Firebase pendente.", error));
+      }, 500);
+    }
+
+    function applyCloudData(remoteData) {
+      if (!remoteData || typeof remoteData !== "object") return;
+      appData = {
+        ...appData,
+        ...remoteData,
+        meals: Array.isArray(remoteData.meals) ? remoteData.meals : appData.meals,
+        expenses: Array.isArray(remoteData.expenses) ? remoteData.expenses : appData.expenses,
+        dietRecommendations: remoteData.dietRecommendations && typeof remoteData.dietRecommendations === "object"
+          ? remoteData.dietRecommendations
+          : appData.dietRecommendations,
+        water: remoteData.water && typeof remoteData.water === "object" ? remoteData.water : appData.water,
+        settings: { ...appData.settings, ...(remoteData.settings || {}) },
+        notificationLog: remoteData.notificationLog && typeof remoteData.notificationLog === "object"
+          ? remoteData.notificationLog
+          : appData.notificationLog,
+        mealTimes: { ...defaultMealTimes, ...(remoteData.mealTimes || {}) },
+        profile: { ...defaultProfile, ...(remoteData.profile || {}) }
+      };
+      localStorage.setItem(storageKey, JSON.stringify(appData));
+    }
+
+    async function connectFirebaseAccount() {
+      try {
+        await firebaseAuth.authStateReady();
+        cloudUser = firebaseAuth.currentUser || (await signInAnonymously(firebaseAuth)).user;
+        const stateRef = doc(firestore, "users", cloudUser.uid, "data", "appState");
+        const cloudSnapshot = await getDoc(stateRef);
+        if (cloudSnapshot.exists() && cloudSnapshot.data()?.data) {
+          applyCloudData(cloudSnapshot.data().data);
+          renderFoodOptions(currentFoodMode);
+          renderExpenseOptions();
+          renderAll();
+          renderNotificationSettings();
+        }
+        cloudReady = true;
+        await syncCloudNow();
+      } catch (error) {
+        console.warn("Firebase aguardando conexao.", error);
+      }
     }
 
     function notificationPermission() {
@@ -3010,15 +3155,29 @@
       return basal ? basal * 1.2 : 1920;
     }
 
-    function dailyTarget() {
-      const manualTarget = Number(String(appData.profile.calorieTarget).replace(",", ".")) || 0;
-      return manualTarget || Math.max(0, maintenanceTarget() - 500) || 1420;
+    function activityCaloriesForDate(date = todayISO()) {
+      return round(appData.expenses
+        .filter((item) => item.date === date)
+        .reduce((sum, item) => sum + (Number(item.calories) || 0), 0));
     }
 
-    function dailyTargetRange() {
-      const min = dailyTarget();
-      const max = Math.max(min, maintenanceTarget());
-      return { min, max };
+    function baseDailyTargetRange() {
+      const manualTarget = Number(String(appData.profile.calorieTarget).replace(",", ".")) || 0;
+      const baseMax = manualTarget ? manualTarget + 500 : maintenanceTarget();
+      return {
+        min: Math.max(0, baseMax - 500) || 1420,
+        max: Math.max(0, baseMax) || 1920
+      };
+    }
+
+    function dailyTargetRange(date = todayISO()) {
+      const base = baseDailyTargetRange();
+      const activity = activityCaloriesForDate(date);
+      return { min: base.min + activity, max: base.max + activity, activity };
+    }
+
+    function dailyTarget(date = todayISO()) {
+      return dailyTargetRange(date).min;
     }
 
     function renderProfile() {
@@ -3041,7 +3200,7 @@
       profileTarget.value = profile.calorieTarget || "";
       goalBannerValue.textContent = `${formatKcalValue(targetRange.min)} - ${formatKcalValue(targetRange.max)} kcal`;
       profileBasalInfo.textContent = basal
-        ? `Gasto basal estimado: ${formatKcalValue(basal)} kcal/dia. Meta usada: ${formatKcalValue(targetRange.min)} - ${formatKcalValue(targetRange.max)} kcal/dia.`
+        ? `Gasto basal estimado: ${formatKcalValue(basal)} kcal/dia. Atividades de hoje: ${formatKcalValue(targetRange.activity)} kcal. Meta usada: ${formatKcalValue(targetRange.min)} - ${formatKcalValue(targetRange.max)} kcal/dia.`
         : "Informe peso, altura e idade para estimar o gasto diário.";
     }
 
@@ -3110,8 +3269,8 @@
 
     function calculateDayScore(consumed, spent) {
       const today = todayISO();
-      const target = dailyTarget();
-      const adjustedTarget = Math.max(1, target + spent);
+      const targetRange = dailyTargetRange(today);
+      const adjustedTarget = Math.max(1, targetRange.min);
       const waterNow = Number(appData.water?.[today]) || 0;
       const waterExpected = Math.max(250, Math.round(waterTarget() * expectedWaterProgress()));
       const waterScore = Math.min(100, Math.round((waterNow / waterExpected) * 100));
@@ -4161,36 +4320,38 @@
         date.setDate(date.getDate() - (6 - index));
         return localISODate(date);
       });
-      const daily = Object.fromEntries(dates.map((date) => [date, 0]));
+      const daily = Object.fromEntries(dates.map((date) => [date, { consumed: 0, spent: 0 }]));
       appData.meals.forEach((meal) => {
         if (daily[meal.date] === undefined) return;
-        daily[meal.date] += Number(meal.calories) || 0;
+        daily[meal.date].consumed += Number(meal.calories) || 0;
       });
       appData.expenses.forEach((expense) => {
         if (daily[expense.date] === undefined) return;
-        daily[expense.date] -= Number(expense.calories) || 0;
+        daily[expense.date].spent += Number(expense.calories) || 0;
       });
-      return dates.map((date) => ({ date: date.slice(5), daily: round(daily[date]) }));
+      return dates.map((date) => ({
+        date: date.slice(5),
+        isoDate: date,
+        consumed: round(daily[date].consumed),
+        spent: round(daily[date].spent),
+        targetRange: dailyTargetRange(date)
+      }));
     }
 
     function renderChart() {
       const data = lastSevenDaysSeries();
-      const targetRange = dailyTargetRange();
-      const maxAbs = Math.max(...data.map((item) => Math.abs(item.daily)), targetRange.max, 1);
+      const maxAbs = Math.max(...data.flatMap((item) => [item.consumed, item.targetRange.max]), 1);
       const barAreaHeight = 122;
-      const minLineBottom = Math.min(barAreaHeight, Math.max(0, (targetRange.min / maxAbs) * barAreaHeight));
-      const maxLineBottom = Math.min(barAreaHeight, Math.max(0, (targetRange.max / maxAbs) * barAreaHeight));
-      const targetLines = `
-        <span class="chart-target-line min" style="--line-bottom: ${minLineBottom}px;"></span>
-        <span class="chart-target-line max" style="--line-bottom: ${maxLineBottom}px;"></span>
-      `;
       const bars = data.map((item) => {
-        const height = Math.max(8, Math.abs(item.daily) / maxAbs * barAreaHeight);
-        const status = item.daily > targetRange.max ? "over" : item.daily >= targetRange.min ? "range" : "low";
-        return `<div class="chart-col"><div class="chart-value ${status}">${formatSigned(item.daily)}</div><div class="chart-bar ${status}" style="height: ${height}px;"></div><div class="chart-date">${item.date}</div></div>`;
+        const height = Math.max(8, item.consumed / maxAbs * barAreaHeight);
+        const minBottom = Math.min(barAreaHeight, Math.max(0, item.targetRange.min / maxAbs * barAreaHeight));
+        const maxBottom = Math.min(barAreaHeight, Math.max(0, item.targetRange.max / maxAbs * barAreaHeight));
+        const status = item.consumed > item.targetRange.max ? "over" : item.consumed >= item.targetRange.min ? "range" : "low";
+        const title = `${item.consumed} kcal consumidas; ${item.spent} kcal em atividades; meta ${round(item.targetRange.min)} a ${round(item.targetRange.max)} kcal`;
+        return `<div class="chart-col" title="${title}"><div class="chart-value ${status}">${item.consumed}</div><div class="chart-bar-area"><span class="chart-day-target min" style="--target-bottom: ${minBottom}px;"></span><span class="chart-day-target max" style="--target-bottom: ${maxBottom}px;"></span><div class="chart-bar ${status}" style="height: ${height}px;"></div></div><div class="chart-date">${item.date}</div></div>`;
       }).join("");
 
-      chart.innerHTML = `${targetLines}${bars}`;
+      chart.innerHTML = bars;
     }
 
     function periodMeals(period = currentPeriod) {
@@ -4209,9 +4370,9 @@
       const protein = round(meals.reduce((sum, item) => sum + item.protein, 0));
       const carbs = round(meals.reduce((sum, item) => sum + item.carbs, 0));
       const balance = round(consumed - spent);
-      const target = dailyTarget();
       const targetRange = dailyTargetRange();
-      const remaining = round(target - consumed + spent);
+      const target = targetRange.min;
+      const remaining = round(target - consumed);
       const percent = Math.max(0, Math.min(100, Math.round((consumed / Math.max(target, 1)) * 100)));
       const dayScore = calculateDayScore(consumed, spent);
       const proteinPercent = Math.max(0, Math.min(100, Math.round((protein / 120) * 100)));
@@ -4704,6 +4865,7 @@
     renderExpenseOptions();
     renderAll();
     renderNotificationSettings();
+    connectFirebaseAccount();
     restoreFirebaseMessagingConnection();
     checkNotificationSchedule();
     window.setInterval(checkNotificationSchedule, 60 * 1000);
