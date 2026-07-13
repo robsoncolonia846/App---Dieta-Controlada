@@ -1,4 +1,4 @@
-const CACHE_NAME = "dieta-controlada-pwa-v43";
+const CACHE_NAME = "dieta-controlada-pwa-v46";
 
 const APP_SHELL = [
   "./",
@@ -51,6 +51,22 @@ self.addEventListener("fetch", (event) => {
           }
           return caches.match(event.request);
         });
+    })
+  );
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const destination = event.notification.data?.url || "./index.html#hoje";
+  event.waitUntil(
+    clients.matchAll({ type: "window", includeUncontrolled: true }).then((clientList) => {
+      const absoluteDestination = new URL(destination, self.location.href).href;
+      for (const client of clientList) {
+        if ("navigate" in client) {
+          return client.navigate(absoluteDestination).then(() => client.focus());
+        }
+      }
+      return clients.openWindow(absoluteDestination);
     })
   );
 });

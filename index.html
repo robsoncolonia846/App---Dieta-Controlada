@@ -558,6 +558,43 @@
       gap: 12px;
     }
 
+    .notification-settings {
+      display: grid;
+      gap: 10px;
+    }
+
+    .notification-option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: #f5f7ef;
+      border: 1px solid #d8e2c6;
+    }
+
+    .notification-option input {
+      width: 22px;
+      height: 22px;
+      flex: 0 0 auto;
+      accent-color: #209b26;
+    }
+
+    .notification-status {
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: #f1f3ed;
+      color: #53604a;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .notification-status.enabled {
+      background: #e7f7e5;
+      color: #24732a;
+    }
+
     .meal-progress-line {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -1578,6 +1615,71 @@
       padding: 16px;
     }
 
+    .training-page-head .muted {
+      margin-top: 2px;
+    }
+
+    .training-card-body {
+      display: grid;
+      gap: 16px;
+      padding-bottom: 24px;
+    }
+
+    .activity-option-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .activity-option-card {
+      width: 100%;
+      border: 1px solid #edf0f5;
+      border-radius: 18px;
+      background: #fafbf8;
+      display: grid;
+      grid-template-columns: 42px 1fr auto;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 14px;
+      color: #243119;
+      text-align: left;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .activity-option-card.active {
+      border-color: #1fa12e;
+      background: #eff9ee;
+      box-shadow: 0 0 0 1px #1fa12e;
+    }
+
+    .activity-option-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: #f1f3f5;
+      font-size: 22px;
+    }
+
+    .activity-option-name {
+      min-width: 0;
+      font-size: 14px;
+      font-weight: 950;
+      line-height: 1.2;
+    }
+
+    .activity-option-rate {
+      color: #1fa12e;
+      font-size: 12px;
+      font-weight: 950;
+      white-space: nowrap;
+    }
+
+    .training-log-card .diet-card-inner {
+      padding-bottom: 24px;
+    }
+
     .diet-food-row {
       display: grid;
       grid-template-columns: 26px 1fr auto;
@@ -1834,29 +1936,49 @@
           </section>
 
           <section id="gasto" class="hidden">
-            <div class="card">
-              <h2>Registrar atividade</h2>
-              <label>Data <input id="expense-date" /></label>
-              <div>
-                <div class="metric-label" style="margin-bottom: 8px; font-weight: 800;">Atividade</div>
-                <div class="pill-row" id="expense-options"></div>
+            <div class="diet-page">
+              <div class="diet-page-head training-page-head">
+                <h2>Treino</h2>
+                <div class="muted">Selecione a atividade e informe o tempo realizado.</div>
               </div>
-              <div class="selector-tabs" id="time-unit-tabs">
-                <button class="selector-tab active" data-time-unit="minutes">Min</button>
-                <button class="selector-tab" data-time-unit="hours">Hora</button>
-              </div>
-              <label id="expense-input-label">Tempo <input id="expense-minutes" inputmode="decimal" placeholder="Ex: 45" /></label>
-              <div class="muted" id="expense-preview">Selecione uma atividade e informe o tempo.</div>
-              <button class="button" id="save-expense">Salvar atividade</button>
-              <div>
-                <div class="log-summary">
-                  <h2 id="expense-log-title">Atividades lançadas hoje</h2>
-                  <div class="macro-summary" id="expense-log-total">
-                    <div>0 kcal</div>
+
+              <article class="diet-card">
+                <div class="diet-card-inner training-card-body">
+                  <div class="diet-card-header">
+                    <div class="diet-card-icon">🏋️</div>
+                    <div>
+                      <div class="diet-card-title">Registrar atividade</div>
+                      <div class="diet-card-time">Gasto por hora</div>
+                    </div>
                   </div>
+                  <div class="diet-card-divider"></div>
+                  <label>Data <input id="expense-date" /></label>
+                  <div>
+                    <div class="metric-label" style="margin-bottom: 8px; font-weight: 800;">Atividade</div>
+                    <div class="activity-option-list" id="expense-options"></div>
+                  </div>
+                  <div class="selector-tabs" id="time-unit-tabs">
+                    <button class="selector-tab active" data-time-unit="minutes">Min</button>
+                    <button class="selector-tab" data-time-unit="hours">Hora</button>
+                  </div>
+                  <label id="expense-input-label">Tempo <input id="expense-minutes" inputmode="decimal" placeholder="Ex: 45" /></label>
+                  <div class="muted" id="expense-preview">Selecione uma atividade e informe o tempo.</div>
+                  <button class="button" id="save-expense">Salvar atividade</button>
                 </div>
-                <div id="expense-log"></div>
-              </div>
+              </article>
+
+              <article class="diet-card training-log-card">
+                <div class="diet-card-inner">
+                  <div class="log-summary">
+                    <h2 id="expense-log-title">Atividades lançadas hoje</h2>
+                    <div class="macro-summary" id="expense-log-total">
+                      <div>0 kcal</div>
+                    </div>
+                  </div>
+                  <div class="diet-card-divider"></div>
+                  <div id="expense-log"></div>
+                </div>
+              </article>
             </div>
           </section>
 
@@ -1877,6 +1999,20 @@
               <label>Meta mínima diária em kcal <input id="profile-target" inputmode="decimal" placeholder="Calculada automaticamente" /></label>
               <button class="button" id="save-profile">Salvar perfil</button>
               <div class="muted" id="profile-basal-info">Gasto diário estimado: -- kcal/dia.</div>
+            </div>
+            <div class="card notification-settings">
+              <h2>Notificações</h2>
+              <div class="muted">Refeições: 30 min antes e, se não registrar, 30 min depois. Água: somente no horário de beber.</div>
+              <label class="notification-option">
+                <span>Avisos de alimentação</span>
+                <input id="meal-notifications" type="checkbox" />
+              </label>
+              <label class="notification-option">
+                <span>Avisos de água</span>
+                <input id="water-notifications" type="checkbox" />
+              </label>
+              <button class="button" id="enable-notifications" type="button">Ativar notificações</button>
+              <div class="notification-status" id="notification-status">Notificações ainda não ativadas.</div>
             </div>
           </section>
 
@@ -2011,6 +2147,10 @@
     const profileTarget = document.getElementById("profile-target");
     const saveProfile = document.getElementById("save-profile");
     const profileBasalInfo = document.getElementById("profile-basal-info");
+    const mealNotifications = document.getElementById("meal-notifications");
+    const waterNotifications = document.getElementById("water-notifications");
+    const enableNotifications = document.getElementById("enable-notifications");
+    const notificationStatus = document.getElementById("notification-status");
 
     const storageKey = "dieta-controlada-web:v1";
     const navigationStorageKey = "dieta-controlada-web:last-tab";
@@ -2103,16 +2243,10 @@
       "uva": 68
     };
     const activityPresets = [
-      { id: "caminhada", name: "Caminhada", caloriesPerHour: 240 },
-      { id: "trabalho-sentado", name: "Trabalho em Escritório", caloriesPerHour: 120 },
-      { id: "academia", name: "Academia", caloriesPerHour: 420 },
-      { id: "sono", name: "Sono", caloriesPerHour: 60 },
-      { id: "trabalho-em-pe", name: "Trabalho em pé", caloriesPerHour: 140 },
-      { id: "limpeza-de-casa", name: "Limpeza de casa", caloriesPerHour: 180 },
-      { id: "deitar-com-forninho", name: "Deitar com Forninho", caloriesPerHour: 70 },
-      { id: "corrida-leve", name: "Corrida leve", caloriesPerHour: 520 },
-      { id: "bicicleta", name: "Bicicleta", caloriesPerHour: 300 },
-      { id: "inserir-manual", name: "Inserir manual", manualCalories: true }
+      { id: "beach-tennis", name: "Beach Tennis", icon: "🏖️", caloriesPerHour: 500 },
+      { id: "bicicleta-ergometrica-leve", name: "Bicicleta ergométrica (Leve)", icon: "🚲", caloriesPerHour: 200 },
+      { id: "bicicleta-ergometrica-moderada", name: "Bicicleta ergométrica (Moderada)", icon: "🚲", caloriesPerHour: 400 },
+      { id: "bicicleta-ergometrica-intensa", name: "Bicicleta ergométrica (Intensa)", icon: "🚲", caloriesPerHour: 600 }
     ];
     const mealTypes = [
       { id: "cafe", name: "Café", icon: "☕", defaultTime: "09:00" },
@@ -2603,8 +2737,12 @@
       water: appData.water && typeof appData.water === "object" ? appData.water : {},
       settings: {
         ...(appData.settings && typeof appData.settings === "object" ? appData.settings : {}),
-        includeWaterInSummary: appData.settings?.includeWaterInSummary !== false
+        includeWaterInSummary: appData.settings?.includeWaterInSummary !== false,
+        mealNotifications: appData.settings?.mealNotifications === true,
+        waterNotifications: appData.settings?.waterNotifications === true,
+        notificationsEnabled: appData.settings?.notificationsEnabled === true
       },
+      notificationLog: appData.notificationLog && typeof appData.notificationLog === "object" ? appData.notificationLog : {},
       mealTimes: { ...defaultMealTimes, ...(appData.mealTimes || {}) },
       profile: { ...defaultProfile, ...(appData.profile || {}) }
     };
@@ -2662,6 +2800,141 @@
 
     function saveData() {
       localStorage.setItem(storageKey, JSON.stringify(appData));
+    }
+
+    function notificationPermission() {
+      return "Notification" in window ? Notification.permission : "unsupported";
+    }
+
+    function renderNotificationSettings() {
+      const permission = notificationPermission();
+      const enabled = appData.settings.notificationsEnabled && permission === "granted";
+      mealNotifications.checked = appData.settings.mealNotifications;
+      waterNotifications.checked = appData.settings.waterNotifications;
+      enableNotifications.textContent = enabled ? "Notificações ativadas" : "Ativar notificações";
+      notificationStatus.classList.toggle("enabled", enabled);
+      if (permission === "unsupported") {
+        notificationStatus.textContent = "Este navegador não oferece notificações.";
+      } else if (permission === "denied") {
+        notificationStatus.textContent = "Notificações bloqueadas. Libere a permissão nas configurações do navegador.";
+      } else if (enabled) {
+        notificationStatus.textContent = "Avisos ativos neste aparelho.";
+      } else {
+        notificationStatus.textContent = "Toque em Ativar notificações para permitir os avisos.";
+      }
+    }
+
+    async function requestAppNotifications() {
+      if (!("Notification" in window)) {
+        renderNotificationSettings();
+        return;
+      }
+      const permission = await Notification.requestPermission();
+      appData.settings.notificationsEnabled = permission === "granted";
+      if (permission === "granted" && !appData.settings.mealNotifications && !appData.settings.waterNotifications) {
+        appData.settings.mealNotifications = true;
+        appData.settings.waterNotifications = true;
+      }
+      saveData();
+      renderNotificationSettings();
+      if (permission === "granted") checkNotificationSchedule();
+    }
+
+    function wasNotificationSent(key) {
+      return Boolean(appData.notificationLog[key]);
+    }
+
+    function markNotificationSent(key) {
+      appData.notificationLog[key] = Date.now();
+      const cutoff = Date.now() - 8 * 24 * 60 * 60 * 1000;
+      Object.keys(appData.notificationLog).forEach((item) => {
+        if (Number(appData.notificationLog[item]) < cutoff) delete appData.notificationLog[item];
+      });
+      saveData();
+    }
+
+    async function showAppNotification(title, body, tag, mealType = "") {
+      if (!appData.settings.notificationsEnabled || notificationPermission() !== "granted") return false;
+      const options = {
+        body,
+        tag,
+        renotify: false,
+        icon: "./icon-192.png",
+        badge: "./icon-192.png",
+        data: { url: mealType ? `./index.html?lembrete=${encodeURIComponent(mealType)}#hoje` : "./index.html#hoje" }
+      };
+      if ("serviceWorker" in navigator) {
+        const registration = await navigator.serviceWorker.ready;
+        await registration.showNotification(title, options);
+      } else {
+        new Notification(title, options);
+      }
+      return true;
+    }
+
+    function mealWasRegistered(mealTypeId) {
+      return appData.meals.some((item) => item.date === todayISO() && item.mealType === mealTypeId);
+    }
+
+    function waterReminderSchedule() {
+      const reminders = Math.max(1, Math.ceil(waterTarget() / 250));
+      const start = 9 * 60;
+      const duration = 12 * 60;
+      return Array.from({ length: reminders }, (_, index) => Math.round((start + (duration / reminders) * index) / 5) * 5);
+    }
+
+    async function checkNotificationSchedule() {
+      if (!appData.settings.notificationsEnabled || notificationPermission() !== "granted") return;
+      const now = new Date();
+      const nowMinute = now.getHours() * 60 + now.getMinutes();
+      const day = todayISO();
+
+      if (appData.settings.mealNotifications) {
+        for (const meal of mealTypes) {
+          const mealMinute = minutesFromTime(appData.mealTimes?.[meal.id] || meal.defaultTime);
+          const beforeDue = mealMinute - 30;
+          const beforeKey = `${day}:meal:${meal.id}:before`;
+          const beforeDelay = nowMinute - beforeDue;
+          if (beforeDelay >= 0 && beforeDelay <= 10 && !wasNotificationSent(beforeKey)) {
+            const sent = await showAppNotification(
+              `${meal.name} em 30 minutos`,
+              `Veja as opções disponíveis para ${meal.name.toLowerCase()}.`,
+              `meal-${day}-${meal.id}-before`,
+              meal.id
+            );
+            if (sent) markNotificationSent(beforeKey);
+          }
+
+          const afterDue = mealMinute + 30;
+          const afterKey = `${day}:meal:${meal.id}:after`;
+          const afterDelay = nowMinute - afterDue;
+          if (afterDelay >= 0 && afterDelay <= 10 && !mealWasRegistered(meal.id) && !wasNotificationSent(afterKey)) {
+            const sent = await showAppNotification(
+              `${meal.name} ainda não registrado`,
+              "Abra o aplicativo para registrar esta refeição.",
+              `meal-${day}-${meal.id}-after`,
+              meal.id
+            );
+            if (sent) markNotificationSent(afterKey);
+          }
+        }
+      }
+
+      if (appData.settings.waterNotifications) {
+        for (const dueMinute of waterReminderSchedule()) {
+          const delay = nowMinute - dueMinute;
+          const dueTime = `${String(Math.floor(dueMinute / 60)).padStart(2, "0")}:${String(dueMinute % 60).padStart(2, "0")}`;
+          const key = `${day}:water:${dueTime}`;
+          if (delay >= 0 && delay <= 10 && !wasNotificationSent(key)) {
+            const sent = await showAppNotification(
+              "Hora da água 💧",
+              "Adicione 250 ml ao seu controle de hidratação.",
+              `water-${day}-${dueTime}`
+            );
+            if (sent) markNotificationSent(key);
+          }
+        }
+      }
     }
 
     function calculateBasal(profile = appData.profile) {
@@ -3784,12 +4057,18 @@
 
     function renderExpenseOptions() {
       expenseOptions.innerHTML = activityPresets
-        .map((item) => `<button type="button" data-activity-id="${item.id}" class="pill ${item.id === selectedActivityId ? "active" : ""}">${item.name}</button>`)
+        .map((item) => `
+          <button type="button" data-activity-id="${item.id}" class="activity-option-card ${item.id === selectedActivityId ? "active" : ""}">
+            <span class="activity-option-icon">${item.icon || "🏋️"}</span>
+            <span class="activity-option-name">${item.name}</span>
+            <span class="activity-option-rate">${item.caloriesPerHour} kcal/h</span>
+          </button>
+        `)
         .join("");
-      expenseOptions.querySelectorAll(".pill").forEach((item) => {
+      expenseOptions.querySelectorAll(".activity-option-card").forEach((item) => {
         item.addEventListener("click", () => {
           selectedActivityId = item.dataset.activityId;
-          expenseOptions.querySelectorAll(".pill").forEach((pill) => pill.classList.remove("active"));
+          expenseOptions.querySelectorAll(".activity-option-card").forEach((card) => card.classList.remove("active"));
           item.classList.add("active");
           updateExpensePreview();
         });
@@ -4072,8 +4351,12 @@
         button.addEventListener("click", () => {
           const expense = appData.expenses.find((item) => item.id === button.dataset.editExpense);
           if (!expense) return;
-          if (!confirm("Editar esta atividade? O lançamento atual será removido e voltará para o formulário.")) return;
           const activity = activityPresets.find((item) => item.id === expense.activityId);
+          if (!activity) {
+            alert("Esta atividade antiga foi preservada no histórico, mas não faz parte do novo cadastro. Você pode mantê-la ou excluí-la.");
+            return;
+          }
+          if (!confirm("Editar esta atividade? O lançamento atual será removido e voltará para o formulário.")) return;
           selectedActivityId = expense.activityId;
           expenseDate.value = expense.date;
           if (activity?.manualCalories || !expense.minutes) {
@@ -4143,6 +4426,17 @@
     }
 
     profileButton.addEventListener("click", () => openTab("perfil"));
+    enableNotifications.addEventListener("click", requestAppNotifications);
+    mealNotifications.addEventListener("change", () => {
+      appData.settings.mealNotifications = mealNotifications.checked;
+      saveData();
+      renderNotificationSettings();
+    });
+    waterNotifications.addEventListener("change", () => {
+      appData.settings.waterNotifications = waterNotifications.checked;
+      saveData();
+      renderNotificationSettings();
+    });
     substituteClose.addEventListener("click", closeSubstituteModal);
     substituteModal.addEventListener("click", (event) => {
       if (event.target === substituteModal) closeSubstituteModal();
@@ -4350,11 +4644,21 @@
     renderFoodOptions("popular");
     renderExpenseOptions();
     renderAll();
+    renderNotificationSettings();
+    checkNotificationSchedule();
+    window.setInterval(checkNotificationSchedule, 60 * 1000);
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") checkNotificationSchedule();
+    });
+    const reminderMeal = new URLSearchParams(window.location.search).get("lembrete");
     const initialTab = window.location.hash?.replace("#", "");
     const storedTab = localStorage.getItem(navigationStorageKey);
     const tabToRestore = mainTabNames.has(initialTab) ? initialTab : mainTabNames.has(storedTab) ? storedTab : "hoje";
     history.replaceState({ tab: tabToRestore }, "", `#${tabToRestore}`);
     openTab(tabToRestore, { push: false, scroll: false });
+    if (mealTypes.some((meal) => meal.id === reminderMeal)) {
+      openMealDetail(reminderMeal);
+    }
 
     window.addEventListener("popstate", (event) => {
       const tabFromState = event.state?.tab;

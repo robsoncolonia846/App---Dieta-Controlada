@@ -660,6 +660,30 @@ export const foods = [
     ]
   },
   {
+    id: "salsichao-frito",
+    name: "Salsichão Frito",
+    category: "Alimentação",
+    caloriesPer100g: 340,
+    proteinPer100g: 14,
+    carbsPer100g: 2,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "100g", grams: 100 }
+    ]
+  },
+  {
+    id: "salsichao-grelhado",
+    name: "Salsichão Grelhado",
+    category: "Alimentação",
+    caloriesPer100g: 300,
+    proteinPer100g: 14,
+    carbsPer100g: 2,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "100g", grams: 100 }
+    ]
+  },
+  {
     id: "tomate-cereja",
     name: "Tomate Cereja",
     category: "Alimentação",
