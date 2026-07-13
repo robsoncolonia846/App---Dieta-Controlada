@@ -656,8 +656,8 @@
 
     .meal-detail-header {
       display: grid;
-      gap: 10px;
-      padding: 0 0 10px;
+      gap: 6px;
+      padding: 0 0 6px;
     }
 
     #refeicao-detalhe {
@@ -691,6 +691,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 10px;
+      min-height: 42px;
     }
 
     .back-button {
@@ -711,31 +712,29 @@
       min-width: 0;
     }
 
-    .meal-detail-kicker h2 {
-      font-size: 23px;
-      line-height: 1.05;
-    }
-
-    .meal-detail-kicker .muted {
-      font-size: 13px;
-      line-height: 1.15;
-    }
-
     .meal-detail-title {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 10px;
+      margin-top: -4px;
     }
 
     .meal-detail-title h2 {
-      font-size: 34px;
+      font-size: 33px;
       line-height: 1;
       letter-spacing: -0.04em;
     }
 
+    .meal-title-line {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
     .meal-detail-icon {
-      font-size: 42px;
+      font-size: 38px;
     }
 
     .status-pill {
@@ -756,7 +755,7 @@
     .meal-time-editor {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
       color: #8d8d92;
       font-size: 12px;
       font-weight: 800;
@@ -764,9 +763,9 @@
     }
 
     .meal-time-editor input {
-      width: 84px;
-      padding: 7px 8px;
-      border-radius: 10px;
+      width: 76px;
+      padding: 5px 6px;
+      border-radius: 9px;
       text-align: center;
       font-weight: 900;
     }
@@ -804,6 +803,42 @@
       opacity: 1;
       border-width: 2px;
       box-shadow: 0 10px 24px rgba(32, 155, 38, 0.12);
+    }
+
+    .recommendation-card.swipe-enter-left {
+      animation: recommendationEnterLeft 0.22s ease both;
+    }
+
+    .recommendation-card.swipe-enter-right {
+      animation: recommendationEnterRight 0.22s ease both;
+    }
+
+    .recommendation-card.swipe-leave-left {
+      animation: recommendationLeaveLeft 0.16s ease both;
+    }
+
+    .recommendation-card.swipe-leave-right {
+      animation: recommendationLeaveRight 0.16s ease both;
+    }
+
+    @keyframes recommendationEnterLeft {
+      from { opacity: 0.2; transform: translateX(42px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes recommendationEnterRight {
+      from { opacity: 0.2; transform: translateX(-42px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes recommendationLeaveLeft {
+      from { opacity: 1; transform: translateX(0); }
+      to { opacity: 0.15; transform: translateX(-36px); }
+    }
+
+    @keyframes recommendationLeaveRight {
+      from { opacity: 1; transform: translateX(0); }
+      to { opacity: 0.15; transform: translateX(36px); }
     }
 
     .recommendation-card.empty {
@@ -1907,22 +1942,17 @@
           <section id="refeicao-detalhe" class="hidden">
             <div class="meal-detail-header">
               <div class="back-row">
-                <div class="back-row-main">
-                  <button class="back-button" type="button" id="meal-detail-back">‹</button>
-                  <div class="meal-detail-kicker">
-                    <h2>Refeição</h2>
-                    <div class="muted">Modo visualização</div>
-                  </div>
-                </div>
-                <div class="meal-time-editor">
-                  <span>⏱</span>
-                  <input id="meal-detail-time" type="time" />
-                </div>
+                <button class="back-button" type="button" id="meal-detail-back">‹</button>
               </div>
               <span class="status-pill hidden" id="meal-detail-status">Pendente</span>
               <div class="meal-detail-title">
                 <div>
-                  <h2 id="meal-detail-title">Café da manhã</h2>
+                  <div class="meal-title-line">
+                    <h2 id="meal-detail-title">Café da manhã</h2>
+                    <div class="meal-time-editor">
+                      <input id="meal-detail-time" type="time" />
+                    </div>
+                  </div>
                   <div class="muted" id="meal-detail-subtitle">Escolha uma opção ou registre manualmente</div>
                 </div>
                 <div class="meal-detail-icon" id="meal-detail-icon">☕</div>
@@ -2679,6 +2709,7 @@
     let selectedRecommendationIndex = null;
     let currentRecommendationOptions = [];
     let recommendationSwipeStart = null;
+    let recommendationRegisterArmed = false;
     let substituteTarget = null;
     let dietSelectedOptions = {};
     let editingMealType = null;
@@ -2767,6 +2798,7 @@
       mealUseSuggestion.classList.add("hidden");
       const options = recommendationsForMeal(mealType.id);
       currentRecommendationOptions = options.map(hydrateDietOption);
+      recommendationRegisterArmed = false;
       renderRecommendationOptions();
       openTab("refeicao-detalhe");
     }
@@ -2779,6 +2811,7 @@
       currentMealDetail = mealType.id;
       selectedMealType = mealType.id;
       selectedRecommendationIndex = safeOptionIndex;
+      recommendationRegisterArmed = true;
       editingMealType = null;
       editingDietTemplate = { mealTypeId: mealType.id, optionIndex: safeOptionIndex };
       mealDetailTitle.textContent = mealDetailLabels[mealType.id] || mealType.name;
@@ -2927,6 +2960,7 @@
       editingMealId = null;
       editingDietTemplate = null;
       selectedRecommendationIndex = null;
+      recommendationRegisterArmed = false;
       mealDetailRegister.classList.add("hidden");
       mealDetailRegister.textContent = "Registrar dieta";
       mealUseSuggestion.classList.add("hidden");
@@ -2980,6 +3014,7 @@
           editingMealType = mealType.id;
           editingMealId = meal.id;
           editingDietTemplate = null;
+          recommendationRegisterArmed = true;
           currentRecommendationOptions = [savedMealToRecommendationOption(meal)];
           selectedRecommendationIndex = 0;
           mealDetailStatus.textContent = "Editando";
@@ -3076,8 +3111,12 @@
         button.addEventListener("click", (event) => {
           event.preventDefault();
           event.stopPropagation();
-          selectRecommendation(Number(button.dataset.selectRec));
+          selectRecommendation(Number(button.dataset.selectRec), 0, true);
         });
+      });
+      recommendationCarousel.querySelector(`[data-recommendation-index="${index}"]`)?.addEventListener("click", (event) => {
+        if (event.target.closest("button, input, select, textarea, [role='button']")) return;
+        armRecommendationRegister();
       });
       recommendationCarousel.querySelectorAll("[data-substitute-rec]").forEach((button) => {
         button.addEventListener("click", (event) => {
@@ -3120,7 +3159,8 @@
     }
 
     function updateRecommendationRegisterVisibility() {
-      mealDetailRegister.classList.toggle("hidden", selectedRecommendationIndex === null || !selectedRecommendationHasItems());
+      const editing = Boolean(editingMealId || editingDietTemplate);
+      mealDetailRegister.classList.toggle("hidden", !editing && (!recommendationRegisterArmed || selectedRecommendationIndex === null || !selectedRecommendationHasItems()));
     }
 
     function createCustomRecommendationOption() {
@@ -3130,6 +3170,7 @@
         items: []
       });
       selectedRecommendationIndex = currentRecommendationOptions.length - 1;
+      recommendationRegisterArmed = true;
       renderRecommendationOptions();
       requestAnimationFrame(() => {
         const card = recommendationCarousel.querySelector(`[data-recommendation-index="${selectedRecommendationIndex}"]`);
@@ -3137,16 +3178,34 @@
       });
     }
 
-    function selectRecommendation(index) {
+    function selectRecommendation(index, direction = 0, armRegister = false) {
       selectedRecommendationIndex = Math.max(0, Math.min(Number(index) || 0, Math.max(currentRecommendationOptions.length - 1, 0)));
+      recommendationRegisterArmed = Boolean(armRegister);
       renderRecommendationOptions();
+      if (direction) {
+        requestAnimationFrame(() => {
+          const card = recommendationCarousel.querySelector(`[data-recommendation-index="${selectedRecommendationIndex}"]`);
+          card?.classList.add(direction > 0 ? "swipe-enter-left" : "swipe-enter-right");
+        });
+      }
+    }
+
+    function armRecommendationRegister() {
+      recommendationRegisterArmed = true;
+      updateRecommendationRegisterVisibility();
     }
 
     function swipeRecommendation(direction) {
       if (!currentRecommendationOptions.length || selectedRecommendationIndex === null) return;
       const nextIndex = selectedRecommendationIndex + direction;
       if (nextIndex < 0 || nextIndex >= currentRecommendationOptions.length) return;
-      selectRecommendation(nextIndex);
+      const currentCard = recommendationCarousel.querySelector(`[data-recommendation-index="${selectedRecommendationIndex}"]`);
+      if (!currentCard) {
+        selectRecommendation(nextIndex, direction);
+        return;
+      }
+      currentCard.classList.add(direction > 0 ? "swipe-leave-left" : "swipe-leave-right");
+      window.setTimeout(() => selectRecommendation(nextIndex, direction), 130);
     }
 
     function recalculateRecommendation(option) {
