@@ -656,8 +656,8 @@
 
     .meal-detail-header {
       display: grid;
-      gap: 6px;
-      padding: 0 0 6px;
+      gap: 4px;
+      padding: 0 0 5px;
     }
 
     #refeicao-detalhe {
@@ -686,38 +686,12 @@
       display: none !important;
     }
 
-    .back-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      min-height: 42px;
-    }
-
-    .back-button {
-      width: 42px;
-      height: 42px;
-      border: 1px solid #e7e7ec;
-      border-radius: 50%;
-      background: #fff;
-      font-size: 27px;
-      line-height: 1;
-      box-shadow: 0 8px 18px rgba(36, 49, 25, 0.06);
-    }
-
-    .back-row-main {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-width: 0;
-    }
-
     .meal-detail-title {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 10px;
-      margin-top: -4px;
+      margin-top: 0;
     }
 
     .meal-detail-title h2 {
@@ -1941,9 +1915,6 @@
 
           <section id="refeicao-detalhe" class="hidden">
             <div class="meal-detail-header">
-              <div class="back-row">
-                <button class="back-button" type="button" id="meal-detail-back">‹</button>
-              </div>
               <span class="status-pill hidden" id="meal-detail-status">Pendente</span>
               <div class="meal-detail-title">
                 <div>
@@ -2018,7 +1989,6 @@
     const addWaterQuick = document.getElementById("add-water-quick");
     const removeWater = document.getElementById("remove-water");
     const waterButtons = document.querySelectorAll("[data-water-add]");
-    const mealDetailBack = document.getElementById("meal-detail-back");
     const mealDetailStatus = document.getElementById("meal-detail-status");
     const mealDetailTitle = document.getElementById("meal-detail-title");
     const mealDetailSubtitle = document.getElementById("meal-detail-subtitle");
@@ -4232,7 +4202,6 @@
     }
 
     profileButton.addEventListener("click", () => openTab("perfil"));
-    mealDetailBack.addEventListener("click", () => openTab(detailReturnTab || localStorage.getItem(navigationStorageKey) || "hoje"));
     substituteClose.addEventListener("click", closeSubstituteModal);
     substituteModal.addEventListener("click", (event) => {
       if (event.target === substituteModal) closeSubstituteModal();
