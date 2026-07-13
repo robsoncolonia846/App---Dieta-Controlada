@@ -356,41 +356,130 @@
 
     .summary-body {
       display: grid;
-      grid-template-columns: 0.9fr 1.1fr;
+      grid-template-columns: minmax(132px, 0.9fr) 1.1fr;
       align-items: center;
       gap: 12px;
     }
 
-    .progress-ring {
-      width: 78px;
-      height: 78px;
-      border-radius: 50%;
+    .summary-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .summary-remaining {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      min-width: 0;
+      text-align: right;
+    }
+
+    .summary-remaining .muted {
+      line-height: 1.12;
+    }
+
+    .summary-remaining .summary-number {
+      white-space: nowrap;
+    }
+
+    .day-mood {
+      display: grid;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .mood-faces {
       display: grid;
       place-items: center;
-      background: conic-gradient(#209b26 var(--progress), #dff2df 0);
-      position: relative;
+      min-height: 68px;
     }
 
-    .progress-ring::after {
-      content: "";
-      width: 48px;
-      height: 48px;
+    .mood-face {
+      --face-color: #ffd54f;
+      width: 62px;
+      height: 62px;
       border-radius: 50%;
-      background: #fff;
-      position: absolute;
-    }
-
-    .progress-ring-content {
+      background: var(--face-color);
+      color: #25321f;
       position: relative;
-      z-index: 1;
-      display: grid;
-      justify-items: center;
-      line-height: 1.1;
+      box-shadow: 0 6px 14px color-mix(in srgb, var(--face-color) 28%, transparent);
+      transition: background 180ms ease, box-shadow 180ms ease;
     }
 
-    .progress-ring-content strong {
-      font-size: 21px;
-      letter-spacing: -0.06em;
+    .mood-face::before {
+      content: "";
+      position: absolute;
+      width: 7px;
+      height: 9px;
+      left: 15px;
+      top: 16px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 25px 0 currentColor;
+    }
+
+    .mood-face .mood-mouth {
+      position: absolute;
+      left: 15px;
+      bottom: 12px;
+      width: 32px;
+      height: 12px;
+      border: 4px solid currentColor;
+      border-left: 0;
+      border-right: 0;
+    }
+
+    .mood-face.very-bad { --face-color: #ef5350; }
+    .mood-face.bad { --face-color: #ff963f; }
+    .mood-face.regular { --face-color: #ffd54f; }
+    .mood-face.good { --face-color: #a8d95f; }
+    .mood-face.excellent { --face-color: #55b95a; }
+
+    .mood-face.very-bad .mood-mouth,
+    .mood-face.bad .mood-mouth {
+      border-bottom: 0;
+      border-radius: 50% 50% 0 0;
+    }
+
+    .mood-face.bad .mood-mouth {
+      height: 7px;
+    }
+
+    .mood-face.regular .mood-mouth {
+      height: 0;
+      border-bottom: 0;
+      border-radius: 0;
+      bottom: 17px;
+    }
+
+    .mood-face.good .mood-mouth,
+    .mood-face.excellent .mood-mouth {
+      border-top: 0;
+      border-radius: 0 0 50% 50%;
+    }
+
+    .mood-face.excellent .mood-mouth {
+      height: 16px;
+      bottom: 9px;
+    }
+
+    .mood-caption {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 5px;
+      line-height: 1;
+      text-align: center;
+    }
+
+    .mood-caption span {
+      color: #6c7768;
+      font-size: 14px;
+      font-weight: 950;
     }
 
     .progress-list {
@@ -517,14 +606,6 @@
       background: #209b26;
     }
 
-    .summary-footer {
-      display: flex;
-      justify-content: space-between;
-      border-top: 1px solid #f0f0f0;
-      padding-top: 8px;
-      margin-top: 6px;
-    }
-
     .summary-number {
       font-size: 22px;
       font-weight: 950;
@@ -638,20 +719,22 @@
       opacity: 1;
     }
 
-    .water-actions {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
+    .water-quick-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    .water-button {
-      border: 1px solid #e1e3e8;
+    .water-quick-actions .avatar-button {
+      width: 46px;
+      height: 46px;
+    }
+
+    .water-quick-actions .water-minus {
+      border: 1px solid #efcece;
       background: #fff;
-      color: #3d68ad;
-      border-radius: 16px;
-      padding: 13px 8px;
-      font-size: 15px;
-      font-weight: 950;
+      color: #d94b4b;
+      box-shadow: none;
     }
 
     .meal-detail-header {
@@ -1661,15 +1744,6 @@
       height: 28px;
     }
 
-    #hoje .water-actions {
-      gap: 8px;
-    }
-
-    #hoje .water-button {
-      border-radius: 13px;
-      padding: 9px 6px;
-      font-size: 13px;
-    }
   </style>
 </head>
 <body>
@@ -1724,15 +1798,22 @@
             </div>
 
             <div class="hero">
-              <div>
-                <div class="title">Resumo diário</div>
-                <div class="muted">Metas do dia</div>
+              <div class="summary-header">
+                <div>
+                  <div class="title">Resumo diário</div>
+                </div>
+                <div class="summary-remaining">
+                  <div class="muted">Restante<br>kcal para hoje</div>
+                  <div class="summary-number" id="remaining-kcal">0</div>
+                </div>
               </div>
               <div class="summary-body">
-                <div class="progress-ring" id="calorie-ring" style="--progress: 0%;">
-                  <div class="progress-ring-content">
-                    <strong id="goal-percent">0%</strong>
-                    <span class="muted">do dia</span>
+                <div class="day-mood" id="day-mood" aria-label="Indicador de desempenho do dia">
+                  <div class="mood-faces" aria-hidden="true">
+                    <div class="mood-face very-bad" id="day-mood-face"><span class="mood-mouth"></span></div>
+                  </div>
+                  <div class="mood-caption">
+                    <span id="mood-label">Muito ruim</span>
                   </div>
                 </div>
                 <div class="progress-list">
@@ -1755,27 +1836,10 @@
                 </div>
               </div>
               <div class="goal-alert" id="goal-alert">Dia no controle. Continue assim.</div>
-              <div class="summary-footer">
-                <div>
-                  <div class="muted">Restante</div>
-                  <div class="summary-number" id="remaining-kcal">0</div>
-                  <div class="muted">kcal para hoje</div>
-                </div>
-                <div style="text-align:right;">
-                  <div class="muted">Meta mín/máx</div>
-                  <div class="summary-number" id="target-kcal">0</div>
-                  <div class="muted">kcal por dia</div>
-                </div>
-              </div>
             </div>
 
             <div class="card" style="margin-top: 14px;">
               <h2>Refeições</h2>
-              <div class="muted">Progresso diário</div>
-              <div class="progress-row">
-                <div class="progress-row-head"><span>Concluídas</span><strong id="meal-progress-count">0/4</strong></div>
-                <div class="progress-track"><div class="progress-fill" id="meal-progress-fill"></div></div>
-              </div>
               <div class="meal-progress-line" id="meal-progress-list"></div>
               <div class="muted" id="open-meal-tab">Escolha a refeição a registrar</div>
             </div>
@@ -1786,15 +1850,12 @@
                   <h2>Hidratação</h2>
                   <div><span class="summary-number" id="water-total">0</span> <span class="muted">ml</span></div>
                 </div>
-                <button class="avatar-button" type="button" id="add-water-quick" aria-label="Adicionar água">+</button>
+                <div class="water-quick-actions">
+                  <button class="avatar-button water-minus" type="button" id="remove-water" aria-label="Retirar 250 ml de água">−</button>
+                  <button class="avatar-button" type="button" id="add-water-quick" aria-label="Adicionar 250 ml de água">+</button>
+                </div>
               </div>
               <div class="water-grid" id="water-cups"></div>
-              <div class="water-actions">
-                <button class="water-button" type="button" data-water-add="250">+250ml</button>
-                <button class="water-button" type="button" data-water-add="500">+500ml</button>
-                <button class="water-button" type="button" data-water-add="1000">+1L</button>
-              </div>
-              <button class="water-button" type="button" id="remove-water" style="color: #d94b4b;">−250ml</button>
               <div class="muted">Meta diária: <strong id="water-goal">3000 ml</strong></div>
             </div>
 
@@ -1965,7 +2026,6 @@
     const dietProfileHeight = document.getElementById("diet-profile-height");
     const dietDashboard = document.getElementById("diet-dashboard");
     const goalBannerValue = document.getElementById("goal-banner-value");
-    const goalPercent = document.getElementById("goal-percent");
     const goalAlert = document.getElementById("goal-alert");
     const calorieRange = document.getElementById("calorie-range");
     const calorieRangeCurrentLabel = document.getElementById("calorie-range-current-label");
@@ -1973,22 +2033,20 @@
     const calorieRangeMinLabel = document.getElementById("calorie-range-min-label");
     const calorieRangeMaxLabel = document.getElementById("calorie-range-max-label");
     const calorieRangeFill = document.getElementById("calorie-range-fill");
-    const calorieRing = document.getElementById("calorie-ring");
+    const dayMood = document.getElementById("day-mood");
+    const dayMoodFace = document.getElementById("day-mood-face");
+    const moodLabel = document.getElementById("mood-label");
     const calorieFill = document.getElementById("calorie-fill");
     const proteinFill = document.getElementById("protein-fill");
     const carbsFill = document.getElementById("carbs-fill");
     const spentFill = document.getElementById("spent-fill");
     const remainingKcal = document.getElementById("remaining-kcal");
-    const targetKcal = document.getElementById("target-kcal");
-    const mealProgressCount = document.getElementById("meal-progress-count");
-    const mealProgressFill = document.getElementById("meal-progress-fill");
     const mealProgressList = document.getElementById("meal-progress-list");
     const waterTotal = document.getElementById("water-total");
     const waterGoal = document.getElementById("water-goal");
     const waterCups = document.getElementById("water-cups");
     const addWaterQuick = document.getElementById("add-water-quick");
     const removeWater = document.getElementById("remove-water");
-    const waterButtons = document.querySelectorAll("[data-water-add]");
     const mealDetailStatus = document.getElementById("meal-detail-status");
     const mealDetailTitle = document.getElementById("meal-detail-title");
     const mealDetailSubtitle = document.getElementById("meal-detail-subtitle");
@@ -2905,10 +2963,6 @@
     function renderMealsProgress() {
       const todayMeals = appData.meals.filter((item) => item.date === todayISO());
       const completed = new Set(todayMeals.map((item) => item.mealType).filter(Boolean));
-      const count = completed.size;
-      const percent = Math.round((count / mealTypes.length) * 100);
-      mealProgressCount.textContent = `${count}/${mealTypes.length}`;
-      mealProgressFill.style.setProperty("--width", `${percent}%`);
       mealProgressList.innerHTML = mealTypes.map((meal) => {
         const done = completed.has(meal.id);
         const time = appData.mealTimes?.[meal.id] || meal.defaultTime;
@@ -3947,13 +4001,17 @@
       metricSpent.textContent = `${spent} kcal`;
       metricProtein.textContent = `${protein} g`;
       metricCarbs.textContent = `${carbs} g`;
-      targetKcal.textContent = `${formatKcalValue(targetRange.min)} - ${formatKcalValue(targetRange.max)}`;
       remainingKcal.textContent = remaining < 0
         ? `+${Math.abs(remaining).toLocaleString("pt-BR")}`
         : remaining.toLocaleString("pt-BR");
       remainingKcal.classList.toggle("over", remaining < 0);
-      goalPercent.textContent = `${dayScore.score}%`;
-      calorieRing.style.setProperty("--progress", `${dayScore.score}%`);
+      const moodLevel = Math.min(4, Math.floor(dayScore.score / 20));
+      const moodLabels = ["Muito ruim", "Ruim", "Regular", "Bom", "Ótimo"];
+      const moodClasses = ["very-bad", "bad", "regular", "good", "excellent"];
+      moodLabel.textContent = moodLabels[moodLevel];
+      dayMood.setAttribute("aria-label", `Desempenho do dia: ${moodLabels[moodLevel]}`);
+      dayMoodFace.classList.remove(...moodClasses);
+      dayMoodFace.classList.add(moodClasses[moodLevel]);
       goalAlert.textContent = dayScore.alert.text;
       goalAlert.classList.toggle("warn", dayScore.alert.level === "warn");
       goalAlert.classList.toggle("danger", dayScore.alert.level === "danger");
@@ -4291,9 +4349,6 @@
     document.addEventListener("click", disarmRecommendationRegisterOnOutsideClick, true);
     addWaterQuick.addEventListener("click", () => addWater(250));
     removeWater.addEventListener("click", () => addWater(-250));
-    waterButtons.forEach((button) => {
-      button.addEventListener("click", () => addWater(Number(button.dataset.waterAdd)));
-    });
 
     saveProfile.addEventListener("click", () => {
       appData.profile = {

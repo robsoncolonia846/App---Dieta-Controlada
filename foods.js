@@ -600,6 +600,18 @@ export const foods = [
     ]
   },
   {
+    id: "pizza",
+    name: "Pizza",
+    category: "Alimenta??o",
+    caloriesPer100g: 300,
+    proteinPer100g: 15,
+    carbsPer100g: 35,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "unidade", name: "Unidade", grams: 100 }
+    ]
+  },
+  {
     id: "presunto",
     name: "Presunto",
     category: "Alimenta??o",
