@@ -1,9 +1,32 @@
-const CACHE_NAME = "dieta-controlada-pwa-v46";
+const CACHE_NAME = "dieta-controlada-pwa-v48";
+
+importScripts("./firebase-config.js");
+importScripts("https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js");
+importScripts("https://www.gstatic.com/firebasejs/10.13.2/firebase-messaging-compat.js");
+
+firebase.initializeApp(self.DIETA_FIREBASE_CONFIG);
+const firebaseMessaging = firebase.messaging();
+
+firebaseMessaging.onBackgroundMessage((payload) => {
+  if (payload.notification) return;
+  const title = payload.data?.title || "Dieta Controlada";
+  const options = {
+    body: payload.data?.body || "Você recebeu um novo lembrete.",
+    icon: "./icon-192.png",
+    badge: "./icon-192.png",
+    tag: payload.data?.tag || "dieta-controlada-reminder",
+    data: {
+      url: payload.data?.url || "./index.html#hoje"
+    }
+  };
+  self.registration.showNotification(title, options);
+});
 
 const APP_SHELL = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
+  "./firebase-config.js",
   "./favicon.ico",
   "./foods.js",
   "./icon-192.png",

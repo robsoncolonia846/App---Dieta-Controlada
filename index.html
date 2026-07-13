@@ -2055,7 +2055,16 @@
     </div>
   </div>
 
+  <script src="./firebase-config.js"></script>
   <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+    import { getMessaging, getToken, isSupported, onMessage } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-messaging.js";
+
+    const firebaseApp = initializeApp(window.DIETA_FIREBASE_CONFIG);
+    let firebaseMessaging = null;
+    let firebaseForegroundListenerReady = false;
+    let notificationConnectionError = "";
+
     const tabs = document.querySelectorAll(".tab");
     const sections = document.querySelectorAll("main > section");
     const periodButtons = document.querySelectorAll(".period-button");
@@ -2809,19 +2818,51 @@
     function renderNotificationSettings() {
       const permission = notificationPermission();
       const enabled = appData.settings.notificationsEnabled && permission === "granted";
+      const connected = enabled && Boolean(appData.settings.fcmToken);
       mealNotifications.checked = appData.settings.mealNotifications;
       waterNotifications.checked = appData.settings.waterNotifications;
-      enableNotifications.textContent = enabled ? "Notificações ativadas" : "Ativar notificações";
-      notificationStatus.classList.toggle("enabled", enabled);
+      enableNotifications.textContent = connected ? "Notificações ativadas" : "Ativar notificações";
+      notificationStatus.classList.toggle("enabled", connected);
       if (permission === "unsupported") {
         notificationStatus.textContent = "Este navegador não oferece notificações.";
       } else if (permission === "denied") {
         notificationStatus.textContent = "Notificações bloqueadas. Libere a permissão nas configurações do navegador.";
+      } else if (notificationConnectionError) {
+        notificationStatus.textContent = notificationConnectionError;
+      } else if (connected) {
+        notificationStatus.textContent = "Celular conectado ao Firebase. Avisos ativos neste aparelho.";
       } else if (enabled) {
-        notificationStatus.textContent = "Avisos ativos neste aparelho.";
+        notificationStatus.textContent = "Permissão concedida. Toque novamente para conectar ao Firebase.";
       } else {
         notificationStatus.textContent = "Toque em Ativar notificações para permitir os avisos.";
       }
+    }
+
+    async function connectFirebaseMessaging() {
+      if (!(await isSupported())) throw new Error("Firebase Messaging não é compatível com este navegador.");
+      const registration = await navigator.serviceWorker.ready;
+      firebaseMessaging = firebaseMessaging || getMessaging(firebaseApp);
+      const token = await getToken(firebaseMessaging, {
+        vapidKey: window.DIETA_FIREBASE_VAPID_KEY,
+        serviceWorkerRegistration: registration
+      });
+      if (!token) throw new Error("O Firebase não retornou o identificador deste aparelho.");
+      appData.settings.fcmToken = token;
+      notificationConnectionError = "";
+      saveData();
+      setupFirebaseForegroundMessages();
+      return token;
+    }
+
+    function setupFirebaseForegroundMessages() {
+      if (!firebaseMessaging || firebaseForegroundListenerReady) return;
+      firebaseForegroundListenerReady = true;
+      onMessage(firebaseMessaging, (payload) => {
+        const title = payload.notification?.title || payload.data?.title || "Dieta Controlada";
+        const body = payload.notification?.body || payload.data?.body || "Você recebeu um novo lembrete.";
+        const mealType = payload.data?.mealType || "";
+        showAppNotification(title, body, payload.data?.tag || `firebase-${Date.now()}`, mealType);
+      });
     }
 
     async function requestAppNotifications() {
@@ -2836,8 +2877,26 @@
         appData.settings.waterNotifications = true;
       }
       saveData();
+      if (permission === "granted") {
+        try {
+          await connectFirebaseMessaging();
+        } catch (error) {
+          console.warn("Não foi possível conectar ao Firebase Messaging.", error);
+          notificationConnectionError = `Conexão com o Firebase falhou: ${error?.message || "erro desconhecido"}`;
+        }
+      }
       renderNotificationSettings();
       if (permission === "granted") checkNotificationSchedule();
+    }
+
+    async function restoreFirebaseMessagingConnection() {
+      if (!appData.settings.notificationsEnabled || notificationPermission() !== "granted") return;
+      try {
+        await connectFirebaseMessaging();
+      } catch (error) {
+        console.warn("Conexão existente com o Firebase Messaging não pôde ser restaurada.", error);
+      }
+      renderNotificationSettings();
     }
 
     function wasNotificationSent(key) {
@@ -4645,6 +4704,7 @@
     renderExpenseOptions();
     renderAll();
     renderNotificationSettings();
+    restoreFirebaseMessagingConnection();
     checkNotificationSchedule();
     window.setInterval(checkNotificationSchedule, 60 * 1000);
     document.addEventListener("visibilitychange", () => {
