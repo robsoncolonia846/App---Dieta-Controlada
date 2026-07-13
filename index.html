@@ -2794,7 +2794,7 @@
       }
       const score = Math.max(0, Math.min(100, Math.round(
         includeWater
-          ? calorieScore * 0.55 + mealScoreData.score * 0.25 + waterScore * 0.2
+          ? calorieScore * 0.4 + mealScoreData.score * 0.2 + waterScore * 0.4
           : calorieScore * 0.7 + mealScoreData.score * 0.3
       )));
       const alerts = [];
@@ -3637,6 +3637,7 @@
       appData.water[today] = Math.max(0, (Number(appData.water[today]) || 0) + amount);
       saveData();
       renderWater();
+      renderTotals("hoje");
     }
 
     function periodStart(period) {
