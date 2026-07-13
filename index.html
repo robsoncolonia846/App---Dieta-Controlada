@@ -225,7 +225,7 @@
     .chart-col {
       flex: 1;
       display: grid;
-      grid-template-rows: auto 122px auto;
+      grid-template-rows: 122px auto;
       justify-items: center;
       align-content: end;
       gap: 6px;
@@ -260,6 +260,9 @@
     }
 
     .chart-value {
+      position: absolute;
+      bottom: calc(var(--bar-height, 0px) + 4px);
+      z-index: 3;
       color: #466b2d;
       font-size: 10px;
       font-weight: 900;
@@ -4348,7 +4351,7 @@
         const maxBottom = Math.min(barAreaHeight, Math.max(0, item.targetRange.max / maxAbs * barAreaHeight));
         const status = item.consumed > item.targetRange.max ? "over" : item.consumed >= item.targetRange.min ? "range" : "low";
         const title = `${item.consumed} kcal consumidas; ${item.spent} kcal em atividades; meta ${round(item.targetRange.min)} a ${round(item.targetRange.max)} kcal`;
-        return `<div class="chart-col" title="${title}"><div class="chart-value ${status}">${item.consumed}</div><div class="chart-bar-area"><span class="chart-day-target min" style="--target-bottom: ${minBottom}px;"></span><span class="chart-day-target max" style="--target-bottom: ${maxBottom}px;"></span><div class="chart-bar ${status}" style="height: ${height}px;"></div></div><div class="chart-date">${item.date}</div></div>`;
+        return `<div class="chart-col" title="${title}"><div class="chart-bar-area" style="--bar-height: ${height}px;"><div class="chart-value ${status}">${item.consumed}</div><span class="chart-day-target min" style="--target-bottom: ${minBottom}px;"></span><span class="chart-day-target max" style="--target-bottom: ${maxBottom}px;"></span><div class="chart-bar ${status}" style="height: ${height}px;"></div></div><div class="chart-date">${item.date}</div></div>`;
       }).join("");
 
       chart.innerHTML = bars;
