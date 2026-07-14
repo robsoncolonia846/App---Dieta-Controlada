@@ -396,6 +396,18 @@ export const foods = [
     ]
   },
   {
+    id: "lombo-de-porco",
+    name: "Lombo de Porco",
+    category: "Alimentação",
+    caloriesPer100g: 240,
+    proteinPer100g: 25,
+    carbsPer100g: 0,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "100g", grams: 100 }
+    ]
+  },
+  {
     id: "maca",
     name: "Maça",
     category: "Alimentação",
