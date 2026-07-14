@@ -3090,6 +3090,10 @@
       return Array.from({ length: reminders }, (_, index) => Math.round((start + (duration / reminders) * index) / 5) * 5);
     }
 
+    function expectedWaterCupCount(nowMinute = currentAppMinutes()) {
+      return waterReminderSchedule().filter((dueMinute) => dueMinute <= nowMinute).length;
+    }
+
     async function checkNotificationSchedule() {
       if (!appData.settings.notificationsEnabled || notificationPermission() !== "granted") return;
       const now = new Date();
@@ -3128,11 +3132,14 @@
       }
 
       if (appData.settings.waterNotifications) {
-        for (const dueMinute of waterReminderSchedule()) {
+        const waterNow = Number(appData.water?.[day]) || 0;
+        const schedule = waterReminderSchedule();
+        for (const [index, dueMinute] of schedule.entries()) {
           const delay = nowMinute - dueMinute;
           const dueTime = `${String(Math.floor(dueMinute / 60)).padStart(2, "0")}:${String(dueMinute % 60).padStart(2, "0")}`;
           const key = `${day}:water:${dueTime}`;
-          if (delay >= 0 && delay <= 10 && !wasNotificationSent(key)) {
+          const pendingCup = waterNow < (index + 1) * 250;
+          if (delay >= 0 && delay <= 10 && pendingCup && !wasNotificationSent(key)) {
             const sent = await showAppNotification(
               "Hora da água 💧",
               "Adicione 250 ml ao seu controle de hidratação.",
@@ -3275,8 +3282,8 @@
       const targetRange = dailyTargetRange(today);
       const adjustedTarget = Math.max(1, targetRange.min);
       const waterNow = Number(appData.water?.[today]) || 0;
-      const waterExpected = Math.max(250, Math.round(waterTarget() * expectedWaterProgress()));
-      const waterScore = Math.min(100, Math.round((waterNow / waterExpected) * 100));
+      const waterExpected = Math.min(waterTarget(), expectedWaterCupCount() * 250);
+      const waterScore = waterExpected > 0 ? Math.min(100, Math.round((waterNow / waterExpected) * 100)) : 100;
       const includeWater = appData.settings?.includeWaterInSummary !== false;
       const mealScoreData = calculateMealTimingScore();
       const calorieRatio = consumed / adjustedTarget;
@@ -3286,17 +3293,20 @@
       } else if (expectedDayProgress() > 0.35 && calorieRatio < expectedDayProgress() * 0.55) {
         calorieScore = Math.max(30, Math.round((calorieRatio / Math.max(0.1, expectedDayProgress() * 0.55)) * 100));
       }
-      const score = Math.max(0, Math.min(100, Math.round(
+      let score = Math.max(0, Math.min(100, Math.round(
         includeWater
           ? calorieScore * 0.4 + mealScoreData.score * 0.2 + waterScore * 0.4
           : calorieScore * 0.7 + mealScoreData.score * 0.3
       )));
+      if (consumed > targetRange.min + 50) {
+        score = Math.min(score, 79);
+      }
       const alerts = [];
       if (consumed > adjustedTarget + 150) {
         alerts.push({ level: "danger", text: `Você passou da meta em ${round(consumed - adjustedTarget)} kcal.` });
       }
       if (mealScoreData.alert) alerts.push(mealScoreData.alert);
-      if (includeWater && waterScore < 70) {
+      if (includeWater && waterExpected > 0 && waterNow < waterExpected) {
         alerts.push({ level: "warn", text: `Água abaixo do esperado para este horário: ${waterNow}ml de ${waterExpected}ml.` });
       }
       if (expectedDayProgress() > 0.45 && calorieScore < 70 && consumed <= adjustedTarget) {
@@ -4116,7 +4126,7 @@
       const targetCupCount = Math.ceil(target / 250);
       const cupCount = Math.max(12, targetCupCount, Math.ceil(total / 250));
       const filled = Math.min(cupCount, Math.floor(total / 250));
-      const expected = Math.min(targetCupCount, Math.ceil(targetCupCount * expectedWaterProgress()));
+      const expected = Math.min(targetCupCount, expectedWaterCupCount());
       waterTotal.textContent = total.toLocaleString("pt-BR");
       waterGoal.textContent = `${target.toLocaleString("pt-BR")} ml`;
       waterScoreToggle.setAttribute("aria-checked", String(appData.settings?.includeWaterInSummary !== false));
@@ -4390,7 +4400,7 @@
         ? `+${Math.abs(remaining).toLocaleString("pt-BR")}`
         : remaining.toLocaleString("pt-BR");
       remainingKcal.classList.toggle("over", remaining < 0);
-      const moodLevel = Math.min(4, Math.floor(dayScore.score / 20));
+      const moodLevel = Math.min(dayScore.alert.level === "ok" ? 4 : 3, Math.floor(dayScore.score / 20));
       const moodLabels = ["Muito ruim", "Ruim", "Regular", "Bom", "Ótimo"];
       const moodClasses = ["very-bad", "bad", "regular", "good", "excellent"];
       moodLabel.textContent = moodLabels[moodLevel];
