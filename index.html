@@ -2355,7 +2355,7 @@
           { icon: "🥖", name: "Pão Caseiro", amount: "50g" }
         ] },
         { kcal: 0, items: [
-          { icon: "🥪", name: "Pão Frances + Ovo Mexido", amount: "0,7 unidade" },
+          { icon: "🥪", name: "Pão Frances + Ovo Mexido", amount: "1 unidade" },
           { icon: "🍎", name: "Maça", amount: "1 unidade" },
           { icon: "🥛", name: "Leite Desnatado", amount: "200ml" },
           { icon: "🥖", name: "Pão Caseiro", amount: "20g" }
@@ -2367,7 +2367,7 @@
           { icon: "🍓", name: "Morango", amount: "100g" }
         ] },
         { kcal: 0, items: [
-          { icon: "🥪", name: "Pão Frances + Ovo Frito", amount: "0,6 unidade" },
+          { icon: "🥪", name: "Pão Frances + Ovo Frito", amount: "1 unidade" },
           { icon: "🍇", name: "Uva", amount: "90g" },
           { icon: "🥛", name: "Leite Desnatado", amount: "200ml" }
         ] }
@@ -2514,36 +2514,36 @@
         { icon: "🥖", name: "Pão francês", amount: "1 unidade", kcal: 125 }
       ],
       "banana prata": [
-        { icon: "🍎", name: "Maçã", amount: "1,35 unidade", kcal: 70 },
+        { icon: "🍎", name: "Maçã", amount: "2 unidades", kcal: 104 },
         { icon: "🥭", name: "Mamão", amount: "165g", kcal: 71 },
-        { icon: "🍊", name: "Laranja", amount: "1,5 unidade", kcal: 71 },
+        { icon: "🍊", name: "Laranja", amount: "2 unidades", kcal: 95 },
         { icon: "🍍", name: "Abacaxi", amount: "140g", kcal: 70 }
       ],
       "abacaxi": [
-        { icon: "🍌", name: "Banana", amount: "0,75 unidade", kcal: 67 },
-        { icon: "🍎", name: "Maçã", amount: "1,3 unidade", kcal: 68 },
-        { icon: "🍊", name: "Laranja", amount: "1,45 unidade", kcal: 68 },
+        { icon: "🍌", name: "Banana", amount: "1 unidade", kcal: 89 },
+        { icon: "🍎", name: "Maçã", amount: "2 unidades", kcal: 105 },
+        { icon: "🍊", name: "Laranja", amount: "2 unidades", kcal: 94 },
         { icon: "🥭", name: "Mamão", amount: "160g", kcal: 69 },
         { icon: "🍓", name: "Morango", amount: "210g", kcal: 67 }
       ],
       "morango": [
-        { icon: "🍌", name: "Banana", amount: "0,5 unidade", kcal: 45 },
-        { icon: "🍎", name: "Maçã", amount: "0,85 unidade", kcal: 44 },
-        { icon: "🍊", name: "Laranja", amount: "0,95 unidade", kcal: 45 },
+        { icon: "🍌", name: "Banana", amount: "1 unidade", kcal: 90 },
+        { icon: "🍎", name: "Maçã", amount: "1 unidade", kcal: 52 },
+        { icon: "🍊", name: "Laranja", amount: "1 unidade", kcal: 47 },
         { icon: "🍍", name: "Abacaxi", amount: "90g", kcal: 45 },
         { icon: "🥭", name: "Mamão", amount: "105g", kcal: 45 }
       ],
       "maca argentina": [
-        { icon: "🍌", name: "Banana", amount: "0,35 unidade", kcal: 31 },
-        { icon: "🍊", name: "Laranja", amount: "0,6 unidade", kcal: 28 }
+        { icon: "🍌", name: "Banana", amount: "1 unidade", kcal: 89 },
+        { icon: "🍊", name: "Laranja", amount: "1 unidade", kcal: 47 }
       ],
       "maca": [
-        { icon: "🍌", name: "Banana", amount: "0,35 unidade", kcal: 31 },
-        { icon: "🍊", name: "Laranja", amount: "0,6 unidade", kcal: 28 }
+        { icon: "🍌", name: "Banana", amount: "1 unidade", kcal: 89 },
+        { icon: "🍊", name: "Laranja", amount: "1 unidade", kcal: 47 }
       ],
       "laranja de umbigo": [
-        { icon: "🍌", name: "Banana", amount: "0,3 unidade", kcal: 27 },
-        { icon: "🍎", name: "Maçã", amount: "0,5 unidade", kcal: 26 }
+        { icon: "🍌", name: "Banana", amount: "1 unidade", kcal: 90 },
+        { icon: "🍎", name: "Maçã", amount: "1 unidade", kcal: 52 }
       ],
       "queijo prato": [
         { icon: "🧀", name: "Queijo cottage", amount: "75g", kcal: 74 },
@@ -2673,8 +2673,48 @@
       };
     }
 
-    function hydrateDietOption(optionRaw) {
+    function normalizeWholeUnitItem(itemRaw) {
+      const item = { ...(itemRaw || {}) };
+      const amountText = String(item.amount || "").trim();
+      if (!/\b(unidade|unidades|unid)\b/i.test(amountText)) return item;
+      const match = amountText.match(/([\d,.]+)/);
+      if (!match) return item;
+      const currentValue = Number(match[1].replace(",", "."));
+      if (!Number.isFinite(currentValue) || currentValue <= 0 || Number.isInteger(currentValue)) return item;
+      const wholeValue = Math.max(1, Math.ceil(currentValue));
+      const ratio = wholeValue / currentValue;
+      item.amount = `${wholeValue} ${wholeValue === 1 ? "unidade" : "unidades"}`;
+      ["kcal", "protein", "carbs"].forEach((field) => {
+        const value = Number(item[field]);
+        if (!value) return;
+        item[field] = field === "kcal"
+          ? Math.round(value * ratio)
+          : Number((value * ratio).toFixed(1));
+      });
+      delete item.baseAmountValue;
+      delete item.baseAmountUnit;
+      delete item.baseKcal;
+      delete item.baseProtein;
+      delete item.baseCarbs;
+      return item;
+    }
+
+    function normalizeWholeUnitOption(optionRaw) {
       const option = cloneDietOption(optionRaw || { items: [], kcal: 0 });
+      option.items = option.items.map(normalizeWholeUnitItem);
+      return option;
+    }
+
+    function normalizeWholeUnitRecommendations(recommendationsRaw) {
+      if (!recommendationsRaw || typeof recommendationsRaw !== "object") return {};
+      return Object.fromEntries(Object.entries(recommendationsRaw).map(([mealId, options]) => [
+        mealId,
+        Array.isArray(options) ? options.map(normalizeWholeUnitOption) : []
+      ]));
+    }
+
+    function hydrateDietOption(optionRaw) {
+      const option = normalizeWholeUnitOption(optionRaw || { items: [], kcal: 0 });
       option.items = option.items.map((item) => hydrateRecommendationItem(item, option));
       option.kcal = round(option.items.reduce((total, item) => total + (Number(item.kcal) || 0), 0)) || round(Number(option.kcal) || 0);
       return option;
@@ -2794,13 +2834,13 @@
       calorieTarget: ""
     };
     const defaultMealTimes = Object.fromEntries(mealTypes.map((item) => [item.id, item.defaultTime]));
-    const dietSuggestionPlanVersion = "1400-1500-4ref-v1";
+    const dietSuggestionPlanVersion = "integer-units-1600-v1";
 
     let appData = JSON.parse(localStorage.getItem(storageKey) || '{"meals":[],"expenses":[]}');
     appData = {
       meals: Array.isArray(appData.meals) ? appData.meals : [],
       expenses: Array.isArray(appData.expenses) ? appData.expenses : [],
-      dietRecommendations: appData.dietRecommendations && typeof appData.dietRecommendations === "object" ? appData.dietRecommendations : {},
+      dietRecommendations: normalizeWholeUnitRecommendations(appData.dietRecommendations),
       dietSuggestionPlanVersion: appData.dietSuggestionPlanVersion || "",
       water: appData.water && typeof appData.water === "object" ? appData.water : {},
       settings: {
@@ -2815,7 +2855,7 @@
       profile: { ...defaultProfile, ...(appData.profile || {}) }
     };
     if (appData.dietSuggestionPlanVersion !== dietSuggestionPlanVersion) {
-      delete appData.dietRecommendations["lanche-manha"];
+      appData.dietRecommendations = normalizeWholeUnitRecommendations(appData.dietRecommendations);
       appData.dietSuggestionPlanVersion = dietSuggestionPlanVersion;
       localStorage.setItem(storageKey, JSON.stringify(appData));
     }
@@ -2926,7 +2966,7 @@
         meals: Array.isArray(remoteData.meals) ? remoteData.meals : appData.meals,
         expenses: Array.isArray(remoteData.expenses) ? remoteData.expenses : appData.expenses,
         dietRecommendations: remoteData.dietRecommendations && typeof remoteData.dietRecommendations === "object"
-          ? remoteData.dietRecommendations
+          ? normalizeWholeUnitRecommendations(remoteData.dietRecommendations)
           : appData.dietRecommendations,
         water: remoteData.water && typeof remoteData.water === "object" ? remoteData.water : appData.water,
         settings: { ...appData.settings, ...(remoteData.settings || {}) },
@@ -2936,6 +2976,7 @@
         mealTimes: { ...defaultMealTimes, ...(remoteData.mealTimes || {}) },
         profile: { ...defaultProfile, ...(remoteData.profile || {}) }
       };
+      appData.dietSuggestionPlanVersion = dietSuggestionPlanVersion;
       localStorage.setItem(storageKey, JSON.stringify(appData));
     }
 
