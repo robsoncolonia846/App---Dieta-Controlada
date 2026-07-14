@@ -3423,6 +3423,30 @@
       });
     }
 
+    function beginSavedMealEdit(meal, returnTab = "hoje") {
+      if (!meal) return;
+      const mealType = mealTypes.find((item) => item.id === meal.mealType) || mealTypes[0];
+      detailReturnTab = returnTab;
+      currentMealDetail = mealType.id;
+      selectedMealType = mealType.id;
+      editingMealType = mealType.id;
+      editingMealId = meal.id;
+      editingDietTemplate = null;
+      recommendationRegisterArmed = true;
+      currentRecommendationOptions = [savedMealToRecommendationOption(meal)];
+      selectedRecommendationIndex = 0;
+      mealDetailTitle.textContent = mealDetailLabels[mealType.id] || mealType.name;
+      mealDetailIcon.textContent = mealType.icon;
+      mealDetailTime.value = meal.mealTime || appData.mealTimes?.[mealType.id] || mealType.defaultTime;
+      mealDetailStatus.textContent = "Editando";
+      mealDetailSubtitle.textContent = "Edite o registro salvo nesta refeição";
+      mealDetailRegister.textContent = "Salvar edição";
+      mealDetailRegister.classList.remove("hidden");
+      mealUseSuggestion.classList.add("hidden");
+      renderRecommendationOptions();
+      openTab("refeicao-detalhe");
+    }
+
     function openMealDetail(mealTypeId) {
       detailReturnTab = "hoje";
       currentMealDetail = mealTypeId;
@@ -3478,19 +3502,7 @@
         }));
         recommendationCarousel.querySelectorAll("[data-edit-saved-meal]").forEach((button) => button.addEventListener("click", () => {
           const meal = registeredMeals.find((item) => item.id === button.dataset.editSavedMeal);
-          if (!meal) return;
-          editingMealType = mealType.id;
-          editingMealId = meal.id;
-          editingDietTemplate = null;
-          recommendationRegisterArmed = true;
-          currentRecommendationOptions = [savedMealToRecommendationOption(meal)];
-          selectedRecommendationIndex = 0;
-          mealDetailStatus.textContent = "Editando";
-          mealDetailSubtitle.textContent = "Edite o registro salvo nesta refeição";
-          mealDetailRegister.textContent = "Salvar edição";
-          mealDetailRegister.classList.remove("hidden");
-          mealUseSuggestion.classList.add("hidden");
-          renderRecommendationOptions();
+          beginSavedMealEdit(meal, "hoje");
         }));
         openTab("refeicao-detalhe");
         return;
@@ -4528,6 +4540,7 @@
                 </div>
               </div>
             `).join("")}
+            <button class="add-recommendation-item" type="button" data-edit-home-meal="${item.id}">Editar refeição</button>
           </div>
         `;
       }).join("");
@@ -4535,6 +4548,12 @@
         event.preventDefault();
         event.stopPropagation();
         deleteMealRecord(button.dataset.deleteSavedMeal);
+      }));
+      consumoResumo.querySelectorAll("[data-edit-home-meal]").forEach((button) => button.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const meal = appData.meals.find((item) => item.id === button.dataset.editHomeMeal);
+        beginSavedMealEdit(meal, "hoje");
       }));
     }
 
