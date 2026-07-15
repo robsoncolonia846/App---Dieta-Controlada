@@ -1730,7 +1730,7 @@
 
     .diet-food-row {
       display: grid;
-      grid-template-columns: 26px 1fr auto;
+      grid-template-columns: 44px 1fr auto;
       align-items: center;
       gap: 12px;
       font-size: 17px;
@@ -1738,8 +1738,18 @@
     }
 
     .diet-check {
-      color: #1fa12e;
-      font-weight: 950;
+      display: none;
+    }
+
+    .diet-food-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: #f1f3f5;
+      font-size: 24px;
+      line-height: 1;
     }
 
     .diet-food-name {
@@ -2776,7 +2786,7 @@
           const optionEdited = isDietOptionEdited(mealType.id, selectedOptionIndex);
           const foodsList = option.items.map((item, itemIndex) => `
             <div class="diet-food-row">
-              <span class="diet-check">✓</span>
+              <span class="diet-food-icon" aria-hidden="true">${escapeHTML(item.icon || iconForFoodName(item.name))}</span>
               <span class="diet-food-name">
                 ${escapeHTML(item.name)}
                 <span class="diet-food-detail">${escapeHTML(item.amount)}${item.kcal ? ` • ${round(item.kcal)} kcal` : ""}</span>
@@ -3770,6 +3780,7 @@
 
     function hydrateRecommendationItem(item, option) {
       const hydrated = { ...item };
+      hydrated.icon = hydrated.icon || iconForFoodName(hydrated.name);
       const parsed = parseAmount(hydrated.amount);
       if (!parsed) return hydrated;
       if (!Number(hydrated.kcal)) {
@@ -3818,6 +3829,19 @@
 
     function iconForFoodName(name = "") {
       const normalized = normalizeText(name);
+      if (normalized.includes("bolo")) return "🍰";
+      if (normalized.includes("pizza")) return "🍕";
+      if (normalized.includes("lasanha")) return "🍝";
+      if (normalized.includes("panqueca")) return "🥞";
+      if (normalized.includes("peixe")) return "🐟";
+      if (normalized.includes("coracao")) return "🍗";
+      if (normalized.includes("arroz com carne")) return "🍛";
+      if (normalized.includes("lombo") || normalized.includes("porco")) return "🥩";
+      if (normalized.includes("salsichao") || normalized.includes("linguica")) return "🌭";
+      if (normalized.includes("brocolis")) return "🥦";
+      if (normalized.includes("cenoura")) return "🥕";
+      if (normalized.includes("beterraba")) return "🧅";
+      if (normalized.includes("couve") || normalized.includes("repolho") || normalized.includes("alface")) return "🥬";
       if (normalized.includes("estrogonof")) return "🍛";
       if (normalized.includes("pao") && normalized.includes("ovo")) return "🥪";
       if (normalized.includes("pao")) return "🥖";
