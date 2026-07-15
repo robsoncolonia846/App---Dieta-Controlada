@@ -132,6 +132,18 @@ export const foods = [
     ]
   },
   {
+    id: "bolo-de-chocolate-com-calda",
+    name: "Bolo de Chocolate com Calda",
+    category: "Alimentação",
+    caloriesPer100g: 380,
+    proteinPer100g: 10,
+    carbsPer100g: 104,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "50g", grams: 50 }
+    ]
+  },
+  {
     id: "brocolis",
     name: "Brocolis",
     category: "Alimentação",
