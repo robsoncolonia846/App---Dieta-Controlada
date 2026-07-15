@@ -1105,10 +1105,11 @@
     }
 
     .recommended-item {
+      position: relative;
       display: grid;
-      grid-template-columns: 54px 1fr auto auto;
+      grid-template-columns: 54px minmax(0, 1fr) auto auto;
       align-items: center;
-      gap: 14px;
+      gap: 12px;
       border: 0;
       background: transparent;
       text-align: left;
@@ -1118,6 +1119,23 @@
       cursor: pointer;
       touch-action: manipulation;
       border-radius: 14px;
+    }
+
+    .recommended-item-main {
+      min-width: 0;
+    }
+
+    .recommended-item > :nth-child(2) {
+      min-width: 0;
+      padding-right: 78px;
+    }
+
+    .recommended-item-actions {
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 6px;
+      flex: 0 0 auto;
     }
 
     .recommended-item:active {
@@ -1201,26 +1219,27 @@
     }
 
     .quantity-controls {
+      position: absolute;
+      top: 50%;
+      right: 82px;
+      transform: translateY(-50%);
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      justify-content: center;
+      gap: 5px;
       flex: 0 0 auto;
     }
 
     .qty-button {
-      width: 24px;
-      height: 24px;
+      width: 34px;
+      height: 34px;
       border: 1px solid #d8e8d8;
       background: #f7fbf7;
       color: #209b26;
       border-radius: 50%;
       font-weight: 950;
-      font-size: 15px;
+      font-size: 18px;
       line-height: 1;
-      padding: 0;
-      display: inline-grid;
-      place-items: center;
-      line-height: 30px;
       cursor: pointer;
       touch-action: manipulation;
       display: inline-flex;
@@ -3587,7 +3606,7 @@
           ${option.items.map((item, itemIndex) => `
             <div class="recommended-item">
               <div class="recommended-item-icon">${item.icon}</div>
-              <div>
+              <div class="recommended-item-main">
                 <div class="meal-name">${item.name}</div>
                 <div class="item-detail-row">
                   <div class="muted">${escapeHTML(compactAmountLabel(item.amount))}${item.kcal ? ` • ${round(item.kcal)} kcal` : ""}</div>
