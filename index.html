@@ -3825,6 +3825,21 @@
       return Math.round(caloriesPer100g * grams / 100);
     }
 
+    function estimateMacrosFromFood(item) {
+      const parsed = parseAmount(item.amount);
+      const food = findFoodByName(item.name);
+      if (!parsed || !food) return { protein: 0, carbs: 0 };
+      let grams = parsed.value;
+      if (parsed.unit !== "g" && parsed.unit !== "ml") {
+        const serving = food.servings?.find((option) => normalizeText(option.name).includes(parsed.unit));
+        grams = parsed.value * (Number(serving?.grams) || 50);
+      }
+      return {
+        protein: Number(((Number(food.proteinPer100g) || 0) * grams / 100).toFixed(1)),
+        carbs: Number(((Number(food.carbsPer100g) || 0) * grams / 100).toFixed(1))
+      };
+    }
+
     function hydrateRecommendationItem(item, option) {
       const hydrated = { ...item };
       hydrated.icon = hydrated.icon || iconForFoodName(hydrated.name);
@@ -3833,6 +3848,9 @@
       if (!Number(hydrated.kcal)) {
         hydrated.kcal = estimateKcalFromFood(hydrated) || Math.round((Number(option.kcal) || 0) / Math.max(1, option.items.length));
       }
+      const estimatedMacros = estimateMacrosFromFood(hydrated);
+      if (!Number(hydrated.protein) && estimatedMacros.protein) hydrated.protein = estimatedMacros.protein;
+      if (!Number(hydrated.carbs) && estimatedMacros.carbs) hydrated.carbs = estimatedMacros.carbs;
       hydrated.baseAmountValue = parsed.value;
       hydrated.baseAmountUnit = parsed.unit;
       hydrated.baseKcal = Number(hydrated.kcal) || 0;
@@ -3845,7 +3863,7 @@
       return Boolean(parseAmount(item.amount));
     }
 
-    function adjustRecommendationItemAmount(recommendationIndex, itemIndex, direction) {
+    function adjustRecommendationItemAmount(recommendationIndex, itemIndex, direction, shouldRender = true) {
       const option = currentRecommendationOptions?.[recommendationIndex];
       const item = option?.items?.[itemIndex];
       const parsed = parseAmount(item?.amount);
@@ -3871,7 +3889,7 @@
       if (item.baseProtein) item.protein = Number((item.baseProtein * ratio).toFixed(1));
       if (item.baseCarbs) item.carbs = Number((item.baseCarbs * ratio).toFixed(1));
       recalculateRecommendation(option);
-      renderRecommendationOptions();
+      if (shouldRender) renderRecommendationOptions();
     }
 
     function iconForFoodName(name = "") {
@@ -3993,10 +4011,42 @@
       return option;
     }
 
-    function openSubstituteModal(recommendationIndex, itemIndex) {
+    function saveHomeQuickMealOption(mealId, option) {
+      const meal = appData.meals.find((item) => item.id === mealId);
+      if (!meal || !option?.items?.length) return false;
+      const mealType = mealTypes.find((item) => item.id === meal.mealType) || mealTypes[0];
+      recalculateRecommendation(option);
+      const itemsLabel = option.items.map((item) => `${item.name} (${item.amount})`).join(", ");
+      meal.foodId = meal.foodId || `sugestao-${mealType.id}-${Date.now()}`;
+      meal.foodName = `${mealDetailLabels[mealType.id] || mealType.name}: ${itemsLabel}`;
+      meal.mealType = mealType.id;
+      meal.mealTypeName = mealType.name;
+      meal.mealTime = meal.mealTime || appData.mealTimes?.[mealType.id] || mealType.defaultTime;
+      meal.grams = 0;
+      meal.quantity = 1;
+      meal.servingName = "Dieta sugerida";
+      meal.servingId = "dieta-sugerida";
+      meal.calories = round(option.kcal || 0);
+      meal.protein = round(option.items.reduce((total, item) => total + (Number(item.protein) || 0), 0));
+      meal.carbs = round(option.items.reduce((total, item) => total + (Number(item.carbs) || 0), 0));
+      saveData();
+      renderAll();
+      return true;
+    }
+
+    function prepareHomeQuickMeal(mealId) {
+      const meal = appData.meals.find((item) => item.id === mealId);
+      if (!meal) return null;
+      currentMealDetail = meal.mealType || mealTypes[0].id;
+      currentRecommendationOptions = [savedMealToRecommendationOption(meal)];
+      selectedRecommendationIndex = 0;
+      return { meal, option: currentRecommendationOptions[0] };
+    }
+
+    function openSubstituteModal(recommendationIndex, itemIndex, homeMealId = null) {
       const item = currentRecommendationOptions?.[recommendationIndex]?.items?.[itemIndex];
       if (!item) return;
-      substituteTarget = { mode: "substitute", recommendationIndex, itemIndex };
+      substituteTarget = { mode: "substitute", recommendationIndex, itemIndex, homeMealId };
       substituteTitle.textContent = "Trocar alimento";
       substituteDescription.textContent = "";
       const foodOptions = [...foods].sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
@@ -4039,11 +4089,11 @@
       requestAnimationFrame(() => searchInput.focus());
     }
 
-    function openAddItemModal(recommendationIndex) {
+    function openAddItemModal(recommendationIndex, homeMealId = null) {
       const safeIndex = Number.isFinite(recommendationIndex) ? recommendationIndex : selectedRecommendationIndex;
       const option = currentRecommendationOptions?.[safeIndex];
       if (!option) return;
-      substituteTarget = { mode: "add", recommendationIndex: safeIndex };
+      substituteTarget = { mode: "add", recommendationIndex: safeIndex, homeMealId };
       substituteTitle.textContent = "Adicionar item";
       substituteDescription.textContent = "";
       const foodOptions = [...foods].sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
@@ -4095,7 +4145,11 @@
       if (!option?.items?.[itemIndex]) return;
       option.items[itemIndex] = hydrateRecommendationItem({ ...substitute, substituted: true }, option);
       recalculateRecommendation(option);
-      renderRecommendationOptions();
+      if (substituteTarget.homeMealId) {
+        saveHomeQuickMealOption(substituteTarget.homeMealId, option);
+      } else {
+        renderRecommendationOptions();
+      }
       closeSubstituteModal();
     }
 
@@ -4114,8 +4168,12 @@
       if (!option) return;
       option.items.push(hydrateRecommendationItem(foodToRecommendationItem(food), option));
       recalculateRecommendation(option);
-      renderRecommendationOptions();
-      updateRecommendationRegisterVisibility();
+      if (substituteTarget.homeMealId) {
+        saveHomeQuickMealOption(substituteTarget.homeMealId, option);
+      } else {
+        renderRecommendationOptions();
+        updateRecommendationRegisterVisibility();
+      }
       closeSubstituteModal();
     }
 
@@ -4631,16 +4689,26 @@
               </div>
               <button class="delete-record-button" type="button" data-delete-saved-meal="${item.id}" aria-label="Apagar registro">×</button>
             </div>
-            ${option.items.map((food) => `
+            ${option.items.map((food, itemIndex) => `
               <div class="recommended-item">
                 <div class="recommended-item-icon">${food.icon}</div>
                 <div>
                   <div class="meal-name">${food.name}</div>
-                  <div class="muted">${food.amount}${food.kcal ? ` • ${round(food.kcal)} kcal` : ""}</div>
+                  <div class="item-detail-row">
+                    <div class="muted">${food.amount}${food.kcal ? ` • ${round(food.kcal)} kcal` : ""}</div>
+                    ${canAdjustItemAmount(food) ? `
+                      <span class="quantity-controls" aria-label="Ajustar quantidade de ${food.name}">
+                        <button class="qty-button" type="button" data-home-adjust-meal="${item.id}" data-home-adjust-item="${itemIndex}" data-home-adjust-delta="-1" aria-label="Diminuir ${food.name}">−</button>
+                        <button class="qty-button" type="button" data-home-adjust-meal="${item.id}" data-home-adjust-item="${itemIndex}" data-home-adjust-delta="1" aria-label="Aumentar ${food.name}">+</button>
+                      </span>
+                    ` : ""}
+                  </div>
                 </div>
+                <button class="swap-icon" type="button" data-home-substitute-meal="${item.id}" data-home-substitute-item="${itemIndex}" aria-label="Substituir ${food.name}">⇄</button>
+                <button class="item-remove-button" type="button" data-home-remove-meal="${item.id}" data-home-remove-item="${itemIndex}" aria-label="Excluir ${food.name}">×</button>
               </div>
             `).join("")}
-            <button class="add-recommendation-item" type="button" data-edit-home-meal="${item.id}">Editar refeição</button>
+            <button class="add-recommendation-item" type="button" data-home-add-meal="${item.id}">+ Adicionar item</button>
           </div>
         `;
       }).join("");
@@ -4649,11 +4717,44 @@
         event.stopPropagation();
         deleteMealRecord(button.dataset.deleteSavedMeal);
       }));
-      consumoResumo.querySelectorAll("[data-edit-home-meal]").forEach((button) => button.addEventListener("click", (event) => {
+      consumoResumo.querySelectorAll("[data-home-substitute-meal]").forEach((button) => button.addEventListener("click", (event) => {
         event.preventDefault();
         event.stopPropagation();
-        const meal = appData.meals.find((item) => item.id === button.dataset.editHomeMeal);
-        beginSavedMealEdit(meal, "hoje");
+        const prepared = prepareHomeQuickMeal(button.dataset.homeSubstituteMeal);
+        if (!prepared) return;
+        openSubstituteModal(0, Number(button.dataset.homeSubstituteItem), prepared.meal.id);
+      }));
+      consumoResumo.querySelectorAll("[data-home-add-meal]").forEach((button) => button.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const prepared = prepareHomeQuickMeal(button.dataset.homeAddMeal);
+        if (!prepared) return;
+        openAddItemModal(0, prepared.meal.id);
+      }));
+      consumoResumo.querySelectorAll("[data-home-adjust-meal]").forEach((button) => button.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const prepared = prepareHomeQuickMeal(button.dataset.homeAdjustMeal);
+        if (!prepared) return;
+        adjustRecommendationItemAmount(0, Number(button.dataset.homeAdjustItem), Number(button.dataset.homeAdjustDelta), false);
+        saveHomeQuickMealOption(prepared.meal.id, currentRecommendationOptions[0]);
+      }));
+      consumoResumo.querySelectorAll("[data-home-remove-meal]").forEach((button) => button.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const prepared = prepareHomeQuickMeal(button.dataset.homeRemoveMeal);
+        const itemIndex = Number(button.dataset.homeRemoveItem);
+        const food = prepared?.option?.items?.[itemIndex];
+        if (!prepared || !food) return;
+        if (!confirm(`Excluir ${food.name} desta refeição?`)) return;
+        prepared.option.items.splice(itemIndex, 1);
+        if (prepared.option.items.length === 0) {
+          appData.meals = appData.meals.filter((item) => item.id !== prepared.meal.id);
+          saveData();
+          renderAll();
+          return;
+        }
+        saveHomeQuickMealOption(prepared.meal.id, prepared.option);
       }));
     }
 
