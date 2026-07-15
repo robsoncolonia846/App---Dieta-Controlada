@@ -2447,7 +2447,7 @@
       "leite desnatado": 37,
       "leite integral": 62,
       "maca": 70,
-      "macarrao": 150,
+      "macarrao": 200,
       "melancia": 30,
       "morango": 32,
       "omelete": 160,
@@ -2770,8 +2770,8 @@
         { icon: "🌿", name: "Mandioca", amount: "90g", kcal: 113 },
         { icon: "🌾", name: "Quinoa", amount: "30g", kcal: 110 },
         { icon: "🌽", name: "Cuscuz", amount: "100g", kcal: 112 },
-        { icon: "🍝", name: "Macarrão", amount: "85g", kcal: 111 },
-        { icon: "🍝", name: "Macarrão cozido", amount: "85g", kcal: 111 }
+        { icon: "🍝", name: "Macarrão", amount: "85g", kcal: 170 },
+        { icon: "🍝", name: "Macarrão cozido", amount: "85g", kcal: 170 }
       ],
       "batata inglesa": [
         { icon: "🥔", name: "Batata", amount: "60g", kcal: 48 },
@@ -3946,7 +3946,10 @@
 
     function hydrateRecommendationItem(item, option) {
       const hydrated = { ...item };
-      hydrated.icon = hydrated.icon || iconForFoodName(hydrated.name);
+      const normalizedName = normalizeText(hydrated.name);
+      hydrated.icon = normalizedName.includes("macarrao") || normalizedName.includes("massa")
+        ? "🍝"
+        : hydrated.icon || iconForFoodName(hydrated.name);
       const parsed = parseAmount(hydrated.amount);
       if (!parsed) return hydrated;
       if (!Number(hydrated.kcal)) {

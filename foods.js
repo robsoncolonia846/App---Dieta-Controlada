@@ -435,7 +435,7 @@ export const foods = [
     id: "macarrao",
     name: "Macarrão",
     category: "Alimentação",
-    caloriesPer100g: 150,
+    caloriesPer100g: 200,
     proteinPer100g: 5.8,
     carbsPer100g: 31,
     servings: [
