@@ -516,6 +516,17 @@ export const foods = [
     ]
   },
   {
+    id: "outros",
+    name: "Outros",
+    category: "Alimentação",
+    caloriesPer100g: 100,
+    proteinPer100g: 0,
+    carbsPer100g: 0,
+    servings: [
+      { id: "unidade", name: "Unidade", grams: 100 }
+    ]
+  },
+  {
     id: "panqueca-carne-moida",
     name: "Panqueca (Carne Moida)",
     category: "Alimentação",
