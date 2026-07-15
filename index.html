@@ -1190,26 +1190,36 @@
     .item-detail-row {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      flex-wrap: wrap;
+      justify-content: flex-start;
+      gap: 6px;
+      flex-wrap: nowrap;
+      white-space: nowrap;
+    }
+
+    .item-detail-row .muted {
+      font-size: 11px;
     }
 
     .quantity-controls {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
+      flex: 0 0 auto;
     }
 
     .qty-button {
-      width: 30px;
-      height: 30px;
+      width: 24px;
+      height: 24px;
       border: 1px solid #d8e8d8;
       background: #f7fbf7;
       color: #209b26;
       border-radius: 50%;
       font-weight: 950;
-      font-size: 18px;
+      font-size: 15px;
+      line-height: 1;
+      padding: 0;
+      display: inline-grid;
+      place-items: center;
       line-height: 30px;
       cursor: pointer;
       touch-action: manipulation;
@@ -1971,8 +1981,7 @@
 
             <div class="card home-extra" style="margin-top: 14px;">
               <h2>Histórico</h2>
-              <div class="muted">Últimos 15 dias</div>
-              <div class="chart" id="balance-chart" aria-label="Histórico dos últimos 7 dias">
+              <div class="chart" id="balance-chart" aria-label="Histórico diário">
               </div>
             </div>
 
@@ -2806,6 +2815,12 @@
         .replace(/'/g, "&#039;");
     }
 
+    function compactAmountLabel(value = "") {
+      return String(value)
+        .replace(/\bunidades\b/gi, "Unid.")
+        .replace(/\bunidade\b/gi, "Unid.");
+    }
+
     function renderDietDashboard() {
       if (!dietDashboard) return;
       dietProfileWeight.textContent = profileWeightLabel.textContent;
@@ -2942,7 +2957,7 @@
     let selectedActivityId = activityPresets[0].id;
     let selectedTimeUnit = "minutes";
     let currentFoodMode = "popular";
-    const historyDays = 15;
+    const minimumHistoryDays = 7;
     let currentPeriod = "hoje";
     let currentMealDetail = mealTypes[0].id;
     let selectedRecommendationIndex = null;
@@ -3527,40 +3542,9 @@
         ? "Você já registrou essa refeição hoje"
         : "Escolha uma sugestão ou crie sua própria refeição";
       if (alreadyDone) {
-        recommendationCarousel.innerHTML = registeredMeals.map((item) => {
-          const savedOption = savedMealToRecommendationOption(item);
-          return `
-            <div class="recommendation-card selected">
-              <div class="recommendation-head">
-                <div class="recommendation-head-main">
-                  <span class="selected-pill">Registrada</span>
-                  <span class="kcal-pill">${round(Number(savedOption.kcal) || Number(item.calories) || 0)} kcal</span>
-                </div>
-                <button class="delete-record-button" type="button" data-delete-saved-meal="${item.id}" aria-label="Apagar registro">×</button>
-              </div>
-              ${savedOption.items.map((food) => `
-                <div class="recommended-item">
-                  <div class="recommended-item-icon">${food.icon}</div>
-                  <div>
-                    <div class="meal-name">${food.name}</div>
-                    <div class="muted">${food.amount}${food.kcal ? ` • ${round(food.kcal)} kcal` : ""}</div>
-                  </div>
-                </div>
-              `).join("")}
-              <button class="add-recommendation-item" type="button" data-edit-saved-meal="${item.id}">Editar refeição</button>
-            </div>
-          `;
-        }).join("");
+        recommendationCarousel.innerHTML = registeredMeals.map(savedMealQuickCard).join("");
         recommendationDots.innerHTML = "";
-        recommendationCarousel.querySelectorAll("[data-delete-saved-meal]").forEach((button) => button.addEventListener("click", (event) => {
-          event.preventDefault();
-          event.stopPropagation();
-          deleteMealRecord(button.dataset.deleteSavedMeal);
-        }));
-        recommendationCarousel.querySelectorAll("[data-edit-saved-meal]").forEach((button) => button.addEventListener("click", () => {
-          const meal = registeredMeals.find((item) => item.id === button.dataset.editSavedMeal);
-          beginSavedMealEdit(meal, "hoje");
-        }));
+        bindSavedMealQuickActions(recommendationCarousel);
         openTab("refeicao-detalhe");
         return;
       }
@@ -3606,7 +3590,7 @@
               <div>
                 <div class="meal-name">${item.name}</div>
                 <div class="item-detail-row">
-                  <div class="muted">${item.amount}${item.kcal ? ` • ${round(item.kcal)} kcal` : ""}</div>
+                  <div class="muted">${escapeHTML(compactAmountLabel(item.amount))}${item.kcal ? ` • ${round(item.kcal)} kcal` : ""}</div>
                   ${canAdjustItemAmount(item) ? `
                     <span class="quantity-controls" aria-label="Ajustar quantidade de ${item.name}">
                       <span class="qty-button" role="button" tabindex="0" data-adjust-rec="${index}" data-adjust-item="${itemIndex}" data-adjust-delta="-1">−</span>
@@ -4014,6 +3998,7 @@
     function saveHomeQuickMealOption(mealId, option) {
       const meal = appData.meals.find((item) => item.id === mealId);
       if (!meal || !option?.items?.length) return false;
+      const refreshDetail = visibleSectionId() === "refeicao-detalhe";
       const mealType = mealTypes.find((item) => item.id === meal.mealType) || mealTypes[0];
       recalculateRecommendation(option);
       const itemsLabel = option.items.map((item) => `${item.name} (${item.amount})`).join(", ");
@@ -4031,6 +4016,7 @@
       meal.carbs = round(option.items.reduce((total, item) => total + (Number(item.carbs) || 0), 0));
       saveData();
       renderAll();
+      if (refreshDetail) openMealDetail(meal.mealType);
       return true;
     }
 
@@ -4041,6 +4027,95 @@
       currentRecommendationOptions = [savedMealToRecommendationOption(meal)];
       selectedRecommendationIndex = 0;
       return { meal, option: currentRecommendationOptions[0] };
+    }
+
+    function savedMealQuickCard(item) {
+      const option = savedMealToRecommendationOption(item);
+      const mealType = mealTypes.find((meal) => meal.id === item.mealType);
+      const mealTypeLabel = item.mealTypeName || mealType?.name || "Refeição";
+      const mealTime = item.mealTime ? ` ${item.mealTime}` : "";
+      return `
+        <div class="recommendation-card selected">
+          <div class="recommendation-head">
+            <div class="recommendation-head-main">
+              <span class="selected-pill">${mealType?.icon || "🍴"} ${mealTypeLabel}${mealTime}</span>
+              <span class="kcal-pill">${round(Number(item.calories) || 0)} kcal</span>
+            </div>
+            <button class="delete-record-button" type="button" data-delete-saved-meal="${item.id}" aria-label="Apagar refeição">×</button>
+          </div>
+          ${option.items.map((food, itemIndex) => `
+            <div class="recommended-item">
+              <div class="recommended-item-icon">${food.icon}</div>
+              <div>
+                <div class="meal-name">${food.name}</div>
+                <div class="item-detail-row">
+                  <div class="muted">${escapeHTML(compactAmountLabel(food.amount))}${food.kcal ? ` • ${round(food.kcal)} kcal` : ""}</div>
+                  ${canAdjustItemAmount(food) ? `
+                    <span class="quantity-controls" aria-label="Ajustar quantidade de ${food.name}">
+                      <button class="qty-button" type="button" data-home-adjust-meal="${item.id}" data-home-adjust-item="${itemIndex}" data-home-adjust-delta="-1" aria-label="Diminuir ${food.name}">−</button>
+                      <button class="qty-button" type="button" data-home-adjust-meal="${item.id}" data-home-adjust-item="${itemIndex}" data-home-adjust-delta="1" aria-label="Aumentar ${food.name}">+</button>
+                    </span>
+                  ` : ""}
+                </div>
+              </div>
+              <button class="swap-icon" type="button" data-home-substitute-meal="${item.id}" data-home-substitute-item="${itemIndex}" aria-label="Substituir ${food.name}">⇄</button>
+              <button class="item-remove-button" type="button" data-home-remove-meal="${item.id}" data-home-remove-item="${itemIndex}" aria-label="Excluir ${food.name}">×</button>
+            </div>
+          `).join("")}
+          <button class="add-recommendation-item" type="button" data-home-add-meal="${item.id}">+ Adicionar item</button>
+        </div>
+      `;
+    }
+
+    function bindSavedMealQuickActions(container) {
+      if (!container) return;
+      container.querySelectorAll("[data-delete-saved-meal]").forEach((button) => button.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        deleteMealRecord(button.dataset.deleteSavedMeal);
+      }));
+      container.querySelectorAll("[data-home-substitute-meal]").forEach((button) => button.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const prepared = prepareHomeQuickMeal(button.dataset.homeSubstituteMeal);
+        if (!prepared) return;
+        openSubstituteModal(0, Number(button.dataset.homeSubstituteItem), prepared.meal.id);
+      }));
+      container.querySelectorAll("[data-home-add-meal]").forEach((button) => button.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const prepared = prepareHomeQuickMeal(button.dataset.homeAddMeal);
+        if (!prepared) return;
+        openAddItemModal(0, prepared.meal.id);
+      }));
+      container.querySelectorAll("[data-home-adjust-meal]").forEach((button) => button.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const prepared = prepareHomeQuickMeal(button.dataset.homeAdjustMeal);
+        if (!prepared) return;
+        adjustRecommendationItemAmount(0, Number(button.dataset.homeAdjustItem), Number(button.dataset.homeAdjustDelta), false);
+        saveHomeQuickMealOption(prepared.meal.id, currentRecommendationOptions[0]);
+      }));
+      container.querySelectorAll("[data-home-remove-meal]").forEach((button) => button.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const prepared = prepareHomeQuickMeal(button.dataset.homeRemoveMeal);
+        const itemIndex = Number(button.dataset.homeRemoveItem);
+        const food = prepared?.option?.items?.[itemIndex];
+        if (!prepared || !food) return;
+        if (!confirm(`Excluir ${food.name} desta refeição?`)) return;
+        prepared.option.items.splice(itemIndex, 1);
+        if (prepared.option.items.length === 0) {
+          const refreshMealType = prepared.meal.mealType;
+          const refreshDetail = visibleSectionId() === "refeicao-detalhe";
+          appData.meals = appData.meals.filter((item) => item.id !== prepared.meal.id);
+          saveData();
+          renderAll();
+          if (refreshDetail) openMealDetail(refreshMealType);
+          return;
+        }
+        saveHomeQuickMealOption(prepared.meal.id, prepared.option);
+      }));
     }
 
     function openSubstituteModal(recommendationIndex, itemIndex, homeMealId = null) {
@@ -4511,11 +4586,22 @@
         : "Selecione uma atividade e informe o tempo.";
     }
 
-    function historyDaysSeries(days = historyDays) {
+    function historyDaysSeries() {
       const monthNames = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
+      const today = appDayDate();
+      const minimumStart = new Date(today);
+      minimumStart.setDate(minimumStart.getDate() - (minimumHistoryDays - 1));
+      const registeredDates = [...appData.meals, ...appData.expenses]
+        .map((item) => item.date)
+        .filter((date) => /^\d{4}-\d{2}-\d{2}$/.test(date || "") && date <= todayISO())
+        .sort();
+      const firstRegisteredDate = registeredDates[0];
+      const registeredStart = firstRegisteredDate ? new Date(`${firstRegisteredDate}T12:00:00`) : null;
+      const start = registeredStart && registeredStart < minimumStart ? registeredStart : minimumStart;
+      const days = Math.max(minimumHistoryDays, Math.round((today - start) / 86400000) + 1);
       const dates = Array.from({ length: days }, (_, index) => {
-        const date = appDayDate();
-        date.setDate(date.getDate() - (days - 1 - index));
+        const date = new Date(start);
+        date.setDate(date.getDate() + index);
         return localISODate(date);
       });
       const daily = Object.fromEntries(dates.map((date) => [date, { consumed: 0, spent: 0 }]));
@@ -4544,7 +4630,7 @@
 
     function renderChart() {
       const data = historyDaysSeries();
-      chart.setAttribute("aria-label", `Histórico dos últimos ${historyDays} dias`);
+      chart.setAttribute("aria-label", `Histórico diário com ${data.length} dias`);
       const maxAbs = Math.max(...data.flatMap((item) => [item.consumed, item.targetRange.max]), 1);
       const barAreaHeight = 122;
       const bars = data.map((item) => {
@@ -4675,87 +4761,8 @@
         consumoResumo.innerHTML = '<div class="muted">Nenhuma alimentação registrada neste período.</div>';
         return;
       }
-      consumoResumo.innerHTML = data.map((item) => {
-        const option = savedMealToRecommendationOption(item);
-        const mealType = mealTypes.find((meal) => meal.id === item.mealType);
-        const mealTypeLabel = item.mealTypeName || mealType?.name || "Refeição";
-        const mealTime = item.mealTime ? ` ${item.mealTime}` : "";
-        return `
-          <div class="recommendation-card selected">
-            <div class="recommendation-head">
-              <div class="recommendation-head-main">
-                <span class="selected-pill">${mealType?.icon || "🍴"} ${mealTypeLabel}${mealTime}</span>
-                <span class="kcal-pill">${round(Number(item.calories) || 0)} kcal</span>
-              </div>
-              <button class="delete-record-button" type="button" data-delete-saved-meal="${item.id}" aria-label="Apagar registro">×</button>
-            </div>
-            ${option.items.map((food, itemIndex) => `
-              <div class="recommended-item">
-                <div class="recommended-item-icon">${food.icon}</div>
-                <div>
-                  <div class="meal-name">${food.name}</div>
-                  <div class="item-detail-row">
-                    <div class="muted">${food.amount}${food.kcal ? ` • ${round(food.kcal)} kcal` : ""}</div>
-                    ${canAdjustItemAmount(food) ? `
-                      <span class="quantity-controls" aria-label="Ajustar quantidade de ${food.name}">
-                        <button class="qty-button" type="button" data-home-adjust-meal="${item.id}" data-home-adjust-item="${itemIndex}" data-home-adjust-delta="-1" aria-label="Diminuir ${food.name}">−</button>
-                        <button class="qty-button" type="button" data-home-adjust-meal="${item.id}" data-home-adjust-item="${itemIndex}" data-home-adjust-delta="1" aria-label="Aumentar ${food.name}">+</button>
-                      </span>
-                    ` : ""}
-                  </div>
-                </div>
-                <button class="swap-icon" type="button" data-home-substitute-meal="${item.id}" data-home-substitute-item="${itemIndex}" aria-label="Substituir ${food.name}">⇄</button>
-                <button class="item-remove-button" type="button" data-home-remove-meal="${item.id}" data-home-remove-item="${itemIndex}" aria-label="Excluir ${food.name}">×</button>
-              </div>
-            `).join("")}
-            <button class="add-recommendation-item" type="button" data-home-add-meal="${item.id}">+ Adicionar item</button>
-          </div>
-        `;
-      }).join("");
-      consumoResumo.querySelectorAll("[data-delete-saved-meal]").forEach((button) => button.addEventListener("click", (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        deleteMealRecord(button.dataset.deleteSavedMeal);
-      }));
-      consumoResumo.querySelectorAll("[data-home-substitute-meal]").forEach((button) => button.addEventListener("click", (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        const prepared = prepareHomeQuickMeal(button.dataset.homeSubstituteMeal);
-        if (!prepared) return;
-        openSubstituteModal(0, Number(button.dataset.homeSubstituteItem), prepared.meal.id);
-      }));
-      consumoResumo.querySelectorAll("[data-home-add-meal]").forEach((button) => button.addEventListener("click", (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        const prepared = prepareHomeQuickMeal(button.dataset.homeAddMeal);
-        if (!prepared) return;
-        openAddItemModal(0, prepared.meal.id);
-      }));
-      consumoResumo.querySelectorAll("[data-home-adjust-meal]").forEach((button) => button.addEventListener("click", (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        const prepared = prepareHomeQuickMeal(button.dataset.homeAdjustMeal);
-        if (!prepared) return;
-        adjustRecommendationItemAmount(0, Number(button.dataset.homeAdjustItem), Number(button.dataset.homeAdjustDelta), false);
-        saveHomeQuickMealOption(prepared.meal.id, currentRecommendationOptions[0]);
-      }));
-      consumoResumo.querySelectorAll("[data-home-remove-meal]").forEach((button) => button.addEventListener("click", (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        const prepared = prepareHomeQuickMeal(button.dataset.homeRemoveMeal);
-        const itemIndex = Number(button.dataset.homeRemoveItem);
-        const food = prepared?.option?.items?.[itemIndex];
-        if (!prepared || !food) return;
-        if (!confirm(`Excluir ${food.name} desta refeição?`)) return;
-        prepared.option.items.splice(itemIndex, 1);
-        if (prepared.option.items.length === 0) {
-          appData.meals = appData.meals.filter((item) => item.id !== prepared.meal.id);
-          saveData();
-          renderAll();
-          return;
-        }
-        saveHomeQuickMealOption(prepared.meal.id, prepared.option);
-      }));
+      consumoResumo.innerHTML = data.map(savedMealQuickCard).join("");
+      bindSavedMealQuickActions(consumoResumo);
     }
 
     function renderMealLog() {
