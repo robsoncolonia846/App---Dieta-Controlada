@@ -231,6 +231,24 @@
       gap: 6px;
       min-width: 0;
       z-index: 1;
+      appearance: none;
+      border: 0;
+      padding: 0;
+      background: transparent;
+      font: inherit;
+      cursor: pointer;
+      border-radius: 8px;
+    }
+
+    .chart-col.selected {
+      outline: 2px solid rgba(32, 155, 38, 0.62);
+      outline-offset: 2px;
+      background: rgba(159, 220, 138, 0.12);
+    }
+
+    .chart-col:focus-visible {
+      outline: 3px solid #209b26;
+      outline-offset: 2px;
     }
 
     .chart-bar-area {
@@ -3154,13 +3172,17 @@
       if (appData.settings.mealNotifications) {
         for (const meal of mealTypes) {
           const mealMinute = minutesFromTime(appData.mealTimes?.[meal.id] || meal.defaultTime);
-          const beforeDue = mealMinute - 30;
+          const regularBeforeDue = mealMinute - 30;
+          const beforeDue = Math.max(9 * 60, regularBeforeDue);
           const beforeKey = `${day}:meal:${meal.id}:before`;
           const beforeDelay = nowMinute - beforeDue;
           if (beforeDelay >= 0 && beforeDelay <= 10 && !wasNotificationSent(beforeKey)) {
+            const startsNow = beforeDue === mealMinute;
             const sent = await showAppNotification(
-              `${meal.name} em 30 minutos`,
-              `Veja as opções disponíveis para ${meal.name.toLowerCase()}.`,
+              startsNow ? `Hora do ${meal.name.toLowerCase()}` : `${meal.name} em 30 minutos`,
+              startsNow
+                ? `Já está no horário de registrar ${meal.name.toLowerCase()}.`
+                : `Veja as opções disponíveis para ${meal.name.toLowerCase()}.`,
               `meal-${day}-${meal.id}-before`,
               meal.id
             );
@@ -4243,11 +4265,13 @@
     }
 
     function inPeriod(item, period) {
+      if (/^\d{4}-\d{2}-\d{2}$/.test(period || "")) return item.date === period;
       const start = periodStart(period);
       return !start || item.date >= start;
     }
 
     function periodTitle(prefix, period = currentPeriod) {
+      if (/^\d{4}-\d{2}-\d{2}$/.test(period || "")) return `${prefix} de ${dateLabel(period)}`;
       if (period === "total") return prefix === "Atividades" ? "Atividades totais" : `${prefix} total`;
       return `${prefix} de ${period}`;
     }
@@ -4438,10 +4462,26 @@
         const maxBottom = Math.min(barAreaHeight, Math.max(0, item.targetRange.max / maxAbs * barAreaHeight));
         const status = item.consumed > item.targetRange.max ? "over" : item.consumed >= item.targetRange.min ? "range" : "low";
         const title = `${item.consumed} kcal consumidas; ${item.spent} kcal em atividades; meta ${round(item.targetRange.min)} a ${round(item.targetRange.max)} kcal`;
-        return `<div class="chart-col" title="${title}"><div class="chart-bar-area" style="--bar-height: ${height}px;"><div class="chart-value ${status}">${item.consumed}</div><span class="chart-day-target min" style="--target-bottom: ${minBottom}px;"></span><span class="chart-day-target max" style="--target-bottom: ${maxBottom}px;"></span><div class="chart-bar ${status}" style="height: ${height}px;"></div></div><div class="chart-date">${item.date}</div></div>`;
+        const selectedDate = currentPeriod === "hoje" ? todayISO() : currentPeriod;
+        return `<button type="button" class="chart-col ${selectedDate === item.isoDate ? "selected" : ""}" data-history-date="${item.isoDate}" title="${title}" aria-label="Abrir registros de ${item.isoDate.split("-").reverse().join("/")}. ${title}"><div class="chart-bar-area" style="--bar-height: ${height}px;"><div class="chart-value ${status}">${item.consumed}</div><span class="chart-day-target min" style="--target-bottom: ${minBottom}px;"></span><span class="chart-day-target max" style="--target-bottom: ${maxBottom}px;"></span><div class="chart-bar ${status}" style="height: ${height}px;"></div></div><div class="chart-date">${item.date}</div></button>`;
       }).join("");
 
       chart.innerHTML = bars;
+      chart.querySelectorAll("[data-history-date]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const selectedDate = button.dataset.historyDate;
+          currentPeriod = selectedDate === todayISO() ? "hoje" : selectedDate;
+          mealDate.value = selectedDate;
+          expenseDate.value = selectedDate;
+          periodButtons.forEach((item) => item.classList.toggle("active", currentPeriod === "hoje" && item.dataset.period === "hoje"));
+          renderChart();
+          renderConsumption(currentPeriod);
+          renderExpenses(currentPeriod);
+          renderMealLog();
+          renderExpenseLog();
+          consumoTitle.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+      });
     }
 
     function periodMeals(period = currentPeriod) {
@@ -4645,8 +4685,42 @@
       gastoResumo.innerHTML = data.map((item) => {
         const timeLabel = item.minutes > 0 ? `${item.minutes} min acumulados` : "valor manual";
         const hourLabel = item.minutes > 0 ? `<div>${Math.round((item.minutes / 60) * 10) / 10}h total</div>` : "";
-        return `<div class="meal"><div><div class="meal-name">${item.activity || item.description}</div><div class="muted">${timeLabel}</div></div><div class="macro-summary"><div>${item.calories} kcal</div>${hourLabel}</div></div>`;
+        return `<div class="meal"><div><div class="meal-name">${item.activity || item.description}</div><div class="muted">${timeLabel}</div></div><div class="macro-summary"><div>${item.calories} kcal</div>${hourLabel}<button class="edit-button" type="button" data-edit-home-expense="${item.id}">Editar</button><button class="delete-button" type="button" data-delete-home-expense="${item.id}">Excluir</button></div></div>`;
       }).join("");
+      gastoResumo.querySelectorAll("[data-edit-home-expense]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const expense = appData.expenses.find((item) => item.id === button.dataset.editHomeExpense);
+          if (!expense) return;
+          const activity = activityPresets.find((item) => item.id === expense.activityId);
+          if (!activity) {
+            alert("Esta atividade antiga foi preservada no histórico, mas não faz parte do cadastro atual.");
+            return;
+          }
+          if (!confirm("Editar esta atividade? O lançamento atual voltará para o formulário.")) return;
+          selectedActivityId = expense.activityId;
+          expenseDate.value = expense.date;
+          if (activity.manualCalories || !expense.minutes) {
+            expenseMinutes.value = expense.calories;
+          } else {
+            selectedTimeUnit = "minutes";
+            expenseMinutes.value = expense.minutes;
+            timeUnitButtons.forEach((item) => item.classList.toggle("active", item.dataset.timeUnit === "minutes"));
+          }
+          appData.expenses = appData.expenses.filter((item) => item.id !== expense.id);
+          saveData();
+          renderExpenseOptions();
+          renderAll();
+          openTab("gasto");
+        });
+      });
+      gastoResumo.querySelectorAll("[data-delete-home-expense]").forEach((button) => {
+        button.addEventListener("click", () => {
+          if (!confirm("Tem certeza que quer excluir esta atividade?")) return;
+          appData.expenses = appData.expenses.filter((expense) => expense.id !== button.dataset.deleteHomeExpense);
+          saveData();
+          renderAll();
+        });
+      });
     }
 
     function renderExpenseLog() {
