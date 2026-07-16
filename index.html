@@ -3241,7 +3241,7 @@
 
     function waterTarget() {
       const weight = Number(String(appData.profile.weightKg).replace(",", ".")) || 0;
-      return weight ? Math.round(weight * 35) : 3000;
+      return weight ? Math.max(250, Math.floor((weight * 35) / 250) * 250) : 3000;
     }
 
     function showMealRecommendationOptions(mealType) {
