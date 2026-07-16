@@ -5197,7 +5197,7 @@
         const mealTypeId = adjustButton.dataset.dietAdjustMeal;
         const prepared = prepareDietQuickOption(mealTypeId, adjustButton.dataset.dietAdjustOption);
         adjustRecommendationItemAmount(
-          prepared.option,
+          0,
           Number(adjustButton.dataset.dietAdjustItem),
           Number(adjustButton.dataset.dietAdjustDelta),
           false
