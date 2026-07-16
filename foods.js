@@ -683,5 +683,88 @@ export const foods = [
       { id: "gramas", name: "Gramas", grams: 1 },
       { id: "excel", name: "50g", grams: 50 }
     ]
+  },
+  {
+    id: "arroz-com-carne",
+    name: "Arroz com Carne",
+    category: "Alimenta??o",
+    caloriesPer100g: 140,
+    proteinPer100g: 6.5,
+    carbsPer100g: 15,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "100g", grams: 100 }
+    ]
+  },
+  {
+    id: "bolo-de-banana-com-canela",
+    name: "Bolo de Banana com Canela",
+    category: "Alimenta??o",
+    caloriesPer100g: 360,
+    proteinPer100g: 4,
+    carbsPer100g: 40,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "25g", grams: 25 }
+    ]
+  },
+  {
+    id: "bolo-de-chocolate-com-calda",
+    name: "Bolo de Chocolate com Calda",
+    category: "Alimenta??o",
+    caloriesPer100g: 400,
+    proteinPer100g: 10,
+    carbsPer100g: 104,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "50g", grams: 50 }
+    ]
+  },
+  {
+    id: "lombo-de-porco",
+    name: "Lombo de Porco",
+    category: "Alimenta??o",
+    caloriesPer100g: 240,
+    proteinPer100g: 25,
+    carbsPer100g: 0,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "100g", grams: 100 }
+    ]
+  },
+  {
+    id: "pizza",
+    name: "Pizza",
+    category: "Alimenta??o",
+    caloriesPer100g: 300,
+    proteinPer100g: 15,
+    carbsPer100g: 35,
+    servings: [
+      { id: "unidade", name: "Unid.", grams: 100 }
+    ]
+  },
+  {
+    id: "salsichao-frito",
+    name: "Salsichão Frito",
+    category: "Alimenta??o",
+    caloriesPer100g: 340,
+    proteinPer100g: 14,
+    carbsPer100g: 2,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "100g", grams: 100 }
+    ]
+  },
+  {
+    id: "salsichao-grelhado",
+    name: "Salsichão Grelhado",
+    category: "Alimenta??o",
+    caloriesPer100g: 300,
+    proteinPer100g: 14,
+    carbsPer100g: 2,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "100g", grams: 100 }
+    ]
   }
 ];

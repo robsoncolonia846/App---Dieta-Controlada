@@ -1288,6 +1288,9 @@
       justify-content: center;
       gap: 5px;
       flex: 0 0 auto;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .qty-button {
@@ -1306,6 +1309,13 @@
       align-items: center;
       justify-content: center;
       padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .diet-option-card .recommended-item {
+      -webkit-tap-highlight-color: transparent;
     }
 
     .substitute-modal {
@@ -1746,6 +1756,14 @@
       align-items: center;
       gap: 8px;
       flex-wrap: wrap;
+    }
+
+    .diet-edited-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex: 0 0 auto;
+      white-space: nowrap;
     }
 
     .edited-pill {
@@ -2747,8 +2765,7 @@
               <div class="diet-option-head">
                 <div class="diet-option-title-line">
                   <span class="diet-option-name">Opção ${String(selectedOptionIndex + 1).padStart(2, "0")}</span>
-                  ${optionEdited ? '<span class="edited-pill">Editado</span>' : ""}
-                  ${optionEdited ? `<button class="diet-reset-button" type="button" data-reset-diet-meal="${mealType.id}" data-reset-diet-option="${selectedOptionIndex}">Usar Sugestão</button>` : ""}
+                  ${optionEdited ? `<span class="diet-edited-actions"><span class="edited-pill">Editado</span><button class="diet-reset-button" type="button" data-reset-diet-meal="${mealType.id}" data-reset-diet-option="${selectedOptionIndex}">Usar Sugestão</button></span>` : ""}
                 </div>
                 <div class="diet-option-actions">
                   <span class="diet-option-kcal">${round(kcal)} kcal</span>
@@ -3117,7 +3134,7 @@
           const beforeDue = Math.max(9 * 60, regularBeforeDue);
           const beforeKey = `${day}:meal:${meal.id}:before`;
           const beforeDelay = nowMinute - beforeDue;
-          if (beforeDelay >= 0 && beforeDelay <= 10 && !wasNotificationSent(beforeKey)) {
+          if (beforeDelay >= 0 && beforeDelay <= 10 && !mealWasRegistered(meal.id) && !wasNotificationSent(beforeKey)) {
             const startsNow = beforeDue === mealMinute;
             const sent = await showAppNotification(
               startsNow ? `Hora do ${meal.name.toLowerCase()}` : `${meal.name} em 30 minutos`,
@@ -4980,6 +4997,11 @@
       if (!mealButton) return;
       event.preventDefault();
       openMealDetail(mealButton.dataset.openMealDetail);
+    });
+    dietDashboard.addEventListener("pointerdown", (event) => {
+      if (event.target.closest("[data-diet-adjust-meal]")) {
+        event.stopPropagation();
+      }
     });
     dietDashboard.addEventListener("click", (event) => {
       const resetButton = event.target.closest("[data-reset-diet-meal][data-reset-diet-option]");
