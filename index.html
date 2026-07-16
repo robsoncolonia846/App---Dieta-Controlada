@@ -2412,65 +2412,6 @@
     } catch (error) {
       console.warn("Base de alimentos não carregou.", error);
     }
-    const fallbackCaloriesPer100g = {
-      "abacaxi": 50,
-      "alface": 0,
-      "arroz": 130,
-      "arroz com carne": 140,
-      "banana": 60,
-      "batata inglesa": 90,
-      "bergamota": 40,
-      "beterraba cozida/assada": 56,
-      "beterraba crua": 0,
-      "bife frito": 240,
-      "bolo de banana com canela": 360,
-      "brocolis": 0,
-      "carne de panela (agulha)": 240,
-      "carne grelhada": 216,
-      "carne moida": 250,
-      "cenoura cozida/assada": 54,
-      "cenoura crua": 0,
-      "coracao de frango": 220,
-      "couve": 0,
-      "doce de leite": 70,
-      "estrogonof": 150,
-      "feijao": 80,
-      "frango assada (sobrecoxa)": 250,
-      "frango desfiado": 180,
-      "frango grelhado": 170,
-      "frango sobrecoxa ao molho": 180,
-      "goiabada": 308,
-      "iogurte zero": 26,
-      "laranja": 80,
-      "lazanha de carne moida": 200,
-      "lazanha de frango": 200,
-      "leite desnatado": 37,
-      "leite integral": 62,
-      "maca": 70,
-      "macarrao": 200,
-      "melancia": 30,
-      "morango": 32,
-      "omelete": 160,
-      "omelete com queijo": 280,
-      "outros": 100,
-      "ovo cozido": 160,
-      "ovo frito": 240,
-      "panqueca (carne moida)": 190,
-      "panqueca (frango)": 175,
-      "pao caseiro": 300,
-      "pao de forma": 140,
-      "pao frances": 300,
-      "pao frances + ovo frito": 300,
-      "pao frances + ovo mexido": 250,
-      "peixe assado (anchova)": 160,
-      "peixe assado (tainha)": 180,
-      "presunto": 133.3333,
-      "queijo mucarela": 475,
-      "queijo parmesao": 383.3333,
-      "repolho": 0,
-      "tomate cereja": 0,
-      "uva": 68
-    };
     const activityPresets = [
       { id: "beach-tennis-leve", name: "Beach Tennis (Leve)", icon: "🏖️", caloriesPerHour: 200 },
       { id: "beach-tennis-moderado", name: "Beach Tennis (Moderado)", icon: "🏖️", caloriesPerHour: 400 },
@@ -2662,167 +2603,6 @@
       ]
     };
 
-    const substituteCatalog = {
-      "iogurte desnatado": [
-        { icon: "🥛", name: "Leite", amount: "135g", kcal: 81 },
-        { icon: "🥛", name: "Leite desnatado", amount: "235g", kcal: 82 },
-        { icon: "🥤", name: "Whey Protein", amount: "20g", kcal: 80 }
-      ],
-      "pao frances": [
-        { icon: "🍞", name: "Pão", amount: "1 unidade", kcal: 125 },
-        { icon: "🍞", name: "Pão de forma", amount: "1 fatia", kcal: 127 }
-      ],
-      "pao de forma": [
-        { icon: "🍞", name: "Pão", amount: "1 unidade", kcal: 125 },
-        { icon: "🥖", name: "Pão francês", amount: "1 unidade", kcal: 125 }
-      ],
-      "banana prata": [
-        { icon: "🍎", name: "Maçã", amount: "2 unidades", kcal: 104 },
-        { icon: "🥭", name: "Mamão", amount: "165g", kcal: 71 },
-        { icon: "🍊", name: "Laranja", amount: "2 unidades", kcal: 95 },
-        { icon: "🍍", name: "Abacaxi", amount: "140g", kcal: 70 }
-      ],
-      "abacaxi": [
-        { icon: "🍌", name: "Banana", amount: "1 unidade", kcal: 89 },
-        { icon: "🍎", name: "Maçã", amount: "2 unidades", kcal: 105 },
-        { icon: "🍊", name: "Laranja", amount: "2 unidades", kcal: 94 },
-        { icon: "🥭", name: "Mamão", amount: "160g", kcal: 69 },
-        { icon: "🍓", name: "Morango", amount: "210g", kcal: 67 }
-      ],
-      "morango": [
-        { icon: "🍌", name: "Banana", amount: "1 unidade", kcal: 90 },
-        { icon: "🍎", name: "Maçã", amount: "1 unidade", kcal: 52 },
-        { icon: "🍊", name: "Laranja", amount: "1 unidade", kcal: 47 },
-        { icon: "🍍", name: "Abacaxi", amount: "90g", kcal: 45 },
-        { icon: "🥭", name: "Mamão", amount: "105g", kcal: 45 }
-      ],
-      "maca argentina": [
-        { icon: "🍌", name: "Banana", amount: "1 unidade", kcal: 89 },
-        { icon: "🍊", name: "Laranja", amount: "1 unidade", kcal: 47 }
-      ],
-      "maca": [
-        { icon: "🍌", name: "Banana", amount: "1 unidade", kcal: 89 },
-        { icon: "🍊", name: "Laranja", amount: "1 unidade", kcal: 47 }
-      ],
-      "laranja de umbigo": [
-        { icon: "🍌", name: "Banana", amount: "1 unidade", kcal: 90 },
-        { icon: "🍎", name: "Maçã", amount: "1 unidade", kcal: 52 }
-      ],
-      "queijo prato": [
-        { icon: "🧀", name: "Queijo cottage", amount: "75g", kcal: 74 },
-        { icon: "🧀", name: "Queijo branco", amount: "30g", kcal: 72 }
-      ],
-      "ovo mexido": [
-        { icon: "🥚", name: "Ovo", amount: "1 unidade", kcal: 78 },
-        { icon: "🍳", name: "Omelete", amount: "1 unidade", kcal: 78 },
-        { icon: "🍗", name: "Frango desfiado", amount: "50g", kcal: 83 }
-      ],
-      "ovo": [
-        { icon: "🥚", name: "Ovo", amount: "1 unidade", kcal: 78 },
-        { icon: "🍳", name: "Omelete", amount: "1 unidade", kcal: 78 },
-        { icon: "🍗", name: "Frango desfiado", amount: "50g", kcal: 83 }
-      ],
-      "omelete": [
-        { icon: "🥚", name: "Ovo", amount: "1 unidade", kcal: 78 },
-        { icon: "🍳", name: "Omelete", amount: "1 unidade", kcal: 78 },
-        { icon: "🍗", name: "Frango desfiado", amount: "50g", kcal: 83 }
-      ],
-      "peito de frango": [
-        { icon: "🍗", name: "Frango", amount: "145g", kcal: 239 },
-        { icon: "🍗", name: "Frango desfiado", amount: "145g", kcal: 239 },
-        { icon: "🥩", name: "Carne", amount: "95g", kcal: 238 },
-        { icon: "🐟", name: "Peixe", amount: "160g", kcal: 240 },
-        { icon: "🐟", name: "Atum", amount: "160g", kcal: 240 },
-        { icon: "🥚", name: "Ovo", amount: "155g", kcal: 240 }
-      ],
-      "frango desfiado": [
-        { icon: "🍗", name: "Frango", amount: "145g", kcal: 239 },
-        { icon: "🍗", name: "Peito de frango", amount: "145g", kcal: 239 },
-        { icon: "🥩", name: "Carne", amount: "95g", kcal: 238 },
-        { icon: "🐟", name: "Peixe", amount: "160g", kcal: 240 },
-        { icon: "🐟", name: "Atum", amount: "160g", kcal: 240 },
-        { icon: "🥚", name: "Ovo", amount: "155g", kcal: 240 }
-      ],
-      "feijao preto": [
-        { icon: "🫘", name: "Feijão", amount: "50g", kcal: 39 },
-        { icon: "🫘", name: "Feijão carioca", amount: "50g", kcal: 38 }
-      ],
-      "carne bovina musculo": [
-        { icon: "🥩", name: "Carne", amount: "90g", kcal: 225 },
-        { icon: "🍗", name: "Frango", amount: "140g", kcal: 231 },
-        { icon: "🍗", name: "Peito de frango", amount: "140g", kcal: 231 },
-        { icon: "🐟", name: "Peixe", amount: "155g", kcal: 233 },
-        { icon: "🐟", name: "Atum", amount: "155g", kcal: 233 },
-        { icon: "🥚", name: "Ovo", amount: "150g", kcal: 233 },
-        { icon: "🍳", name: "Omelete", amount: "150g", kcal: 233 }
-      ],
-      "carne bovina magra": [
-        { icon: "🥩", name: "Carne", amount: "90g", kcal: 225 },
-        { icon: "🍗", name: "Frango", amount: "135g", kcal: 223 },
-        { icon: "🍗", name: "Peito de frango", amount: "135g", kcal: 223 },
-        { icon: "🐟", name: "Peixe", amount: "150g", kcal: 225 },
-        { icon: "🐟", name: "Atum", amount: "150g", kcal: 225 },
-        { icon: "🥚", name: "Ovo", amount: "145g", kcal: 225 },
-        { icon: "🍳", name: "Omelete", amount: "145g", kcal: 225 }
-      ],
-      "arroz": [
-        { icon: "🥔", name: "Batata", amount: "140g", kcal: 112 },
-        { icon: "🍠", name: "Batata doce", amount: "130g", kcal: 112 },
-        { icon: "🌿", name: "Mandioca", amount: "90g", kcal: 113 },
-        { icon: "🌾", name: "Quinoa", amount: "30g", kcal: 110 },
-        { icon: "🌽", name: "Cuscuz", amount: "100g", kcal: 112 },
-        { icon: "🍝", name: "Macarrão", amount: "85g", kcal: 170 },
-        { icon: "🍝", name: "Macarrão cozido", amount: "85g", kcal: 170 }
-      ],
-      "batata inglesa": [
-        { icon: "🥔", name: "Batata", amount: "60g", kcal: 48 },
-        { icon: "🥔", name: "Batata cozida", amount: "60g", kcal: 48 }
-      ],
-      "batata inglesa em cubos com temperos": [
-        { icon: "🥔", name: "Batata", amount: "60g", kcal: 48 },
-        { icon: "🥔", name: "Batata cozida", amount: "60g", kcal: 48 }
-      ],
-      "coracao de frango": [
-        { icon: "🍗", name: "Peito de frango", amount: "90g", kcal: 149 },
-        { icon: "🍗", name: "Frango desfiado", amount: "90g", kcal: 149 },
-        { icon: "🥩", name: "Carne", amount: "60g", kcal: 150 },
-        { icon: "🐟", name: "Peixe", amount: "100g", kcal: 150 },
-        { icon: "🐟", name: "Atum", amount: "100g", kcal: 150 },
-        { icon: "🥚", name: "Ovo", amount: "95g", kcal: 147 },
-        { icon: "🍳", name: "Ovo mexido", amount: "95g", kcal: 147 },
-        { icon: "🍳", name: "Omelete", amount: "95g", kcal: 147 }
-      ],
-      "macarrao": [
-        { icon: "🍠", name: "Batata doce", amount: "155g", kcal: 133 },
-        { icon: "🥔", name: "Batata inglesa", amount: "165g", kcal: 132 },
-        { icon: "🫘", name: "Lentilhas", amount: "115g", kcal: 133 },
-        { icon: "🌿", name: "Mandioca", amount: "105g", kcal: 131 },
-        { icon: "🌽", name: "Cuscuz", amount: "120g", kcal: 134 },
-        { icon: "🫘", name: "Feijão", amount: "170g", kcal: 131 },
-        { icon: "🫘", name: "Grão de bico", amount: "80g", kcal: 131 },
-        { icon: "🥟", name: "Tapioca", amount: "40g", kcal: 134 },
-        { icon: "🍚", name: "Arroz cozido", amount: "100g", kcal: 130 },
-        { icon: "🍠", name: "Inhame", amount: "110g", kcal: 130 },
-        { icon: "🥖", name: "Pão francês", amount: "45g", kcal: 135 },
-        { icon: "🌾", name: "Aveia", amount: "35g", kcal: 136 },
-        { icon: "🌾", name: "Quinoa", amount: "35g", kcal: 129 }
-      ],
-      "macarrao cozido": [
-        { icon: "🍠", name: "Batata doce", amount: "155g", kcal: 133 },
-        { icon: "🥔", name: "Batata inglesa", amount: "165g", kcal: 132 },
-        { icon: "🫘", name: "Lentilhas", amount: "115g", kcal: 133 },
-        { icon: "🌿", name: "Mandioca", amount: "105g", kcal: 131 },
-        { icon: "🌽", name: "Cuscuz", amount: "120g", kcal: 134 },
-        { icon: "🫘", name: "Feijão", amount: "170g", kcal: 131 },
-        { icon: "🫘", name: "Grão de bico", amount: "80g", kcal: 131 },
-        { icon: "🥟", name: "Tapioca", amount: "40g", kcal: 134 },
-        { icon: "🍚", name: "Arroz cozido", amount: "100g", kcal: 130 },
-        { icon: "🍠", name: "Inhame", amount: "110g", kcal: 130 },
-        { icon: "🥖", name: "Pão francês", amount: "45g", kcal: 135 },
-        { icon: "🌾", name: "Aveia", amount: "35g", kcal: 136 },
-        { icon: "🌾", name: "Quinoa", amount: "35g", kcal: 129 }
-      ]
-    };
 
     if (new URLSearchParams(window.location.search).get("clear") === "1") {
       localStorage.removeItem(storageKey);
@@ -3904,61 +3684,73 @@
       return `${roundedValue} ${label}`;
     }
 
-    function findFoodByName(name = "") {
-      const key = normalizeText(name);
-      return foods.find((food) => normalizeText(food.name) === key)
-        || foods.find((food) => key.includes(normalizeText(food.name)) || normalizeText(food.name).includes(key));
+    function findFoodByName(name = "", foodId = "") {
+      if (foodId) {
+        const byId = foods.find((food) => food.id === foodId);
+        if (byId) return byId;
+      }
+      const key = normalizeText(name).trim();
+      if (!key) return null;
+      return foods.find((food) => normalizeText(food.name).trim() === key)
+        || foods.find((food) => (food.aliases || []).some((alias) => normalizeText(alias).trim() === key))
+        || null;
     }
 
-    function fallbackCaloriesForName(name = "") {
-      const key = normalizeText(name);
-      if (Object.prototype.hasOwnProperty.call(fallbackCaloriesPer100g, key)) return fallbackCaloriesPer100g[key];
-      const matchKey = Object.keys(fallbackCaloriesPer100g).find((itemKey) => key.includes(itemKey) || itemKey.includes(key));
-      return matchKey ? fallbackCaloriesPer100g[matchKey] : 0;
+    function servingForAmountUnit(food, unit) {
+      const unitKey = normalizeText(unit).replace(/s$/, "");
+      return food?.servings?.find((serving) => {
+        const idKey = normalizeText(serving.id || "").replace(/s$/, "");
+        const nameKey = normalizeText(serving.name || "").replace(/s$/, "");
+        return idKey === unitKey || nameKey === unitKey;
+      }) || null;
     }
 
-    function estimateKcalFromFood(item) {
-      const parsed = parseAmount(item.amount);
-      const food = findFoodByName(item.name);
-      if (!parsed) return 0;
+    function nutritionFromFood(food, amount) {
+      const parsed = parseAmount(amount);
+      if (!food || !parsed) return null;
       let grams = parsed.value;
       if (parsed.unit !== "g" && parsed.unit !== "ml") {
-        const serving = food?.servings?.find((option) => normalizeText(option.name).includes(parsed.unit));
-        grams = parsed.value * (Number(serving?.grams) || 50);
+        const serving = servingForAmountUnit(food, parsed.unit);
+        if (!serving) return null;
+        grams = parsed.value * Number(serving.grams);
       }
-      const caloriesPer100g = Number(food?.caloriesPer100g) || fallbackCaloriesForName(item.name);
-      return Math.round(caloriesPer100g * grams / 100);
-    }
-
-    function estimateMacrosFromFood(item) {
-      const parsed = parseAmount(item.amount);
-      const food = findFoodByName(item.name);
-      if (!parsed || !food) return { protein: 0, carbs: 0 };
-      let grams = parsed.value;
-      if (parsed.unit !== "g" && parsed.unit !== "ml") {
-        const serving = food.servings?.find((option) => normalizeText(option.name).includes(parsed.unit));
-        grams = parsed.value * (Number(serving?.grams) || 50);
-      }
+      if (!Number.isFinite(grams) || grams < 0) return null;
       return {
+        kcal: Math.round((Number(food.caloriesPer100g) || 0) * grams / 100),
         protein: Number(((Number(food.proteinPer100g) || 0) * grams / 100).toFixed(1)),
         carbs: Number(((Number(food.carbsPer100g) || 0) * grams / 100).toFixed(1))
       };
     }
 
+    function estimateKcalFromFood(item) {
+      const food = findFoodByName(item.name, item.foodId);
+      return nutritionFromFood(food, item.amount)?.kcal || 0;
+    }
+
+    function estimateMacrosFromFood(item) {
+      const food = findFoodByName(item.name, item.foodId);
+      const nutrition = nutritionFromFood(food, item.amount);
+      return nutrition || { protein: 0, carbs: 0 };
+    }
+
     function hydrateRecommendationItem(item, option) {
       const hydrated = { ...item };
-      const normalizedName = normalizeText(hydrated.name);
-      hydrated.icon = normalizedName.includes("macarrao") || normalizedName.includes("massa")
-        ? "🍝"
-        : hydrated.icon || iconForFoodName(hydrated.name);
+      const food = findFoodByName(hydrated.name, hydrated.foodId);
+      const nutrition = nutritionFromFood(food, hydrated.amount);
+      if (food) {
+        hydrated.foodId = food.id;
+        hydrated.name = food.name;
+      }
+      hydrated.icon = food?.icon || iconForFoodName(hydrated.name);
       const parsed = parseAmount(hydrated.amount);
       if (!parsed) return hydrated;
-      if (!Number(hydrated.kcal)) {
-        hydrated.kcal = estimateKcalFromFood(hydrated) || Math.round((Number(option.kcal) || 0) / Math.max(1, option.items.length));
+      if (nutrition) {
+        hydrated.kcal = nutrition.kcal;
+        hydrated.protein = nutrition.protein;
+        hydrated.carbs = nutrition.carbs;
+      } else if (!Number(hydrated.kcal)) {
+        hydrated.kcal = Math.round((Number(option.kcal) || 0) / Math.max(1, option.items.length));
       }
-      const estimatedMacros = estimateMacrosFromFood(hydrated);
-      if (!Number(hydrated.protein) && estimatedMacros.protein) hydrated.protein = estimatedMacros.protein;
-      if (!Number(hydrated.carbs) && estimatedMacros.carbs) hydrated.carbs = estimatedMacros.carbs;
       hydrated.baseAmountValue = parsed.value;
       hydrated.baseAmountUnit = parsed.unit;
       hydrated.baseKcal = Number(hydrated.kcal) || 0;
@@ -4052,12 +3844,32 @@
         ? "à vontade"
         : `1 ${preferredServing.name.toLowerCase()}`;
       return {
-        icon: iconForFoodName(food.name),
+        foodId: food.id,
+        icon: food.icon || iconForFoodName(food.name),
         name: food.name,
         amount,
         kcal: Math.round((Number(food.caloriesPer100g) || 0) * grams / 100),
         protein: Number(((Number(food.proteinPer100g) || 0) * grams / 100).toFixed(1)),
         carbs: Number(((Number(food.carbsPer100g) || 0) * grams / 100).toFixed(1))
+      };
+    }
+
+    function dietItemReference(item) {
+      const food = findFoodByName(item.name, item.foodId);
+      if (food) {
+        return {
+          foodId: food.id,
+          name: food.name,
+          amount: item.amount
+        };
+      }
+      return {
+        name: item.name,
+        amount: item.amount,
+        icon: item.icon,
+        kcal: Number(item.kcal) || undefined,
+        protein: Number(item.protein) || undefined,
+        carbs: Number(item.carbs) || undefined
       };
     }
 
@@ -4385,14 +4197,7 @@
       const currentOptions = recommendationsForMeal(mealTypeId);
       currentOptions[optionIndex] = {
         kcal: round(option.items.reduce((total, item) => total + (Number(item.kcal) || 0), 0)),
-        items: option.items.map((item) => ({
-          icon: item.icon,
-          name: item.name,
-          amount: item.amount,
-          kcal: Number(item.kcal) || undefined,
-          protein: Number(item.protein) || undefined,
-          carbs: Number(item.carbs) || undefined
-        }))
+        items: option.items.map(dietItemReference)
       };
       appData.dietRecommendations[mealTypeId] = currentOptions.map(cloneDietOption);
       saveData();
@@ -4417,14 +4222,7 @@
       const currentOptions = recommendationsForMeal(mealTypeId);
       currentOptions[optionIndex] = {
         kcal: round(option.kcal || option.items.reduce((total, item) => total + (Number(item.kcal) || 0), 0)),
-        items: option.items.map((item) => ({
-          icon: item.icon,
-          name: item.name,
-          amount: item.amount,
-          kcal: Number(item.kcal) || undefined,
-          protein: Number(item.protein) || undefined,
-          carbs: Number(item.carbs) || undefined
-        }))
+        items: option.items.map(dietItemReference)
       };
       appData.dietRecommendations[mealTypeId] = currentOptions.map(cloneDietOption);
       saveData();

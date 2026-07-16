@@ -384,6 +384,18 @@ export const foods = [
     ]
   },
   {
+    id: "macarrao",
+    name: "Macarrão",
+    category: "Alimentação",
+    caloriesPer100g: 200,
+    proteinPer100g: 5.8,
+    carbsPer100g: 31,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "50g", grams: 50 }
+    ]
+  },
+  {
     id: "macarrao-com-carne-moida",
     name: "Macarrão com Carne Moida",
     category: "Alimenta??o",
@@ -596,6 +608,7 @@ export const foods = [
     carbsPer100g: 0.5,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "fatia", name: "Fatia", grams: 100 },
       { id: "porcao-na", name: "Por??o", grams: 100 }
     ]
   },
