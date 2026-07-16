@@ -539,18 +539,6 @@
       transition: width 0.2s ease, background-color 0.2s ease;
     }
 
-    .calorie-range-spent {
-      position: absolute;
-      left: 0;
-      bottom: 0;
-      width: var(--width, 0%);
-      height: 2px;
-      border-radius: 999px;
-      background: rgba(76, 151, 205, 0.48);
-      transition: width 0.35s ease;
-      pointer-events: none;
-    }
-
     .calorie-range.good .calorie-range-fill {
       background: #209b26;
     }
@@ -625,10 +613,6 @@
       width: var(--width, 0%);
       border-radius: inherit;
       background: #209b26;
-    }
-
-    #spent-fill {
-      background: rgba(76, 151, 205, 0.62);
     }
 
     .summary-number {
@@ -2019,7 +2003,6 @@
               <div class="calorie-range" id="calorie-range">
                 <div class="calorie-range-track" aria-label="Faixa de calorias da meta diária">
                   <div class="calorie-range-fill" id="calorie-range-fill"></div>
-                  <div class="calorie-range-spent" id="calorie-range-spent" title="Kcal gastas até agora"></div>
                   <span class="calorie-range-marker min" id="calorie-range-min-marker" style="--left: 0%;"></span>
                   <span class="calorie-range-marker max" style="--left: 100%;"></span>
                 </div>
@@ -2062,10 +2045,6 @@
                   <div class="progress-row">
                     <div class="progress-row-head"><span>Carboidratos</span><strong id="metric-carbs">0 g</strong></div>
                     <div class="progress-track"><div class="progress-fill" id="carbs-fill"></div></div>
-                  </div>
-                  <div class="progress-row">
-                    <div class="progress-row-head"><span>Kcal gastas</span><strong id="metric-spent">0 kcal</strong></div>
-                    <div class="progress-track"><div class="progress-fill" id="spent-fill"></div></div>
                   </div>
                 </div>
               </div>
@@ -2335,14 +2314,12 @@
     const calorieRangeMinLabel = document.getElementById("calorie-range-min-label");
     const calorieRangeMaxLabel = document.getElementById("calorie-range-max-label");
     const calorieRangeFill = document.getElementById("calorie-range-fill");
-    const calorieRangeSpent = document.getElementById("calorie-range-spent");
     const dayMood = document.getElementById("day-mood");
     const dayMoodFace = document.getElementById("day-mood-face");
     const moodLabel = document.getElementById("mood-label");
     const calorieFill = document.getElementById("calorie-fill");
     const proteinFill = document.getElementById("protein-fill");
     const carbsFill = document.getElementById("carbs-fill");
-    const spentFill = document.getElementById("spent-fill");
     const remainingKcal = document.getElementById("remaining-kcal");
     const mealProgressList = document.getElementById("meal-progress-list");
     const waterTotal = document.getElementById("water-total");
@@ -2374,7 +2351,6 @@
     const gastoTitle = document.getElementById("gasto-title");
     const gastoResumo = document.getElementById("gasto-resumo");
     const metricConsumed = document.getElementById("metric-consumed");
-    const metricSpent = document.getElementById("metric-spent");
     const metricProtein = document.getElementById("metric-protein");
     const metricCarbs = document.getElementById("metric-carbs");
     const mealDate = document.getElementById("meal-date");
@@ -3218,18 +3194,6 @@
       return round(appData.expenses
         .filter((item) => item.date === date)
         .reduce((sum, item) => sum + (Number(item.calories) || 0), 0));
-    }
-
-    function estimatedCaloriesSpentToday() {
-      const now = new Date();
-      const elapsedMilliseconds =
-        now.getHours() * 60 * 60 * 1000 +
-        now.getMinutes() * 60 * 1000 +
-        now.getSeconds() * 1000 +
-        now.getMilliseconds();
-      const dayProgress = Math.max(0, Math.min(1, elapsedMilliseconds / (24 * 60 * 60 * 1000)));
-      const progressiveBaseSpend = maintenanceTarget() * dayProgress;
-      return round(progressiveBaseSpend + activityCaloriesForDate(todayISO()));
     }
 
     function baseDailyTargetRange() {
@@ -4711,8 +4675,7 @@
       const meals = periodMeals(period);
       const expenses = periodExpenses(period);
       const consumed = round(meals.reduce((sum, item) => sum + item.calories, 0));
-      const activitySpent = round(expenses.reduce((sum, item) => sum + item.calories, 0));
-      const spent = period === "hoje" ? estimatedCaloriesSpentToday() : activitySpent;
+      const spent = round(expenses.reduce((sum, item) => sum + item.calories, 0));
       const protein = round(meals.reduce((sum, item) => sum + item.protein, 0));
       const carbs = round(meals.reduce((sum, item) => sum + item.carbs, 0));
       const balance = round(consumed - spent);
@@ -4723,10 +4686,8 @@
       const dayScore = calculateDayScore(consumed, spent);
       const proteinPercent = Math.max(0, Math.min(100, Math.round((protein / 120) * 100)));
       const carbsPercent = Math.max(0, Math.min(100, Math.round((carbs / 220) * 100)));
-      const spentPercent = Math.max(0, Math.min(100, Math.round((spent / Math.max(target, 1)) * 100)));
 
       metricConsumed.textContent = `${consumed} kcal`;
-      metricSpent.textContent = `${spent} kcal`;
       metricProtein.textContent = `${protein} g`;
       metricCarbs.textContent = `${carbs} g`;
       remainingKcal.textContent = remaining < 0
@@ -4746,15 +4707,13 @@
       calorieFill.style.setProperty("--width", `${percent}%`);
       proteinFill.style.setProperty("--width", `${proteinPercent}%`);
       carbsFill.style.setProperty("--width", `${carbsPercent}%`);
-      spentFill.style.setProperty("--width", `${spentPercent}%`);
-      renderCalorieRange(consumed, targetRange, spent);
+      renderCalorieRange(consumed, targetRange);
     }
 
-    function renderCalorieRange(consumed, targetRange = dailyTargetRange(), spent = estimatedCaloriesSpentToday()) {
+    function renderCalorieRange(consumed, targetRange = dailyTargetRange()) {
       const min = Number(targetRange.min) || 0;
       const max = Math.max(min + 1, Number(targetRange.max) || min + 1);
       const width = Math.max(0, Math.min(100, (consumed / max) * 100));
-      const spentWidth = Math.max(0, Math.min(100, (spent / max) * 100));
       const minLeft = Math.max(0, Math.min(100, (min / max) * 100));
       calorieRangeCurrentLabel.textContent = formatKcalValue(consumed);
       calorieRangeMinMarker.style.setProperty("--left", `${minLeft}%`);
@@ -4762,8 +4721,6 @@
       calorieRangeMinLabel.textContent = formatKcalValue(min);
       calorieRangeMaxLabel.textContent = formatKcalValue(max);
       calorieRangeFill.style.setProperty("--width", `${width}%`);
-      calorieRangeSpent.style.setProperty("--width", `${spentWidth}%`);
-      calorieRangeSpent.title = `${formatKcalValue(spent)} kcal gastas até agora`;
       calorieRange.classList.toggle("good", consumed < min);
       calorieRange.classList.toggle("warn", consumed >= min && consumed < max);
       calorieRange.classList.toggle("danger", consumed >= max);
@@ -5287,11 +5244,9 @@
     restoreFirebaseMessagingConnection();
     checkNotificationSchedule();
     window.setInterval(checkNotificationSchedule, 60 * 1000);
-    window.setInterval(() => renderTotals("hoje"), 60 * 1000);
     document.addEventListener("visibilitychange", () => {
       if (document.visibilityState === "visible") {
         checkNotificationSchedule();
-        renderTotals("hoje");
       }
     });
     const reminderMeal = new URLSearchParams(window.location.search).get("lembrete");
