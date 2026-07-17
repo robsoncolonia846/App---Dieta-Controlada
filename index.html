@@ -346,6 +346,7 @@
     }
 
     .goal-banner {
+      position: relative;
       display: grid;
       gap: 8px;
       background: #fff;
@@ -574,19 +575,66 @@
       font-weight: 900;
     }
 
-    .calorie-range-labels span {
+    .calorie-range-labels > span {
       position: absolute;
       left: var(--left, 0%);
       transform: translateX(-50%);
       white-space: nowrap;
     }
 
-    .calorie-range-labels span:first-child {
+    .calorie-range-labels > span:first-child {
       transform: translateX(0);
     }
 
-    .calorie-range-labels span:last-child {
+    .calorie-range-labels > span:last-child {
       transform: translateX(-100%);
+    }
+
+    .range-info {
+      position: relative;
+      display: inline-block;
+      margin-left: 2px;
+      vertical-align: middle;
+    }
+
+    .range-info summary {
+      width: 13px;
+      height: 13px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #bfc9b8;
+      border-radius: 50%;
+      background: #f7faf5;
+      color: #687561;
+      font-size: 8px;
+      font-weight: 950;
+      line-height: 1;
+      cursor: pointer;
+      list-style: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .range-info summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .range-info-box {
+      position: absolute;
+      z-index: 12;
+      top: 18px;
+      right: 0;
+      width: min(210px, calc(100vw - 88px));
+      padding: 8px 10px;
+      border: 1px solid #e1e8dd;
+      border-radius: 10px;
+      background: #fff;
+      color: #596253;
+      box-shadow: 0 10px 24px rgba(36, 49, 25, 0.14);
+      font-size: 9px;
+      font-weight: 750;
+      line-height: 1.35;
+      white-space: normal;
     }
 
     .progress-row {
@@ -1684,6 +1732,10 @@
     }
 
     .diet-option-tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       border: 0;
       border-radius: 14px;
       background: transparent;
@@ -2008,8 +2060,8 @@
                 </div>
                 <div class="calorie-range-labels">
                   <span id="calorie-range-current-label" style="--left: 0%;">0</span>
-                  <span id="calorie-range-min-label" style="--left: 0%;">0</span>
-                  <span id="calorie-range-max-label" style="--left: 100%;">0</span>
+                  <span style="--left: 0%;"><span id="calorie-range-min-label">0</span><details class="range-info"><summary aria-label="Entenda o déficit de 500 kcal">i</summary><div class="range-info-box">Meta com déficit de 500 kcal em relação ao gasto diário.</div></details></span>
+                  <span style="--left: 100%;"><span id="calorie-range-max-label">0</span><details class="range-info"><summary aria-label="Entenda o gasto diário">i</summary><div class="range-info-box">Gasto diário estimado, incluindo as atividades registradas.</div></details></span>
                 </div>
               </div>
             </div>
@@ -4717,7 +4769,7 @@
       const minLeft = Math.max(0, Math.min(100, (min / max) * 100));
       calorieRangeCurrentLabel.textContent = formatKcalValue(consumed);
       calorieRangeMinMarker.style.setProperty("--left", `${minLeft}%`);
-      calorieRangeMinLabel.style.setProperty("--left", `${minLeft}%`);
+      calorieRangeMinLabel.parentElement.style.setProperty("--left", `${minLeft}%`);
       calorieRangeMinLabel.textContent = formatKcalValue(min);
       calorieRangeMaxLabel.textContent = formatKcalValue(max);
       calorieRangeFill.style.setProperty("--width", `${width}%`);
