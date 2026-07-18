@@ -120,6 +120,18 @@ export const foods = [
     ]
   },
   {
+    id: "carne-acebolada-com-maionese",
+    name: "Carne Acebolada com Maionese",
+    category: "Alimenta??o",
+    caloriesPer100g: 350,
+    proteinPer100g: 24,
+    carbsPer100g: 8,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "100g", grams: 100 }
+    ]
+  },
+  {
     id: "carne-de-panela-agulha",
     name: "Carne de Panela (Agulha)",
     category: "Alimenta??o",
