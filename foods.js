@@ -50,6 +50,7 @@ export const foods = [
   {
     id: "batata-frita",
     name: "Batata Frita",
+    image: "./food-batata-frita.png",
     category: "Alimenta??o",
     caloriesPer100g: 300,
     proteinPer100g: 3.4,
@@ -74,6 +75,7 @@ export const foods = [
   {
     id: "bauru-file",
     name: "Bauru Filé",
+    image: "./food-bauru-file.png",
     category: "Alimenta??o",
     caloriesPer100g: 1760,
     proteinPer100g: 100,

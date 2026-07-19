@@ -1260,6 +1260,14 @@
       display: grid;
       place-items: center;
       font-size: 25px;
+      overflow: hidden;
+    }
+
+    .recommended-item-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
 
     .swap-icon {
@@ -2767,7 +2775,7 @@
           const optionEdited = isDietOptionEdited(mealType.id, selectedOptionIndex);
           const foodsList = option.items.map((item, itemIndex) => `
             <div class="recommended-item">
-              <div class="recommended-item-icon">${escapeHTML(item.icon || iconForFoodName(item.name))}</div>
+              <div class="recommended-item-icon">${foodVisualMarkup(item)}</div>
               <div class="recommended-item-main">
                 <div class="meal-name">${escapeHTML(item.name)}</div>
                 <div class="item-detail-row">
@@ -3528,15 +3536,15 @@
           ` : ""}
           ${option.items.map((item, itemIndex) => `
             <div class="recommended-item">
-              <div class="recommended-item-icon">${item.icon}</div>
+              <div class="recommended-item-icon">${foodVisualMarkup(item)}</div>
               <div class="recommended-item-main">
                 <div class="meal-name">${item.name}</div>
                 <div class="item-detail-row">
                   <div class="muted">${escapeHTML(compactAmountLabel(item.amount))}${item.kcal ? ` • ${round(item.kcal)} kcal` : ""}</div>
                   ${canAdjustItemAmount(item) ? `
                     <span class="quantity-controls" aria-label="Ajustar quantidade de ${item.name}">
-                      <span class="qty-button" role="button" tabindex="0" data-adjust-rec="${index}" data-adjust-item="${itemIndex}" data-adjust-delta="-1">−</span>
-                      <span class="qty-button" role="button" tabindex="0" data-adjust-rec="${index}" data-adjust-item="${itemIndex}" data-adjust-delta="1">+</span>
+                      <button class="qty-button" type="button" data-adjust-rec="${index}" data-adjust-item="${itemIndex}" data-adjust-delta="-1" aria-label="Diminuir ${item.name}">−</button>
+                      <button class="qty-button" type="button" data-adjust-rec="${index}" data-adjust-item="${itemIndex}" data-adjust-delta="1" aria-label="Aumentar ${item.name}">+</button>
                     </span>
                   ` : ""}
                 </div>
@@ -3598,19 +3606,15 @@
         });
       });
       recommendationCarousel.querySelectorAll("[data-adjust-rec]").forEach((button) => {
-        const runAdjustment = (event) => {
+        button.addEventListener("click", (event) => {
           event.preventDefault();
           event.stopPropagation();
-          event.stopImmediatePropagation?.();
+          event.stopImmediatePropagation();
           adjustRecommendationItemAmount(
             Number(button.dataset.adjustRec),
             Number(button.dataset.adjustItem),
             Number(button.dataset.adjustDelta)
           );
-        };
-        button.addEventListener("click", runAdjustment);
-        button.addEventListener("keydown", (event) => {
-          if (event.key === "Enter" || event.key === " ") runAdjustment(event);
         });
       });
       updateRecommendationRegisterVisibility();
@@ -3783,6 +3787,7 @@
         hydrated.foodId = food.id;
         hydrated.name = food.name;
       }
+      hydrated.image = food?.image || hydrated.image || "";
       hydrated.icon = food?.icon || iconForFoodName(hydrated.name);
       const parsed = parseAmount(hydrated.amount);
       if (!parsed) return hydrated;
@@ -3883,6 +3888,13 @@
       return preferredFoodServing(food)?.id === "gramas" ? 100 : 1;
     }
 
+    function foodVisualMarkup(item = {}) {
+      if (item.image) {
+        return `<img src="${escapeHTML(item.image)}" alt="" loading="lazy" />`;
+      }
+      return escapeHTML(item.icon || iconForFoodName(item.name));
+    }
+
     function foodToRecommendationItem(food) {
       const preferredServing = preferredFoodServing(food);
       const grams = preferredServing?.id === "gramas" || !preferredServing ? 100 : Number(preferredServing.grams) || 100;
@@ -3895,6 +3907,7 @@
         : `1 ${preferredServing.name.toLowerCase()}`;
       return {
         foodId: food.id,
+        image: food.image || "",
         icon: food.icon || iconForFoodName(food.name),
         name: food.name,
         amount,
@@ -4031,7 +4044,7 @@
           </div>
           ${option.items.map((food, itemIndex) => `
             <div class="recommended-item">
-              <div class="recommended-item-icon">${food.icon}</div>
+              <div class="recommended-item-icon">${foodVisualMarkup(food)}</div>
               <div class="recommended-item-main">
                 <div class="meal-name">${food.name}</div>
                 <div class="item-detail-row">
@@ -4127,7 +4140,7 @@
               const substitute = foodToRecommendationItem(food);
               return `
                 <button class="substitute-option" type="button" data-substitute-food-id="${food.id}">
-                  <div class="recommended-item-icon">${substitute.icon}</div>
+                  <div class="recommended-item-icon">${foodVisualMarkup(substitute)}</div>
                   <div>
                     <div class="meal-name">${substitute.name}</div>
                     <div class="muted">${substitute.amount} • ${substitute.kcal} kcal</div>
@@ -4174,7 +4187,7 @@
               const item = foodToRecommendationItem(food);
               return `
                 <button class="substitute-option" type="button" data-add-food-id="${food.id}">
-                  <div class="recommended-item-icon">${item.icon}</div>
+                  <div class="recommended-item-icon">${foodVisualMarkup(item)}</div>
                   <div>
                     <div class="meal-name">${item.name}</div>
                     <div class="muted">${item.amount} • ${item.kcal} kcal</div>

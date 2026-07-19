@@ -1,4 +1,4 @@
-const CACHE_NAME = "dieta-controlada-pwa-v106";
+const CACHE_NAME = "dieta-controlada-pwa-v108";
 
 importScripts("./firebase-config.js");
 importScripts("https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js");
@@ -30,7 +30,9 @@ const APP_SHELL = [
   "./favicon.ico",
   "./foods.js",
   "./icon-192.png",
-  "./icon-512.png"
+  "./icon-512.png",
+  "./food-bauru-file.png",
+  "./food-batata-frita.png"
 ];
 
 self.addEventListener("install", (event) => {
