@@ -37,6 +37,19 @@ export const foods = [
     ]
   },
   {
+    id: "amendoim",
+    name: "Amendoim",
+    icon: "🥜",
+    category: "Alimenta??o",
+    caloriesPer100g: 570,
+    proteinPer100g: 27.2,
+    carbsPer100g: 20.3,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "100g", grams: 100 }
+    ]
+  },
+  {
     id: "arroz",
     name: "Arroz",
     category: "Alimenta??o",
