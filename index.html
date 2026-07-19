@@ -2681,29 +2681,7 @@
     }
 
     function normalizeWholeUnitItem(itemRaw) {
-      const item = { ...(itemRaw || {}) };
-      const amountText = String(item.amount || "").trim();
-      if (!/\b(unidade|unidades|unid)\b/i.test(amountText)) return item;
-      const match = amountText.match(/([\d,.]+)/);
-      if (!match) return item;
-      const currentValue = Number(match[1].replace(",", "."));
-      if (!Number.isFinite(currentValue) || currentValue <= 0 || Number.isInteger(currentValue)) return item;
-      const wholeValue = Math.max(1, Math.ceil(currentValue));
-      const ratio = wholeValue / currentValue;
-      item.amount = `${wholeValue} ${wholeValue === 1 ? "unidade" : "unidades"}`;
-      ["kcal", "protein", "carbs"].forEach((field) => {
-        const value = Number(item[field]);
-        if (!value) return;
-        item[field] = field === "kcal"
-          ? Math.round(value * ratio)
-          : Number((value * ratio).toFixed(1));
-      });
-      delete item.baseAmountValue;
-      delete item.baseAmountUnit;
-      delete item.baseKcal;
-      delete item.baseProtein;
-      delete item.baseCarbs;
-      return item;
+      return { ...(itemRaw || {}) };
     }
 
     function normalizeWholeUnitOption(optionRaw) {
@@ -3712,15 +3690,15 @@
       const text = String(amount).trim().toLowerCase();
       const match = text.match(/([\d,.]+)/);
       if (!match) return null;
-      const value = Number(match[1].replace(",", "."));
+      const value = /^1\s*\/\s*2\b/.test(text) ? 0.5 : Number(match[1].replace(",", "."));
       if (!Number.isFinite(value)) return null;
       if (text.includes("ml")) return { value, unit: "ml", step: 50, label: "ml" };
-      if (text.includes("g")) return { value, unit: "g", step: 50, label: "g" };
+      if (text.includes("g")) return { value, unit: "g", step: 25, label: "g" };
       if (text.includes("fatia")) return { value, unit: "fatia", step: 1, label: value === 1 ? "fatia" : "fatias" };
       if (text.includes("ovo")) return { value, unit: "ovo", step: 1, label: value === 1 ? "ovo" : "ovos" };
       if (text.includes("colher")) return { value, unit: "colher", step: 1, label: value === 1 ? "colher" : "colheres" };
       if (text.includes("concha")) return { value, unit: "concha", step: 1, label: value === 1 ? "concha" : "conchas" };
-      if (text.includes("unidade") || text.includes("unid")) return { value, unit: "unidade", step: 1, label: value === 1 ? "unidade" : "unidades" };
+      if (text.includes("unidade") || text.includes("unid")) return { value, unit: "unidade", step: 0.5, label: value === 1 ? "unidade" : "unidades" };
       return { value, unit: "unidade", step: 1, label: value === 1 ? "unidade" : "unidades" };
     }
 
@@ -3741,6 +3719,7 @@
         concha: "concha",
         unidade: "unidade"
       };
+      if (parsed.unit === "unidade" && roundedValue === 0.5) return "1/2 unidade";
       const label = roundedValue === 1
         ? (singularByUnit[parsed.unit] || parsed.label.replace(/s$/, ""))
         : (pluralByUnit[parsed.unit] || parsed.label);
@@ -3838,7 +3817,7 @@
         item.baseProtein = Number(item.protein) || 0;
         item.baseCarbs = Number(item.carbs) || 0;
       }
-      const minValue = parsed.unit === "g" || parsed.unit === "ml" ? parsed.step : 1;
+      const minValue = parsed.step;
       let nextValue = parsed.value + parsed.step * direction;
       if (parsed.unit === "g" || parsed.unit === "ml") {
         nextValue = direction > 0
@@ -3896,8 +3875,16 @@
       return "🍽️";
     }
 
+    function preferredFoodServing(food) {
+      return food?.servings?.find((serving) => serving.id !== "gramas") || food?.servings?.[0] || null;
+    }
+
+    function defaultFoodQuantity(food) {
+      return preferredFoodServing(food)?.id === "gramas" ? 100 : 1;
+    }
+
     function foodToRecommendationItem(food) {
-      const preferredServing = food.servings?.find((serving) => serving.id !== "gramas") || food.servings?.[0];
+      const preferredServing = preferredFoodServing(food);
       const grams = preferredServing?.id === "gramas" || !preferredServing ? 100 : Number(preferredServing.grams) || 100;
       const amount = !preferredServing || preferredServing.id === "gramas"
         ? "100g"
@@ -4511,8 +4498,7 @@
     }
 
     function defaultServingIdForFood(food) {
-      const servings = servingsForFood(food);
-      return servings.find((item) => item.id !== "gramas")?.id || servings[0]?.id || "gramas";
+      return preferredFoodServing(food)?.id || "gramas";
     }
 
     function selectedServing() {
@@ -4530,12 +4516,20 @@
         .map((item) => `<button type="button" data-serving-id="${item.id}" class="selector-tab ${item.id === selectedServingId ? "active" : ""}">${item.name}</button>`)
         .join("");
       const serving = selectedServing();
+      if (!mealGrams.value) mealGrams.value = String(defaultFoodQuantity(food));
       mealQuantityLabel.childNodes[0].textContent = serving?.grams === 1 ? "Quantidade em gramas " : `Quantidade em ${serving.name.toLowerCase()} `;
       mealGrams.placeholder = serving?.grams === 1 ? "Ex: 150" : "Ex: 1";
       servingHint.textContent = serving?.grams === 1 ? "Digite o peso em gramas." : `Referência: 1 ${serving.name.toLowerCase()} = ${serving.grams}g.`;
       servingOptions.querySelectorAll("[data-serving-id]").forEach((button) => {
         button.addEventListener("click", () => {
+          const previousServing = selectedServing();
+          const previousQuantity = Number(String(mealGrams.value).replace(",", "."));
+          const currentGrams = previousQuantity * (Number(previousServing?.grams) || 1);
           selectedServingId = button.dataset.servingId;
+          const nextServing = selectedServing();
+          mealGrams.value = Number.isFinite(currentGrams) && currentGrams > 0
+            ? String(round(currentGrams / (Number(nextServing?.grams) || 1)))
+            : String(defaultFoodQuantity(food));
           renderServingOptions();
         });
       });
@@ -4567,6 +4561,7 @@
       if (!source.some((food) => food.id === selectedFoodId) && source[0]) {
         selectedFoodId = source[0].id;
         selectedServingId = defaultServingIdForFood(source[0]);
+        mealGrams.value = String(defaultFoodQuantity(source[0]));
       }
 
       if (source.length === 0) {
@@ -4587,7 +4582,9 @@
       foodOptions.querySelectorAll(".pill").forEach((item) => {
         item.addEventListener("click", () => {
           selectedFoodId = item.dataset.foodId;
-          selectedServingId = defaultServingIdForFood(selectedFood());
+          const food = selectedFood();
+          selectedServingId = defaultServingIdForFood(food);
+          mealGrams.value = String(defaultFoodQuantity(food));
           foodOptions.querySelectorAll(".pill").forEach((pill) => pill.classList.remove("active"));
           item.classList.add("active");
           renderServingOptions();

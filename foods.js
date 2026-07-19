@@ -48,6 +48,18 @@ export const foods = [
     ]
   },
   {
+    id: "batata-frita",
+    name: "Batata Frita",
+    category: "Alimenta??o",
+    caloriesPer100g: 300,
+    proteinPer100g: 3.4,
+    carbsPer100g: 40,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "50g", grams: 50 }
+    ]
+  },
+  {
     id: "batata-inglesa",
     name: "Batata Inglesa",
     category: "Alimenta??o",
@@ -57,6 +69,18 @@ export const foods = [
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
       { id: "excel", name: "50g", grams: 50 }
+    ]
+  },
+  {
+    id: "bauru-file",
+    name: "Bauru Filé",
+    category: "Alimenta??o",
+    caloriesPer100g: 1760,
+    proteinPer100g: 100,
+    carbsPer100g: 160,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "unidade", name: "Unidade", grams: 100 }
     ]
   },
   {
