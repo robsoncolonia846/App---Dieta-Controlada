@@ -14,7 +14,7 @@ export const foods = [
   {
     id: "abobora",
     name: "Abóbora",
-    image: "./food-abobora.png",
+    icon: "🎃",
     category: "Alimenta??o",
     caloriesPer100g: 50,
     proteinPer100g: 1.4,
@@ -228,6 +228,19 @@ export const foods = [
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
       { id: "a-vontade", name: "A Vontade", grams: 100 }
+    ]
+  },
+  {
+    id: "cerveja",
+    name: "Cerveja",
+    icon: "🍺",
+    category: "Alimenta??o",
+    caloriesPer100g: 50,
+    proteinPer100g: 0.6,
+    carbsPer100g: 3.3,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "100ml", grams: 100 }
     ]
   },
   {
@@ -816,6 +829,32 @@ export const foods = [
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
       { id: "excel", name: "100g", grams: 100 }
+    ]
+  },
+  {
+    id: "vinho-seco",
+    name: "Vinho Seco",
+    icon: "🍷",
+    category: "Alimenta??o",
+    caloriesPer100g: 80,
+    proteinPer100g: 0.1,
+    carbsPer100g: 2.6,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "100ml", grams: 100 }
+    ]
+  },
+  {
+    id: "vinho-suave",
+    name: "Vinho Suave",
+    icon: "🍷",
+    category: "Alimenta??o",
+    caloriesPer100g: 100,
+    proteinPer100g: 0.1,
+    carbsPer100g: 8,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "100ml", grams: 100 }
     ]
   }
 ];
