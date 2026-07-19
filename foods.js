@@ -12,6 +12,19 @@ export const foods = [
     ]
   },
   {
+    id: "abobora",
+    name: "Abóbora",
+    image: "./food-abobora.png",
+    category: "Alimenta??o",
+    caloriesPer100g: 50,
+    proteinPer100g: 1.4,
+    carbsPer100g: 10.8,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "100g", grams: 100 }
+    ]
+  },
+  {
     id: "alface",
     name: "Alface",
     category: "Alimenta??o",
