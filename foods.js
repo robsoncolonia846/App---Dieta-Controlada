@@ -798,6 +798,19 @@ export const foods = [
     ]
   },
   {
+    id: "cueca-virada-grostoli",
+    name: "Cueca Virada (Grostoli)",
+    image: "./food-cueca-virada.jpg",
+    category: "Alimentação",
+    caloriesPer100g: 430,
+    proteinPer100g: 7,
+    carbsPer100g: 52,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "50g", grams: 50 }
+    ]
+  },
+  {
     id: "lombo-de-porco",
     name: "Lombo de Porco",
     category: "Alimenta??o",
