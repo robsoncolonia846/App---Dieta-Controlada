@@ -41,12 +41,12 @@ export const foods = [
     name: "Amendoim",
     icon: "🥜",
     category: "Alimenta??o",
-    caloriesPer100g: 570,
-    proteinPer100g: 27.2,
-    carbsPer100g: 20.3,
+    caloriesPer100g: 580,
+    proteinPer100g: 26,
+    carbsPer100g: 16,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "excel", name: "100g", grams: 100 }
+      { id: "excel", name: "25g", grams: 25 }
     ]
   },
   {
@@ -76,7 +76,7 @@ export const foods = [
   {
     id: "batata-frita",
     name: "Batata Frita",
-    image: "./food-batata-frita.png",
+    imageSpritePosition: "0%",
     category: "Alimenta??o",
     caloriesPer100g: 300,
     proteinPer100g: 3.4,
@@ -101,7 +101,7 @@ export const foods = [
   {
     id: "bauru-file",
     name: "Bauru Filé",
-    image: "./food-bauru-file.png",
+    imageSpritePosition: "50%",
     category: "Alimenta??o",
     caloriesPer100g: 1760,
     proteinPer100g: 100,
@@ -800,7 +800,7 @@ export const foods = [
   {
     id: "cueca-virada-grostoli",
     name: "Cueca Virada (Grostoli)",
-    image: "./food-cueca-virada.jpg",
+    imageSpritePosition: "100%",
     category: "Alimentação",
     caloriesPer100g: 430,
     proteinPer100g: 7,

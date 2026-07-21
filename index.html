@@ -1270,6 +1270,16 @@
       display: block;
     }
 
+    .food-sprite {
+      width: 100%;
+      height: 100%;
+      display: block;
+      background-image: url("./food-images.jpg");
+      background-repeat: no-repeat;
+      background-size: 300% 100%;
+      background-position: var(--sprite-position, 0%) center;
+    }
+
     .swap-icon {
       border: 0;
       background: transparent;
@@ -3787,7 +3797,8 @@
         hydrated.foodId = food.id;
         hydrated.name = food.name;
       }
-      hydrated.image = food?.image || hydrated.image || "";
+      hydrated.imageSpritePosition = food?.imageSpritePosition ?? hydrated.imageSpritePosition;
+      hydrated.image = food?.image || (food?.imageSpritePosition !== undefined ? "" : hydrated.image || "");
       hydrated.icon = food?.icon || iconForFoodName(hydrated.name);
       const parsed = parseAmount(hydrated.amount);
       if (!parsed) return hydrated;
@@ -3889,6 +3900,9 @@
     }
 
     function foodVisualMarkup(item = {}) {
+      if (item.imageSpritePosition !== undefined) {
+        return `<span class="food-sprite" style="--sprite-position:${escapeHTML(item.imageSpritePosition)};"></span>`;
+      }
       if (item.image) {
         return `<img src="${escapeHTML(item.image)}" alt="" loading="lazy" />`;
       }
@@ -3907,6 +3921,7 @@
         : `1 ${preferredServing.name.toLowerCase()}`;
       return {
         foodId: food.id,
+        imageSpritePosition: food.imageSpritePosition,
         image: food.image || "",
         icon: food.icon || iconForFoodName(food.name),
         name: food.name,
