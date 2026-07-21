@@ -1076,5 +1076,31 @@ export const foods = [
       { id: "gramas", name: "Gramas", grams: 1 },
       { id: "excel", name: "30g", grams: 30 }
     ]
+  },
+  {
+    id: "quentao",
+    name: "Quentão",
+    icon: "☕",
+    category: "Alimenta??o",
+    caloriesPer100g: 120,
+    proteinPer100g: 0.1,
+    carbsPer100g: 15,
+    servings: [
+      { id: "mililitros", name: "Mililitros", grams: 1 },
+      { id: "excel", name: "100ml", grams: 100 }
+    ]
+  },
+  {
+    id: "pure-de-batatas",
+    name: "Purê de Batatas",
+    icon: "🥔",
+    category: "Alimenta??o",
+    caloriesPer100g: 110,
+    proteinPer100g: 2,
+    carbsPer100g: 17,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "100g", grams: 100 }
+    ]
   }
 ];
