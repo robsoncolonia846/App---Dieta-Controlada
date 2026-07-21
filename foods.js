@@ -126,6 +126,7 @@ export const foods = [
   {
     id: "beterraba-cozida-assada",
     name: "Beterraba Cozida/Assada",
+    icon: "🟣",
     category: "Alimenta??o",
     caloriesPer100g: 56,
     proteinPer100g: 2,
@@ -138,6 +139,7 @@ export const foods = [
   {
     id: "beterraba-crua",
     name: "Beterraba Crua",
+    icon: "🟣",
     category: "Alimenta??o",
     caloriesPer100g: 0,
     proteinPer100g: 0,
@@ -476,7 +478,7 @@ export const foods = [
     id: "macarrao-com-carne-moida",
     name: "Macarrão com Carne Moida",
     category: "Alimenta??o",
-    caloriesPer100g: 200,
+    caloriesPer100g: 400,
     proteinPer100g: 5.8,
     carbsPer100g: 31,
     servings: [
@@ -881,6 +883,198 @@ export const foods = [
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
       { id: "excel", name: "100ml", grams: 100 }
+    ]
+  },
+  {
+    id: "cafe-sem-acucar",
+    name: "Café sem Açúcar",
+    category: "Alimenta??o",
+    caloriesPer100g: 9,
+    proteinPer100g: 0.7,
+    carbsPer100g: 1.5,
+    servings: [
+      { id: "mililitros", name: "Mililitros", grams: 1 },
+      { id: "excel", name: "100ml", grams: 100 }
+    ]
+  },
+  {
+    id: "acucar-cristal",
+    name: "Açúcar Cristal",
+    category: "Alimenta??o",
+    caloriesPer100g: 387,
+    proteinPer100g: 0.3,
+    carbsPer100g: 99.6,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "5g", grams: 5 }
+    ]
+  },
+  {
+    id: "azeite-oliva-extra-virgem",
+    name: "Azeite de Oliva Extra Virgem",
+    category: "Alimenta??o",
+    caloriesPer100g: 884,
+    proteinPer100g: 0,
+    carbsPer100g: 0,
+    servings: [
+      { id: "mililitros", name: "Mililitros", grams: 1 },
+      { id: "excel", name: "10ml", grams: 10 }
+    ]
+  },
+  {
+    id: "manteiga-com-sal",
+    name: "Manteiga com Sal",
+    category: "Alimenta??o",
+    caloriesPer100g: 726,
+    proteinPer100g: 0.4,
+    carbsPer100g: 0.1,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "10g", grams: 10 }
+    ]
+  },
+  {
+    id: "margarina-com-sal",
+    name: "Margarina com Sal",
+    category: "Alimenta??o",
+    caloriesPer100g: 596,
+    proteinPer100g: 0,
+    carbsPer100g: 0,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "10g", grams: 10 }
+    ]
+  },
+  {
+    id: "batata-doce-cozida",
+    name: "Batata-doce Cozida",
+    category: "Alimenta??o",
+    caloriesPer100g: 77,
+    proteinPer100g: 0.6,
+    carbsPer100g: 18.4,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "100g", grams: 100 }
+    ]
+  },
+  {
+    id: "mandioca-cozida",
+    name: "Mandioca Cozida",
+    category: "Alimenta??o",
+    caloriesPer100g: 125,
+    proteinPer100g: 0.6,
+    carbsPer100g: 30.1,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "100g", grams: 100 }
+    ]
+  },
+  {
+    id: "aveia-em-flocos",
+    name: "Aveia em Flocos",
+    category: "Alimenta??o",
+    caloriesPer100g: 394,
+    proteinPer100g: 13.9,
+    carbsPer100g: 66.6,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "30g", grams: 30 }
+    ]
+  },
+  {
+    id: "tapioca-com-manteiga",
+    name: "Tapioca com Manteiga",
+    category: "Alimenta??o",
+    caloriesPer100g: 348,
+    proteinPer100g: 0.1,
+    carbsPer100g: 63.6,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "50g", grams: 50 }
+    ]
+  },
+  {
+    id: "mamao-formosa",
+    name: "Mamão Formosa",
+    category: "Alimenta??o",
+    caloriesPer100g: 45,
+    proteinPer100g: 0.8,
+    carbsPer100g: 11.6,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "100g", grams: 100 }
+    ]
+  },
+  {
+    id: "abacate",
+    name: "Abacate",
+    category: "Alimenta??o",
+    caloriesPer100g: 96,
+    proteinPer100g: 1.2,
+    carbsPer100g: 6,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "100g", grams: 100 }
+    ]
+  },
+  {
+    id: "atum-conserva-oleo",
+    name: "Atum em Conserva com Óleo",
+    category: "Alimenta??o",
+    caloriesPer100g: 166,
+    proteinPer100g: 26.2,
+    carbsPer100g: 0,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "100g", grams: 100 }
+    ]
+  },
+  {
+    id: "sardinha-assada",
+    name: "Sardinha Assada",
+    category: "Alimenta??o",
+    caloriesPer100g: 164,
+    proteinPer100g: 32.2,
+    carbsPer100g: 0,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "100g", grams: 100 }
+    ]
+  },
+  {
+    id: "queijo-minas-frescal",
+    name: "Queijo Minas Frescal",
+    category: "Alimenta??o",
+    caloriesPer100g: 264,
+    proteinPer100g: 17.4,
+    carbsPer100g: 3.2,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "30g", grams: 30 }
+    ]
+  },
+  {
+    id: "queijo-cottage",
+    name: "Queijo Cottage",
+    category: "Alimenta??o",
+    caloriesPer100g: 98,
+    proteinPer100g: 11.1,
+    carbsPer100g: 3.4,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "50g", grams: 50 }
+    ]
+  },
+  {
+    id: "granola",
+    name: "Granola",
+    category: "Alimenta??o",
+    caloriesPer100g: 471,
+    proteinPer100g: 10.1,
+    carbsPer100g: 62.5,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "30g", grams: 30 }
     ]
   }
 ];
