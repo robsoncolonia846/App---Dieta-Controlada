@@ -572,26 +572,28 @@ export const foods = [
   },
   {
     id: "panqueca-carne-moida",
-    name: "Panqueca (Carne Moida)",
+    name: "Panqueca de Carne Moída",
+    aliases: ["Panqueca (Carne Moida)", "Panqueca (Carne Moída)"],
     category: "Alimenta??o",
     caloriesPer100g: 190,
     proteinPer100g: 12,
     carbsPer100g: 16,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "porcao-na", name: "Por??o", grams: 100 }
+      { id: "excel", name: "100g", grams: 100 }
     ]
   },
   {
     id: "panqueca-frango",
-    name: "Panqueca (Frango)",
+    name: "Panqueca de Frango",
+    aliases: ["Panqueca (Frango)"],
     category: "Alimenta??o",
     caloriesPer100g: 175,
     proteinPer100g: 14,
     carbsPer100g: 16,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "porcao-na", name: "Por??o", grams: 100 }
+      { id: "excel", name: "100g", grams: 100 }
     ]
   },
   {
