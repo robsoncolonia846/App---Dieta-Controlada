@@ -1804,8 +1804,8 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
-      padding: 14px 16px;
+      gap: 6px;
+      padding: 11px 12px;
       background: #f4f7f2;
       border-bottom: 1px solid #edf0f5;
       font-weight: 950;
@@ -1813,10 +1813,15 @@
 
     .diet-option-name {
       color: #1fa12e;
+      font-size: 12px;
+      line-height: 1;
+      white-space: nowrap;
     }
 
     .diet-option-kcal {
       color: #111827;
+      font-size: 12px;
+      line-height: 1;
       white-space: nowrap;
     }
 
@@ -1824,14 +1829,22 @@
     .diet-option-actions {
       display: flex;
       align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
+      gap: 5px;
+      flex-wrap: nowrap;
+    }
+
+    .diet-option-title-line {
+      min-width: 0;
+    }
+
+    .diet-option-actions {
+      flex: 0 0 auto;
     }
 
     .diet-edited-actions {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
       flex: 0 0 auto;
       white-space: nowrap;
     }
@@ -1842,8 +1855,8 @@
       border-radius: 999px;
       background: #fff7dc;
       color: #8a6100;
-      padding: 5px 8px;
-      font-size: 11px;
+      padding: 4px 6px;
+      font-size: 9px;
       font-weight: 950;
       line-height: 1;
     }
@@ -1853,8 +1866,8 @@
       border-radius: 999px;
       background: #eaf6ea;
       color: #10931f;
-      padding: 7px 10px;
-      font-size: 12px;
+      padding: 6px 7px;
+      font-size: 10px;
       font-weight: 950;
       white-space: nowrap;
       cursor: pointer;
@@ -1907,24 +1920,33 @@
 
     .activity-option-card {
       width: 100%;
+      box-sizing: border-box;
       border: 1px solid #edf0f5;
       border-radius: 18px;
       background: #fafbf8;
-      display: grid;
-      grid-template-columns: 42px 1fr auto;
-      align-items: center;
-      gap: 12px;
       padding: 13px 14px;
       color: #243119;
       text-align: left;
-      font: inherit;
       cursor: pointer;
+      transition: border-color .16s ease, background .16s ease, box-shadow .16s ease;
     }
 
-    .activity-option-card.active {
-      border-color: #1fa12e;
-      background: #eff9ee;
-      box-shadow: 0 0 0 1px #1fa12e;
+    .activity-option-card.selected {
+      border-color: #70bd69;
+      background: #f5fbf2;
+      box-shadow: 0 0 0 2px rgba(31, 161, 46, .08);
+    }
+
+    .activity-option-main {
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr) auto 30px 30px;
+      align-items: center;
+      column-gap: 7px;
+      row-gap: 4px;
+    }
+
+    .activity-option-main .activity-option-icon {
+      grid-row: 1 / 3;
     }
 
     .activity-option-icon {
@@ -1938,6 +1960,7 @@
     }
 
     .activity-option-name {
+      grid-column: 2 / -1;
       min-width: 0;
       font-size: 14px;
       font-weight: 950;
@@ -1945,10 +1968,82 @@
     }
 
     .activity-option-rate {
+      grid-column: 3;
       color: #1fa12e;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 950;
       white-space: nowrap;
+    }
+
+    .activity-direct-actions {
+      display: block;
+      margin-top: 12px;
+      padding-top: 11px;
+      border-top: 1px solid #edf0f5;
+    }
+
+    .activity-option-main .activity-time-value {
+      grid-column: 2;
+      min-width: 0;
+      text-align: left;
+      font-size: 12px;
+    }
+
+    .activity-time-button {
+      width: 30px;
+      height: 30px;
+      border: 1px solid #dfe5db;
+      border-radius: 50%;
+      background: #ffffff;
+      color: #1f7f2d;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      font-size: 18px;
+      font-weight: 950;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .activity-time-value {
+      min-width: 64px;
+      text-align: center;
+      color: #243119;
+      font-size: 14px;
+      font-weight: 950;
+      white-space: nowrap;
+    }
+
+    .activity-register-button {
+      width: 100%;
+      min-height: 38px;
+      border: 0;
+      border-radius: 14px;
+      background: #1fa12e;
+      color: #ffffff;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 950;
+      cursor: pointer;
+    }
+
+    .registered-activity-card .activity-direct-actions {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .registered-activity-card .activity-direct-actions .delete-button {
+      width: 100%;
+      min-height: 36px;
+    }
+
+    .registered-activity-card .activity-direct-actions .edit-button {
+      flex: 1;
+    }
+
+    .registered-activity-card .activity-direct-actions .edit-button + .delete-button {
+      width: auto;
+      flex: 1;
     }
 
     .training-log-card .diet-card-inner {
@@ -1977,6 +2072,66 @@
       background: #f1f3f5;
       font-size: 24px;
       line-height: 1;
+    }
+
+    .logged-activity {
+      display: grid;
+      gap: 11px;
+      padding: 14px 0 2px;
+      border-top: 1px solid #eef2e6;
+    }
+
+    .logged-activity-main {
+      display: grid;
+      grid-template-columns: 38px minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .logged-activity-icon {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #f2f6ed;
+      font-size: 19px;
+    }
+
+    .logged-activity-name {
+      min-width: 0;
+      font-weight: 900;
+      line-height: 1.15;
+    }
+
+    .logged-activity-rate,
+    .logged-activity-kcal {
+      color: #77836f;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .logged-activity-kcal {
+      color: #466b2d;
+      white-space: nowrap;
+    }
+
+    .logged-activity-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .logged-activity-actions .activity-time-value {
+      min-width: 55px;
+      text-align: center;
+    }
+
+    .logged-activity-actions .delete-button,
+    .logged-activity-actions .edit-button {
+      margin-left: 2px;
     }
 
     .diet-food-name {
@@ -2057,9 +2212,9 @@
             <span class="tab-icon">🍴</span>
             <span class="tab-label">Dieta</span>
           </button>
-          <button class="tab" data-tab="gasto" aria-label="Treino">
+          <button class="tab" data-tab="gasto" aria-label="Atividades">
             <span class="tab-icon">🏋️</span>
-            <span class="tab-label">Treino</span>
+            <span class="tab-label">Atividades</span>
           </button>
         </nav>
 
@@ -2079,7 +2234,7 @@
                 <div class="calorie-range-labels">
                   <span id="calorie-range-current-label" style="--left: 0%;">0</span>
                   <span style="--left: 0%;"><span id="calorie-range-min-label">0</span><details class="range-info"><summary aria-label="Entenda o déficit de 500 kcal">i</summary><div class="range-info-box">Meta com déficit de 500 kcal em relação ao gasto diário.</div></details></span>
-                  <span style="--left: 100%;"><span id="calorie-range-max-label">0</span><details class="range-info"><summary aria-label="Entenda o gasto diário">i</summary><div class="range-info-box">Gasto diário estimado, somando os treinos registrados no dia, caso ocorram.</div></details></span>
+                  <span style="--left: 100%;"><span id="calorie-range-max-label">0</span><details class="range-info"><summary aria-label="Entenda o gasto diário">i</summary><div class="range-info-box">Gasto diário estimado, somando as atividades registradas no dia, caso ocorram.</div></details></span>
                 </div>
               </div>
             </div>
@@ -2230,8 +2385,8 @@
           <section id="gasto" class="hidden">
             <div class="diet-page">
               <div class="diet-page-head training-page-head">
-                <h2>Treino</h2>
-                <div class="muted">Selecione a atividade e informe o tempo realizado.</div>
+                <h2>Atividades</h2>
+                <div class="muted">Ajuste o tempo e cadastre diretamente no item.</div>
               </div>
 
               <article class="diet-card">
@@ -2239,23 +2394,22 @@
                   <div class="diet-card-header">
                     <div class="diet-card-icon">🏋️</div>
                     <div>
-                      <div class="diet-card-title">Registrar atividade</div>
-                      <div class="diet-card-time">Gasto por hora</div>
+                      <div class="diet-card-title">Atividades disponíveis</div>
+                      <div class="diet-card-time">Ajuste em intervalos de 15 minutos</div>
                     </div>
                   </div>
                   <div class="diet-card-divider"></div>
                   <input id="expense-date" type="hidden" />
-                  <div>
-                    <div class="metric-label" style="margin-bottom: 8px; font-weight: 800;">Atividade</div>
-                    <div class="activity-option-list" id="expense-options"></div>
+                  <div class="activity-option-list" id="expense-options"></div>
+                  <div class="hidden" aria-hidden="true">
+                    <div class="selector-tabs" id="time-unit-tabs">
+                      <button class="selector-tab active" data-time-unit="minutes">Min</button>
+                      <button class="selector-tab" data-time-unit="hours">Hora</button>
+                    </div>
+                    <label id="expense-input-label">Tempo <input id="expense-minutes" inputmode="decimal" /></label>
+                    <div id="expense-preview"></div>
+                    <button id="save-expense" type="button">Salvar atividade</button>
                   </div>
-                  <div class="selector-tabs" id="time-unit-tabs">
-                    <button class="selector-tab active" data-time-unit="minutes">Min</button>
-                    <button class="selector-tab" data-time-unit="hours">Hora</button>
-                  </div>
-                  <label id="expense-input-label">Tempo <input id="expense-minutes" inputmode="decimal" placeholder="Ex: 45" /></label>
-                  <div class="muted" id="expense-preview">Selecione uma atividade e informe o tempo.</div>
-                  <button class="button" id="save-expense">Salvar atividade</button>
                 </div>
               </article>
 
@@ -2902,8 +3056,9 @@
     let selectedFoodId = foods[0]?.id;
     let selectedServingId = "";
     let selectedMealType = mealTypes[0].id;
-    let selectedActivityId = activityPresets[0].id;
+    let selectedActivityId = null;
     let selectedTimeUnit = "minutes";
+    const activityDraftMinutes = Object.fromEntries(activityPresets.map((item) => [item.id, 30]));
     let currentFoodMode = "popular";
     const minimumHistoryDays = 30;
     let currentPeriod = "hoje";
@@ -4624,23 +4779,74 @@
 
     function renderExpenseOptions() {
       expenseOptions.innerHTML = activityPresets
-        .map((item) => `
-          <button type="button" data-activity-id="${item.id}" class="activity-option-card ${item.id === selectedActivityId ? "active" : ""}">
-            <span class="activity-option-icon">${item.icon || "🏋️"}</span>
-            <span class="activity-option-name">${item.name}</span>
-            <span class="activity-option-rate">${item.caloriesPerHour} kcal/h</span>
-          </button>
-        `)
+        .map((item) => {
+          const minutes = activityDraftMinutes[item.id] || 30;
+          const calories = round((minutes / 60) * item.caloriesPerHour);
+          const selected = selectedActivityId === item.id;
+          return `
+          <div data-select-activity="${item.id}" class="activity-option-card ${selected ? "selected" : ""}" role="button" tabindex="0" aria-pressed="${selected}">
+            <div class="activity-option-main">
+              <span class="activity-option-icon">${item.icon || "🏋️"}</span>
+              <span class="activity-option-name">${item.name}</span>
+              <span class="activity-time-value" data-activity-time="${item.id}">${minutes} min</span>
+              <span class="activity-option-rate" data-activity-kcal="${item.id}">${formatKcalValue(calories)} kcal</span>
+              <button class="activity-time-button" type="button" data-activity-minus="${item.id}" aria-label="Diminuir tempo de ${item.name}">−</button>
+              <button class="activity-time-button" type="button" data-activity-plus="${item.id}" aria-label="Aumentar tempo de ${item.name}">+</button>
+            </div>
+            ${selected ? `<div class="activity-direct-actions">
+              <button class="activity-register-button" type="button" data-register-activity="${item.id}">Cadastrar</button>
+            </div>` : ""}
+          </div>
+        `;
+        })
         .join("");
-      expenseOptions.querySelectorAll(".activity-option-card").forEach((item) => {
-        item.addEventListener("click", () => {
-          selectedActivityId = item.dataset.activityId;
-          expenseOptions.querySelectorAll(".activity-option-card").forEach((card) => card.classList.remove("active"));
-          item.classList.add("active");
-          updateExpensePreview();
+      expenseOptions.querySelectorAll("[data-select-activity]").forEach((card) => {
+        const selectCard = () => {
+          selectedActivityId = selectedActivityId === card.dataset.selectActivity ? null : card.dataset.selectActivity;
+          renderExpenseOptions();
+        };
+        card.addEventListener("click", selectCard);
+        card.addEventListener("keydown", (event) => {
+          if (event.target !== card) return;
+          if (event.key !== "Enter" && event.key !== " ") return;
+          event.preventDefault();
+          selectCard();
         });
       });
-      updateExpensePreview();
+      expenseOptions.querySelectorAll("[data-activity-minus], [data-activity-plus]").forEach((button) => {
+        button.addEventListener("click", (event) => {
+          event.stopPropagation();
+          const activityId = button.dataset.activityMinus || button.dataset.activityPlus;
+          const direction = button.dataset.activityPlus ? 1 : -1;
+          activityDraftMinutes[activityId] = Math.max(15, (activityDraftMinutes[activityId] || 30) + direction * 15);
+          const value = expenseOptions.querySelector(`[data-activity-time="${activityId}"]`);
+          if (value) value.textContent = `${activityDraftMinutes[activityId]} min`;
+          const activity = activityPresets.find((item) => item.id === activityId);
+          const kcal = expenseOptions.querySelector(`[data-activity-kcal="${activityId}"]`);
+          if (activity && kcal) kcal.textContent = `${formatKcalValue(round((activityDraftMinutes[activityId] / 60) * activity.caloriesPerHour))} kcal`;
+        });
+      });
+      expenseOptions.querySelectorAll("[data-register-activity]").forEach((button) => {
+        button.addEventListener("click", (event) => {
+          event.stopPropagation();
+          const activity = activityPresets.find((item) => item.id === button.dataset.registerActivity);
+          if (!activity) return;
+          const minutes = activityDraftMinutes[activity.id] || 30;
+          appData.expenses.unshift({
+            id: `${Date.now()}`,
+            date: expenseDate.value || todayISO(),
+            activityId: activity.id,
+            activity: activity.name,
+            minutes,
+            calories: round((minutes / 60) * activity.caloriesPerHour)
+          });
+          saveData();
+          selectedActivityId = null;
+          currentPeriod = "hoje";
+          periodButtons.forEach((item) => item.classList.toggle("active", item.dataset.period === "hoje"));
+          renderAll();
+        });
+      });
     }
 
     function updateExpensePreview() {
@@ -4901,10 +5107,43 @@
         return;
       }
       gastoResumo.innerHTML = data.map((item) => {
-        const timeLabel = item.minutes > 0 ? `${item.minutes} min acumulados` : "valor manual";
-        const hourLabel = item.minutes > 0 ? `<div>${Math.round((item.minutes / 60) * 10) / 10}h total</div>` : "";
-        return `<div class="meal"><div><div class="meal-name">${item.activity || item.description}</div><div class="muted">${timeLabel}</div></div><div class="macro-summary"><div>${item.calories} kcal</div>${hourLabel}<button class="edit-button" type="button" data-edit-home-expense="${item.id}">Editar</button><button class="delete-button" type="button" data-delete-home-expense="${item.id}">Excluir</button></div></div>`;
+        const timeLabel = item.minutes > 0 ? `${item.minutes} min` : "valor manual";
+        const activity = activityPresets.find((preset) => preset.id === item.activityId);
+        if (!activity || !item.minutes) {
+          return `<div class="activity-option-card registered-activity-card">
+            <div class="activity-option-main">
+              <span class="activity-option-icon">🏋️</span>
+              <span class="activity-option-name">${item.activity || item.description}</span>
+              <span class="activity-time-value">${timeLabel}</span>
+              <span class="activity-option-rate">${formatKcalValue(item.calories)} kcal</span>
+            </div>
+            <div class="activity-direct-actions"><button class="edit-button" type="button" data-edit-home-expense="${item.id}">Editar</button><button class="delete-button" type="button" data-delete-home-expense="${item.id}">Excluir</button></div>
+          </div>`;
+        }
+        return `<div class="activity-option-card registered-activity-card">
+          <div class="activity-option-main">
+            <span class="activity-option-icon">${activity.icon || "🏋️"}</span>
+            <span class="activity-option-name">${item.activity || item.description}</span>
+            <span class="activity-time-value">${timeLabel}</span>
+            <span class="activity-option-rate">${formatKcalValue(item.calories)} kcal</span>
+            <button class="activity-time-button" type="button" data-adjust-home-expense="${item.id}" data-direction="-1" aria-label="Diminuir tempo">−</button>
+            <button class="activity-time-button" type="button" data-adjust-home-expense="${item.id}" data-direction="1" aria-label="Aumentar tempo">+</button>
+          </div>
+          <div class="activity-direct-actions"><button class="delete-button" type="button" data-delete-home-expense="${item.id}">Excluir atividade</button></div>
+        </div>`;
       }).join("");
+      gastoResumo.querySelectorAll("[data-adjust-home-expense]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const expense = appData.expenses.find((item) => item.id === button.dataset.adjustHomeExpense);
+          const activity = activityPresets.find((item) => item.id === expense?.activityId);
+          if (!expense || !activity) return;
+          const direction = Number(button.dataset.direction) || 0;
+          expense.minutes = Math.max(15, (Number(expense.minutes) || 30) + direction * 15);
+          expense.calories = round((expense.minutes / 60) * activity.caloriesPerHour);
+          saveData();
+          renderAll();
+        });
+      });
       gastoResumo.querySelectorAll("[data-edit-home-expense]").forEach((button) => {
         button.addEventListener("click", () => {
           const expense = appData.expenses.find((item) => item.id === button.dataset.editHomeExpense);
@@ -4917,13 +5156,7 @@
           if (!confirm("Editar esta atividade? O lançamento atual voltará para o formulário.")) return;
           selectedActivityId = expense.activityId;
           expenseDate.value = expense.date;
-          if (activity.manualCalories || !expense.minutes) {
-            expenseMinutes.value = expense.calories;
-          } else {
-            selectedTimeUnit = "minutes";
-            expenseMinutes.value = expense.minutes;
-            timeUnitButtons.forEach((item) => item.classList.toggle("active", item.dataset.timeUnit === "minutes"));
-          }
+          activityDraftMinutes[activity.id] = Math.max(15, Number(expense.minutes) || 30);
           appData.expenses = appData.expenses.filter((item) => item.id !== expense.id);
           saveData();
           renderExpenseOptions();
@@ -4953,9 +5186,33 @@
       }
       expenseLog.innerHTML = expenses.map((item) => {
         const timeLabel = item.minutes > 0 ? `${item.minutes} min` : "valor manual";
-        const hourLabel = item.minutes > 0 ? `<div>${Math.round((item.minutes / 60) * 10) / 10}h total</div>` : "";
-        return `<div class="meal"><div><div class="meal-name">${item.activity || item.description}</div><div class="muted">${timeLabel}</div></div><div class="macro-summary"><div>${item.calories} kcal</div>${hourLabel}<button class="edit-button" data-edit-expense="${item.id}">Editar</button><button class="delete-button" data-delete-expense="${item.id}">Excluir</button></div></div>`;
+        const activity = activityPresets.find((preset) => preset.id === item.activityId);
+        const controls = activity && item.minutes > 0
+          ? `<button class="activity-time-button" type="button" data-adjust-expense="${item.id}" data-direction="-1" aria-label="Diminuir tempo">−</button>
+             <span class="activity-time-value">${timeLabel}</span>
+             <button class="activity-time-button" type="button" data-adjust-expense="${item.id}" data-direction="1" aria-label="Aumentar tempo">+</button>`
+          : `<span class="activity-time-value">${timeLabel}</span><button class="edit-button" data-edit-expense="${item.id}">Editar</button>`;
+        return `<div class="logged-activity">
+          <div class="logged-activity-main">
+            <span class="logged-activity-icon">${activity?.icon || "🏋️"}</span>
+            <div><div class="logged-activity-name">${item.activity || item.description}</div><div class="logged-activity-rate">${activity ? `${activity.caloriesPerHour} kcal/h` : "Atividade registrada"}</div></div>
+            <div class="logged-activity-kcal">${formatKcalValue(item.calories)} kcal</div>
+          </div>
+          <div class="logged-activity-actions">${controls}<button class="delete-button" data-delete-expense="${item.id}">Excluir</button></div>
+        </div>`;
       }).join("");
+      expenseLog.querySelectorAll("[data-adjust-expense]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const expense = appData.expenses.find((item) => item.id === button.dataset.adjustExpense);
+          const activity = activityPresets.find((item) => item.id === expense?.activityId);
+          if (!expense || !activity) return;
+          const direction = Number(button.dataset.direction) || 0;
+          expense.minutes = Math.max(15, (Number(expense.minutes) || 30) + direction * 15);
+          expense.calories = round((expense.minutes / 60) * activity.caloriesPerHour);
+          saveData();
+          renderAll();
+        });
+      });
       expenseLog.querySelectorAll("[data-edit-expense]").forEach((button) => {
         button.addEventListener("click", () => {
           const expense = appData.expenses.find((item) => item.id === button.dataset.editExpense);
@@ -4968,13 +5225,7 @@
           if (!confirm("Editar esta atividade? O lançamento atual será removido e voltará para o formulário.")) return;
           selectedActivityId = expense.activityId;
           expenseDate.value = expense.date;
-          if (activity?.manualCalories || !expense.minutes) {
-            expenseMinutes.value = expense.calories;
-          } else {
-            selectedTimeUnit = "minutes";
-            expenseMinutes.value = expense.minutes;
-            timeUnitButtons.forEach((item) => item.classList.toggle("active", item.dataset.timeUnit === "minutes"));
-          }
+          activityDraftMinutes[activity.id] = Math.max(15, Number(expense.minutes) || 30);
           appData.expenses = appData.expenses.filter((item) => item.id !== expense.id);
           saveData();
           renderExpenseOptions();
