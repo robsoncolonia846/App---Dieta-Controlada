@@ -2623,6 +2623,26 @@
     const sortByName = (items) => [...items].sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
     const round = (value) => Math.round(value * 10) / 10;
     const formatKcalValue = (value) => Number(value).toLocaleString("pt-BR", { maximumFractionDigits: 1 });
+    const formatActivityDuration = (minutesRaw) => {
+      const minutes = Math.max(0, Math.round(Number(minutesRaw) || 0));
+      if (minutes < 60) return `${minutes} min`;
+      const hours = Math.floor(minutes / 60);
+      const remainingMinutes = minutes % 60;
+      return remainingMinutes
+        ? `${hours}h${String(remainingMinutes).padStart(2, "0")}`
+        : `${hours}h`;
+    };
+    const adjustedActivityMinutes = (minutesRaw, directionRaw) => {
+      const minutes = Math.max(15, Math.round(Number(minutesRaw) || 30));
+      const direction = Number(directionRaw) >= 0 ? 1 : -1;
+      let step;
+      if (direction > 0) {
+        step = minutes < 120 ? 15 : minutes < 240 ? 30 : 60;
+      } else {
+        step = minutes <= 120 ? 15 : minutes <= 240 ? 30 : 60;
+      }
+      return Math.max(15, minutes + direction * step);
+    };
     const dayStartsAtHour = 6;
     const localISODate = (date = new Date()) => {
       const year = date.getFullYear();
@@ -4788,7 +4808,7 @@
             <div class="activity-option-main">
               <span class="activity-option-icon">${item.icon || "🏋️"}</span>
               <span class="activity-option-name">${item.name}</span>
-              <span class="activity-time-value" data-activity-time="${item.id}">${minutes} min</span>
+              <span class="activity-time-value" data-activity-time="${item.id}">${formatActivityDuration(minutes)}</span>
               <span class="activity-option-rate" data-activity-kcal="${item.id}">${formatKcalValue(calories)} kcal</span>
               <button class="activity-time-button" type="button" data-activity-minus="${item.id}" aria-label="Diminuir tempo de ${item.name}">−</button>
               <button class="activity-time-button" type="button" data-activity-plus="${item.id}" aria-label="Aumentar tempo de ${item.name}">+</button>
@@ -4818,9 +4838,9 @@
           event.stopPropagation();
           const activityId = button.dataset.activityMinus || button.dataset.activityPlus;
           const direction = button.dataset.activityPlus ? 1 : -1;
-          activityDraftMinutes[activityId] = Math.max(15, (activityDraftMinutes[activityId] || 30) + direction * 15);
+          activityDraftMinutes[activityId] = adjustedActivityMinutes(activityDraftMinutes[activityId], direction);
           const value = expenseOptions.querySelector(`[data-activity-time="${activityId}"]`);
-          if (value) value.textContent = `${activityDraftMinutes[activityId]} min`;
+          if (value) value.textContent = formatActivityDuration(activityDraftMinutes[activityId]);
           const activity = activityPresets.find((item) => item.id === activityId);
           const kcal = expenseOptions.querySelector(`[data-activity-kcal="${activityId}"]`);
           if (activity && kcal) kcal.textContent = `${formatKcalValue(round((activityDraftMinutes[activityId] / 60) * activity.caloriesPerHour))} kcal`;
@@ -5107,7 +5127,7 @@
         return;
       }
       gastoResumo.innerHTML = data.map((item) => {
-        const timeLabel = item.minutes > 0 ? `${item.minutes} min` : "valor manual";
+        const timeLabel = item.minutes > 0 ? formatActivityDuration(item.minutes) : "valor manual";
         const activity = activityPresets.find((preset) => preset.id === item.activityId);
         if (!activity || !item.minutes) {
           return `<div class="activity-option-card registered-activity-card">
@@ -5138,7 +5158,7 @@
           const activity = activityPresets.find((item) => item.id === expense?.activityId);
           if (!expense || !activity) return;
           const direction = Number(button.dataset.direction) || 0;
-          expense.minutes = Math.max(15, (Number(expense.minutes) || 30) + direction * 15);
+          expense.minutes = adjustedActivityMinutes(expense.minutes, direction);
           expense.calories = round((expense.minutes / 60) * activity.caloriesPerHour);
           saveData();
           renderAll();
@@ -5185,7 +5205,7 @@
         return;
       }
       expenseLog.innerHTML = expenses.map((item) => {
-        const timeLabel = item.minutes > 0 ? `${item.minutes} min` : "valor manual";
+        const timeLabel = item.minutes > 0 ? formatActivityDuration(item.minutes) : "valor manual";
         const activity = activityPresets.find((preset) => preset.id === item.activityId);
         const controls = activity && item.minutes > 0
           ? `<button class="activity-time-button" type="button" data-adjust-expense="${item.id}" data-direction="-1" aria-label="Diminuir tempo">−</button>
@@ -5207,7 +5227,7 @@
           const activity = activityPresets.find((item) => item.id === expense?.activityId);
           if (!expense || !activity) return;
           const direction = Number(button.dataset.direction) || 0;
-          expense.minutes = Math.max(15, (Number(expense.minutes) || 30) + direction * 15);
+          expense.minutes = adjustedActivityMinutes(expense.minutes, direction);
           expense.calories = round((expense.minutes / 60) * activity.caloriesPerHour);
           saveData();
           renderAll();
