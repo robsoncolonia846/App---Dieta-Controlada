@@ -487,6 +487,19 @@ export const foods = [
     ]
   },
   {
+    id: "macarrao-instantaneo-miojo",
+    name: "Macarrão instantâneo (Miojo)",
+    aliases: ["Miojo", "Macarrão instantâneo"],
+    category: "Alimentação",
+    caloriesPer100g: 150,
+    proteinPer100g: 4,
+    carbsPer100g: 25,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "100g", grams: 100 }
+    ]
+  },
+  {
     id: "melancia",
     name: "Melancia",
     category: "Alimenta??o",
