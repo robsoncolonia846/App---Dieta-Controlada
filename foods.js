@@ -404,7 +404,7 @@ export const foods = [
   },
   {
     id: "lazanha-de-carne-moida",
-    name: "Lazanha de Carne Moida",
+    name: "Lasanha de Carne Moída",
     category: "Alimenta??o",
     caloriesPer100g: 200,
     proteinPer100g: 12,
@@ -416,7 +416,7 @@ export const foods = [
   },
   {
     id: "lazanha-de-frango",
-    name: "Lazanha de Frango",
+    name: "Lasanha de Frango",
     category: "Alimenta??o",
     caloriesPer100g: 200,
     proteinPer100g: 10,
@@ -472,6 +472,19 @@ export const foods = [
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
       { id: "excel", name: "50g", grams: 50 }
+    ]
+  },
+  {
+    id: "massa-alho-e-oleo",
+    name: "Massa alho e óleo",
+    aliases: ["Macarrão alho e óleo"],
+    category: "Alimentação",
+    caloriesPer100g: 300,
+    proteinPer100g: 5.8,
+    carbsPer100g: 31,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "100g", grams: 100 }
     ]
   },
   {
