@@ -64,9 +64,22 @@
       color: #9ba19a;
       margin-top: 7px;
       display: flex;
-      gap: 12px;
+      gap: 6px;
       font-size: 13px;
       font-weight: 700;
+      flex-wrap: wrap;
+    }
+
+    .quick-profile-button {
+      border: 1px solid #e2e8dc;
+      border-radius: 999px;
+      background: #f7f9f3;
+      color: #66725d;
+      padding: 5px 8px;
+      font: inherit;
+      font-size: 11px;
+      font-weight: 800;
+      line-height: 1;
     }
 
     .avatar-button {
@@ -79,6 +92,13 @@
       font-size: 24px;
       font-weight: 950;
       box-shadow: 0 12px 24px rgba(36, 49, 25, 0.18);
+      background-position: center;
+      background-size: cover;
+      cursor: pointer;
+    }
+
+    .avatar-button.has-photo {
+      color: transparent;
     }
 
     .tabs {
@@ -309,10 +329,27 @@
     }
 
     .chart-bar {
+      position: relative;
       width: 82%;
       max-width: 46px;
       border-radius: 8px;
       background: #9fdc8a;
+      overflow: hidden;
+    }
+
+    .chart-weight {
+      position: absolute;
+      left: 1px;
+      right: 1px;
+      bottom: 2px;
+      color: #171b14;
+      font-size: 8px;
+      font-weight: 800;
+      line-height: 1;
+      text-align: center;
+      white-space: nowrap;
+      cursor: pointer;
+      z-index: 4;
     }
 
     .chart-bar.range {
@@ -1896,6 +1933,200 @@
       gap: 8px;
     }
 
+    .notification-card {
+      position: relative;
+    }
+
+    .card-notification-bell {
+      flex: 0 0 auto;
+      width: 30px;
+      height: 30px;
+      border: 1px solid #e1e6dd;
+      border-radius: 50%;
+      background: #f4f6f1;
+      color: #9aa097;
+      display: inline-grid;
+      place-items: center;
+      padding: 0;
+      font-size: 15px;
+      line-height: 1;
+    }
+
+    .card-notification-bell.active {
+      border-color: #b7ddb0;
+      background: #e7f6e3;
+      color: #209b26;
+    }
+
+    #water-notification-bell {
+      position: static;
+      margin-left: 2px;
+    }
+
+    .notification-card .water-quick-actions {
+      margin-top: 0;
+      align-items: center;
+    }
+
+    .notification-card .log-summary > div:first-child {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .weight-picker-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 40;
+      display: grid;
+      place-items: end center;
+      background: rgba(22, 29, 17, 0.48);
+    }
+
+    .weight-picker-sheet {
+      width: min(100%, 480px);
+      border-radius: 24px 24px 0 0;
+      background: #fff;
+      padding: 16px 20px max(20px, env(safe-area-inset-bottom));
+      display: grid;
+      justify-items: center;
+      gap: 14px;
+      box-shadow: 0 -16px 36px rgba(23, 31, 18, 0.18);
+    }
+
+    .weight-picker-sheet h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .weight-picker-value {
+      color: #243119;
+      font-size: 28px;
+      font-weight: 950;
+    }
+
+    .profile-wheel-wrap {
+      position: relative;
+      width: min(230px, 76vw);
+      height: 216px;
+      border-radius: 22px;
+      overflow: hidden;
+      background: #090a08;
+    }
+
+    .profile-wheel-wrap::before,
+    .profile-wheel-wrap::after {
+      content: "";
+      position: absolute;
+      z-index: 3;
+      left: 0;
+      right: 0;
+      height: 70px;
+      pointer-events: none;
+    }
+
+    .profile-wheel-wrap::before {
+      top: 0;
+      background: linear-gradient(#090a08 20%, rgba(9, 10, 8, 0));
+    }
+
+    .profile-wheel-wrap::after {
+      bottom: 0;
+      background: linear-gradient(rgba(9, 10, 8, 0), #090a08 80%);
+    }
+
+    .profile-wheel {
+      width: 100%;
+      height: 100%;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scroll-snap-type: y mandatory;
+      padding-block: 72px;
+      scrollbar-width: none;
+    }
+
+    .profile-wheel::-webkit-scrollbar {
+      display: none;
+    }
+
+    .profile-wheel-item {
+      position: relative;
+      width: 100%;
+      height: 72px;
+      border: 0;
+      background: transparent;
+      scroll-snap-align: center;
+      display: grid;
+      place-items: center;
+      color: #3c3d3a;
+      font-size: 39px;
+      font-weight: 800;
+      line-height: 1;
+      transition: color 0.14s ease, transform 0.14s ease;
+      user-select: none;
+    }
+
+    .profile-wheel-item.selected {
+      color: #fff;
+      font-size: 48px;
+      transform: scale(1.04);
+    }
+
+    .profile-wheel-item.selected::before,
+    .profile-wheel-item.selected::after {
+      position: absolute;
+      top: 50%;
+      color: #8bcf62;
+      font-size: 17px;
+      transform: translateY(-50%);
+    }
+
+    .profile-wheel-item.selected::before {
+      left: 14px;
+      content: "▶";
+    }
+
+    .profile-wheel-item.selected::after {
+      right: 14px;
+      content: "◀";
+    }
+
+    .profile-wheel-center {
+      position: absolute;
+      z-index: 4;
+      top: 50%;
+      left: 9px;
+      right: 9px;
+      height: 70px;
+      transform: translateY(-50%);
+      border-top: 1px solid rgba(159, 232, 112, 0.3);
+      border-bottom: 1px solid rgba(159, 232, 112, 0.3);
+      pointer-events: none;
+    }
+
+    .weight-picker-actions {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .weight-picker-actions button {
+      border: 0;
+      border-radius: 999px;
+      padding: 12px;
+      font-weight: 900;
+    }
+
+    .weight-picker-cancel {
+      background: #f0f2ed;
+      color: #66725d;
+    }
+
+    .weight-picker-save {
+      background: #209b26;
+      color: #fff;
+    }
+
     .meal-card-heading h2 {
       margin: 0;
     }
@@ -2193,13 +2424,14 @@
           <div class="topbar">
             <div>
               <h1 id="greeting-title">Olá, Robson</h1>
-              <div class="profile-meta">
-                <span id="profile-age-label">-- anos</span>
-                <span id="profile-height-label">-- m</span>
-                <span id="profile-weight-label">-- kg</span>
+              <div class="profile-meta" aria-label="Dados rápidos do perfil">
+                <button class="quick-profile-button" id="profile-age-label" type="button">-- anos</button>
+                <button class="quick-profile-button" id="profile-height-label" type="button">-- m</button>
+                <button class="quick-profile-button" id="profile-weight-label" type="button">-- kg</button>
               </div>
             </div>
-            <button class="avatar-button" id="profile-button" type="button" aria-label="Abrir perfil">R</button>
+            <button class="avatar-button" id="profile-button" type="button" aria-label="Escolher foto do perfil">R</button>
+            <input class="hidden" id="profile-photo-input" type="file" accept="image/*" />
           </div>
         </header>
 
@@ -2276,15 +2508,16 @@
               <div class="goal-alert" id="goal-alert">Dia no controle. Continue assim.</div>
             </div>
 
-            <div class="card" style="margin-top: 14px;">
+            <div class="card notification-card" style="margin-top: 14px;">
               <div class="meal-card-heading">
                 <h2>Refeições</h2>
                 <div class="muted" id="open-meal-tab">Escolha a refeição a registrar</div>
+                <button class="card-notification-bell" id="meal-notification-bell" type="button" aria-label="Ativar lembretes de refeições" aria-pressed="false">🔕</button>
               </div>
               <div class="meal-progress-line" id="meal-progress-list"></div>
             </div>
 
-            <div class="card" style="margin-top: 14px;">
+            <div class="card notification-card" style="margin-top: 14px;">
               <div class="log-summary">
                 <div>
                   <div class="water-title-row">
@@ -2303,6 +2536,7 @@
                 <div class="water-quick-actions">
                   <button class="avatar-button water-minus" type="button" id="remove-water" aria-label="Retirar 250 ml de água">−</button>
                   <button class="avatar-button" type="button" id="add-water-quick" aria-label="Adicionar 250 ml de água">+</button>
+                  <button class="card-notification-bell" id="water-notification-bell" type="button" aria-label="Ativar lembretes de hidratação" aria-pressed="false">🔕</button>
                 </div>
               </div>
               <div class="water-grid" id="water-cups"></div>
@@ -2488,6 +2722,21 @@
         </main>
   </div>
 
+  <div class="weight-picker-modal hidden" id="weight-picker-modal" role="dialog" aria-modal="true" aria-labelledby="weight-picker-title">
+    <div class="weight-picker-sheet">
+      <h2 id="weight-picker-title">Selecionar peso</h2>
+      <div class="weight-picker-value" id="weight-picker-value">72,0 kg</div>
+      <div class="profile-wheel-wrap">
+        <div class="profile-wheel" id="profile-picker-wheel" aria-label="Seletor vertical"></div>
+        <div class="profile-wheel-center" aria-hidden="true"></div>
+      </div>
+      <div class="weight-picker-actions">
+        <button class="weight-picker-cancel" id="weight-picker-cancel" type="button">Cancelar</button>
+        <button class="weight-picker-save" id="weight-picker-save" type="button">Salvar peso</button>
+      </div>
+    </div>
+  </div>
+
   <div class="substitute-modal hidden" id="substitute-modal" role="dialog" aria-modal="true" aria-labelledby="substitute-title">
     <div class="substitute-sheet">
       <div class="sheet-handle"></div>
@@ -2524,6 +2773,7 @@
     const chart = document.getElementById("balance-chart");
     const greetingTitle = document.getElementById("greeting-title");
     const profileButton = document.getElementById("profile-button");
+    const profilePhotoInput = document.getElementById("profile-photo-input");
     const profileAgeLabel = document.getElementById("profile-age-label");
     const profileWeightLabel = document.getElementById("profile-weight-label");
     const profileHeightLabel = document.getElementById("profile-height-label");
@@ -2615,6 +2865,14 @@
     const waterNotifications = document.getElementById("water-notifications");
     const enableNotifications = document.getElementById("enable-notifications");
     const notificationStatus = document.getElementById("notification-status");
+    const mealNotificationBell = document.getElementById("meal-notification-bell");
+    const waterNotificationBell = document.getElementById("water-notification-bell");
+    const weightPickerModal = document.getElementById("weight-picker-modal");
+    const weightPickerTitle = document.getElementById("weight-picker-title");
+    const weightPickerValue = document.getElementById("weight-picker-value");
+    const profilePickerWheel = document.getElementById("profile-picker-wheel");
+    const weightPickerCancel = document.getElementById("weight-picker-cancel");
+    const weightPickerSave = document.getElementById("weight-picker-save");
 
     const storageKey = "dieta-controlada-web:v1";
     const navigationStorageKey = "dieta-controlada-web:last-tab";
@@ -3017,7 +3275,8 @@
       heightCm: "",
       age: "",
       sex: "male",
-      calorieTarget: ""
+      calorieTarget: "",
+      photoData: ""
     };
     const defaultMealTimes = Object.fromEntries(mealTypes.map((item) => [item.id, item.defaultTime]));
     const dietSuggestionPlanVersion = "integer-units-1600-v1";
@@ -3039,9 +3298,17 @@
         notificationsEnabled: appData.settings?.notificationsEnabled === true
       },
       notificationLog: appData.notificationLog && typeof appData.notificationLog === "object" ? appData.notificationLog : {},
+      weightHistory: appData.weightHistory && typeof appData.weightHistory === "object" ? appData.weightHistory : {},
       mealTimes: { ...defaultMealTimes, ...(appData.mealTimes || {}) },
       profile: { ...defaultProfile, ...(appData.profile || {}) }
     };
+    if (Object.keys(appData.weightHistory).length === 0) {
+      const initialWeight = Number(String(appData.profile.weightKg || "").replace(",", "."));
+      if (initialWeight > 0) {
+        appData.weightHistory[todayISO()] = initialWeight;
+        localStorage.setItem(storageKey, JSON.stringify(appData));
+      }
+    }
     if (appData.dietSuggestionPlanVersion !== dietSuggestionPlanVersion) {
       appData.dietRecommendations = normalizeWholeUnitRecommendations(appData.dietRecommendations);
       appData.dietSuggestionPlanVersion = dietSuggestionPlanVersion;
@@ -3092,6 +3359,11 @@
     let editingMealId = null;
     let editingDietTemplate = null;
     let detailReturnTab = "hoje";
+    let weightPickerSaveHandler = null;
+    let profilePickerValues = [];
+    let profilePickerSelectedIndex = 0;
+    let profilePickerFormatValue = (value) => String(value);
+    let profilePickerScrollFrame = 0;
 
     mealDate.value = todayISO();
     expenseDate.value = todayISO();
@@ -3165,6 +3437,9 @@
         notificationLog: remoteData.notificationLog && typeof remoteData.notificationLog === "object"
           ? remoteData.notificationLog
           : appData.notificationLog,
+        weightHistory: remoteData.weightHistory && typeof remoteData.weightHistory === "object"
+          ? remoteData.weightHistory
+          : appData.weightHistory,
         mealTimes: { ...defaultMealTimes, ...(remoteData.mealTimes || {}) },
         profile: { ...defaultProfile, ...(remoteData.profile || {}) }
       };
@@ -3202,6 +3477,16 @@
       const connected = enabled && Boolean(appData.settings.fcmToken);
       mealNotifications.checked = appData.settings.mealNotifications;
       waterNotifications.checked = appData.settings.waterNotifications;
+      const mealBellActive = enabled && appData.settings.mealNotifications;
+      const waterBellActive = enabled && appData.settings.waterNotifications;
+      mealNotificationBell.classList.toggle("active", mealBellActive);
+      mealNotificationBell.textContent = mealBellActive ? "🔔" : "🔕";
+      mealNotificationBell.setAttribute("aria-pressed", String(mealBellActive));
+      mealNotificationBell.setAttribute("aria-label", `${mealBellActive ? "Desativar" : "Ativar"} lembretes de refeições`);
+      waterNotificationBell.classList.toggle("active", waterBellActive);
+      waterNotificationBell.textContent = waterBellActive ? "🔔" : "🔕";
+      waterNotificationBell.setAttribute("aria-pressed", String(waterBellActive));
+      waterNotificationBell.setAttribute("aria-label", `${waterBellActive ? "Desativar" : "Ativar"} lembretes de hidratação`);
       enableNotifications.textContent = connected ? "Notificações ativadas" : "Ativar notificações";
       notificationStatus.classList.toggle("enabled", connected);
       if (permission === "unsupported") {
@@ -3217,6 +3502,42 @@
       } else {
         notificationStatus.textContent = "Toque em Ativar notificações para permitir os avisos.";
       }
+    }
+
+    async function toggleCardNotification(settingKey) {
+      const currentlyActive = appData.settings.notificationsEnabled
+        && notificationPermission() === "granted"
+        && appData.settings[settingKey];
+      if (currentlyActive) {
+        appData.settings[settingKey] = false;
+        saveData();
+        renderNotificationSettings();
+        return;
+      }
+      if (!("Notification" in window)) {
+        alert("Este navegador não oferece notificações.");
+        return;
+      }
+      const permission = Notification.permission === "granted"
+        ? "granted"
+        : await Notification.requestPermission();
+      if (permission !== "granted") {
+        appData.settings.notificationsEnabled = false;
+        saveData();
+        renderNotificationSettings();
+        return;
+      }
+      appData.settings.notificationsEnabled = true;
+      appData.settings[settingKey] = true;
+      saveData();
+      try {
+        await connectFirebaseMessaging();
+      } catch (error) {
+        console.warn("Não foi possível conectar ao Firebase Messaging.", error);
+        notificationConnectionError = `Conexão com o Firebase falhou: ${error?.message || "erro desconhecido"}`;
+      }
+      renderNotificationSettings();
+      checkNotificationSchedule();
     }
 
     async function connectFirebaseMessaging() {
@@ -3438,13 +3759,153 @@
       return dailyTargetRange(date).min;
     }
 
+    function formatWeight(value) {
+      return Number(value).toLocaleString("pt-BR", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+    }
+
+    function closeWeightPicker() {
+      weightPickerModal.classList.add("hidden");
+      weightPickerSaveHandler = null;
+      profilePickerValues = [];
+      profilePickerWheel.innerHTML = "";
+    }
+
+    function setProfilePickerSelection(index, shouldScroll = false) {
+      const nextIndex = Math.max(0, Math.min(profilePickerValues.length - 1, index));
+      profilePickerWheel.querySelector(".profile-wheel-item.selected")?.classList.remove("selected");
+      profilePickerSelectedIndex = nextIndex;
+      profilePickerWheel.children[nextIndex]?.classList.add("selected");
+      weightPickerValue.textContent = profilePickerFormatValue(profilePickerValues[nextIndex]);
+      if (shouldScroll) profilePickerWheel.scrollTo({ top: nextIndex * 72, behavior: "smooth" });
+    }
+
+    function openProfilePicker({ title, min, max, step, value, formatItem, formatValue, saveLabel, onSave }) {
+      const decimals = String(step).includes(".") ? String(step).split(".")[1].length : 0;
+      const count = Math.round((max - min) / step);
+      profilePickerValues = Array.from(
+        { length: count + 1 },
+        (_, index) => Number((min + (index * step)).toFixed(decimals))
+      );
+      profilePickerSelectedIndex = Math.max(0, Math.min(count, Math.round((Number(value) - min) / step)));
+      profilePickerFormatValue = formatValue;
+      weightPickerTitle.textContent = title;
+      weightPickerSave.textContent = saveLabel;
+      profilePickerWheel.innerHTML = profilePickerValues.map((item, index) =>
+        `<button class="profile-wheel-item${index === profilePickerSelectedIndex ? " selected" : ""}" type="button" data-wheel-index="${index}">${formatItem(item)}</button>`
+      ).join("");
+      weightPickerValue.textContent = formatValue(profilePickerValues[profilePickerSelectedIndex]);
+      weightPickerSaveHandler = () => onSave(profilePickerValues[profilePickerSelectedIndex]);
+      weightPickerModal.classList.remove("hidden");
+      requestAnimationFrame(() => {
+        profilePickerWheel.scrollTop = profilePickerSelectedIndex * 72;
+      });
+    }
+
+    function openWeightPicker({ date = todayISO(), value, updateCurrentProfile = false } = {}) {
+      const currentWeight = Math.min(400, Math.max(20, Number(value) || Number(String(appData.profile.weightKg).replace(",", ".")) || 70));
+      openProfilePicker({
+        title: date === todayISO() ? "Selecionar peso atual" : `Peso de ${date.split("-").reverse().join("/")}`,
+        min: 20,
+        max: 400,
+        step: 0.1,
+        value: currentWeight,
+        formatItem: formatWeight,
+        formatValue: (item) => `${formatWeight(item)} kg`,
+        saveLabel: "Salvar peso",
+        onSave: (newWeight) => {
+        appData.weightHistory[date] = newWeight;
+        if (updateCurrentProfile || date === todayISO()) {
+          appData.profile.weightKg = String(newWeight);
+        }
+        saveData();
+        closeWeightPicker();
+        renderAll();
+        }
+      });
+    }
+
+    function editQuickProfileNumber(field) {
+      if (field === "weight") {
+        openWeightPicker({
+          date: todayISO(),
+          value: appData.profile.weightKg,
+          updateCurrentProfile: true
+        });
+        return;
+      }
+      if (field === "age") {
+        openProfilePicker({
+          title: "Selecionar idade",
+          min: 10,
+          max: 120,
+          step: 1,
+          value: Number(appData.profile.age) || 36,
+          formatItem: (item) => String(item),
+          formatValue: (item) => `${item} anos`,
+          saveLabel: "Salvar idade",
+          onSave: (age) => {
+            appData.profile.age = String(age);
+            saveData();
+            closeWeightPicker();
+            renderAll();
+          }
+        });
+        return;
+      }
+      if (field === "height") {
+        const formatHeight = (item) => (item / 100).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        openProfilePicker({
+          title: "Selecionar altura",
+          min: 100,
+          max: 250,
+          step: 1,
+          value: Number(appData.profile.heightCm) || 174,
+          formatItem: formatHeight,
+          formatValue: (item) => `${formatHeight(item)} m`,
+          saveLabel: "Salvar altura",
+          onSave: (height) => {
+            appData.profile.heightCm = String(height);
+            saveData();
+            closeWeightPicker();
+            renderAll();
+          }
+        });
+        return;
+      }
+    }
+
+    function resizeProfilePhoto(file) {
+      return new Promise((resolve, reject) => {
+        const image = new Image();
+        const reader = new FileReader();
+        reader.onerror = () => reject(new Error("Não foi possível ler a imagem."));
+        reader.onload = () => { image.src = reader.result; };
+        image.onerror = () => reject(new Error("A imagem escolhida não pôde ser aberta."));
+        image.onload = () => {
+          const canvas = document.createElement("canvas");
+          const size = 256;
+          canvas.width = size;
+          canvas.height = size;
+          const context = canvas.getContext("2d");
+          const sourceSize = Math.min(image.naturalWidth, image.naturalHeight);
+          const sourceX = (image.naturalWidth - sourceSize) / 2;
+          const sourceY = (image.naturalHeight - sourceSize) / 2;
+          context.drawImage(image, sourceX, sourceY, sourceSize, sourceSize, 0, 0, size, size);
+          resolve(canvas.toDataURL("image/jpeg", 0.78));
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
     function renderProfile() {
       const profile = appData.profile;
       const basal = calculateBasal(profile);
       const targetRange = dailyTargetRange();
       const firstName = (profile.name || "Robson").trim().split(" ")[0] || "Robson";
       greetingTitle.textContent = `Olá, ${firstName}`;
-      profileButton.textContent = firstName.slice(0, 1).toUpperCase();
+      profileButton.classList.toggle("has-photo", Boolean(profile.photoData));
+      profileButton.style.backgroundImage = profile.photoData ? `url("${profile.photoData}")` : "";
+      profileButton.textContent = profile.photoData ? "" : firstName.slice(0, 1).toUpperCase();
       profileAgeLabel.textContent = profile.age ? `${profile.age} anos` : "-- anos";
       profileWeightLabel.textContent = profile.weightKg ? `${String(profile.weightKg).replace(".", ",")}kg` : "-- kg";
       profileHeightLabel.textContent = profile.heightCm
@@ -4893,8 +5354,10 @@
       const today = appDayDate();
       const minimumStart = new Date(today);
       minimumStart.setDate(minimumStart.getDate() - (minimumHistoryDays - 1));
-      const registeredDates = [...appData.meals, ...appData.expenses]
-        .map((item) => item.date)
+      const registeredDates = [
+        ...[...appData.meals, ...appData.expenses].map((item) => item.date),
+        ...Object.keys(appData.weightHistory || {})
+      ]
         .filter((date) => /^\d{4}-\d{2}-\d{2}$/.test(date || "") && date <= todayISO())
         .sort();
       const firstRegisteredDate = registeredDates[0];
@@ -4925,6 +5388,7 @@
           isoDate: date,
           consumed: round(daily[date].consumed),
           spent: round(daily[date].spent),
+          weight: Number(appData.weightHistory?.[date]) || 0,
           targetRange: dailyTargetRange(date)
         };
       });
@@ -4936,19 +5400,35 @@
       const maxAbs = Math.max(...data.flatMap((item) => [item.consumed, item.targetRange.max]), 1);
       const barAreaHeight = 122;
       const bars = data.map((item) => {
-        const height = Math.max(8, item.consumed / maxAbs * barAreaHeight);
+        const height = Math.max(item.weight ? 18 : 8, item.consumed / maxAbs * barAreaHeight);
         const minBottom = Math.min(barAreaHeight, Math.max(0, item.targetRange.min / maxAbs * barAreaHeight));
         const maxBottom = Math.min(barAreaHeight, Math.max(0, item.targetRange.max / maxAbs * barAreaHeight));
         const status = item.consumed > item.targetRange.max ? "over" : item.consumed >= item.targetRange.min ? "range" : "low";
-        const title = `${item.consumed} kcal consumidas; ${item.spent} kcal em atividades; meta ${round(item.targetRange.min)} a ${round(item.targetRange.max)} kcal`;
+        const weightLabel = item.weight
+          ? `${item.weight.toLocaleString("pt-BR", { maximumFractionDigits: 1 })}kg`
+          : "";
+        const title = `${item.consumed} kcal consumidas; ${item.spent} kcal em atividades; meta ${round(item.targetRange.min)} a ${round(item.targetRange.max)} kcal${weightLabel ? `; peso ${weightLabel}` : ""}`;
         const selectedDate = currentPeriod === "hoje" ? todayISO() : currentPeriod;
-        return `<button type="button" class="chart-col ${selectedDate === item.isoDate ? "selected" : ""}" data-history-date="${item.isoDate}" title="${title}" aria-label="Abrir registros de ${item.isoDate.split("-").reverse().join("/")}. ${title}"><div class="chart-bar-area" style="--bar-height: ${height}px;"><div class="chart-value ${status}">${item.consumed}</div><span class="chart-day-target min" style="--target-bottom: ${minBottom}px;"></span><span class="chart-day-target max" style="--target-bottom: ${maxBottom}px;"></span><div class="chart-bar ${status}" style="height: ${height}px;"></div></div><div class="chart-date"><span class="chart-weekday">${item.weekday}</span><span>${item.date}</span></div></button>`;
+        return `<button type="button" class="chart-col ${selectedDate === item.isoDate ? "selected" : ""}" data-history-date="${item.isoDate}" title="${title}" aria-label="Abrir registros de ${item.isoDate.split("-").reverse().join("/")}. ${title}"><div class="chart-bar-area" style="--bar-height: ${height}px;"><div class="chart-value ${status}">${item.consumed}</div><span class="chart-day-target min" style="--target-bottom: ${minBottom}px;"></span><span class="chart-day-target max" style="--target-bottom: ${maxBottom}px;"></span><div class="chart-bar ${status}" style="height: ${height}px;">${weightLabel ? `<span class="chart-weight" data-history-weight="${item.isoDate}" title="Editar peso de ${item.date}">${weightLabel}</span>` : ""}</div></div><div class="chart-date"><span class="chart-weekday">${item.weekday}</span><span>${item.date}</span></div></button>`;
       }).join("");
 
       chart.innerHTML = bars;
       if (currentPeriod === "hoje") {
         requestAnimationFrame(() => { chart.scrollLeft = chart.scrollWidth; });
       }
+      chart.querySelectorAll("[data-history-weight]").forEach((weightElement) => {
+        weightElement.addEventListener("click", (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          const date = weightElement.dataset.historyWeight;
+          const currentWeight = Number(appData.weightHistory?.[date]) || 0;
+          openWeightPicker({
+            date,
+            value: currentWeight,
+            updateCurrentProfile: date === todayISO()
+          });
+        });
+      });
       chart.querySelectorAll("[data-history-date]").forEach((button) => {
         button.addEventListener("click", () => {
           const selectedDate = button.dataset.historyDate;
@@ -5304,7 +5784,44 @@
       }
     }
 
-    profileButton.addEventListener("click", () => openTab("perfil"));
+    profileButton.addEventListener("click", () => profilePhotoInput.click());
+    profileAgeLabel.addEventListener("click", () => editQuickProfileNumber("age"));
+    profileHeightLabel.addEventListener("click", () => editQuickProfileNumber("height"));
+    profileWeightLabel.addEventListener("click", () => editQuickProfileNumber("weight"));
+    profilePhotoInput.addEventListener("change", async () => {
+      const file = profilePhotoInput.files?.[0];
+      if (!file) return;
+      if (!file.type.startsWith("image/")) {
+        alert("Escolha um arquivo de imagem.");
+        profilePhotoInput.value = "";
+        return;
+      }
+      try {
+        appData.profile.photoData = await resizeProfilePhoto(file);
+        saveData();
+        renderProfile();
+      } catch (error) {
+        alert(error?.message || "Não foi possível salvar a foto.");
+      }
+      profilePhotoInput.value = "";
+    });
+    profilePickerWheel.addEventListener("scroll", () => {
+      cancelAnimationFrame(profilePickerScrollFrame);
+      profilePickerScrollFrame = requestAnimationFrame(() => {
+        if (profilePickerValues.length) setProfilePickerSelection(Math.round(profilePickerWheel.scrollTop / 72));
+      });
+    }, { passive: true });
+    profilePickerWheel.addEventListener("click", (event) => {
+      const item = event.target.closest("[data-wheel-index]");
+      if (item) setProfilePickerSelection(Number(item.dataset.wheelIndex), true);
+    });
+    weightPickerCancel.addEventListener("click", closeWeightPicker);
+    weightPickerSave.addEventListener("click", () => weightPickerSaveHandler?.());
+    weightPickerModal.addEventListener("click", (event) => {
+      if (event.target === weightPickerModal) closeWeightPicker();
+    });
+    mealNotificationBell.addEventListener("click", () => toggleCardNotification("mealNotifications"));
+    waterNotificationBell.addEventListener("click", () => toggleCardNotification("waterNotifications"));
     enableNotifications.addEventListener("click", requestAppNotifications);
     mealNotifications.addEventListener("change", () => {
       appData.settings.mealNotifications = mealNotifications.checked;
@@ -5476,14 +5993,19 @@
     });
 
     saveProfile.addEventListener("click", () => {
+      const savedWeight = Number(String(profileWeight.value).trim().replace(",", "."));
       appData.profile = {
         name: profileName.value.trim() || "Robson",
         weightKg: profileWeight.value.trim(),
         heightCm: profileHeight.value.trim(),
         age: profileAge.value.trim(),
         sex: profileSex.value,
-        calorieTarget: profileTarget.value.trim()
+        calorieTarget: profileTarget.value.trim(),
+        photoData: appData.profile.photoData || ""
       };
+      if (savedWeight > 0) {
+        appData.weightHistory[todayISO()] = savedWeight;
+      }
       saveData();
       renderAll();
       alert("Perfil salvo.");
