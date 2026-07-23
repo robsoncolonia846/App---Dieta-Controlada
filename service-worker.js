@@ -1,4 +1,4 @@
-const CACHE_NAME = "dieta-controlada-pwa-v136";
+const CACHE_NAME = "dieta-controlada-pwa-v137";
 
 importScripts("./firebase-config.js");
 importScripts("https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js");
@@ -59,8 +59,10 @@ self.addEventListener("fetch", (event) => {
 
   const requestUrl = new URL(event.request.url);
   const isFoodsRequest = requestUrl.origin === self.location.origin && requestUrl.pathname.endsWith("/foods.js");
+  const isAppPageRequest = event.request.mode === "navigate"
+    || (requestUrl.origin === self.location.origin && requestUrl.pathname.endsWith("/index.html"));
 
-  if (isFoodsRequest) {
+  if (isFoodsRequest || isAppPageRequest) {
     event.respondWith(
       fetch(event.request, { cache: "no-store" })
         .then((networkResponse) => {
@@ -70,7 +72,9 @@ self.addEventListener("fetch", (event) => {
           }
           return networkResponse;
         })
-        .catch(() => caches.match(event.request))
+        .catch(() => caches.match(event.request).then((cachedResponse) =>
+          cachedResponse || (isAppPageRequest ? caches.match("./index.html") : undefined)
+        ))
     );
     return;
   }
