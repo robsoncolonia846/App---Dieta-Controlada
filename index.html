@@ -339,9 +339,14 @@
 
     .chart-weight {
       position: absolute;
-      left: 1px;
-      right: 1px;
-      bottom: 2px;
+      left: 50%;
+      bottom: 1px;
+      min-width: 30px;
+      padding: 1px 3px;
+      transform: translateX(-50%);
+      border: 1px solid rgba(23, 27, 20, 0.28);
+      border-radius: 5px;
+      background: rgba(255, 255, 255, 0.84);
       color: #171b14;
       font-size: 8px;
       font-weight: 800;
@@ -350,6 +355,11 @@
       white-space: nowrap;
       cursor: pointer;
       z-index: 4;
+    }
+
+    .chart-weight:active {
+      background: #fff;
+      transform: translateX(-50%) scale(0.94);
     }
 
     .chart-bar.range {
@@ -5404,12 +5414,11 @@
         const minBottom = Math.min(barAreaHeight, Math.max(0, item.targetRange.min / maxAbs * barAreaHeight));
         const maxBottom = Math.min(barAreaHeight, Math.max(0, item.targetRange.max / maxAbs * barAreaHeight));
         const status = item.consumed > item.targetRange.max ? "over" : item.consumed >= item.targetRange.min ? "range" : "low";
-        const weightLabel = item.weight
-          ? `${item.weight.toLocaleString("pt-BR", { maximumFractionDigits: 1 })}kg`
-          : "";
-        const title = `${item.consumed} kcal consumidas; ${item.spent} kcal em atividades; meta ${round(item.targetRange.min)} a ${round(item.targetRange.max)} kcal${weightLabel ? `; peso ${weightLabel}` : ""}`;
+        const weightLabel = `${item.weight.toLocaleString("pt-BR", { maximumFractionDigits: 1 })}kg`;
+        const visibleBarHeight = Math.max(height, 12);
+        const title = `${item.consumed} kcal consumidas; ${item.spent} kcal em atividades; meta ${round(item.targetRange.min)} a ${round(item.targetRange.max)} kcal; peso ${weightLabel}`;
         const selectedDate = currentPeriod === "hoje" ? todayISO() : currentPeriod;
-        return `<button type="button" class="chart-col ${selectedDate === item.isoDate ? "selected" : ""}" data-history-date="${item.isoDate}" title="${title}" aria-label="Abrir registros de ${item.isoDate.split("-").reverse().join("/")}. ${title}"><div class="chart-bar-area" style="--bar-height: ${height}px;"><div class="chart-value ${status}">${item.consumed}</div><span class="chart-day-target min" style="--target-bottom: ${minBottom}px;"></span><span class="chart-day-target max" style="--target-bottom: ${maxBottom}px;"></span><div class="chart-bar ${status}" style="height: ${height}px;">${weightLabel ? `<span class="chart-weight" data-history-weight="${item.isoDate}" title="Editar peso de ${item.date}">${weightLabel}</span>` : ""}</div></div><div class="chart-date"><span class="chart-weekday">${item.weekday}</span><span>${item.date}</span></div></button>`;
+        return `<button type="button" class="chart-col ${selectedDate === item.isoDate ? "selected" : ""}" data-history-date="${item.isoDate}" title="${title}" aria-label="Abrir registros de ${item.isoDate.split("-").reverse().join("/")}. ${title}"><div class="chart-bar-area" style="--bar-height: ${height}px;"><div class="chart-value ${status}">${item.consumed}</div><span class="chart-day-target min" style="--target-bottom: ${minBottom}px;"></span><span class="chart-day-target max" style="--target-bottom: ${maxBottom}px;"></span><div class="chart-bar ${status}" style="height: ${visibleBarHeight}px;"><span class="chart-weight" data-history-weight="${item.isoDate}" title="Editar peso de ${item.date}">${weightLabel}</span></div></div><div class="chart-date"><span class="chart-weekday">${item.weekday}</span><span>${item.date}</span></div></button>`;
       }).join("");
 
       chart.innerHTML = bars;
