@@ -3784,9 +3784,9 @@
       const count = Math.round((max - min) / step);
       profilePickerValues = Array.from(
         { length: count + 1 },
-        (_, index) => Number((min + (index * step)).toFixed(decimals))
+        (_, index) => Number((max - (index * step)).toFixed(decimals))
       );
-      profilePickerSelectedIndex = Math.max(0, Math.min(count, Math.round((Number(value) - min) / step)));
+      profilePickerSelectedIndex = Math.max(0, Math.min(count, Math.round((max - Number(value)) / step)));
       profilePickerFormatValue = formatValue;
       weightPickerTitle.textContent = title;
       weightPickerSave.textContent = saveLabel;
