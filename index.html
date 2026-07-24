@@ -3712,6 +3712,7 @@
     let aiChatStep = "meal";
     let aiChatMealType = "";
     let aiChatDraftItems = [];
+    let aiPendingFood = null;
 
     const aiMealAliases = {
       cafe: ["cafe", "cafe da manha", "café", "café da manhã"],
@@ -3743,6 +3744,7 @@
       aiChatStep = "meal";
       aiChatMealType = "";
       aiChatDraftItems = [];
+      aiPendingFood = null;
       aiChatMessages.innerHTML = "";
       aiChatInput.value = "";
       addAiMessage("Olá! O que você deseja registrar?");
@@ -3781,6 +3783,34 @@
         .filter((entry) => entry.score > 0)
         .sort((a, b) => b.score - a.score || a.label.length - b.label.length);
       return ranked[0]?.food || null;
+    }
+
+    function aiFoodSuggestions(text) {
+      const query = normalizeText(text)
+        .replace(/\b\d+(?:[.,]\d+)?\s*(?:kg|g|gramas?|ml|litros?|l|unidades?|unid\.?|fatias?|colheres?|conchas?)?\b/g, " ")
+        .replace(/\b(de|do|da|um|uma|e)\b/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+      if (!query) return [];
+      const seen = new Set();
+      return foods
+        .filter((food) => {
+          const labels = [food.name, ...(food.aliases || [])].map((label) => normalizeText(label));
+          return labels.some((label) => label.includes(query) || query.includes(label));
+        })
+        .sort((a, b) => {
+          const aName = normalizeText(a.name);
+          const bName = normalizeText(b.name);
+          const aExact = aName === query ? 0 : 1;
+          const bExact = bName === query ? 0 : 1;
+          return aExact - bExact || a.name.localeCompare(b.name, "pt-BR");
+        })
+        .filter((food) => {
+          if (seen.has(food.id)) return false;
+          seen.add(food.id);
+          return true;
+        })
+        .slice(0, 8);
     }
 
     function parseAiFoodList(text) {
@@ -3886,6 +3916,20 @@
       addAiMessage(displayValue || text, "user");
       aiChatInput.value = "";
 
+      if (text.startsWith("food:")) {
+        const foodId = text.slice(5);
+        aiPendingFood = foods.find((food) => food.id === foodId) || null;
+        if (!aiPendingFood) {
+          addAiMessage("Não encontrei esse alimento. Tente escrever o nome novamente.");
+          aiChatStep = "foods";
+          return;
+        }
+        aiChatStep = "food-quantity";
+        setAiOptions([]);
+        addAiMessage(`Qual foi a quantidade de ${aiPendingFood.name}?\nExemplo: 120g, 1 unidade ou 2 fatias.`);
+        return;
+      }
+
       if (aiChatStep === "meal") {
         const selected = mealTypes.some((meal) => meal.id === text) ? text : mealTypeFromAiText(text);
         if (!selected) {
@@ -3902,11 +3946,40 @@
       if (aiChatStep === "foods") {
         const result = parseAiFoodList(text);
         if (!result.parsed.length || result.unresolved.length) {
+          const unresolvedText = result.unresolved[0] || text;
+          const suggestions = aiFoodSuggestions(unresolvedText);
+          if (suggestions.length > 1) {
+            aiChatDraftItems = result.parsed;
+            addAiMessage(`Encontrei estas opções para “${unresolvedText}”. Qual delas você comeu?`);
+            setAiOptions(suggestions.map((food) => ({
+              value: `food:${food.id}`,
+              label: food.name
+            })));
+            return;
+          }
           const detail = result.unresolved.length ? `\nNão reconheci: ${result.unresolved.join(", ")}.` : "";
           addAiMessage(`Preciso do alimento e da quantidade de cada item.${detail}\nTente assim: 100g de arroz, 50g de feijão.`);
           return;
         }
         aiChatDraftItems = result.parsed;
+        aiChatStep = "confirm";
+        addAiMessage(aiDraftSummary());
+        setAiOptions([
+          { value: "confirmar", label: "✓ Confirmar e registrar" },
+          { value: "corrigir", label: "Corrigir" },
+          { value: "cancelar", label: "Cancelar" }
+        ]);
+        return;
+      }
+
+      if (aiChatStep === "food-quantity") {
+        const result = parseAiFoodList(`${text} de ${aiPendingFood?.name || ""}`);
+        if (!result.parsed.length || result.unresolved.length) {
+          addAiMessage(`Não consegui entender a quantidade de ${aiPendingFood?.name || "alimento"}.\nTente assim: 120g, 1 unidade ou 2 fatias.`);
+          return;
+        }
+        aiChatDraftItems.push(result.parsed[0]);
+        aiPendingFood = null;
         aiChatStep = "confirm";
         addAiMessage(aiDraftSummary());
         setAiOptions([
