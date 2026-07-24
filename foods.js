@@ -916,13 +916,40 @@ export const foods = [
   {
     id: "cafe-sem-acucar",
     name: "Café sem Açúcar",
+    icon: "☕",
     category: "Alimenta??o",
-    caloriesPer100g: 9,
-    proteinPer100g: 0.7,
-    carbsPer100g: 1.5,
+    caloriesPer100g: 0,
+    proteinPer100g: 0,
+    carbsPer100g: 0,
     servings: [
       { id: "mililitros", name: "Mililitros", grams: 1 },
       { id: "excel", name: "100ml", grams: 100 }
+    ]
+  },
+  {
+    id: "cafe-com-uma-colher-acucar",
+    name: "Café com 1 Colher de Açúcar",
+    icon: "☕",
+    category: "Alimenta??o",
+    caloriesPer100g: 20,
+    proteinPer100g: 0,
+    carbsPer100g: 5,
+    servings: [
+      { id: "mililitros", name: "Mililitros", grams: 1 },
+      { id: "xicara-100ml", name: "Xícara de 100ml", grams: 100 }
+    ]
+  },
+  {
+    id: "cafe-com-duas-colheres-acucar",
+    name: "Café com 2 Colheres de Açúcar",
+    icon: "☕",
+    category: "Alimenta??o",
+    caloriesPer100g: 40,
+    proteinPer100g: 0,
+    carbsPer100g: 10,
+    servings: [
+      { id: "mililitros", name: "Mililitros", grams: 1 },
+      { id: "xicara-100ml", name: "Xícara de 100ml", grams: 100 }
     ]
   },
   {
