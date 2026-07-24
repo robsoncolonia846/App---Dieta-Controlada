@@ -683,6 +683,19 @@ export const foods = [
     ]
   },
   {
+    id: "pao-com-queijo-e-presunto",
+    name: "Pão com Queijo e Presunto",
+    icon: "🥪",
+    category: "Alimenta??o",
+    caloriesPer100g: 235,
+    proteinPer100g: 12,
+    carbsPer100g: 30,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "unidade", name: "Unidade", grams: 100 }
+    ]
+  },
+  {
     id: "peixe-assado-anchova",
     name: "Peixe Assado (Anchova)",
     category: "Alimenta??o",
@@ -922,8 +935,7 @@ export const foods = [
     proteinPer100g: 0,
     carbsPer100g: 0,
     servings: [
-      { id: "mililitros", name: "Mililitros", grams: 1 },
-      { id: "excel", name: "100ml", grams: 100 }
+      { id: "porcao", name: "Porção", grams: 100 }
     ]
   },
   {
@@ -935,8 +947,7 @@ export const foods = [
     proteinPer100g: 0,
     carbsPer100g: 5,
     servings: [
-      { id: "mililitros", name: "Mililitros", grams: 1 },
-      { id: "xicara-100ml", name: "Xícara de 100ml", grams: 100 }
+      { id: "porcao", name: "Porção", grams: 100 }
     ]
   },
   {
@@ -948,8 +959,7 @@ export const foods = [
     proteinPer100g: 0,
     carbsPer100g: 10,
     servings: [
-      { id: "mililitros", name: "Mililitros", grams: 1 },
-      { id: "xicara-100ml", name: "Xícara de 100ml", grams: 100 }
+      { id: "porcao", name: "Porção", grams: 100 }
     ]
   },
   {

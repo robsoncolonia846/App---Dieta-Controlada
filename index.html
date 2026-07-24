@@ -6215,8 +6215,8 @@
         const dateOrder = String(a.date || "").localeCompare(String(b.date || ""));
         if (dateOrder !== 0) return dateOrder;
         const typeOrder =
-          (mealOrder.get(a.mealType) ?? mealTypes.length) -
-          (mealOrder.get(b.mealType) ?? mealTypes.length);
+          (mealOrder.get(b.mealType) ?? mealTypes.length) -
+          (mealOrder.get(a.mealType) ?? mealTypes.length);
         if (typeOrder !== 0) return typeOrder;
         return String(a.mealTime || "").localeCompare(String(b.mealTime || ""));
       });
