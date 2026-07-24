@@ -3775,21 +3775,17 @@
         .replace(/\s+/g, " ")
         .trim();
       if (!cleaned) return null;
-      const ranked = foods
-        .flatMap((food) => [food.name, ...(food.aliases || [])].map((label) => {
+      const exactNameMatches = foods.filter((food) => normalizeText(food.name).trim() === cleaned);
+      if (exactNameMatches.length === 1) return exactNameMatches[0];
+      const matchingFoods = foods.filter((food) =>
+        [food.name, ...(food.aliases || [])].some((label) => {
           const normalizedLabel = normalizeText(label).trim();
-          const score = normalizedLabel === cleaned
-            ? 3
-            : cleaned.includes(normalizedLabel)
-              ? 2
-              : normalizedLabel.includes(cleaned)
-                ? 1
-                : 0;
-          return { food, label: normalizedLabel, score };
-        }))
-        .filter((entry) => entry.score > 0)
-        .sort((a, b) => b.score - a.score || a.label.length - b.label.length);
-      return ranked[0]?.food || null;
+          return normalizedLabel === cleaned ||
+            normalizedLabel.includes(cleaned) ||
+            cleaned.includes(normalizedLabel);
+        })
+      );
+      return matchingFoods.length === 1 ? matchingFoods[0] : null;
     }
 
     function aiFoodSuggestions(text) {
@@ -3923,6 +3919,17 @@
       addAiMessage(displayValue || text, "user");
       aiChatInput.value = "";
 
+      if (text.startsWith("whatsapp-missing:")) {
+        const missingFood = decodeURIComponent(text.slice("whatsapp-missing:".length));
+        const mealLabel = mealDetailLabels[aiChatMealType] || aiChatMealType || "refeição";
+        const personName = appData.profile?.name || "Usuário do app";
+        const message = `Olá, Robson! ${personName} tentou registrar o alimento "${missingFood}" em ${mealLabel}, mas ele ainda não está cadastrado no app. Pode cadastrar?`;
+        window.open(`https://wa.me/5553997074641?text=${encodeURIComponent(message)}`, "_blank", "noopener,noreferrer");
+        addAiMessage("Abri o WhatsApp com a solicitação pronta. Basta enviar a mensagem ao administrador.");
+        setAiOptions([]);
+        return;
+      }
+
       if (text.startsWith("food:")) {
         const foodId = text.slice(5);
         aiPendingFood = foods.find((food) => food.id === foodId) || null;
@@ -3955,7 +3962,7 @@
         if (!result.parsed.length || result.unresolved.length) {
           const unresolvedText = result.unresolved[0] || text;
           const suggestions = aiFoodSuggestions(unresolvedText);
-          if (suggestions.length > 1) {
+          if (suggestions.length >= 1) {
             aiChatDraftItems = result.parsed;
             addAiMessage(`Encontrei estas opções para “${unresolvedText}”. Qual delas você comeu?`);
             setAiOptions(suggestions.map((food) => ({
@@ -3964,8 +3971,11 @@
             })));
             return;
           }
-          const detail = result.unresolved.length ? `\nNão reconheci: ${result.unresolved.join(", ")}.` : "";
-          addAiMessage(`Preciso do alimento e da quantidade de cada item.${detail}\nTente assim: 100g de arroz, 50g de feijão.`);
+          addAiMessage(`Não encontrei “${unresolvedText}” na nossa lista de alimentos.\nVamos falar com o administrador para cadastrar este alimento.`);
+          setAiOptions([{
+            value: `whatsapp-missing:${encodeURIComponent(unresolvedText)}`,
+            label: "Avisar administrador pelo WhatsApp"
+          }]);
           return;
         }
         aiChatDraftItems = result.parsed;
