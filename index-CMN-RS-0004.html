@@ -65,7 +65,7 @@
       margin-top: 7px;
       display: flex;
       gap: 6px;
-      font-size: 11px;
+      font-size: 13px;
       font-weight: 700;
       flex-wrap: wrap;
     }
@@ -753,7 +753,7 @@
       border-radius: 12px;
       background: #f1f3ed;
       color: #53604a;
-      font-size: 10px;
+      font-size: 12px;
       font-weight: 800;
     }
 
@@ -2442,26 +2442,12 @@
       height: 42px;
       border: 0;
       border-radius: 50%;
-      padding: 3px;
-      background: conic-gradient(#168fff, #12c87c, #9adf20, #ffd21a, #ff532f, #cc45d8, #168fff);
+      background: linear-gradient(145deg, #167d35, #62bc3f);
+      color: #fff;
+      font-size: 19px;
+      font-weight: 900;
       box-shadow: 0 8px 18px rgba(40, 130, 55, .22);
       cursor: pointer;
-    }
-
-    .ai-assistant-button span,
-    .ai-chat-avatar span {
-      display: grid;
-      width: 100%;
-      height: 100%;
-      place-items: center;
-      border-radius: 50%;
-      background: #080a09;
-      color: #fff;
-      font-weight: 900;
-    }
-
-    .ai-assistant-button span {
-      font-size: 14px;
     }
 
     .ai-chat-modal {
@@ -2501,14 +2487,11 @@
       display: grid;
       width: 38px;
       height: 38px;
-      padding: 3px;
       place-items: center;
       border-radius: 50%;
-      background: conic-gradient(#168fff, #12c87c, #9adf20, #ffd21a, #ff532f, #cc45d8, #168fff);
-    }
-
-    .ai-chat-avatar span {
-      font-size: 12px;
+      background: #e6f5df;
+      color: #168235;
+      font-weight: 900;
     }
 
     .ai-chat-head strong {
@@ -2632,7 +2615,7 @@
               </div>
             </div>
             <div class="topbar-actions">
-              <button class="ai-assistant-button" id="ai-assistant-button" type="button" aria-label="Abrir assistente de alimentação"><span>IA</span></button>
+              <button class="ai-assistant-button" id="ai-assistant-button" type="button" aria-label="Abrir assistente de alimentação">✦</button>
               <button class="avatar-button" id="profile-button" type="button" aria-label="Escolher foto do perfil">R</button>
             </div>
             <input class="hidden" id="profile-photo-input" type="file" accept="image/*" />
@@ -2957,7 +2940,7 @@
   <div class="ai-chat-modal hidden" id="ai-chat-modal" role="dialog" aria-modal="true" aria-labelledby="ai-chat-title">
     <div class="ai-chat-sheet">
       <div class="ai-chat-head">
-        <div class="ai-chat-avatar"><span>IA</span></div>
+        <div class="ai-chat-avatar">✦</div>
         <strong id="ai-chat-title">Assistente de alimentação</strong>
         <button class="ai-chat-close" id="ai-chat-close" type="button" aria-label="Fechar assistente">×</button>
       </div>
@@ -2977,7 +2960,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
     import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
-    import { doc, getFirestore, runTransaction, serverTimestamp, setDoc } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+    import { doc, getDoc, getFirestore, serverTimestamp, setDoc } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
     import { getMessaging, getToken, isSupported, onMessage } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-messaging.js";
 
     const firebaseApp = initializeApp(window.DIETA_FIREBASE_CONFIG);
@@ -3106,85 +3089,12 @@
     const weightPickerSave = document.getElementById("weight-picker-save");
 
     const storageKey = "dieta-controlada-web:v1";
-    const recoveryStorageKey = "dieta-controlada-web:recovery:v1";
     const navigationStorageKey = "dieta-controlada-web:last-tab";
-    const maxRecoverySnapshots = 8;
     const formatSigned = (value) => value > 0 ? `+${value}` : `${value}`;
     const normalizeText = (value) => value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
     const sortByName = (items) => [...items].sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
     const round = (value) => Math.round(value * 10) / 10;
     const formatKcalValue = (value) => Number(value).toLocaleString("pt-BR", { maximumFractionDigits: 1 });
-    const parseStoredJson = (rawValue, fallback) => {
-      try {
-        return rawValue ? JSON.parse(rawValue) : fallback;
-      } catch (error) {
-        console.warn("Dados locais inválidos foram ignorados.", error);
-        return fallback;
-      }
-    };
-    const recordVersion = (record) => {
-      const updatedAt = Number(record?.updatedAt);
-      if (updatedAt > 0) return updatedAt;
-      const idTimestamp = Number(String(record?.id || "").split("-")[0]);
-      return idTimestamp > 0 ? idTimestamp : 0;
-    };
-    const mergeDeletionMaps = (...maps) => {
-      const merged = {};
-      maps.forEach((map) => {
-        if (!map || typeof map !== "object") return;
-        Object.entries(map).forEach(([id, deletedAt]) => {
-          const timestamp = Number(deletedAt) || 0;
-          if (id && timestamp >= (Number(merged[id]) || 0)) merged[id] = timestamp;
-        });
-      });
-      return merged;
-    };
-    const mergeRecordCollections = (localItems, remoteItems, deletedIds = {}) => {
-      const merged = new Map();
-      const addRecord = (record, preferOnTie = false) => {
-        if (!record?.id) return;
-        const id = String(record.id);
-        const current = merged.get(id);
-        if (!current || recordVersion(record) > recordVersion(current) || (preferOnTie && recordVersion(record) === recordVersion(current))) {
-          merged.set(id, { ...record, id });
-        }
-      };
-      (Array.isArray(remoteItems) ? remoteItems : []).forEach((record) => addRecord(record));
-      (Array.isArray(localItems) ? localItems : []).forEach((record) => addRecord(record, true));
-      return [...merged.values()]
-        .filter((record) => !deletedIds[record.id])
-        .sort((a, b) => recordVersion(b) - recordVersion(a));
-    };
-    const criticalRecoveryData = (data) => ({
-      meals: Array.isArray(data?.meals) ? data.meals : [],
-      expenses: Array.isArray(data?.expenses) ? data.expenses : [],
-      deletedMealIds: data?.deletedMealIds && typeof data.deletedMealIds === "object" ? data.deletedMealIds : {},
-      deletedExpenseIds: data?.deletedExpenseIds && typeof data.deletedExpenseIds === "object" ? data.deletedExpenseIds : {},
-      water: data?.water && typeof data.water === "object" ? data.water : {},
-      weightHistory: data?.weightHistory && typeof data.weightHistory === "object" ? data.weightHistory : {}
-    });
-    const readRecoverySnapshots = () => {
-      const snapshots = parseStoredJson(localStorage.getItem(recoveryStorageKey), []);
-      return Array.isArray(snapshots) ? snapshots : [];
-    };
-    const saveRecoverySnapshot = (data) => {
-      if (!data || typeof data !== "object") return;
-      const snapshotData = criticalRecoveryData(data);
-      const snapshots = readRecoverySnapshots();
-      const serializedData = JSON.stringify(snapshotData);
-      if (JSON.stringify(snapshots[snapshots.length - 1]?.data || null) === serializedData) return;
-      snapshots.push({ savedAt: Date.now(), data: snapshotData });
-      const retained = snapshots.slice(-maxRecoverySnapshots);
-      try {
-        localStorage.setItem(recoveryStorageKey, JSON.stringify(retained));
-      } catch (error) {
-        try {
-          localStorage.setItem(recoveryStorageKey, JSON.stringify(retained.slice(-3)));
-        } catch (recoveryError) {
-          console.warn("Não foi possível atualizar os snapshots locais.", recoveryError);
-        }
-      }
-    };
     const formatActivityDuration = (minutesRaw) => {
       const minutes = Math.max(0, Math.round(Number(minutesRaw) || 0));
       if (minutes < 60) return `${minutes} min`;
@@ -3423,7 +3333,7 @@
 
 
     if (new URLSearchParams(window.location.search).get("clear") === "1") {
-      alert("A limpeza de dados por link foi desativada para proteger o histórico.");
+      localStorage.removeItem(storageKey);
       history.replaceState(null, "", window.location.pathname);
     }
 
@@ -3585,13 +3495,10 @@
     const defaultMealTimes = Object.fromEntries(mealTypes.map((item) => [item.id, item.defaultTime]));
     const dietSuggestionPlanVersion = "integer-units-1600-v1";
 
-    let appData = parseStoredJson(localStorage.getItem(storageKey), { meals: [], expenses: [] });
+    let appData = JSON.parse(localStorage.getItem(storageKey) || '{"meals":[],"expenses":[]}');
     appData = {
       meals: Array.isArray(appData.meals) ? appData.meals : [],
       expenses: Array.isArray(appData.expenses) ? appData.expenses : [],
-      deletedMealIds: appData.deletedMealIds && typeof appData.deletedMealIds === "object" ? appData.deletedMealIds : {},
-      deletedExpenseIds: appData.deletedExpenseIds && typeof appData.deletedExpenseIds === "object" ? appData.deletedExpenseIds : {},
-      clientUpdatedAt: Number(appData.clientUpdatedAt) || 0,
       dietRecommendations: normalizeWholeUnitRecommendations(appData.dietRecommendations),
       dietSuggestionPlanVersion: appData.dietSuggestionPlanVersion || "",
       water: appData.water && typeof appData.water === "object" ? appData.water : {},
@@ -3609,43 +3516,12 @@
       mealTimes: { ...defaultMealTimes, ...(appData.mealTimes || {}) },
       profile: { ...defaultProfile, ...(appData.profile || {}) }
     };
-    function recoverLocalSnapshots() {
-      const beforeRecovery = JSON.stringify(criticalRecoveryData(appData));
-      readRecoverySnapshots().forEach((snapshot) => {
-        const snapshotData = snapshot?.data;
-        if (!snapshotData || typeof snapshotData !== "object") return;
-        appData.deletedMealIds = mergeDeletionMaps(snapshotData.deletedMealIds, appData.deletedMealIds);
-        appData.deletedExpenseIds = mergeDeletionMaps(snapshotData.deletedExpenseIds, appData.deletedExpenseIds);
-        appData.meals = mergeRecordCollections(appData.meals, snapshotData.meals, appData.deletedMealIds);
-        appData.expenses = mergeRecordCollections(appData.expenses, snapshotData.expenses, appData.deletedExpenseIds);
-        appData.water = { ...(snapshotData.water || {}), ...appData.water };
-        appData.weightHistory = { ...(snapshotData.weightHistory || {}), ...appData.weightHistory };
-      });
-      return beforeRecovery !== JSON.stringify(criticalRecoveryData(appData));
-    }
-
-    if (recoverLocalSnapshots()) {
-      localStorage.setItem(storageKey, JSON.stringify(appData));
-    }
-    function carryForwardTodayWeight() {
-      const today = todayISO();
-      const parseWeight = (value) => Number(String(value || "").replace(",", ".")) || 0;
-      if (parseWeight(appData.weightHistory[today]) > 0) return false;
-
-      const previousWeight = Object.entries(appData.weightHistory)
-        .filter(([date, value]) => /^\d{4}-\d{2}-\d{2}$/.test(date) && date < today && parseWeight(value) > 0)
-        .sort(([dateA], [dateB]) => dateB.localeCompare(dateA))
-        .map(([, value]) => parseWeight(value))[0] || 0;
-      const profileWeight = parseWeight(appData.profile.weightKg);
-      const inheritedWeight = previousWeight || profileWeight;
-      if (!inheritedWeight) return false;
-
-      appData.weightHistory[today] = inheritedWeight;
-      return true;
-    }
-
-    if (carryForwardTodayWeight()) {
-      localStorage.setItem(storageKey, JSON.stringify(appData));
+    if (Object.keys(appData.weightHistory).length === 0) {
+      const initialWeight = Number(String(appData.profile.weightKg || "").replace(",", "."));
+      if (initialWeight > 0) {
+        appData.weightHistory[todayISO()] = initialWeight;
+        localStorage.setItem(storageKey, JSON.stringify(appData));
+      }
     }
     if (appData.dietSuggestionPlanVersion !== dietSuggestionPlanVersion) {
       appData.dietRecommendations = normalizeWholeUnitRecommendations(appData.dietRecommendations);
@@ -3695,8 +3571,6 @@
     let dietSelectedOptions = {};
     let editingMealType = null;
     let editingMealId = null;
-    let editingManualMealId = null;
-    let editingExpenseId = null;
     let editingDietTemplate = null;
     let detailReturnTab = "hoje";
     let weightPickerSaveHandler = null;
@@ -3844,12 +3718,10 @@
     function registerAiMeal() {
       const mealType = mealTypes.find((meal) => meal.id === aiChatMealType) || mealTypes[0];
       const now = Date.now();
-      const registrationDate = selectedHomeDate();
       aiChatDraftItems.forEach((item, index) => {
         appData.meals.unshift({
           id: `${now}-${index}`,
-          updatedAt: now + index,
-          date: registrationDate,
+          date: todayISO(),
           foodId: item.food.id,
           foodName: item.food.name,
           mealType: mealType.id,
@@ -3937,57 +3809,8 @@
     expenseDate.value = todayISO();
 
     function saveData() {
-      const previousData = parseStoredJson(localStorage.getItem(storageKey), null);
-      saveRecoverySnapshot(previousData);
-      appData.clientUpdatedAt = Date.now();
       localStorage.setItem(storageKey, JSON.stringify(appData));
       scheduleCloudSync();
-    }
-
-    function touchRecord(record) {
-      if (record) record.updatedAt = Date.now();
-      return record;
-    }
-
-    function removeMealById(mealId) {
-      if (!mealId) return false;
-      const id = String(mealId);
-      if (!appData.meals.some((item) => String(item.id) === id)) return false;
-      appData.deletedMealIds[id] = Date.now();
-      appData.meals = appData.meals.filter((item) => String(item.id) !== id);
-      if (editingManualMealId === id) editingManualMealId = null;
-      return true;
-    }
-
-    function removeExpenseById(expenseId) {
-      if (!expenseId) return false;
-      const id = String(expenseId);
-      if (!appData.expenses.some((item) => String(item.id) === id)) return false;
-      appData.deletedExpenseIds[id] = Date.now();
-      appData.expenses = appData.expenses.filter((item) => String(item.id) !== id);
-      if (editingExpenseId === id) editingExpenseId = null;
-      return true;
-    }
-
-    function upsertExpenseRecord(expenseData) {
-      const existingExpense = editingExpenseId
-        ? appData.expenses.find((item) => item.id === editingExpenseId)
-        : null;
-      if (existingExpense) {
-        Object.assign(existingExpense, expenseData);
-        touchRecord(existingExpense);
-        editingExpenseId = null;
-        return existingExpense;
-      }
-      const recordTimestamp = Date.now();
-      const newExpense = {
-        id: `${recordTimestamp}`,
-        updatedAt: recordTimestamp,
-        ...expenseData
-      };
-      appData.expenses.unshift(newExpense);
-      editingExpenseId = null;
-      return newExpense;
     }
 
     function cloudSafeData() {
@@ -4022,18 +3845,13 @@
     async function syncCloudNow() {
       if (!cloudReady || !cloudUser) return;
       const uid = cloudUser.uid;
-      const stateRef = doc(firestore, "users", uid, "data", "appState");
-      await runTransaction(firestore, async (transaction) => {
-        const cloudSnapshot = await transaction.get(stateRef);
-        if (cloudSnapshot.exists() && cloudSnapshot.data()?.data) {
-          applyCloudData(cloudSnapshot.data().data);
-        }
-        transaction.set(stateRef, {
+      await Promise.all([
+        setDoc(doc(firestore, "users", uid), cloudNotificationSummary(), { merge: true }),
+        setDoc(doc(firestore, "users", uid, "data", "appState"), {
           data: cloudSafeData(),
           updatedAt: serverTimestamp()
-        }, { merge: true });
-      });
-      await setDoc(doc(firestore, "users", uid), cloudNotificationSummary(), { merge: true });
+        }, { merge: true })
+      ]);
     }
 
     function scheduleCloudSync() {
@@ -4046,50 +3864,26 @@
 
     function applyCloudData(remoteData) {
       if (!remoteData || typeof remoteData !== "object") return;
-      const localData = appData;
-      saveRecoverySnapshot(parseStoredJson(localStorage.getItem(storageKey), localData));
-      const preferLocal = (Number(localData.clientUpdatedAt) || 0) >= (Number(remoteData.clientUpdatedAt) || 0);
-      const deletedMealIds = mergeDeletionMaps(remoteData.deletedMealIds, localData.deletedMealIds);
-      const deletedExpenseIds = mergeDeletionMaps(remoteData.deletedExpenseIds, localData.deletedExpenseIds);
-      const localDietRecommendations = localData.dietRecommendations && typeof localData.dietRecommendations === "object"
-        ? localData.dietRecommendations
-        : {};
-      const remoteDietRecommendations = remoteData.dietRecommendations && typeof remoteData.dietRecommendations === "object"
-        ? remoteData.dietRecommendations
-        : {};
-      const preferredDietRecommendations = preferLocal && Object.keys(localDietRecommendations).length
-        ? localDietRecommendations
-        : Object.keys(remoteDietRecommendations).length
-          ? remoteDietRecommendations
-          : localDietRecommendations;
       appData = {
-        ...localData,
+        ...appData,
         ...remoteData,
-        meals: mergeRecordCollections(localData.meals, remoteData.meals, deletedMealIds),
-        expenses: mergeRecordCollections(localData.expenses, remoteData.expenses, deletedExpenseIds),
-        deletedMealIds,
-        deletedExpenseIds,
-        clientUpdatedAt: Math.max(Number(localData.clientUpdatedAt) || 0, Number(remoteData.clientUpdatedAt) || 0),
-        dietRecommendations: normalizeWholeUnitRecommendations(preferredDietRecommendations),
-        water: { ...(remoteData.water || {}), ...(localData.water || {}) },
-        settings: preferLocal
-          ? { ...(remoteData.settings || {}), ...localData.settings }
-          : { ...localData.settings, ...(remoteData.settings || {}) },
-        notificationLog: { ...(remoteData.notificationLog || {}), ...(localData.notificationLog || {}) },
-        weightHistory: { ...(remoteData.weightHistory || {}), ...(localData.weightHistory || {}) },
-        mealTimes: {
-          ...defaultMealTimes,
-          ...(preferLocal ? remoteData.mealTimes : localData.mealTimes),
-          ...(preferLocal ? localData.mealTimes : remoteData.mealTimes)
-        },
-        profile: {
-          ...defaultProfile,
-          ...(preferLocal ? remoteData.profile : localData.profile),
-          ...(preferLocal ? localData.profile : remoteData.profile)
-        }
+        meals: Array.isArray(remoteData.meals) ? remoteData.meals : appData.meals,
+        expenses: Array.isArray(remoteData.expenses) ? remoteData.expenses : appData.expenses,
+        dietRecommendations: remoteData.dietRecommendations && typeof remoteData.dietRecommendations === "object"
+          ? normalizeWholeUnitRecommendations(remoteData.dietRecommendations)
+          : appData.dietRecommendations,
+        water: remoteData.water && typeof remoteData.water === "object" ? remoteData.water : appData.water,
+        settings: { ...appData.settings, ...(remoteData.settings || {}) },
+        notificationLog: remoteData.notificationLog && typeof remoteData.notificationLog === "object"
+          ? remoteData.notificationLog
+          : appData.notificationLog,
+        weightHistory: remoteData.weightHistory && typeof remoteData.weightHistory === "object"
+          ? remoteData.weightHistory
+          : appData.weightHistory,
+        mealTimes: { ...defaultMealTimes, ...(remoteData.mealTimes || {}) },
+        profile: { ...defaultProfile, ...(remoteData.profile || {}) }
       };
       appData.dietSuggestionPlanVersion = dietSuggestionPlanVersion;
-      carryForwardTodayWeight();
       localStorage.setItem(storageKey, JSON.stringify(appData));
     }
 
@@ -4097,12 +3891,17 @@
       try {
         await firebaseAuth.authStateReady();
         cloudUser = firebaseAuth.currentUser || (await signInAnonymously(firebaseAuth)).user;
+        const stateRef = doc(firestore, "users", cloudUser.uid, "data", "appState");
+        const cloudSnapshot = await getDoc(stateRef);
+        if (cloudSnapshot.exists() && cloudSnapshot.data()?.data) {
+          applyCloudData(cloudSnapshot.data().data);
+          renderFoodOptions(currentFoodMode);
+          renderExpenseOptions();
+          renderAll();
+          renderNotificationSettings();
+        }
         cloudReady = true;
         await syncCloudNow();
-        renderFoodOptions(currentFoodMode);
-        renderExpenseOptions();
-        renderAll();
-        renderNotificationSettings();
       } catch (error) {
         console.warn("Firebase aguardando conexao.", error);
       }
@@ -4548,7 +4347,7 @@
       profileButton.style.backgroundImage = profile.photoData ? `url("${profile.photoData}")` : "";
       profileButton.textContent = profile.photoData ? "" : firstName.slice(0, 1).toUpperCase();
       profileAgeLabel.textContent = profile.age ? `${profile.age} anos` : "-- anos";
-      profileWeightLabel.textContent = profile.weightKg ? `${formatWeight(profile.weightKg)}kg` : "-- kg";
+      profileWeightLabel.textContent = profile.weightKg ? `${String(profile.weightKg).replace(".", ",")}kg` : "-- kg";
       profileHeightLabel.textContent = profile.heightCm
         ? `${(Number(profile.heightCm) / 100).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}m`
         : "-- m";
@@ -4715,18 +4514,13 @@
       });
     }
 
-    function selectedHomeDate() {
-      return /^\d{4}-\d{2}-\d{2}$/.test(currentPeriod || "") ? currentPeriod : todayISO();
-    }
-
     function renderMealsProgress() {
-      const selectedDate = selectedHomeDate();
-      const selectedDateMeals = appData.meals.filter((item) => item.date === selectedDate);
-      const completed = new Set(selectedDateMeals.map((item) => item.mealType).filter(Boolean));
+      const todayMeals = appData.meals.filter((item) => item.date === todayISO());
+      const completed = new Set(todayMeals.map((item) => item.mealType).filter(Boolean));
       mealProgressList.innerHTML = mealTypes.map((meal) => {
         const done = completed.has(meal.id);
         const time = appData.mealTimes?.[meal.id] || meal.defaultTime;
-        const mealCalories = selectedDateMeals
+        const mealCalories = todayMeals
           .filter((item) => item.mealType === meal.id)
           .reduce((total, item) => total + (Number(item.calories) || 0), 0);
         const kcalLine = done ? `<div class="meal-kcal-target">${round(mealCalories)} kcal</div>` : "";
@@ -4774,20 +4568,15 @@
       mealUseSuggestion.classList.add("hidden");
       const mealType = mealTypes.find((item) => item.id === mealTypeId) || mealTypes[0];
       selectedMealType = mealType.id;
-      const selectedDate = selectedHomeDate();
-      const registeredMeals = appData.meals.filter((item) => item.date === selectedDate && item.mealType === mealType.id);
+      const registeredMeals = appData.meals.filter((item) => item.date === todayISO() && item.mealType === mealType.id);
       const alreadyDone = registeredMeals.length > 0;
       mealDetailTitle.textContent = mealDetailLabels[mealType.id] || mealType.name;
       mealDetailIcon.textContent = mealType.icon;
       mealDetailTime.value = appData.mealTimes?.[mealType.id] || mealType.defaultTime;
       mealDetailStatus.textContent = alreadyDone ? "Concluída" : "Pendente";
       mealDetailSubtitle.textContent = alreadyDone
-        ? selectedDate === todayISO()
-          ? "Você já registrou essa refeição hoje"
-          : `Refeição registrada em ${selectedDate.split("-").reverse().join("/")}`
-        : selectedDate === todayISO()
-          ? "Escolha uma sugestão ou crie sua própria refeição"
-          : `Adicione esta refeição em ${selectedDate.split("-").reverse().join("/")}`;
+        ? "Você já registrou essa refeição hoje"
+        : "Escolha uma sugestão ou crie sua própria refeição";
       if (alreadyDone) {
         recommendationCarousel.innerHTML = registeredMeals.map(savedMealQuickCard).join("");
         recommendationDots.innerHTML = "";
@@ -5315,7 +5104,6 @@
       meal.calories = round(option.kcal || 0);
       meal.protein = round(option.items.reduce((total, item) => total + (Number(item.protein) || 0), 0));
       meal.carbs = round(option.items.reduce((total, item) => total + (Number(item.carbs) || 0), 0));
-      touchRecord(meal);
       saveData();
       renderAll();
       if (refreshDetail) openMealDetail(meal.mealType);
@@ -5410,7 +5198,7 @@
         if (prepared.option.items.length === 0) {
           const refreshMealType = prepared.meal.mealType;
           const refreshDetail = visibleSectionId() === "refeicao-detalhe";
-          removeMealById(prepared.meal.id);
+          appData.meals = appData.meals.filter((item) => item.id !== prepared.meal.id);
           saveData();
           renderAll();
           if (refreshDetail) openMealDetail(refreshMealType);
@@ -5660,7 +5448,6 @@
         existingMeal.calories = round(option.kcal || 0);
         existingMeal.protein = round(proteinTotal);
         existingMeal.carbs = round(carbsTotal);
-        touchRecord(existingMeal);
         saveData();
         editingMealType = null;
         editingMealId = null;
@@ -5670,12 +5457,9 @@
         openMealDetail(mealType.id);
         return;
       }
-      const registrationDate = selectedHomeDate();
-      const recordTimestamp = Date.now();
       appData.meals.unshift({
-        id: `${recordTimestamp}`,
-        updatedAt: recordTimestamp,
-        date: registrationDate,
+        id: `${Date.now()}`,
+        date: todayISO(),
         foodId: `sugestao-${mealType.id}-${Date.now()}`,
         foodName: `${mealDetailLabels[mealType.id] || mealType.name}: ${itemsLabel}`,
         mealType: mealType.id,
@@ -5694,7 +5478,8 @@
       editingMealId = null;
       mealDetailRegister.textContent = "Registrar dieta";
       mealUseSuggestion.classList.add("hidden");
-      mealDate.value = registrationDate;
+      currentPeriod = "hoje";
+      periodButtons.forEach((item) => item.classList.toggle("active", item.dataset.period === "hoje"));
       renderAll();
       openTab("hoje");
     }
@@ -5967,8 +5752,8 @@
           const activity = activityPresets.find((item) => item.id === button.dataset.registerActivity);
           if (!activity) return;
           const minutes = activityDraftMinutes[activity.id] || 30;
-          const registrationDate = expenseDate.value || todayISO();
-          upsertExpenseRecord({
+          appData.expenses.unshift({
+            id: `${Date.now()}`,
             date: expenseDate.value || todayISO(),
             activityId: activity.id,
             activity: activity.name,
@@ -5977,8 +5762,8 @@
           });
           saveData();
           selectedActivityId = null;
-          currentPeriod = registrationDate === todayISO() ? "hoje" : registrationDate;
-          periodButtons.forEach((item) => item.classList.toggle("active", currentPeriod === "hoje" && item.dataset.period === "hoje"));
+          currentPeriod = "hoje";
+          periodButtons.forEach((item) => item.classList.toggle("active", item.dataset.period === "hoje"));
           renderAll();
         });
       });
@@ -6059,7 +5844,7 @@
         const minBottom = Math.min(barAreaHeight, Math.max(0, item.targetRange.min / maxAbs * barAreaHeight));
         const maxBottom = Math.min(barAreaHeight, Math.max(0, item.targetRange.max / maxAbs * barAreaHeight));
         const status = item.consumed > item.targetRange.max ? "over" : item.consumed >= item.targetRange.min ? "range" : "low";
-        const weightLabel = `${formatWeight(item.weight)}kg`;
+        const weightLabel = `${item.weight.toLocaleString("pt-BR", { maximumFractionDigits: 1 })}kg`;
         const visibleBarHeight = Math.max(height, 12);
         const title = `${item.consumed} kcal consumidas; ${item.spent} kcal em atividades; meta ${round(item.targetRange.min)} a ${round(item.targetRange.max)} kcal; peso ${weightLabel}`;
         const selectedDate = currentPeriod === "hoje" ? todayISO() : currentPeriod;
@@ -6090,7 +5875,6 @@
           mealDate.value = selectedDate;
           expenseDate.value = selectedDate;
           periodButtons.forEach((item) => item.classList.toggle("active", currentPeriod === "hoje" && item.dataset.period === "hoje"));
-          renderMealsProgress();
           renderChart();
           renderConsumption(currentPeriod);
           renderExpenses(currentPeriod);
@@ -6169,10 +5953,9 @@
       const meal = appData.meals.find((item) => item.id === mealId);
       if (!meal) return;
       if (!confirm("Apagar este registro de alimentação?")) return;
-      removeMealById(mealId);
+      appData.meals = appData.meals.filter((item) => item.id !== mealId);
       saveData();
       const deletedCurrentEdit = editingMealId === mealId;
-      if (editingManualMealId === mealId) editingManualMealId = null;
       editingMealType = null;
       editingMealId = null;
       editingDietTemplate = null;
@@ -6227,7 +6010,7 @@
         button.addEventListener("click", () => {
           const meal = appData.meals.find((item) => item.id === button.dataset.editMeal);
           if (!meal) return;
-          if (!confirm("Editar esta alimentação? O registro original será mantido até você salvar a alteração.")) return;
+          if (!confirm("Editar esta alimentação? O lançamento atual será removido e voltará para o formulário.")) return;
           const food = foods.find((item) => item.id === meal.foodId);
           const servings = servingsForFood(food);
           selectedFoodId = meal.foodId;
@@ -6240,8 +6023,9 @@
           mealDate.value = meal.date;
           mealGrams.value = meal.quantity || meal.grams;
           currentFoodMode = "all";
-          editingManualMealId = meal.id;
           foodModeButtons.forEach((item) => item.classList.toggle("active", item.dataset.foodMode === "all"));
+          appData.meals = appData.meals.filter((item) => item.id !== meal.id);
+          saveData();
           renderFoodOptions("all");
           renderAll();
         });
@@ -6294,7 +6078,6 @@
           const direction = Number(button.dataset.direction) || 0;
           expense.minutes = adjustedActivityMinutes(expense.minutes, direction);
           expense.calories = round((expense.minutes / 60) * activity.caloriesPerHour);
-          touchRecord(expense);
           saveData();
           renderAll();
         });
@@ -6308,11 +6091,12 @@
             alert("Esta atividade antiga foi preservada no histórico, mas não faz parte do cadastro atual.");
             return;
           }
-          if (!confirm("Editar esta atividade? O registro original será mantido até você salvar a alteração.")) return;
+          if (!confirm("Editar esta atividade? O lançamento atual voltará para o formulário.")) return;
           selectedActivityId = expense.activityId;
-          editingExpenseId = expense.id;
           expenseDate.value = expense.date;
           activityDraftMinutes[activity.id] = Math.max(15, Number(expense.minutes) || 30);
+          appData.expenses = appData.expenses.filter((item) => item.id !== expense.id);
+          saveData();
           renderExpenseOptions();
           renderAll();
           openTab("gasto");
@@ -6321,7 +6105,7 @@
       gastoResumo.querySelectorAll("[data-delete-home-expense]").forEach((button) => {
         button.addEventListener("click", () => {
           if (!confirm("Tem certeza que quer excluir esta atividade?")) return;
-          removeExpenseById(button.dataset.deleteHomeExpense);
+          appData.expenses = appData.expenses.filter((expense) => expense.id !== button.dataset.deleteHomeExpense);
           saveData();
           renderAll();
         });
@@ -6363,7 +6147,6 @@
           const direction = Number(button.dataset.direction) || 0;
           expense.minutes = adjustedActivityMinutes(expense.minutes, direction);
           expense.calories = round((expense.minutes / 60) * activity.caloriesPerHour);
-          touchRecord(expense);
           saveData();
           renderAll();
         });
@@ -6377,11 +6160,12 @@
             alert("Esta atividade antiga foi preservada no histórico, mas não faz parte do novo cadastro. Você pode mantê-la ou excluí-la.");
             return;
           }
-          if (!confirm("Editar esta atividade? O registro original será mantido até você salvar a alteração.")) return;
+          if (!confirm("Editar esta atividade? O lançamento atual será removido e voltará para o formulário.")) return;
           selectedActivityId = expense.activityId;
-          editingExpenseId = expense.id;
           expenseDate.value = expense.date;
           activityDraftMinutes[activity.id] = Math.max(15, Number(expense.minutes) || 30);
+          appData.expenses = appData.expenses.filter((item) => item.id !== expense.id);
+          saveData();
           renderExpenseOptions();
           renderAll();
         });
@@ -6389,7 +6173,7 @@
       expenseLog.querySelectorAll("[data-delete-expense]").forEach((button) => {
         button.addEventListener("click", () => {
           if (!confirm("Tem certeza que quer excluir esta atividade?")) return;
-          removeExpenseById(button.dataset.deleteExpense);
+          appData.expenses = appData.expenses.filter((expense) => expense.id !== button.dataset.deleteExpense);
           saveData();
           renderAll();
         });
@@ -6734,14 +6518,14 @@
       const quantity = Number(String(mealGrams.value).replace(",", "."));
       const serving = selectedServing();
       const grams = round(quantity * (Number(serving?.grams) || 1));
-      const registrationDate = mealDate.value || selectedHomeDate();
       if (!food || !quantity || quantity <= 0) {
         alert("Escolha um alimento e informe a quantidade.");
         return;
       }
       const nutrition = calculateNutrition(food, grams);
-      const mealData = {
-        date: registrationDate,
+      appData.meals.unshift({
+        id: `${Date.now()}`,
+        date: mealDate.value || todayISO(),
         foodId: food.id,
         foodName: food.name,
         mealType: selectedMealType,
@@ -6752,26 +6536,11 @@
         servingName: serving?.name || "Gramas",
         servingId: serving?.id || "gramas",
         ...nutrition
-      };
-      const editingMeal = editingManualMealId
-        ? appData.meals.find((item) => item.id === editingManualMealId)
-        : null;
-      if (editingMeal) {
-        Object.assign(editingMeal, mealData);
-        touchRecord(editingMeal);
-      } else {
-        const recordTimestamp = Date.now();
-        appData.meals.unshift({
-          id: `${recordTimestamp}`,
-          updatedAt: recordTimestamp,
-          ...mealData
-        });
-      }
-      editingManualMealId = null;
+      });
       mealGrams.value = "";
       saveData();
-      currentPeriod = registrationDate === todayISO() ? "hoje" : registrationDate;
-      periodButtons.forEach((item) => item.classList.toggle("active", currentPeriod === "hoje" && item.dataset.period === "hoje"));
+      currentPeriod = "hoje";
+      periodButtons.forEach((item) => item.classList.toggle("active", item.dataset.period === "hoje"));
       renderFoodOptions(currentFoodMode);
       renderAll();
     });
@@ -6790,8 +6559,8 @@
         alert(isManual ? "Informe as kcal gastas." : "Escolha uma atividade e informe o tempo.");
         return;
       }
-      const registrationDate = expenseDate.value || todayISO();
-      upsertExpenseRecord({
+      appData.expenses.unshift({
+        id: `${Date.now()}`,
         date: expenseDate.value || todayISO(),
         activityId: activity.id,
         activity: activity.name,
@@ -6801,8 +6570,8 @@
       expenseMinutes.value = "";
       updateExpensePreview();
       saveData();
-      currentPeriod = registrationDate === todayISO() ? "hoje" : registrationDate;
-      periodButtons.forEach((item) => item.classList.toggle("active", currentPeriod === "hoje" && item.dataset.period === "hoje"));
+      currentPeriod = "hoje";
+      periodButtons.forEach((item) => item.classList.toggle("active", item.dataset.period === "hoje"));
       renderAll();
     });
 
@@ -6821,16 +6590,11 @@
     renderNotificationSettings();
     connectFirebaseAccount();
     restoreFirebaseMessagingConnection();
-    navigator.storage?.persist?.().catch(() => {});
     checkNotificationSchedule();
     window.setInterval(checkNotificationSchedule, 60 * 1000);
-    window.addEventListener("online", () => {
-      syncCloudNow().catch((error) => console.warn("Sincronização aguardando nova tentativa.", error));
-    });
     document.addEventListener("visibilitychange", () => {
       if (document.visibilityState === "visible") {
         checkNotificationSchedule();
-        syncCloudNow().catch((error) => console.warn("Sincronização aguardando nova tentativa.", error));
       }
     });
     const reminderMeal = new URLSearchParams(window.location.search).get("lembrete");
