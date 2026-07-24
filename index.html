@@ -712,6 +712,18 @@
       background: #209b26;
     }
 
+    .progress-fill.macro {
+      background: #4f91d8;
+    }
+
+    .progress-fill.over-limit {
+      background: #e5484d;
+    }
+
+    .progress-row-head strong.over-limit {
+      color: #d9363e;
+    }
+
     .summary-number {
       font-size: 22px;
       font-weight: 950;
@@ -2712,11 +2724,11 @@
                   </div>
                   <div class="progress-row">
                     <div class="progress-row-head"><span>Proteínas</span><strong id="metric-protein">0 g</strong></div>
-                    <div class="progress-track"><div class="progress-fill" id="protein-fill"></div></div>
+                    <div class="progress-track"><div class="progress-fill macro" id="protein-fill"></div></div>
                   </div>
                   <div class="progress-row">
                     <div class="progress-row-head"><span>Carboidratos</span><strong id="metric-carbs">0 g</strong></div>
-                    <div class="progress-track"><div class="progress-fill" id="carbs-fill"></div></div>
+                    <div class="progress-track"><div class="progress-fill macro" id="carbs-fill"></div></div>
                   </div>
                 </div>
               </div>
@@ -6235,8 +6247,15 @@
       const remaining = round(target - consumed);
       const percent = Math.max(0, Math.min(100, Math.round((consumed / Math.max(target, 1)) * 100)));
       const dayScore = calculateDayScore(consumed, spent);
-      const proteinPercent = Math.max(0, Math.min(100, Math.round((protein / 120) * 100)));
-      const carbsPercent = Math.max(0, Math.min(100, Math.round((carbs / 220) * 100)));
+      const macroDate = /^\d{4}-\d{2}-\d{2}$/.test(period || "") ? period : todayISO();
+      const macroWeight =
+        Number(appData.weightHistory?.[macroDate]) ||
+        Number(String(appData.profile.weightKg).replace(",", ".")) ||
+        70;
+      const proteinTarget = Math.max(1, round(macroWeight * 1.6));
+      const carbsTarget = Math.max(130, round((dailyTargetRange(macroDate).min * 0.45) / 4));
+      const proteinPercent = Math.max(0, Math.min(100, Math.round((protein / proteinTarget) * 100)));
+      const carbsPercent = Math.max(0, Math.min(100, Math.round((carbs / carbsTarget) * 100)));
 
       metricConsumed.textContent = `${consumed} kcal`;
       metricProtein.textContent = `${protein} g`;
@@ -6258,6 +6277,14 @@
       calorieFill.style.setProperty("--width", `${percent}%`);
       proteinFill.style.setProperty("--width", `${proteinPercent}%`);
       carbsFill.style.setProperty("--width", `${carbsPercent}%`);
+      const caloriesOverLimit = consumed > targetRange.max;
+      const carbsOverLimit = carbs > carbsTarget;
+      calorieFill.classList.toggle("over-limit", caloriesOverLimit);
+      carbsFill.classList.toggle("over-limit", carbsOverLimit);
+      metricConsumed.classList.toggle("over-limit", caloriesOverLimit);
+      metricCarbs.classList.toggle("over-limit", carbsOverLimit);
+      proteinFill.classList.remove("over-limit");
+      metricProtein.classList.remove("over-limit");
       renderCalorieRange(consumed, targetRange);
     }
 
