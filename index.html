@@ -2531,8 +2531,8 @@
     .ai-chat-messages {
       display: flex;
       flex-direction: column;
+      flex: 0 0 auto;
       gap: 10px;
-      min-height: 0;
       overflow: visible;
       padding: 16px;
     }
@@ -2543,6 +2543,9 @@
       flex-direction: column;
       justify-content: flex-start;
       overflow-y: auto;
+      overscroll-behavior: contain;
+      touch-action: pan-y;
+      -webkit-overflow-scrolling: touch;
     }
 
     .ai-message {
@@ -2569,6 +2572,7 @@
 
     .ai-chat-options {
       display: flex;
+      flex: 0 0 auto;
       flex-wrap: wrap;
       gap: 7px;
       padding: 0 16px 16px;
@@ -3737,6 +3741,9 @@
         .join("");
       aiChatOptions.querySelectorAll("[data-ai-value]").forEach((button) => {
         button.addEventListener("click", () => processAiChatInput(button.dataset.aiValue, button.textContent));
+      });
+      requestAnimationFrame(() => {
+        aiChatBody.scrollTop = aiChatBody.scrollHeight;
       });
     }
 
@@ -6183,11 +6190,24 @@
     }
 
     function periodMeals(period = currentPeriod) {
-      return appData.meals.filter((item) => inPeriod(item, period));
+      return sortMealsByMealType(appData.meals.filter((item) => inPeriod(item, period)));
     }
 
     function periodExpenses(period = currentPeriod) {
       return appData.expenses.filter((item) => inPeriod(item, period));
+    }
+
+    function sortMealsByMealType(meals) {
+      const mealOrder = new Map(mealTypes.map((meal, index) => [meal.id, index]));
+      return [...meals].sort((a, b) => {
+        const dateOrder = String(a.date || "").localeCompare(String(b.date || ""));
+        if (dateOrder !== 0) return dateOrder;
+        const typeOrder =
+          (mealOrder.get(a.mealType) ?? mealTypes.length) -
+          (mealOrder.get(b.mealType) ?? mealTypes.length);
+        if (typeOrder !== 0) return typeOrder;
+        return String(a.mealTime || "").localeCompare(String(b.mealTime || ""));
+      });
     }
 
     function renderTotals(period = currentPeriod) {
@@ -6283,7 +6303,7 @@
 
     function renderMealLog() {
       const selectedDate = mealDate.value || todayISO();
-      const meals = appData.meals.filter((item) => item.date === selectedDate);
+      const meals = sortMealsByMealType(appData.meals.filter((item) => item.date === selectedDate));
       const total = meals.reduce((acc, item) => ({
         calories: round(acc.calories + (Number(item.calories) || 0)),
         protein: round(acc.protein + (Number(item.protein) || 0)),
