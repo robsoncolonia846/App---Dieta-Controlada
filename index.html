@@ -2488,6 +2488,11 @@
       box-shadow: 0 -12px 40px rgba(0, 0, 0, .2);
     }
 
+    .ai-chat-modal.keyboard-open .ai-chat-sheet {
+      height: 100%;
+      max-height: 100%;
+    }
+
     .ai-chat-head {
       display: flex;
       align-items: center;
@@ -3000,6 +3005,7 @@
     const aiChatModal = document.getElementById("ai-chat-modal");
     const aiChatClose = document.getElementById("ai-chat-close");
     const aiChatMessages = document.getElementById("ai-chat-messages");
+    const aiChatBody = document.querySelector(".ai-chat-body");
     const aiChatOptions = document.getElementById("ai-chat-options");
     const aiChatInput = document.getElementById("ai-chat-input");
     const aiChatSend = document.getElementById("ai-chat-send");
@@ -3719,7 +3725,9 @@
       bubble.className = `ai-message ${author}`;
       bubble.textContent = text;
       aiChatMessages.appendChild(bubble);
-      aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
+      requestAnimationFrame(() => {
+        aiChatBody.scrollTop = aiChatBody.scrollHeight;
+      });
     }
 
     function setAiOptions(options = []) {
@@ -6674,15 +6682,41 @@
       });
     });
 
+    function syncAiChatViewport() {
+      const viewport = window.visualViewport;
+      if (!viewport || aiChatModal.classList.contains("hidden")) return;
+      aiChatModal.style.height = `${viewport.height}px`;
+      aiChatModal.style.top = `${viewport.offsetTop}px`;
+      aiChatModal.style.bottom = "auto";
+    }
+
+    function closeAiChat() {
+      aiChatModal.classList.add("hidden");
+      aiChatModal.classList.remove("keyboard-open");
+      aiChatModal.removeAttribute("style");
+    }
+
     aiAssistantButton.addEventListener("click", () => {
       aiChatModal.classList.remove("hidden");
       resetAiChat();
-      window.setTimeout(() => aiChatInput.focus(), 80);
+      syncAiChatViewport();
     });
-    aiChatClose.addEventListener("click", () => aiChatModal.classList.add("hidden"));
+    aiChatClose.addEventListener("click", closeAiChat);
     aiChatModal.addEventListener("click", (event) => {
-      if (event.target === aiChatModal) aiChatModal.classList.add("hidden");
+      if (event.target === aiChatModal) closeAiChat();
     });
+    aiChatInput.addEventListener("focus", () => {
+      aiChatModal.classList.add("keyboard-open");
+      syncAiChatViewport();
+    });
+    aiChatInput.addEventListener("blur", () => {
+      window.setTimeout(() => {
+        aiChatModal.classList.remove("keyboard-open");
+        syncAiChatViewport();
+      }, 120);
+    });
+    window.visualViewport?.addEventListener("resize", syncAiChatViewport);
+    window.visualViewport?.addEventListener("scroll", syncAiChatViewport);
     aiChatSend.addEventListener("click", () => processAiChatInput(aiChatInput.value));
     aiChatInput.addEventListener("keydown", (event) => {
       if (event.key === "Enter") processAiChatInput(aiChatInput.value);
