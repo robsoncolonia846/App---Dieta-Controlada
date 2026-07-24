@@ -2431,6 +2431,174 @@
       height: 28px;
     }
 
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ai-assistant-button {
+      width: 42px;
+      height: 42px;
+      border: 0;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #167d35, #62bc3f);
+      color: #fff;
+      font-size: 19px;
+      font-weight: 900;
+      box-shadow: 0 8px 18px rgba(40, 130, 55, .22);
+      cursor: pointer;
+    }
+
+    .ai-chat-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 120;
+      display: grid;
+      place-items: end center;
+      background: rgba(18, 25, 20, .45);
+    }
+
+    .ai-chat-modal.hidden {
+      display: none;
+    }
+
+    .ai-chat-sheet {
+      width: min(100%, 430px);
+      height: min(82vh, 700px);
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      overflow: hidden;
+      border-radius: 28px 28px 0 0;
+      background: #f7f9f4;
+      box-shadow: 0 -12px 40px rgba(0, 0, 0, .2);
+    }
+
+    .ai-chat-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 18px;
+      border-bottom: 1px solid #e1e6dc;
+      background: #fff;
+    }
+
+    .ai-chat-avatar {
+      display: grid;
+      width: 38px;
+      height: 38px;
+      place-items: center;
+      border-radius: 50%;
+      background: #e6f5df;
+      color: #168235;
+      font-weight: 900;
+    }
+
+    .ai-chat-head strong {
+      flex: 1;
+    }
+
+    .ai-chat-close {
+      border: 0;
+      background: transparent;
+      color: #5f675d;
+      font-size: 28px;
+      cursor: pointer;
+    }
+
+    .ai-chat-messages {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 16px;
+    }
+
+    .ai-chat-body {
+      min-height: 0;
+      display: grid;
+      grid-template-rows: 1fr auto;
+      overflow: hidden;
+    }
+
+    .ai-message {
+      max-width: 86%;
+      padding: 11px 13px;
+      border-radius: 17px;
+      line-height: 1.38;
+      white-space: pre-line;
+    }
+
+    .ai-message.assistant {
+      align-self: flex-start;
+      border-bottom-left-radius: 5px;
+      background: #fff;
+      color: #223122;
+    }
+
+    .ai-message.user {
+      align-self: flex-end;
+      border-bottom-right-radius: 5px;
+      background: #168b37;
+      color: #fff;
+    }
+
+    .ai-chat-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      padding: 0 16px 10px;
+    }
+
+    .ai-chat-option {
+      border: 1px solid #95ca88;
+      border-radius: 999px;
+      padding: 8px 11px;
+      background: #fff;
+      color: #167d35;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .ai-chat-compose {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 7px;
+      padding: 12px;
+      border-top: 1px solid #e1e6dc;
+      background: #fff;
+    }
+
+    .ai-chat-input {
+      min-width: 0;
+      border: 1px solid #d7ded2;
+      border-radius: 18px;
+      padding: 11px 13px;
+      font: inherit;
+    }
+
+    .ai-chat-send,
+    .ai-chat-mic {
+      width: 44px;
+      height: 44px;
+      border: 0;
+      border-radius: 50%;
+      background: #168b37;
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .ai-chat-mic {
+      background: #eef4ea;
+      color: #168b37;
+    }
+
+    .ai-chat-mic.hidden {
+      display: none;
+    }
+
   </style>
 </head>
 <body>
@@ -2445,7 +2613,10 @@
                 <button class="quick-profile-button" id="profile-weight-label" type="button">-- kg</button>
               </div>
             </div>
-            <button class="avatar-button" id="profile-button" type="button" aria-label="Escolher foto do perfil">R</button>
+            <div class="topbar-actions">
+              <button class="ai-assistant-button" id="ai-assistant-button" type="button" aria-label="Abrir assistente de alimentação">✦</button>
+              <button class="avatar-button" id="profile-button" type="button" aria-label="Escolher foto do perfil">R</button>
+            </div>
             <input class="hidden" id="profile-photo-input" type="file" accept="image/*" />
           </div>
         </header>
@@ -2765,11 +2936,30 @@
     </div>
   </div>
 
+  <div class="ai-chat-modal hidden" id="ai-chat-modal" role="dialog" aria-modal="true" aria-labelledby="ai-chat-title">
+    <div class="ai-chat-sheet">
+      <div class="ai-chat-head">
+        <div class="ai-chat-avatar">✦</div>
+        <strong id="ai-chat-title">Assistente de alimentação</strong>
+        <button class="ai-chat-close" id="ai-chat-close" type="button" aria-label="Fechar assistente">×</button>
+      </div>
+      <div class="ai-chat-body">
+        <div class="ai-chat-messages" id="ai-chat-messages"></div>
+        <div class="ai-chat-options" id="ai-chat-options"></div>
+      </div>
+      <div class="ai-chat-compose">
+        <input class="ai-chat-input" id="ai-chat-input" placeholder="Digite sua resposta..." autocomplete="off" />
+        <button class="ai-chat-mic" id="ai-chat-mic" type="button" aria-label="Ditado por voz">🎙️</button>
+        <button class="ai-chat-send" id="ai-chat-send" type="button" aria-label="Enviar mensagem">➤</button>
+      </div>
+    </div>
+  </div>
+
   <script src="./firebase-config.js"></script>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
     import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
-    import { doc, getDoc, getFirestore, serverTimestamp, setDoc } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+    import { doc, getFirestore, runTransaction, serverTimestamp, setDoc } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
     import { getMessaging, getToken, isSupported, onMessage } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-messaging.js";
 
     const firebaseApp = initializeApp(window.DIETA_FIREBASE_CONFIG);
@@ -2788,6 +2978,14 @@
     const chart = document.getElementById("balance-chart");
     const greetingTitle = document.getElementById("greeting-title");
     const profileButton = document.getElementById("profile-button");
+    const aiAssistantButton = document.getElementById("ai-assistant-button");
+    const aiChatModal = document.getElementById("ai-chat-modal");
+    const aiChatClose = document.getElementById("ai-chat-close");
+    const aiChatMessages = document.getElementById("ai-chat-messages");
+    const aiChatOptions = document.getElementById("ai-chat-options");
+    const aiChatInput = document.getElementById("ai-chat-input");
+    const aiChatSend = document.getElementById("ai-chat-send");
+    const aiChatMic = document.getElementById("ai-chat-mic");
     const profilePhotoInput = document.getElementById("profile-photo-input");
     const profileAgeLabel = document.getElementById("profile-age-label");
     const profileWeightLabel = document.getElementById("profile-weight-label");
@@ -2890,12 +3088,85 @@
     const weightPickerSave = document.getElementById("weight-picker-save");
 
     const storageKey = "dieta-controlada-web:v1";
+    const recoveryStorageKey = "dieta-controlada-web:recovery:v1";
     const navigationStorageKey = "dieta-controlada-web:last-tab";
+    const maxRecoverySnapshots = 8;
     const formatSigned = (value) => value > 0 ? `+${value}` : `${value}`;
     const normalizeText = (value) => value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
     const sortByName = (items) => [...items].sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
     const round = (value) => Math.round(value * 10) / 10;
     const formatKcalValue = (value) => Number(value).toLocaleString("pt-BR", { maximumFractionDigits: 1 });
+    const parseStoredJson = (rawValue, fallback) => {
+      try {
+        return rawValue ? JSON.parse(rawValue) : fallback;
+      } catch (error) {
+        console.warn("Dados locais inválidos foram ignorados.", error);
+        return fallback;
+      }
+    };
+    const recordVersion = (record) => {
+      const updatedAt = Number(record?.updatedAt);
+      if (updatedAt > 0) return updatedAt;
+      const idTimestamp = Number(String(record?.id || "").split("-")[0]);
+      return idTimestamp > 0 ? idTimestamp : 0;
+    };
+    const mergeDeletionMaps = (...maps) => {
+      const merged = {};
+      maps.forEach((map) => {
+        if (!map || typeof map !== "object") return;
+        Object.entries(map).forEach(([id, deletedAt]) => {
+          const timestamp = Number(deletedAt) || 0;
+          if (id && timestamp >= (Number(merged[id]) || 0)) merged[id] = timestamp;
+        });
+      });
+      return merged;
+    };
+    const mergeRecordCollections = (localItems, remoteItems, deletedIds = {}) => {
+      const merged = new Map();
+      const addRecord = (record, preferOnTie = false) => {
+        if (!record?.id) return;
+        const id = String(record.id);
+        const current = merged.get(id);
+        if (!current || recordVersion(record) > recordVersion(current) || (preferOnTie && recordVersion(record) === recordVersion(current))) {
+          merged.set(id, { ...record, id });
+        }
+      };
+      (Array.isArray(remoteItems) ? remoteItems : []).forEach((record) => addRecord(record));
+      (Array.isArray(localItems) ? localItems : []).forEach((record) => addRecord(record, true));
+      return [...merged.values()]
+        .filter((record) => !deletedIds[record.id])
+        .sort((a, b) => recordVersion(b) - recordVersion(a));
+    };
+    const criticalRecoveryData = (data) => ({
+      meals: Array.isArray(data?.meals) ? data.meals : [],
+      expenses: Array.isArray(data?.expenses) ? data.expenses : [],
+      deletedMealIds: data?.deletedMealIds && typeof data.deletedMealIds === "object" ? data.deletedMealIds : {},
+      deletedExpenseIds: data?.deletedExpenseIds && typeof data.deletedExpenseIds === "object" ? data.deletedExpenseIds : {},
+      water: data?.water && typeof data.water === "object" ? data.water : {},
+      weightHistory: data?.weightHistory && typeof data.weightHistory === "object" ? data.weightHistory : {}
+    });
+    const readRecoverySnapshots = () => {
+      const snapshots = parseStoredJson(localStorage.getItem(recoveryStorageKey), []);
+      return Array.isArray(snapshots) ? snapshots : [];
+    };
+    const saveRecoverySnapshot = (data) => {
+      if (!data || typeof data !== "object") return;
+      const snapshotData = criticalRecoveryData(data);
+      const snapshots = readRecoverySnapshots();
+      const serializedData = JSON.stringify(snapshotData);
+      if (JSON.stringify(snapshots[snapshots.length - 1]?.data || null) === serializedData) return;
+      snapshots.push({ savedAt: Date.now(), data: snapshotData });
+      const retained = snapshots.slice(-maxRecoverySnapshots);
+      try {
+        localStorage.setItem(recoveryStorageKey, JSON.stringify(retained));
+      } catch (error) {
+        try {
+          localStorage.setItem(recoveryStorageKey, JSON.stringify(retained.slice(-3)));
+        } catch (recoveryError) {
+          console.warn("Não foi possível atualizar os snapshots locais.", recoveryError);
+        }
+      }
+    };
     const formatActivityDuration = (minutesRaw) => {
       const minutes = Math.max(0, Math.round(Number(minutesRaw) || 0));
       if (minutes < 60) return `${minutes} min`;
@@ -3134,7 +3405,7 @@
 
 
     if (new URLSearchParams(window.location.search).get("clear") === "1") {
-      localStorage.removeItem(storageKey);
+      alert("A limpeza de dados por link foi desativada para proteger o histórico.");
       history.replaceState(null, "", window.location.pathname);
     }
 
@@ -3296,10 +3567,13 @@
     const defaultMealTimes = Object.fromEntries(mealTypes.map((item) => [item.id, item.defaultTime]));
     const dietSuggestionPlanVersion = "integer-units-1600-v1";
 
-    let appData = JSON.parse(localStorage.getItem(storageKey) || '{"meals":[],"expenses":[]}');
+    let appData = parseStoredJson(localStorage.getItem(storageKey), { meals: [], expenses: [] });
     appData = {
       meals: Array.isArray(appData.meals) ? appData.meals : [],
       expenses: Array.isArray(appData.expenses) ? appData.expenses : [],
+      deletedMealIds: appData.deletedMealIds && typeof appData.deletedMealIds === "object" ? appData.deletedMealIds : {},
+      deletedExpenseIds: appData.deletedExpenseIds && typeof appData.deletedExpenseIds === "object" ? appData.deletedExpenseIds : {},
+      clientUpdatedAt: Number(appData.clientUpdatedAt) || 0,
       dietRecommendations: normalizeWholeUnitRecommendations(appData.dietRecommendations),
       dietSuggestionPlanVersion: appData.dietSuggestionPlanVersion || "",
       water: appData.water && typeof appData.water === "object" ? appData.water : {},
@@ -3317,12 +3591,43 @@
       mealTimes: { ...defaultMealTimes, ...(appData.mealTimes || {}) },
       profile: { ...defaultProfile, ...(appData.profile || {}) }
     };
-    if (Object.keys(appData.weightHistory).length === 0) {
-      const initialWeight = Number(String(appData.profile.weightKg || "").replace(",", "."));
-      if (initialWeight > 0) {
-        appData.weightHistory[todayISO()] = initialWeight;
-        localStorage.setItem(storageKey, JSON.stringify(appData));
-      }
+    function recoverLocalSnapshots() {
+      const beforeRecovery = JSON.stringify(criticalRecoveryData(appData));
+      readRecoverySnapshots().forEach((snapshot) => {
+        const snapshotData = snapshot?.data;
+        if (!snapshotData || typeof snapshotData !== "object") return;
+        appData.deletedMealIds = mergeDeletionMaps(snapshotData.deletedMealIds, appData.deletedMealIds);
+        appData.deletedExpenseIds = mergeDeletionMaps(snapshotData.deletedExpenseIds, appData.deletedExpenseIds);
+        appData.meals = mergeRecordCollections(appData.meals, snapshotData.meals, appData.deletedMealIds);
+        appData.expenses = mergeRecordCollections(appData.expenses, snapshotData.expenses, appData.deletedExpenseIds);
+        appData.water = { ...(snapshotData.water || {}), ...appData.water };
+        appData.weightHistory = { ...(snapshotData.weightHistory || {}), ...appData.weightHistory };
+      });
+      return beforeRecovery !== JSON.stringify(criticalRecoveryData(appData));
+    }
+
+    if (recoverLocalSnapshots()) {
+      localStorage.setItem(storageKey, JSON.stringify(appData));
+    }
+    function carryForwardTodayWeight() {
+      const today = todayISO();
+      const parseWeight = (value) => Number(String(value || "").replace(",", ".")) || 0;
+      if (parseWeight(appData.weightHistory[today]) > 0) return false;
+
+      const previousWeight = Object.entries(appData.weightHistory)
+        .filter(([date, value]) => /^\d{4}-\d{2}-\d{2}$/.test(date) && date < today && parseWeight(value) > 0)
+        .sort(([dateA], [dateB]) => dateB.localeCompare(dateA))
+        .map(([, value]) => parseWeight(value))[0] || 0;
+      const profileWeight = parseWeight(appData.profile.weightKg);
+      const inheritedWeight = previousWeight || profileWeight;
+      if (!inheritedWeight) return false;
+
+      appData.weightHistory[today] = inheritedWeight;
+      return true;
+    }
+
+    if (carryForwardTodayWeight()) {
+      localStorage.setItem(storageKey, JSON.stringify(appData));
     }
     if (appData.dietSuggestionPlanVersion !== dietSuggestionPlanVersion) {
       appData.dietRecommendations = normalizeWholeUnitRecommendations(appData.dietRecommendations);
@@ -3372,20 +3677,299 @@
     let dietSelectedOptions = {};
     let editingMealType = null;
     let editingMealId = null;
+    let editingManualMealId = null;
+    let editingExpenseId = null;
     let editingDietTemplate = null;
     let detailReturnTab = "hoje";
     let weightPickerSaveHandler = null;
     let profilePickerValues = [];
     let profilePickerSelectedIndex = 0;
     let profilePickerFormatValue = (value) => String(value);
+    let aiChatStep = "meal";
+    let aiChatMealType = "";
+    let aiChatDraftItems = [];
+
+    const aiMealAliases = {
+      cafe: ["cafe", "cafe da manha", "café", "café da manhã"],
+      almoco: ["almoco", "almoço"],
+      "lanche-tarde": ["lanche", "lanche da tarde", "cafe da tarde", "café da tarde"],
+      jantar: ["jantar", "janta"]
+    };
+
+    function addAiMessage(text, author = "assistant") {
+      const bubble = document.createElement("div");
+      bubble.className = `ai-message ${author}`;
+      bubble.textContent = text;
+      aiChatMessages.appendChild(bubble);
+      aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
+    }
+
+    function setAiOptions(options = []) {
+      aiChatOptions.innerHTML = options
+        .map((option) => `<button class="ai-chat-option" type="button" data-ai-value="${option.value}">${option.label}</button>`)
+        .join("");
+      aiChatOptions.querySelectorAll("[data-ai-value]").forEach((button) => {
+        button.addEventListener("click", () => processAiChatInput(button.dataset.aiValue, button.textContent));
+      });
+    }
+
+    function resetAiChat() {
+      aiChatStep = "meal";
+      aiChatMealType = "";
+      aiChatDraftItems = [];
+      aiChatMessages.innerHTML = "";
+      aiChatInput.value = "";
+      addAiMessage("Olá! O que você deseja registrar?");
+      setAiOptions(mealTypes.map((meal) => ({
+        value: meal.id,
+        label: `${meal.icon} ${mealDetailLabels[meal.id] || meal.name}`
+      })));
+    }
+
+    function mealTypeFromAiText(text) {
+      const normalized = normalizeText(text);
+      return Object.entries(aiMealAliases).find(([, aliases]) =>
+        aliases.some((alias) => normalized.includes(normalizeText(alias)))
+      )?.[0] || "";
+    }
+
+    function foodFromAiSegment(segment) {
+      const cleaned = normalizeText(segment)
+        .replace(/\b\d+(?:[.,]\d+)?\s*(?:kg|g|gramas?|ml|litros?|l|unidades?|unid\.?|fatias?|colheres?|conchas?)?\b/g, " ")
+        .replace(/\b(de|do|da|um|uma|e)\b/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+      if (!cleaned) return null;
+      const ranked = foods
+        .flatMap((food) => [food.name, ...(food.aliases || [])].map((label) => {
+          const normalizedLabel = normalizeText(label).trim();
+          const score = normalizedLabel === cleaned
+            ? 3
+            : cleaned.includes(normalizedLabel)
+              ? 2
+              : normalizedLabel.includes(cleaned)
+                ? 1
+                : 0;
+          return { food, label: normalizedLabel, score };
+        }))
+        .filter((entry) => entry.score > 0)
+        .sort((a, b) => b.score - a.score || a.label.length - b.label.length);
+      return ranked[0]?.food || null;
+    }
+
+    function parseAiFoodList(text) {
+      const normalizedSeparators = String(text)
+        .replace(/\s+(?:e|mais)\s+(?=\d)/gi, ",")
+        .replace(/[;\n]+/g, ",");
+      const segments = normalizedSeparators.split(",").map((item) => item.trim()).filter(Boolean);
+      const parsed = [];
+      const unresolved = [];
+      segments.forEach((segment) => {
+        const amountMatch = segment.match(/(\d+(?:[.,]\d+)?)\s*(kg|g|gramas?|ml|litros?|l|unidades?|unid\.?|fatias?|colheres?|conchas?)?/i);
+        const food = foodFromAiSegment(segment);
+        if (!amountMatch || !food) {
+          unresolved.push(segment);
+          return;
+        }
+        let value = Number(amountMatch[1].replace(",", "."));
+        let unit = normalizeText(amountMatch[2] || "unidade").replace(/\.$/, "");
+        if (unit === "kg") {
+          value *= 1000;
+          unit = "g";
+        } else if (unit === "l" || unit.startsWith("litro")) {
+          value *= 1000;
+          unit = "ml";
+        } else if (unit.startsWith("grama")) {
+          unit = "g";
+        } else if (unit.startsWith("unid")) {
+          unit = "unidade";
+        } else if (unit.startsWith("fatia")) {
+          unit = "fatia";
+        } else if (unit.startsWith("colher")) {
+          unit = "colher";
+        } else if (unit.startsWith("concha")) {
+          unit = "concha";
+        }
+        const amount = `${value} ${unit}`;
+        const amountParsed = parseAmount(amount);
+        let grams = value;
+        let servingName = unit === "g" ? "Gramas" : unit === "ml" ? "ml" : unit;
+        let servingId = unit === "g" ? "gramas" : unit;
+        if (amountParsed && !["g", "ml"].includes(amountParsed.unit)) {
+          const serving = servingForAmountUnit(food, amountParsed.unit);
+          if (!serving) {
+            unresolved.push(segment);
+            return;
+          }
+          grams = round(value * Number(serving.grams));
+          servingName = serving.name || amountParsed.label;
+          servingId = serving.id || amountParsed.unit;
+        }
+        const nutrition = calculateNutrition(food, grams);
+        parsed.push({ food, value, unit, grams, servingName, servingId, nutrition });
+      });
+      return { parsed, unresolved };
+    }
+
+    function aiDraftSummary() {
+      const lines = aiChatDraftItems.map((item) =>
+        `• ${item.food.name} — ${item.value} ${item.unit} (${formatKcalValue(item.nutrition.calories)} kcal)`
+      );
+      const totals = aiChatDraftItems.reduce((sum, item) => ({
+        kcal: sum.kcal + item.nutrition.calories,
+        protein: sum.protein + item.nutrition.protein,
+        carbs: sum.carbs + item.nutrition.carbs
+      }), { kcal: 0, protein: 0, carbs: 0 });
+      return `${lines.join("\n")}\n\nTotal: ${formatKcalValue(totals.kcal)} kcal · ${round(totals.protein)}g proteína · ${round(totals.carbs)}g carboidratos\n\nEstá correto?`;
+    }
+
+    function registerAiMeal() {
+      const mealType = mealTypes.find((meal) => meal.id === aiChatMealType) || mealTypes[0];
+      const now = Date.now();
+      const registrationDate = selectedHomeDate();
+      aiChatDraftItems.forEach((item, index) => {
+        appData.meals.unshift({
+          id: `${now}-${index}`,
+          updatedAt: now + index,
+          date: registrationDate,
+          foodId: item.food.id,
+          foodName: item.food.name,
+          mealType: mealType.id,
+          mealTypeName: mealType.name,
+          mealTime: appData.mealTimes?.[mealType.id] || defaultMealTimes[mealType.id],
+          grams: item.grams,
+          quantity: item.value,
+          servingName: item.servingName,
+          servingId: item.servingId,
+          ...item.nutrition
+        });
+      });
+      saveData();
+      renderAll();
+      addAiMessage(`${mealDetailLabels[mealType.id] || mealType.name} registrado com sucesso.`, "assistant");
+      aiChatStep = "done";
+      setAiOptions([
+        { value: "novo", label: "Registrar outra refeição" },
+        { value: "fechar", label: "Concluir" }
+      ]);
+    }
+
+    function processAiChatInput(rawValue, displayValue = "") {
+      const text = String(rawValue || "").trim();
+      if (!text) return;
+      addAiMessage(displayValue || text, "user");
+      aiChatInput.value = "";
+
+      if (aiChatStep === "meal") {
+        const selected = mealTypes.some((meal) => meal.id === text) ? text : mealTypeFromAiText(text);
+        if (!selected) {
+          addAiMessage("Não consegui identificar a refeição. Escolha café, almoço, lanche ou jantar.");
+          return;
+        }
+        aiChatMealType = selected;
+        aiChatStep = "foods";
+        setAiOptions([]);
+        addAiMessage(`O que você comeu no ${normalizeText(mealDetailLabels[selected] || selected)}?\nExemplo: 100g de arroz, 50g de feijão e 120g de carne.`);
+        return;
+      }
+
+      if (aiChatStep === "foods") {
+        const result = parseAiFoodList(text);
+        if (!result.parsed.length || result.unresolved.length) {
+          const detail = result.unresolved.length ? `\nNão reconheci: ${result.unresolved.join(", ")}.` : "";
+          addAiMessage(`Preciso do alimento e da quantidade de cada item.${detail}\nTente assim: 100g de arroz, 50g de feijão.`);
+          return;
+        }
+        aiChatDraftItems = result.parsed;
+        aiChatStep = "confirm";
+        addAiMessage(aiDraftSummary());
+        setAiOptions([
+          { value: "confirmar", label: "✓ Confirmar e registrar" },
+          { value: "corrigir", label: "Corrigir" },
+          { value: "cancelar", label: "Cancelar" }
+        ]);
+        return;
+      }
+
+      if (aiChatStep === "confirm") {
+        const command = normalizeText(text);
+        if (command.includes("confirm")) {
+          registerAiMeal();
+        } else if (command.includes("corrig")) {
+          aiChatStep = "foods";
+          setAiOptions([]);
+          addAiMessage("Escreva novamente a lista completa com as quantidades corrigidas.");
+        } else {
+          resetAiChat();
+        }
+        return;
+      }
+
+      if (aiChatStep === "done") {
+        if (normalizeText(text).includes("novo") || normalizeText(text).includes("outra")) {
+          resetAiChat();
+        } else {
+          aiChatModal.classList.add("hidden");
+        }
+      }
+    }
     let profilePickerScrollFrame = 0;
 
     mealDate.value = todayISO();
     expenseDate.value = todayISO();
 
     function saveData() {
+      const previousData = parseStoredJson(localStorage.getItem(storageKey), null);
+      saveRecoverySnapshot(previousData);
+      appData.clientUpdatedAt = Date.now();
       localStorage.setItem(storageKey, JSON.stringify(appData));
       scheduleCloudSync();
+    }
+
+    function touchRecord(record) {
+      if (record) record.updatedAt = Date.now();
+      return record;
+    }
+
+    function removeMealById(mealId) {
+      if (!mealId) return false;
+      const id = String(mealId);
+      if (!appData.meals.some((item) => String(item.id) === id)) return false;
+      appData.deletedMealIds[id] = Date.now();
+      appData.meals = appData.meals.filter((item) => String(item.id) !== id);
+      if (editingManualMealId === id) editingManualMealId = null;
+      return true;
+    }
+
+    function removeExpenseById(expenseId) {
+      if (!expenseId) return false;
+      const id = String(expenseId);
+      if (!appData.expenses.some((item) => String(item.id) === id)) return false;
+      appData.deletedExpenseIds[id] = Date.now();
+      appData.expenses = appData.expenses.filter((item) => String(item.id) !== id);
+      if (editingExpenseId === id) editingExpenseId = null;
+      return true;
+    }
+
+    function upsertExpenseRecord(expenseData) {
+      const existingExpense = editingExpenseId
+        ? appData.expenses.find((item) => item.id === editingExpenseId)
+        : null;
+      if (existingExpense) {
+        Object.assign(existingExpense, expenseData);
+        touchRecord(existingExpense);
+        editingExpenseId = null;
+        return existingExpense;
+      }
+      const recordTimestamp = Date.now();
+      const newExpense = {
+        id: `${recordTimestamp}`,
+        updatedAt: recordTimestamp,
+        ...expenseData
+      };
+      appData.expenses.unshift(newExpense);
+      editingExpenseId = null;
+      return newExpense;
     }
 
     function cloudSafeData() {
@@ -3420,13 +4004,18 @@
     async function syncCloudNow() {
       if (!cloudReady || !cloudUser) return;
       const uid = cloudUser.uid;
-      await Promise.all([
-        setDoc(doc(firestore, "users", uid), cloudNotificationSummary(), { merge: true }),
-        setDoc(doc(firestore, "users", uid, "data", "appState"), {
+      const stateRef = doc(firestore, "users", uid, "data", "appState");
+      await runTransaction(firestore, async (transaction) => {
+        const cloudSnapshot = await transaction.get(stateRef);
+        if (cloudSnapshot.exists() && cloudSnapshot.data()?.data) {
+          applyCloudData(cloudSnapshot.data().data);
+        }
+        transaction.set(stateRef, {
           data: cloudSafeData(),
           updatedAt: serverTimestamp()
-        }, { merge: true })
-      ]);
+        }, { merge: true });
+      });
+      await setDoc(doc(firestore, "users", uid), cloudNotificationSummary(), { merge: true });
     }
 
     function scheduleCloudSync() {
@@ -3439,26 +4028,50 @@
 
     function applyCloudData(remoteData) {
       if (!remoteData || typeof remoteData !== "object") return;
+      const localData = appData;
+      saveRecoverySnapshot(parseStoredJson(localStorage.getItem(storageKey), localData));
+      const preferLocal = (Number(localData.clientUpdatedAt) || 0) >= (Number(remoteData.clientUpdatedAt) || 0);
+      const deletedMealIds = mergeDeletionMaps(remoteData.deletedMealIds, localData.deletedMealIds);
+      const deletedExpenseIds = mergeDeletionMaps(remoteData.deletedExpenseIds, localData.deletedExpenseIds);
+      const localDietRecommendations = localData.dietRecommendations && typeof localData.dietRecommendations === "object"
+        ? localData.dietRecommendations
+        : {};
+      const remoteDietRecommendations = remoteData.dietRecommendations && typeof remoteData.dietRecommendations === "object"
+        ? remoteData.dietRecommendations
+        : {};
+      const preferredDietRecommendations = preferLocal && Object.keys(localDietRecommendations).length
+        ? localDietRecommendations
+        : Object.keys(remoteDietRecommendations).length
+          ? remoteDietRecommendations
+          : localDietRecommendations;
       appData = {
-        ...appData,
+        ...localData,
         ...remoteData,
-        meals: Array.isArray(remoteData.meals) ? remoteData.meals : appData.meals,
-        expenses: Array.isArray(remoteData.expenses) ? remoteData.expenses : appData.expenses,
-        dietRecommendations: remoteData.dietRecommendations && typeof remoteData.dietRecommendations === "object"
-          ? normalizeWholeUnitRecommendations(remoteData.dietRecommendations)
-          : appData.dietRecommendations,
-        water: remoteData.water && typeof remoteData.water === "object" ? remoteData.water : appData.water,
-        settings: { ...appData.settings, ...(remoteData.settings || {}) },
-        notificationLog: remoteData.notificationLog && typeof remoteData.notificationLog === "object"
-          ? remoteData.notificationLog
-          : appData.notificationLog,
-        weightHistory: remoteData.weightHistory && typeof remoteData.weightHistory === "object"
-          ? remoteData.weightHistory
-          : appData.weightHistory,
-        mealTimes: { ...defaultMealTimes, ...(remoteData.mealTimes || {}) },
-        profile: { ...defaultProfile, ...(remoteData.profile || {}) }
+        meals: mergeRecordCollections(localData.meals, remoteData.meals, deletedMealIds),
+        expenses: mergeRecordCollections(localData.expenses, remoteData.expenses, deletedExpenseIds),
+        deletedMealIds,
+        deletedExpenseIds,
+        clientUpdatedAt: Math.max(Number(localData.clientUpdatedAt) || 0, Number(remoteData.clientUpdatedAt) || 0),
+        dietRecommendations: normalizeWholeUnitRecommendations(preferredDietRecommendations),
+        water: { ...(remoteData.water || {}), ...(localData.water || {}) },
+        settings: preferLocal
+          ? { ...(remoteData.settings || {}), ...localData.settings }
+          : { ...localData.settings, ...(remoteData.settings || {}) },
+        notificationLog: { ...(remoteData.notificationLog || {}), ...(localData.notificationLog || {}) },
+        weightHistory: { ...(remoteData.weightHistory || {}), ...(localData.weightHistory || {}) },
+        mealTimes: {
+          ...defaultMealTimes,
+          ...(preferLocal ? remoteData.mealTimes : localData.mealTimes),
+          ...(preferLocal ? localData.mealTimes : remoteData.mealTimes)
+        },
+        profile: {
+          ...defaultProfile,
+          ...(preferLocal ? remoteData.profile : localData.profile),
+          ...(preferLocal ? localData.profile : remoteData.profile)
+        }
       };
       appData.dietSuggestionPlanVersion = dietSuggestionPlanVersion;
+      carryForwardTodayWeight();
       localStorage.setItem(storageKey, JSON.stringify(appData));
     }
 
@@ -3466,17 +4079,12 @@
       try {
         await firebaseAuth.authStateReady();
         cloudUser = firebaseAuth.currentUser || (await signInAnonymously(firebaseAuth)).user;
-        const stateRef = doc(firestore, "users", cloudUser.uid, "data", "appState");
-        const cloudSnapshot = await getDoc(stateRef);
-        if (cloudSnapshot.exists() && cloudSnapshot.data()?.data) {
-          applyCloudData(cloudSnapshot.data().data);
-          renderFoodOptions(currentFoodMode);
-          renderExpenseOptions();
-          renderAll();
-          renderNotificationSettings();
-        }
         cloudReady = true;
         await syncCloudNow();
+        renderFoodOptions(currentFoodMode);
+        renderExpenseOptions();
+        renderAll();
+        renderNotificationSettings();
       } catch (error) {
         console.warn("Firebase aguardando conexao.", error);
       }
@@ -4089,13 +4697,18 @@
       });
     }
 
+    function selectedHomeDate() {
+      return /^\d{4}-\d{2}-\d{2}$/.test(currentPeriod || "") ? currentPeriod : todayISO();
+    }
+
     function renderMealsProgress() {
-      const todayMeals = appData.meals.filter((item) => item.date === todayISO());
-      const completed = new Set(todayMeals.map((item) => item.mealType).filter(Boolean));
+      const selectedDate = selectedHomeDate();
+      const selectedDateMeals = appData.meals.filter((item) => item.date === selectedDate);
+      const completed = new Set(selectedDateMeals.map((item) => item.mealType).filter(Boolean));
       mealProgressList.innerHTML = mealTypes.map((meal) => {
         const done = completed.has(meal.id);
         const time = appData.mealTimes?.[meal.id] || meal.defaultTime;
-        const mealCalories = todayMeals
+        const mealCalories = selectedDateMeals
           .filter((item) => item.mealType === meal.id)
           .reduce((total, item) => total + (Number(item.calories) || 0), 0);
         const kcalLine = done ? `<div class="meal-kcal-target">${round(mealCalories)} kcal</div>` : "";
@@ -4143,15 +4756,20 @@
       mealUseSuggestion.classList.add("hidden");
       const mealType = mealTypes.find((item) => item.id === mealTypeId) || mealTypes[0];
       selectedMealType = mealType.id;
-      const registeredMeals = appData.meals.filter((item) => item.date === todayISO() && item.mealType === mealType.id);
+      const selectedDate = selectedHomeDate();
+      const registeredMeals = appData.meals.filter((item) => item.date === selectedDate && item.mealType === mealType.id);
       const alreadyDone = registeredMeals.length > 0;
       mealDetailTitle.textContent = mealDetailLabels[mealType.id] || mealType.name;
       mealDetailIcon.textContent = mealType.icon;
       mealDetailTime.value = appData.mealTimes?.[mealType.id] || mealType.defaultTime;
       mealDetailStatus.textContent = alreadyDone ? "Concluída" : "Pendente";
       mealDetailSubtitle.textContent = alreadyDone
-        ? "Você já registrou essa refeição hoje"
-        : "Escolha uma sugestão ou crie sua própria refeição";
+        ? selectedDate === todayISO()
+          ? "Você já registrou essa refeição hoje"
+          : `Refeição registrada em ${selectedDate.split("-").reverse().join("/")}`
+        : selectedDate === todayISO()
+          ? "Escolha uma sugestão ou crie sua própria refeição"
+          : `Adicione esta refeição em ${selectedDate.split("-").reverse().join("/")}`;
       if (alreadyDone) {
         recommendationCarousel.innerHTML = registeredMeals.map(savedMealQuickCard).join("");
         recommendationDots.innerHTML = "";
@@ -4679,6 +5297,7 @@
       meal.calories = round(option.kcal || 0);
       meal.protein = round(option.items.reduce((total, item) => total + (Number(item.protein) || 0), 0));
       meal.carbs = round(option.items.reduce((total, item) => total + (Number(item.carbs) || 0), 0));
+      touchRecord(meal);
       saveData();
       renderAll();
       if (refreshDetail) openMealDetail(meal.mealType);
@@ -4773,7 +5392,7 @@
         if (prepared.option.items.length === 0) {
           const refreshMealType = prepared.meal.mealType;
           const refreshDetail = visibleSectionId() === "refeicao-detalhe";
-          appData.meals = appData.meals.filter((item) => item.id !== prepared.meal.id);
+          removeMealById(prepared.meal.id);
           saveData();
           renderAll();
           if (refreshDetail) openMealDetail(refreshMealType);
@@ -5023,6 +5642,7 @@
         existingMeal.calories = round(option.kcal || 0);
         existingMeal.protein = round(proteinTotal);
         existingMeal.carbs = round(carbsTotal);
+        touchRecord(existingMeal);
         saveData();
         editingMealType = null;
         editingMealId = null;
@@ -5032,9 +5652,12 @@
         openMealDetail(mealType.id);
         return;
       }
+      const registrationDate = selectedHomeDate();
+      const recordTimestamp = Date.now();
       appData.meals.unshift({
-        id: `${Date.now()}`,
-        date: todayISO(),
+        id: `${recordTimestamp}`,
+        updatedAt: recordTimestamp,
+        date: registrationDate,
         foodId: `sugestao-${mealType.id}-${Date.now()}`,
         foodName: `${mealDetailLabels[mealType.id] || mealType.name}: ${itemsLabel}`,
         mealType: mealType.id,
@@ -5053,8 +5676,7 @@
       editingMealId = null;
       mealDetailRegister.textContent = "Registrar dieta";
       mealUseSuggestion.classList.add("hidden");
-      currentPeriod = "hoje";
-      periodButtons.forEach((item) => item.classList.toggle("active", item.dataset.period === "hoje"));
+      mealDate.value = registrationDate;
       renderAll();
       openTab("hoje");
     }
@@ -5327,8 +5949,8 @@
           const activity = activityPresets.find((item) => item.id === button.dataset.registerActivity);
           if (!activity) return;
           const minutes = activityDraftMinutes[activity.id] || 30;
-          appData.expenses.unshift({
-            id: `${Date.now()}`,
+          const registrationDate = expenseDate.value || todayISO();
+          upsertExpenseRecord({
             date: expenseDate.value || todayISO(),
             activityId: activity.id,
             activity: activity.name,
@@ -5337,8 +5959,8 @@
           });
           saveData();
           selectedActivityId = null;
-          currentPeriod = "hoje";
-          periodButtons.forEach((item) => item.classList.toggle("active", item.dataset.period === "hoje"));
+          currentPeriod = registrationDate === todayISO() ? "hoje" : registrationDate;
+          periodButtons.forEach((item) => item.classList.toggle("active", currentPeriod === "hoje" && item.dataset.period === "hoje"));
           renderAll();
         });
       });
@@ -5450,6 +6072,7 @@
           mealDate.value = selectedDate;
           expenseDate.value = selectedDate;
           periodButtons.forEach((item) => item.classList.toggle("active", currentPeriod === "hoje" && item.dataset.period === "hoje"));
+          renderMealsProgress();
           renderChart();
           renderConsumption(currentPeriod);
           renderExpenses(currentPeriod);
@@ -5528,9 +6151,10 @@
       const meal = appData.meals.find((item) => item.id === mealId);
       if (!meal) return;
       if (!confirm("Apagar este registro de alimentação?")) return;
-      appData.meals = appData.meals.filter((item) => item.id !== mealId);
+      removeMealById(mealId);
       saveData();
       const deletedCurrentEdit = editingMealId === mealId;
+      if (editingManualMealId === mealId) editingManualMealId = null;
       editingMealType = null;
       editingMealId = null;
       editingDietTemplate = null;
@@ -5585,7 +6209,7 @@
         button.addEventListener("click", () => {
           const meal = appData.meals.find((item) => item.id === button.dataset.editMeal);
           if (!meal) return;
-          if (!confirm("Editar esta alimentação? O lançamento atual será removido e voltará para o formulário.")) return;
+          if (!confirm("Editar esta alimentação? O registro original será mantido até você salvar a alteração.")) return;
           const food = foods.find((item) => item.id === meal.foodId);
           const servings = servingsForFood(food);
           selectedFoodId = meal.foodId;
@@ -5598,9 +6222,8 @@
           mealDate.value = meal.date;
           mealGrams.value = meal.quantity || meal.grams;
           currentFoodMode = "all";
+          editingManualMealId = meal.id;
           foodModeButtons.forEach((item) => item.classList.toggle("active", item.dataset.foodMode === "all"));
-          appData.meals = appData.meals.filter((item) => item.id !== meal.id);
-          saveData();
           renderFoodOptions("all");
           renderAll();
         });
@@ -5653,6 +6276,7 @@
           const direction = Number(button.dataset.direction) || 0;
           expense.minutes = adjustedActivityMinutes(expense.minutes, direction);
           expense.calories = round((expense.minutes / 60) * activity.caloriesPerHour);
+          touchRecord(expense);
           saveData();
           renderAll();
         });
@@ -5666,12 +6290,11 @@
             alert("Esta atividade antiga foi preservada no histórico, mas não faz parte do cadastro atual.");
             return;
           }
-          if (!confirm("Editar esta atividade? O lançamento atual voltará para o formulário.")) return;
+          if (!confirm("Editar esta atividade? O registro original será mantido até você salvar a alteração.")) return;
           selectedActivityId = expense.activityId;
+          editingExpenseId = expense.id;
           expenseDate.value = expense.date;
           activityDraftMinutes[activity.id] = Math.max(15, Number(expense.minutes) || 30);
-          appData.expenses = appData.expenses.filter((item) => item.id !== expense.id);
-          saveData();
           renderExpenseOptions();
           renderAll();
           openTab("gasto");
@@ -5680,7 +6303,7 @@
       gastoResumo.querySelectorAll("[data-delete-home-expense]").forEach((button) => {
         button.addEventListener("click", () => {
           if (!confirm("Tem certeza que quer excluir esta atividade?")) return;
-          appData.expenses = appData.expenses.filter((expense) => expense.id !== button.dataset.deleteHomeExpense);
+          removeExpenseById(button.dataset.deleteHomeExpense);
           saveData();
           renderAll();
         });
@@ -5722,6 +6345,7 @@
           const direction = Number(button.dataset.direction) || 0;
           expense.minutes = adjustedActivityMinutes(expense.minutes, direction);
           expense.calories = round((expense.minutes / 60) * activity.caloriesPerHour);
+          touchRecord(expense);
           saveData();
           renderAll();
         });
@@ -5735,12 +6359,11 @@
             alert("Esta atividade antiga foi preservada no histórico, mas não faz parte do novo cadastro. Você pode mantê-la ou excluí-la.");
             return;
           }
-          if (!confirm("Editar esta atividade? O lançamento atual será removido e voltará para o formulário.")) return;
+          if (!confirm("Editar esta atividade? O registro original será mantido até você salvar a alteração.")) return;
           selectedActivityId = expense.activityId;
+          editingExpenseId = expense.id;
           expenseDate.value = expense.date;
           activityDraftMinutes[activity.id] = Math.max(15, Number(expense.minutes) || 30);
-          appData.expenses = appData.expenses.filter((item) => item.id !== expense.id);
-          saveData();
           renderExpenseOptions();
           renderAll();
         });
@@ -5748,7 +6371,7 @@
       expenseLog.querySelectorAll("[data-delete-expense]").forEach((button) => {
         button.addEventListener("click", () => {
           if (!confirm("Tem certeza que quer excluir esta atividade?")) return;
-          appData.expenses = appData.expenses.filter((expense) => expense.id !== button.dataset.deleteExpense);
+          removeExpenseById(button.dataset.deleteExpense);
           saveData();
           renderAll();
         });
@@ -6033,6 +6656,45 @@
       });
     });
 
+    aiAssistantButton.addEventListener("click", () => {
+      aiChatModal.classList.remove("hidden");
+      resetAiChat();
+      window.setTimeout(() => aiChatInput.focus(), 80);
+    });
+    aiChatClose.addEventListener("click", () => aiChatModal.classList.add("hidden"));
+    aiChatModal.addEventListener("click", (event) => {
+      if (event.target === aiChatModal) aiChatModal.classList.add("hidden");
+    });
+    aiChatSend.addEventListener("click", () => processAiChatInput(aiChatInput.value));
+    aiChatInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") processAiChatInput(aiChatInput.value);
+    });
+
+    const SpeechRecognitionApi = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognitionApi) {
+      aiChatMic.classList.add("hidden");
+    } else {
+      aiChatMic.addEventListener("click", () => {
+        const recognition = new SpeechRecognitionApi();
+        recognition.lang = "pt-BR";
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+        aiChatMic.textContent = "●";
+        recognition.addEventListener("result", (event) => {
+          aiChatInput.value = event.results[0][0].transcript;
+          aiChatInput.focus();
+        });
+        recognition.addEventListener("end", () => {
+          aiChatMic.textContent = "🎙️";
+        });
+        recognition.addEventListener("error", () => {
+          aiChatMic.textContent = "🎙️";
+          addAiMessage("Não consegui usar o microfone. Você pode continuar digitando.");
+        });
+        recognition.start();
+      });
+    }
+
     foodSearch.addEventListener("input", () => renderFoodOptions("all"));
     mealDate.addEventListener("input", renderMealLog);
     mealDate.addEventListener("change", renderMealLog);
@@ -6054,14 +6716,14 @@
       const quantity = Number(String(mealGrams.value).replace(",", "."));
       const serving = selectedServing();
       const grams = round(quantity * (Number(serving?.grams) || 1));
+      const registrationDate = mealDate.value || selectedHomeDate();
       if (!food || !quantity || quantity <= 0) {
         alert("Escolha um alimento e informe a quantidade.");
         return;
       }
       const nutrition = calculateNutrition(food, grams);
-      appData.meals.unshift({
-        id: `${Date.now()}`,
-        date: mealDate.value || todayISO(),
+      const mealData = {
+        date: registrationDate,
         foodId: food.id,
         foodName: food.name,
         mealType: selectedMealType,
@@ -6072,11 +6734,26 @@
         servingName: serving?.name || "Gramas",
         servingId: serving?.id || "gramas",
         ...nutrition
-      });
+      };
+      const editingMeal = editingManualMealId
+        ? appData.meals.find((item) => item.id === editingManualMealId)
+        : null;
+      if (editingMeal) {
+        Object.assign(editingMeal, mealData);
+        touchRecord(editingMeal);
+      } else {
+        const recordTimestamp = Date.now();
+        appData.meals.unshift({
+          id: `${recordTimestamp}`,
+          updatedAt: recordTimestamp,
+          ...mealData
+        });
+      }
+      editingManualMealId = null;
       mealGrams.value = "";
       saveData();
-      currentPeriod = "hoje";
-      periodButtons.forEach((item) => item.classList.toggle("active", item.dataset.period === "hoje"));
+      currentPeriod = registrationDate === todayISO() ? "hoje" : registrationDate;
+      periodButtons.forEach((item) => item.classList.toggle("active", currentPeriod === "hoje" && item.dataset.period === "hoje"));
       renderFoodOptions(currentFoodMode);
       renderAll();
     });
@@ -6095,8 +6772,8 @@
         alert(isManual ? "Informe as kcal gastas." : "Escolha uma atividade e informe o tempo.");
         return;
       }
-      appData.expenses.unshift({
-        id: `${Date.now()}`,
+      const registrationDate = expenseDate.value || todayISO();
+      upsertExpenseRecord({
         date: expenseDate.value || todayISO(),
         activityId: activity.id,
         activity: activity.name,
@@ -6106,8 +6783,8 @@
       expenseMinutes.value = "";
       updateExpensePreview();
       saveData();
-      currentPeriod = "hoje";
-      periodButtons.forEach((item) => item.classList.toggle("active", item.dataset.period === "hoje"));
+      currentPeriod = registrationDate === todayISO() ? "hoje" : registrationDate;
+      periodButtons.forEach((item) => item.classList.toggle("active", currentPeriod === "hoje" && item.dataset.period === "hoje"));
       renderAll();
     });
 
@@ -6126,11 +6803,16 @@
     renderNotificationSettings();
     connectFirebaseAccount();
     restoreFirebaseMessagingConnection();
+    navigator.storage?.persist?.().catch(() => {});
     checkNotificationSchedule();
     window.setInterval(checkNotificationSchedule, 60 * 1000);
+    window.addEventListener("online", () => {
+      syncCloudNow().catch((error) => console.warn("Sincronização aguardando nova tentativa.", error));
+    });
     document.addEventListener("visibilitychange", () => {
       if (document.visibilityState === "visible") {
         checkNotificationSchedule();
+        syncCloudNow().catch((error) => console.warn("Sincronização aguardando nova tentativa.", error));
       }
     });
     const reminderMeal = new URLSearchParams(window.location.search).get("lembrete");
