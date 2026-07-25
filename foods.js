@@ -861,7 +861,7 @@ export const foods = [
     carbsPer100g: 0,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "padrao", name: "10g", grams: 10 }
+      { id: "excel", name: "10g", grams: 10 }
     ]
   },
   {
