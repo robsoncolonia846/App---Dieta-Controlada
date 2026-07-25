@@ -5106,7 +5106,7 @@
       const value = /^1\s*\/\s*2\b/.test(text) ? 0.5 : Number(match[1].replace(",", "."));
       if (!Number.isFinite(value)) return null;
       if (text.includes("ml")) return { value, unit: "ml", step: 50, label: "ml" };
-      if (text.includes("g")) return { value, unit: "g", step: 25, label: "g" };
+      if (text.includes("g")) return { value, unit: "g", step: 10, label: "g" };
       if (text.includes("fatia")) return { value, unit: "fatia", step: 1, label: value === 1 ? "fatia" : "fatias" };
       if (text.includes("ovo")) return { value, unit: "ovo", step: 1, label: value === 1 ? "ovo" : "ovos" };
       if (text.includes("colher")) return { value, unit: "colher", step: 1, label: value === 1 ? "colher" : "colheres" };
