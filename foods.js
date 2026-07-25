@@ -829,6 +829,30 @@ export const foods = [
     ]
   },
   {
+    id: "bolo-de-aniversario",
+    name: "Bolo de Aniversário",
+    category: "Alimenta??o",
+    caloriesPer100g: 440,
+    proteinPer100g: 0,
+    carbsPer100g: 0,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "padrao", name: "50g", grams: 50 }
+    ]
+  },
+  {
+    id: "brigadeiro",
+    name: "Brigadeiro",
+    category: "Alimenta??o",
+    caloriesPer100g: 400,
+    proteinPer100g: 0,
+    carbsPer100g: 0,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "padrao", name: "10g", grams: 10 }
+    ]
+  },
+  {
     id: "bolo-de-chocolate-com-calda",
     name: "Bolo de Chocolate com Calda",
     category: "Alimenta??o",
