@@ -71,11 +71,13 @@
     }
 
     .profile-goal-label {
-      width: auto;
+      width: 118px;
+      max-width: 118px;
       min-width: 0;
       flex: 0 0 auto;
       white-space: nowrap;
       cursor: pointer;
+      font-size: 9px;
     }
 
     .quick-profile-button {
@@ -2673,7 +2675,8 @@
                 <button class="quick-profile-button" id="profile-height-label" type="button">-- m</button>
                 <button class="quick-profile-button" id="profile-weight-label" type="button">-- kg</button>
                 <select class="quick-profile-button profile-goal-label" id="profile-goal-label" aria-label="Objetivo de peso">
-                  <option value="lose">Perder peso</option>
+                  <option value="lose-slow">Perder peso lento</option>
+                  <option value="lose-fast">Perder peso rápido</option>
                   <option value="maintain">Manter peso</option>
                 </select>
               </div>
@@ -3348,12 +3351,12 @@
           { icon: "🥪", name: "Pão Frances + Ovo Mexido", amount: "1 unidade" },
           { icon: "🍎", name: "Maça", amount: "1 unidade" },
           { icon: "🥛", name: "Leite Desnatado", amount: "200ml" },
-          { icon: "🥖", name: "Pão Caseiro", amount: "20g" }
+          { icon: "🥖", name: "Pão Caseiro", amount: "50g" }
         ] },
         { kcal: 0, items: [
           { icon: "🥛", name: "Leite Integral", amount: "150ml" },
           { icon: "🥖", name: "Pão Caseiro", amount: "55g" },
-          { icon: "🍯", name: "Doce De Leite", amount: "20g" },
+          { icon: "🍯", name: "Doce De Leite", amount: "100g" },
           { icon: "🍓", name: "Morango", amount: "100g" }
         ] },
         { kcal: 0, items: [
@@ -3410,7 +3413,7 @@
       ],
       "lanche-tarde": [
         { kcal: 0, items: [
-          { icon: "🥖", name: "Pão Caseiro", amount: "30g" },
+          { icon: "🥖", name: "Pão Caseiro", amount: "50g" },
           { icon: "🥛", name: "Iogurte Zero", amount: "200ml" },
           { icon: "🍌", name: "Banana", amount: "1 unidade" }
         ] },
@@ -3420,13 +3423,13 @@
           { icon: "🍓", name: "Morango", amount: "100g" }
         ] },
         { kcal: 0, items: [
-          { icon: "🥖", name: "Pão Frances", amount: "45g" },
+          { icon: "🥖", name: "Pão Frances", amount: "50g" },
           { icon: "🥓", name: "Presunto", amount: "1 fatia" },
           { icon: "🧀", name: "Queijo Muçarela", amount: "1 fatia" }
         ] },
         { kcal: 0, items: [
           { icon: "🥛", name: "Leite Desnatado", amount: "200ml" },
-          { icon: "🥖", name: "Pão Caseiro", amount: "30g" }
+          { icon: "🥖", name: "Pão Caseiro", amount: "50g" }
         ] },
         { kcal: 0, items: [
           { icon: "🥛", name: "Iogurte Zero", amount: "200ml" },
@@ -3670,7 +3673,7 @@
         waterNotifications: appData.settings?.waterNotifications === true,
         waterStartTime: appData.settings?.waterStartTime || "09:00",
         waterEndTime: appData.settings?.waterEndTime || "19:00",
-        weightGoalMode: appData.settings?.weightGoalMode === "maintain" ? "maintain" : "lose",
+        weightGoalMode: normalizeWeightGoalMode(appData.settings?.weightGoalMode),
         notificationsEnabled: appData.settings?.notificationsEnabled === true
       },
       notificationLog: appData.notificationLog && typeof appData.notificationLog === "object" ? appData.notificationLog : {},
@@ -4253,6 +4256,7 @@
         }
       };
       appData.dietSuggestionPlanVersion = dietSuggestionPlanVersion;
+      appData.settings.weightGoalMode = normalizeWeightGoalMode(appData.settings?.weightGoalMode);
       carryForwardTodayWeight();
       migrateDailySnapshots();
       localStorage.setItem(storageKey, JSON.stringify(appData));
@@ -4549,11 +4553,25 @@
       };
     }
 
-    function targetRangeForProfile(profile) {
+    function normalizeWeightGoalMode(mode) {
+      if (mode === "maintain") return "maintain";
+      if (mode === "lose-slow") return "lose-slow";
+      return "lose-fast";
+    }
+
+    function weightGoalModeLabel(mode) {
+      const normalizedMode = normalizeWeightGoalMode(mode);
+      if (normalizedMode === "maintain") return "Manter peso";
+      if (normalizedMode === "lose-slow") return "Perder peso lento";
+      return "Perder peso r\u00e1pido";
+    }
+
+    function targetRangeForProfile(profile, weightGoalMode = "lose-fast") {
       const calculatedMax = maintenanceTarget(profile);
       const baseMax = Math.round(Math.max(0, calculatedMax) || 1920);
+      const deficit = normalizeWeightGoalMode(weightGoalMode) === "lose-slow" ? 250 : 500;
       return {
-        min: Math.max(minimumDailyCalorieTarget, baseMax - 500),
+        min: Math.max(minimumDailyCalorieTarget, baseMax - deficit),
         max: Math.max(minimumDailyCalorieTarget, baseMax)
       };
     }
@@ -4594,18 +4612,19 @@
 
     function weightGoalModeForDate(date = todayISO()) {
       const snapshotMode = dailySnapshotForDate(date)?.weightGoalMode;
-      if (snapshotMode === "maintain" || snapshotMode === "lose") return snapshotMode;
-      return date < todayISO() ? "lose" : appData.settings?.weightGoalMode === "maintain" ? "maintain" : "lose";
+      if (snapshotMode) return normalizeWeightGoalMode(snapshotMode);
+      return date < todayISO() ? "lose-fast" : normalizeWeightGoalMode(appData.settings?.weightGoalMode);
     }
 
     function buildDailySnapshot(date, profile, weightGoalMode, updatedAt = Date.now()) {
       const normalizedProfile = normalizedSnapshotProfile(profile);
-      const targetRange = targetRangeForProfile(normalizedProfile);
+      const normalizedMode = normalizeWeightGoalMode(weightGoalMode);
+      const targetRange = targetRangeForProfile(normalizedProfile, normalizedMode);
       return {
         date,
         updatedAt,
         profile: normalizedProfile,
-        weightGoalMode: weightGoalMode === "maintain" ? "maintain" : "lose",
+        weightGoalMode: normalizedMode,
         baseMin: targetRange.min,
         baseMax: targetRange.max
       };
@@ -4639,7 +4658,7 @@
           const normalized = buildDailySnapshot(
             date,
             existing.profile || fallbackProfileForDate(date),
-            existing.weightGoalMode || (date < today ? "lose" : appData.settings.weightGoalMode),
+            existing.weightGoalMode || (date < today ? "lose-fast" : appData.settings.weightGoalMode),
             Number(existing.updatedAt) || 1
           );
           if (JSON.stringify(existing) !== JSON.stringify(normalized)) {
@@ -4651,7 +4670,7 @@
         appData.dailySnapshots[date] = buildDailySnapshot(
           date,
           fallbackProfileForDate(date),
-          date < today ? "lose" : appData.settings.weightGoalMode,
+          date < today ? "lose-fast" : appData.settings.weightGoalMode,
           1
         );
         changed = true;
@@ -4670,7 +4689,7 @@
       if (snapshot && Number(snapshot.baseMin) > 0 && Number(snapshot.baseMax) > 0) {
         return { min: Math.round(Number(snapshot.baseMin)), max: Math.round(Number(snapshot.baseMax)) };
       }
-      return targetRangeForProfile(profileForDate(date));
+      return targetRangeForProfile(profileForDate(date), weightGoalModeForDate(date));
     }
 
     function dailyTargetRange(date = todayISO()) {
@@ -4847,9 +4866,10 @@
       profileHeightLabel.textContent = historicalProfile.heightCm
         ? `${(Number(historicalProfile.heightCm) / 100).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}m`
         : "-- m";
+      const weightGoalMode = weightGoalModeForDate(selectedDate);
       const maintainWeight = isMaintainWeightMode(selectedDate);
-      profileGoalLabel.value = maintainWeight ? "maintain" : "lose";
-      profileGoalLabel.setAttribute("aria-label", maintainWeight ? "Objetivo atual: manter peso" : "Objetivo atual: perder peso");
+      profileGoalLabel.value = weightGoalMode;
+      profileGoalLabel.setAttribute("aria-label", `Objetivo atual: ${weightGoalModeLabel(weightGoalMode).toLowerCase()}`);
       profileName.value = profile.name || "";
       profileWeight.value = profile.weightKg || "";
       profileHeight.value = profile.heightCm || "";
@@ -5528,6 +5548,22 @@
       return food?.servings?.find((serving) => serving.id !== "gramas") || food?.servings?.[0] || null;
     }
 
+    function measuredServingUnit(serving) {
+      const match = String(serving?.name || "").trim().match(/^\d+(?:[.,]\d+)?\s*(g|ml)$/i);
+      return match?.[1]?.toLowerCase() || "";
+    }
+
+    function mealPortionLabel(meal) {
+      if (meal?.servingId === "dieta-sugerida") return "Dieta sugerida";
+      const measuredUnit = measuredServingUnit({ name: meal?.servingName });
+      if (measuredUnit) return `${round(Number(meal?.grams) || 0)}${measuredUnit}`;
+      if (meal?.servingId === "a-vontade") return "\u00e0 vontade";
+      if (meal?.quantity && meal?.servingName && meal.servingName !== "Gramas") {
+        return `${meal.quantity} ${meal.servingName.toLowerCase()}`;
+      }
+      return `${round(Number(meal?.grams) || 0)}g`;
+    }
+
     function defaultFoodQuantity(food) {
       return preferredFoodServing(food)?.id === "gramas" ? 100 : 1;
     }
@@ -5545,10 +5581,11 @@
     function foodToRecommendationItem(food) {
       const preferredServing = preferredFoodServing(food);
       const grams = preferredServing?.id === "gramas" || !preferredServing ? 100 : Number(preferredServing.grams) || 100;
+      const measuredUnit = measuredServingUnit(preferredServing);
       const amount = !preferredServing || preferredServing.id === "gramas"
         ? "100g"
-        : preferredServing.id === "excel"
-        ? preferredServing.name
+        : measuredUnit
+        ? `${round(grams)}${measuredUnit}`
         : preferredServing.id === "a-vontade"
         ? "à vontade"
         : `1 ${preferredServing.name.toLowerCase()}`;
@@ -5607,9 +5644,7 @@
     function savedMealToRecommendationOption(meal) {
       if (!meal) return { kcal: 0, items: [] };
       if (meal.servingId !== "dieta-sugerida") {
-        const amount = meal.quantity && meal.servingName && meal.servingName !== "Gramas"
-          ? `${meal.quantity} ${meal.servingName.toLowerCase()}`
-          : `${meal.grams || 0}g`;
+        const amount = mealPortionLabel(meal);
         return {
           kcal: Number(meal.calories) || 0,
           savedMealId: meal.id,
@@ -6616,11 +6651,7 @@
         return;
       }
       mealLog.innerHTML = meals.map((item) => {
-        const portionLabel = item.servingId === "dieta-sugerida"
-          ? "Dieta sugerida"
-          : item.quantity && item.servingName && item.servingName !== "Gramas"
-          ? `${item.quantity} ${item.servingName.toLowerCase()} (${item.grams}g)`
-          : `${item.grams}g`;
+        const portionLabel = mealPortionLabel(item);
         const mealTypeLabel = item.mealTypeName ? `${item.mealTypeName} ${item.mealTime || ""} • ` : "";
         return `<div class="meal"><div><div class="meal-name">${item.foodName}</div><div class="muted">${mealTypeLabel}${portionLabel}</div></div><div class="macro-summary"><div>${item.calories} kcal</div><div>${item.protein}g pro</div><div>${item.carbs}g carb</div><button class="edit-button" data-edit-meal="${item.id}">Editar</button><button class="delete-button" data-delete-meal="${item.id}">Excluir</button></div></div>`;
       }).join("");
@@ -6846,10 +6877,10 @@
     profileWeightLabel.addEventListener("click", () => editQuickProfileNumber("weight"));
     profileGoalLabel.addEventListener("change", () => {
       const date = selectedHomeDate();
-      const currentMode = isMaintainWeightMode(date) ? "maintain" : "lose";
-      const nextMode = profileGoalLabel.value === "maintain" ? "maintain" : "lose";
+      const currentMode = weightGoalModeForDate(date);
+      const nextMode = normalizeWeightGoalMode(profileGoalLabel.value);
       if (nextMode === currentMode) return;
-      if (date !== todayISO() && !confirm(`Alterar o objetivo salvo de ${date.split("-").reverse().join("/")} para ${nextMode === "maintain" ? "Manter peso" : "Perder peso"}?`)) {
+      if (date !== todayISO() && !confirm(`Alterar o objetivo salvo de ${date.split("-").reverse().join("/")} para ${weightGoalModeLabel(nextMode)}?`)) {
         profileGoalLabel.value = currentMode;
         return;
       }
