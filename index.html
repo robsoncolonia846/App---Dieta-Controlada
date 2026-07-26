@@ -3136,6 +3136,7 @@
     const sortByName = (items) => [...items].sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
     const round = (value) => Math.round(value * 10) / 10;
     const formatKcalValue = (value) => Number(value).toLocaleString("pt-BR", { maximumFractionDigits: 1 });
+    const formatIntegerKcal = (value) => Math.round(Number(value) || 0).toLocaleString("pt-BR", { maximumFractionDigits: 0 });
     const parseStoredJson = (rawValue, fallback) => {
       try {
         return rawValue ? JSON.parse(rawValue) : fallback;
@@ -4493,7 +4494,7 @@
 
     function baseDailyTargetRange() {
       const calculatedMax = maintenanceTarget();
-      const baseMax = Math.max(0, calculatedMax) || 1920;
+      const baseMax = Math.round(Math.max(0, calculatedMax) || 1920);
       return {
         min: Math.max(minimumDailyCalorieTarget, baseMax - 500),
         max: Math.max(minimumDailyCalorieTarget, baseMax)
@@ -4502,7 +4503,7 @@
 
     function dailyTargetRange(date = todayISO()) {
       const base = baseDailyTargetRange();
-      const activity = activityCaloriesForDate(date);
+      const activity = Math.round(activityCaloriesForDate(date));
       return { min: base.min + activity, max: base.max + activity, activity };
     }
 
@@ -4667,9 +4668,9 @@
       profileHeight.value = profile.heightCm || "";
       profileAge.value = profile.age || "";
       profileSex.value = profile.sex || "male";
-      goalBannerValue.textContent = `${formatKcalValue(targetRange.min)} - ${formatKcalValue(targetRange.max)} kcal`;
+      goalBannerValue.textContent = `${formatIntegerKcal(targetRange.min)} - ${formatIntegerKcal(targetRange.max)} kcal`;
       profileBasalInfo.textContent = basal
-        ? `Gasto basal estimado: ${formatKcalValue(basal)} kcal/dia. Atividades de hoje: ${formatKcalValue(targetRange.activity)} kcal. Meta usada: ${formatKcalValue(targetRange.min)} - ${formatKcalValue(targetRange.max)} kcal/dia.`
+        ? `Gasto basal estimado: ${formatIntegerKcal(basal)} kcal/dia. Atividades de hoje: ${formatIntegerKcal(targetRange.activity)} kcal. Meta usada: ${formatIntegerKcal(targetRange.min)} - ${formatIntegerKcal(targetRange.max)} kcal/dia.`
         : "Informe peso, altura e idade para estimar o gasto diário.";
     }
 
@@ -4762,7 +4763,7 @@
       }
       const alerts = [];
       if (consumed > adjustedTarget + 150) {
-        alerts.push({ level: "danger", text: `Você passou da meta em ${round(consumed - adjustedTarget)} kcal.` });
+        alerts.push({ level: "danger", text: `Você passou da meta em ${formatIntegerKcal(consumed - adjustedTarget)} kcal.` });
       }
       if (mealScoreData.alert) alerts.push(mealScoreData.alert);
       if (includeWater && waterExpected > 0 && waterNow < waterExpected) {
@@ -6294,12 +6295,12 @@
       const proteinPercent = Math.max(0, Math.min(100, Math.round((protein / proteinTarget) * 100)));
       const carbsPercent = Math.max(0, Math.min(100, Math.round((carbs / carbsTarget) * 100)));
 
-      metricConsumed.textContent = `${consumed} kcal`;
+      metricConsumed.textContent = `${formatIntegerKcal(consumed)} kcal`;
       metricProtein.textContent = `${protein} g`;
       metricCarbs.textContent = `${carbs} g`;
       remainingKcal.textContent = remaining < 0
-        ? `+${Math.abs(remaining).toLocaleString("pt-BR")}`
-        : remaining.toLocaleString("pt-BR");
+        ? `+${formatIntegerKcal(Math.abs(remaining))}`
+        : formatIntegerKcal(remaining);
       remainingKcal.classList.toggle("over", remaining < 0);
       const moodLevel = Math.min(dayScore.alert.level === "ok" ? 4 : 3, Math.floor(dayScore.score / 20));
       const moodLabels = ["Muito ruim", "Ruim", "Regular", "Bom", "Ótimo"];
@@ -6330,11 +6331,11 @@
       const max = Math.max(min + 1, Number(targetRange.max) || min + 1);
       const width = Math.max(0, Math.min(100, (consumed / max) * 100));
       const minLeft = Math.max(0, Math.min(100, (min / max) * 100));
-      calorieRangeCurrentLabel.textContent = formatKcalValue(consumed);
+      calorieRangeCurrentLabel.textContent = formatIntegerKcal(consumed);
       calorieRangeMinMarker.style.setProperty("--left", `${minLeft}%`);
       calorieRangeMinLabel.parentElement.style.setProperty("--left", `${minLeft}%`);
-      calorieRangeMinLabel.textContent = formatKcalValue(min);
-      calorieRangeMaxLabel.textContent = formatKcalValue(max);
+      calorieRangeMinLabel.textContent = formatIntegerKcal(min);
+      calorieRangeMaxLabel.textContent = formatIntegerKcal(max);
       calorieRangeFill.style.setProperty("--width", `${width}%`);
       calorieRange.classList.toggle("good", consumed < min);
       calorieRange.classList.toggle("warn", consumed >= min && consumed < max);
