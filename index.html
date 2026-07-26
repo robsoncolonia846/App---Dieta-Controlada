@@ -5220,6 +5220,42 @@
       return Boolean(parseAmount(item.amount));
     }
 
+    function registeredGramAmount(item, fallbackValue) {
+      const food = findFoodByName(item?.name, item?.foodId);
+      const serving = preferredFoodServing(food);
+      const grams = Number(serving?.grams);
+      return Number.isFinite(grams) && grams > 0 ? grams : fallbackValue;
+    }
+
+    function gramAmountTiers(registeredValue) {
+      const registered = Math.max(1, Math.round(Number(registeredValue) || 10));
+      const minimum = registered <= 10 ? Math.max(1, Math.floor(registered / 2)) : 10;
+      const tiers = [registered];
+      let current = registered;
+      while (current > minimum) {
+        let next = Math.floor((current / 2) / 5) * 5;
+        if (next < minimum) next = minimum;
+        if (next >= current) break;
+        tiers.push(next);
+        current = next;
+      }
+      return [...new Set(tiers)].sort((a, b) => a - b);
+    }
+
+    function adjustedGramAmount(item, currentValue, direction) {
+      const registered = registeredGramAmount(item, currentValue);
+      const tiers = gramAmountTiers(registered);
+      if (direction < 0) {
+        if (currentValue > registered) {
+          return Math.max(registered, currentValue - Math.max(5, Math.floor(registered / 2 / 5) * 5));
+        }
+        return tiers.filter((value) => value < currentValue).pop() ?? tiers[0];
+      }
+      const higherTier = tiers.find((value) => value > currentValue);
+      if (higherTier !== undefined) return higherTier;
+      return currentValue + Math.max(5, Math.floor(registered / 2 / 5) * 5);
+    }
+
     function adjustRecommendationItemAmount(recommendationIndex, itemIndex, direction, shouldRender = true) {
       const option = currentRecommendationOptions?.[recommendationIndex];
       const item = option?.items?.[itemIndex];
@@ -5233,13 +5269,17 @@
         item.baseCarbs = Number(item.carbs) || 0;
       }
       const minValue = parsed.step;
-      let nextValue = parsed.value + parsed.step * direction;
-      if (parsed.unit === "g" || parsed.unit === "ml") {
+      let nextValue;
+      if (parsed.unit === "g") {
+        nextValue = adjustedGramAmount(item, parsed.value, direction);
+      } else if (parsed.unit === "ml") {
         nextValue = direction > 0
           ? Math.floor(parsed.value / parsed.step) * parsed.step + parsed.step
           : Math.ceil(parsed.value / parsed.step) * parsed.step - parsed.step;
+        nextValue = Math.max(minValue, nextValue);
+      } else {
+        nextValue = Math.max(minValue, parsed.value + parsed.step * direction);
       }
-      nextValue = Math.max(minValue, nextValue);
       const ratio = item.baseAmountValue ? nextValue / item.baseAmountValue : 1;
       item.amount = formatAdjustedAmount(parsed, nextValue);
       if (item.baseKcal) item.kcal = Math.round(item.baseKcal * ratio);
