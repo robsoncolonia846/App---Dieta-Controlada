@@ -72,6 +72,7 @@
 
     .profile-goal-label {
       white-space: nowrap;
+      cursor: pointer;
     }
 
     .quick-profile-button {
@@ -2668,7 +2669,10 @@
                 <button class="quick-profile-button" id="profile-age-label" type="button">-- anos</button>
                 <button class="quick-profile-button" id="profile-height-label" type="button">-- m</button>
                 <button class="quick-profile-button" id="profile-weight-label" type="button">-- kg</button>
-                <button class="quick-profile-button profile-goal-label" id="profile-goal-label" type="button" aria-label="Alterar objetivo de peso">Perder peso</button>
+                <select class="quick-profile-button profile-goal-label" id="profile-goal-label" aria-label="Objetivo de peso">
+                  <option value="lose">Perder peso</option>
+                  <option value="maintain">Manter peso</option>
+                </select>
               </div>
             </div>
             <div class="topbar-actions">
@@ -4841,8 +4845,8 @@
         ? `${(Number(historicalProfile.heightCm) / 100).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}m`
         : "-- m";
       const maintainWeight = isMaintainWeightMode(selectedDate);
-      profileGoalLabel.textContent = maintainWeight ? "Manter peso" : "Perder peso";
-      profileGoalLabel.setAttribute("aria-label", maintainWeight ? "Objetivo atual: manter peso. Alterar para perder peso" : "Objetivo atual: perder peso. Alterar para manter peso");
+      profileGoalLabel.value = maintainWeight ? "maintain" : "lose";
+      profileGoalLabel.setAttribute("aria-label", maintainWeight ? "Objetivo atual: manter peso" : "Objetivo atual: perder peso");
       profileName.value = profile.name || "";
       profileWeight.value = profile.weightKg || "";
       profileHeight.value = profile.heightCm || "";
@@ -6829,10 +6833,15 @@
     profileAgeLabel.addEventListener("click", () => editQuickProfileNumber("age"));
     profileHeightLabel.addEventListener("click", () => editQuickProfileNumber("height"));
     profileWeightLabel.addEventListener("click", () => editQuickProfileNumber("weight"));
-    profileGoalLabel.addEventListener("click", () => {
+    profileGoalLabel.addEventListener("change", () => {
       const date = selectedHomeDate();
-      const nextMode = isMaintainWeightMode(date) ? "lose" : "maintain";
-      if (date !== todayISO() && !confirm(`Alterar o objetivo salvo de ${date.split("-").reverse().join("/")} para ${nextMode === "maintain" ? "Manter peso" : "Perder peso"}?`)) return;
+      const currentMode = isMaintainWeightMode(date) ? "maintain" : "lose";
+      const nextMode = profileGoalLabel.value === "maintain" ? "maintain" : "lose";
+      if (nextMode === currentMode) return;
+      if (date !== todayISO() && !confirm(`Alterar o objetivo salvo de ${date.split("-").reverse().join("/")} para ${nextMode === "maintain" ? "Manter peso" : "Perder peso"}?`)) {
+        profileGoalLabel.value = currentMode;
+        return;
+      }
       updateDailySnapshot(date, { weightGoalMode: nextMode });
       if (date === todayISO()) appData.settings.weightGoalMode = nextMode;
       saveData();
