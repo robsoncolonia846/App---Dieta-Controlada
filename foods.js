@@ -794,6 +794,32 @@ export const foods = [
     ]
   },
   {
+    id: "requeijao",
+    name: "Requeijão",
+    icon: "🧀",
+    category: "Alimenta??o",
+    caloriesPer100g: 250,
+    proteinPer100g: 9.6,
+    carbsPer100g: 2.4,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "10g", grams: 10 }
+    ]
+  },
+  {
+    id: "requeijao-light",
+    name: "Requeijão Light",
+    icon: "🧀",
+    category: "Alimenta??o",
+    caloriesPer100g: 150,
+    proteinPer100g: 9.6,
+    carbsPer100g: 2.4,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "10g", grams: 10 }
+    ]
+  },
+  {
     id: "tomate-cereja",
     name: "Tomate Cereja",
     category: "Alimenta??o",
