@@ -29,8 +29,8 @@ export const foods = [
     name: "Alface",
     category: "Alimenta??o",
     caloriesPer100g: 0,
-    proteinPer100g: 0,
-    carbsPer100g: 0,
+    proteinPer100g: 1.3,
+    carbsPer100g: 1.7,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
       { id: "a-vontade", name: "A Vontade", grams: 100 }
@@ -71,6 +71,19 @@ export const foods = [
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
       { id: "unidade", name: "Unidade", grams: 100 }
+    ]
+  },
+  {
+    id: "batata-com-maionese",
+    name: "Batata com Maionese",
+    icon: "🥔",
+    category: "Alimenta??o",
+    caloriesPer100g: 200,
+    proteinPer100g: 0.8,
+    carbsPer100g: 9.5,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "100g", grams: 100 }
     ]
   },
   {
@@ -142,8 +155,8 @@ export const foods = [
     icon: "🟣",
     category: "Alimenta??o",
     caloriesPer100g: 0,
-    proteinPer100g: 0,
-    carbsPer100g: 0,
+    proteinPer100g: 1.9,
+    carbsPer100g: 11.1,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
       { id: "a-vontade", name: "A Vontade", grams: 100 }
@@ -166,8 +179,8 @@ export const foods = [
     name: "Brocolis",
     category: "Alimenta??o",
     caloriesPer100g: 0,
-    proteinPer100g: 0,
-    carbsPer100g: 0,
+    proteinPer100g: 3.6,
+    carbsPer100g: 4,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
       { id: "a-vontade", name: "A Vontade", grams: 100 }
@@ -238,8 +251,8 @@ export const foods = [
     name: "Cenoura Crua",
     category: "Alimenta??o",
     caloriesPer100g: 0,
-    proteinPer100g: 0,
-    carbsPer100g: 0,
+    proteinPer100g: 1.3,
+    carbsPer100g: 7.7,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
       { id: "a-vontade", name: "A Vontade", grams: 100 }
@@ -275,8 +288,8 @@ export const foods = [
     name: "Couve",
     category: "Alimenta??o",
     caloriesPer100g: 0,
-    proteinPer100g: 0,
-    carbsPer100g: 0,
+    proteinPer100g: 2.9,
+    carbsPer100g: 4.3,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
       { id: "a-vontade", name: "A Vontade", grams: 100 }
@@ -773,8 +786,8 @@ export const foods = [
     name: "Repolho",
     category: "Alimenta??o",
     caloriesPer100g: 0,
-    proteinPer100g: 0,
-    carbsPer100g: 0,
+    proteinPer100g: 0.9,
+    carbsPer100g: 3.9,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
       { id: "a-vontade", name: "A Vontade", grams: 100 }
@@ -785,8 +798,8 @@ export const foods = [
     name: "Tomate Cereja",
     category: "Alimenta??o",
     caloriesPer100g: 0,
-    proteinPer100g: 0,
-    carbsPer100g: 0,
+    proteinPer100g: 1.1,
+    carbsPer100g: 3.1,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
       { id: "a-vontade", name: "A Vontade", grams: 100 }
@@ -845,8 +858,8 @@ export const foods = [
     name: "Bolo de Aniversário",
     category: "Alimenta??o",
     caloriesPer100g: 440,
-    proteinPer100g: 0,
-    carbsPer100g: 0,
+    proteinPer100g: 6.7,
+    carbsPer100g: 58.7,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
       { id: "padrao", name: "50g", grams: 50 }
@@ -857,8 +870,8 @@ export const foods = [
     name: "Brigadeiro",
     category: "Alimenta??o",
     caloriesPer100g: 400,
-    proteinPer100g: 0,
-    carbsPer100g: 0,
+    proteinPer100g: 8.5,
+    carbsPer100g: 67.3,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
       { id: "excel", name: "10g", grams: 10 }
