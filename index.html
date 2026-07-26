@@ -70,6 +70,10 @@
       flex-wrap: wrap;
     }
 
+    .profile-goal-label {
+      white-space: nowrap;
+    }
+
     .quick-profile-button {
       border: 1px solid #e2e8dc;
       border-radius: 999px;
@@ -720,8 +724,16 @@
       background: #e5484d;
     }
 
+    .progress-fill.attention-limit {
+      background: #f2c94c;
+    }
+
     .progress-row-head strong.over-limit {
       color: #d9363e;
+    }
+
+    .progress-row-head strong.attention-limit {
+      color: #a97900;
     }
 
     .summary-number {
@@ -732,6 +744,10 @@
 
     .summary-number.over {
       color: #d94b4b;
+    }
+
+    .summary-number.warn {
+      color: #a97900;
     }
 
     .profile-card {
@@ -2652,6 +2668,7 @@
                 <button class="quick-profile-button" id="profile-age-label" type="button">-- anos</button>
                 <button class="quick-profile-button" id="profile-height-label" type="button">-- m</button>
                 <button class="quick-profile-button" id="profile-weight-label" type="button">-- kg</button>
+                <button class="quick-profile-button profile-goal-label" id="profile-goal-label" type="button" aria-label="Alterar objetivo de peso">Perder peso</button>
               </div>
             </div>
             <div class="topbar-actions">
@@ -2688,7 +2705,7 @@
                 <div class="calorie-range-track" aria-label="Faixa de calorias da meta diária">
                   <div class="calorie-range-fill" id="calorie-range-fill"></div>
                   <span class="calorie-range-marker min" id="calorie-range-min-marker" style="--left: 0%;"></span>
-                  <span class="calorie-range-marker max" style="--left: 100%;"></span>
+                  <span class="calorie-range-marker max" id="calorie-range-max-marker" style="--left: 100%;"></span>
                 </div>
                 <div class="calorie-range-labels">
                   <span id="calorie-range-current-label" style="--left: 0%;">0</span>
@@ -3031,6 +3048,7 @@
     const profileAgeLabel = document.getElementById("profile-age-label");
     const profileWeightLabel = document.getElementById("profile-weight-label");
     const profileHeightLabel = document.getElementById("profile-height-label");
+    const profileGoalLabel = document.getElementById("profile-goal-label");
     const dietProfileWeight = document.getElementById("diet-profile-weight");
     const dietProfileHeight = document.getElementById("diet-profile-height");
     const dietDashboard = document.getElementById("diet-dashboard");
@@ -3039,6 +3057,7 @@
     const calorieRange = document.getElementById("calorie-range");
     const calorieRangeCurrentLabel = document.getElementById("calorie-range-current-label");
     const calorieRangeMinMarker = document.getElementById("calorie-range-min-marker");
+    const calorieRangeMaxMarker = document.getElementById("calorie-range-max-marker");
     const calorieRangeMinLabel = document.getElementById("calorie-range-min-label");
     const calorieRangeMaxLabel = document.getElementById("calorie-range-max-label");
     const calorieRangeFill = document.getElementById("calorie-range-fill");
@@ -3178,13 +3197,32 @@
         .filter((record) => !deletedIds[record.id])
         .sort((a, b) => recordVersion(b) - recordVersion(a));
     };
+    const mergeDailySnapshots = (localSnapshots, remoteSnapshots) => {
+      const merged = {};
+      const addSnapshots = (snapshots, preferOnTie = false) => {
+        if (!snapshots || typeof snapshots !== "object") return;
+        Object.entries(snapshots).forEach(([date, snapshot]) => {
+          if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !snapshot || typeof snapshot !== "object") return;
+          const current = merged[date];
+          const snapshotVersion = Number(snapshot.updatedAt) || 0;
+          const currentVersion = Number(current?.updatedAt) || 0;
+          if (!current || snapshotVersion > currentVersion || (preferOnTie && snapshotVersion === currentVersion)) {
+            merged[date] = { ...snapshot, date };
+          }
+        });
+      };
+      addSnapshots(remoteSnapshots);
+      addSnapshots(localSnapshots, true);
+      return merged;
+    };
     const criticalRecoveryData = (data) => ({
       meals: Array.isArray(data?.meals) ? data.meals : [],
       expenses: Array.isArray(data?.expenses) ? data.expenses : [],
       deletedMealIds: data?.deletedMealIds && typeof data.deletedMealIds === "object" ? data.deletedMealIds : {},
       deletedExpenseIds: data?.deletedExpenseIds && typeof data.deletedExpenseIds === "object" ? data.deletedExpenseIds : {},
       water: data?.water && typeof data.water === "object" ? data.water : {},
-      weightHistory: data?.weightHistory && typeof data.weightHistory === "object" ? data.weightHistory : {}
+      weightHistory: data?.weightHistory && typeof data.weightHistory === "object" ? data.weightHistory : {},
+      dailySnapshots: data?.dailySnapshots && typeof data.dailySnapshots === "object" ? data.dailySnapshots : {}
     });
     const readRecoverySnapshots = () => {
       const snapshots = parseStoredJson(localStorage.getItem(recoveryStorageKey), []);
@@ -3625,10 +3663,12 @@
         waterNotifications: appData.settings?.waterNotifications === true,
         waterStartTime: appData.settings?.waterStartTime || "09:00",
         waterEndTime: appData.settings?.waterEndTime || "19:00",
+        weightGoalMode: appData.settings?.weightGoalMode === "maintain" ? "maintain" : "lose",
         notificationsEnabled: appData.settings?.notificationsEnabled === true
       },
       notificationLog: appData.notificationLog && typeof appData.notificationLog === "object" ? appData.notificationLog : {},
       weightHistory: appData.weightHistory && typeof appData.weightHistory === "object" ? appData.weightHistory : {},
+      dailySnapshots: appData.dailySnapshots && typeof appData.dailySnapshots === "object" ? appData.dailySnapshots : {},
       mealTimes: { ...defaultMealTimes, ...(appData.mealTimes || {}) },
       profile: { ...defaultProfile, ...(appData.profile || {}) }
     };
@@ -3643,6 +3683,7 @@
         appData.expenses = mergeRecordCollections(appData.expenses, snapshotData.expenses, appData.deletedExpenseIds);
         appData.water = { ...(snapshotData.water || {}), ...appData.water };
         appData.weightHistory = { ...(snapshotData.weightHistory || {}), ...appData.weightHistory };
+        appData.dailySnapshots = mergeDailySnapshots(appData.dailySnapshots, snapshotData.dailySnapshots);
       });
       return beforeRecovery !== JSON.stringify(criticalRecoveryData(appData));
     }
@@ -3697,6 +3738,9 @@
     const migratedExpenseDates = migrateOldUtcDates(appData.expenses);
     const migratedDates = migratedMealDates || migratedExpenseDates;
     if (migratedDates) {
+      localStorage.setItem(storageKey, JSON.stringify(appData));
+    }
+    if (migrateDailySnapshots()) {
       localStorage.setItem(storageKey, JSON.stringify(appData));
     }
 
@@ -4048,6 +4092,7 @@
     expenseDate.value = todayISO();
 
     function saveData() {
+      migrateDailySnapshots();
       const previousData = parseStoredJson(localStorage.getItem(storageKey), null);
       saveRecoverySnapshot(previousData);
       appData.clientUpdatedAt = Date.now();
@@ -4188,6 +4233,7 @@
           : { ...localData.settings, ...(remoteData.settings || {}) },
         notificationLog: { ...(remoteData.notificationLog || {}), ...(localData.notificationLog || {}) },
         weightHistory: { ...(remoteData.weightHistory || {}), ...(localData.weightHistory || {}) },
+        dailySnapshots: mergeDailySnapshots(localData.dailySnapshots, remoteData.dailySnapshots),
         mealTimes: {
           ...defaultMealTimes,
           ...(preferLocal ? remoteData.mealTimes : localData.mealTimes),
@@ -4201,6 +4247,7 @@
       };
       appData.dietSuggestionPlanVersion = dietSuggestionPlanVersion;
       carryForwardTodayWeight();
+      migrateDailySnapshots();
       localStorage.setItem(storageKey, JSON.stringify(appData));
     }
 
@@ -4481,9 +4528,128 @@
       return base + (profile.sex === "female" ? -161 : 5);
     }
 
-    function maintenanceTarget() {
-      const basal = calculateBasal();
+    function maintenanceTarget(profile = appData.profile) {
+      const basal = calculateBasal(profile);
       return basal ? basal * 1.2 : 1920;
+    }
+
+    function normalizedSnapshotProfile(profile = {}) {
+      return {
+        weightKg: String(profile.weightKg || ""),
+        heightCm: String(profile.heightCm || ""),
+        age: String(profile.age || ""),
+        sex: profile.sex === "female" ? "female" : "male"
+      };
+    }
+
+    function targetRangeForProfile(profile) {
+      const calculatedMax = maintenanceTarget(profile);
+      const baseMax = Math.round(Math.max(0, calculatedMax) || 1920);
+      return {
+        min: Math.max(minimumDailyCalorieTarget, baseMax - 500),
+        max: Math.max(minimumDailyCalorieTarget, baseMax)
+      };
+    }
+
+    function exactDailySnapshot(date) {
+      const snapshot = appData.dailySnapshots?.[date];
+      return snapshot && typeof snapshot === "object" ? snapshot : null;
+    }
+
+    function dailySnapshotForDate(date = todayISO()) {
+      const exact = exactDailySnapshot(date);
+      if (exact) return exact;
+      return Object.entries(appData.dailySnapshots || {})
+        .filter(([snapshotDate, snapshot]) => snapshotDate <= date && snapshot && typeof snapshot === "object")
+        .sort(([dateA], [dateB]) => dateB.localeCompare(dateA))
+        .map(([, snapshot]) => snapshot)[0] || null;
+    }
+
+    function historicalWeightForDate(date) {
+      const exactWeight = Number(appData.weightHistory?.[date]) || 0;
+      if (exactWeight) return exactWeight;
+      return Object.entries(appData.weightHistory || {})
+        .filter(([weightDate, value]) => weightDate <= date && Number(value) > 0)
+        .sort(([dateA], [dateB]) => dateB.localeCompare(dateA))
+        .map(([, value]) => Number(value))[0] || Number(appData.profile.weightKg) || 0;
+    }
+
+    function fallbackProfileForDate(date = todayISO()) {
+      return normalizedSnapshotProfile({
+        ...appData.profile,
+        weightKg: historicalWeightForDate(date) || appData.profile.weightKg
+      });
+    }
+
+    function profileForDate(date = todayISO()) {
+      return normalizedSnapshotProfile(dailySnapshotForDate(date)?.profile || fallbackProfileForDate(date));
+    }
+
+    function weightGoalModeForDate(date = todayISO()) {
+      const snapshotMode = dailySnapshotForDate(date)?.weightGoalMode;
+      if (snapshotMode === "maintain" || snapshotMode === "lose") return snapshotMode;
+      return date < todayISO() ? "lose" : appData.settings?.weightGoalMode === "maintain" ? "maintain" : "lose";
+    }
+
+    function buildDailySnapshot(date, profile, weightGoalMode, updatedAt = Date.now()) {
+      const normalizedProfile = normalizedSnapshotProfile(profile);
+      const targetRange = targetRangeForProfile(normalizedProfile);
+      return {
+        date,
+        updatedAt,
+        profile: normalizedProfile,
+        weightGoalMode: weightGoalMode === "maintain" ? "maintain" : "lose",
+        baseMin: targetRange.min,
+        baseMax: targetRange.max
+      };
+    }
+
+    function updateDailySnapshot(date, { profilePatch = {}, weightGoalMode, updatedAt = Date.now() } = {}) {
+      const current = exactDailySnapshot(date) || dailySnapshotForDate(date);
+      const profile = normalizedSnapshotProfile({
+        ...(current?.profile || fallbackProfileForDate(date)),
+        ...profilePatch
+      });
+      const mode = weightGoalMode || current?.weightGoalMode || weightGoalModeForDate(date);
+      const snapshot = buildDailySnapshot(date, profile, mode, updatedAt);
+      appData.dailySnapshots[date] = snapshot;
+      return snapshot;
+    }
+
+    function migrateDailySnapshots() {
+      const today = todayISO();
+      const dates = new Set([
+        today,
+        ...appData.meals.map((item) => item.date),
+        ...appData.expenses.map((item) => item.date),
+        ...Object.keys(appData.weightHistory || {}),
+        ...Object.keys(appData.dailySnapshots || {})
+      ].filter((date) => /^\d{4}-\d{2}-\d{2}$/.test(date || "") && date <= today));
+      let changed = false;
+      [...dates].sort().forEach((date) => {
+        const existing = exactDailySnapshot(date);
+        if (existing) {
+          const normalized = buildDailySnapshot(
+            date,
+            existing.profile || fallbackProfileForDate(date),
+            existing.weightGoalMode || (date < today ? "lose" : appData.settings.weightGoalMode),
+            Number(existing.updatedAt) || 1
+          );
+          if (JSON.stringify(existing) !== JSON.stringify(normalized)) {
+            appData.dailySnapshots[date] = normalized;
+            changed = true;
+          }
+          return;
+        }
+        appData.dailySnapshots[date] = buildDailySnapshot(
+          date,
+          fallbackProfileForDate(date),
+          date < today ? "lose" : appData.settings.weightGoalMode,
+          1
+        );
+        changed = true;
+      });
+      return changed;
     }
 
     function activityCaloriesForDate(date = todayISO()) {
@@ -4492,23 +4658,27 @@
         .reduce((sum, item) => sum + (Number(item.calories) || 0), 0));
     }
 
-    function baseDailyTargetRange() {
-      const calculatedMax = maintenanceTarget();
-      const baseMax = Math.round(Math.max(0, calculatedMax) || 1920);
-      return {
-        min: Math.max(minimumDailyCalorieTarget, baseMax - 500),
-        max: Math.max(minimumDailyCalorieTarget, baseMax)
-      };
+    function baseDailyTargetRange(date = todayISO()) {
+      const snapshot = dailySnapshotForDate(date);
+      if (snapshot && Number(snapshot.baseMin) > 0 && Number(snapshot.baseMax) > 0) {
+        return { min: Math.round(Number(snapshot.baseMin)), max: Math.round(Number(snapshot.baseMax)) };
+      }
+      return targetRangeForProfile(profileForDate(date));
     }
 
     function dailyTargetRange(date = todayISO()) {
-      const base = baseDailyTargetRange();
+      const base = baseDailyTargetRange(date);
       const activity = Math.round(activityCaloriesForDate(date));
       return { min: base.min + activity, max: base.max + activity, activity };
     }
 
+    function isMaintainWeightMode(date = todayISO()) {
+      return weightGoalModeForDate(date) === "maintain";
+    }
+
     function dailyTarget(date = todayISO()) {
-      return dailyTargetRange(date).min;
+      const range = dailyTargetRange(date);
+      return isMaintainWeightMode(date) ? range.max : range.min;
     }
 
     function formatWeight(value) {
@@ -4569,6 +4739,7 @@
         if (updateCurrentProfile || date === todayISO()) {
           appData.profile.weightKg = String(newWeight);
         }
+        updateDailySnapshot(date, { profilePatch: { weightKg: String(newWeight) } });
         saveData();
         closeWeightPicker();
         renderAll();
@@ -4577,11 +4748,13 @@
     }
 
     function editQuickProfileNumber(field) {
+      const date = selectedHomeDate();
+      const historicalProfile = profileForDate(date);
       if (field === "weight") {
         openWeightPicker({
-          date: todayISO(),
-          value: appData.profile.weightKg,
-          updateCurrentProfile: true
+          date,
+          value: historicalProfile.weightKg,
+          updateCurrentProfile: date === todayISO()
         });
         return;
       }
@@ -4591,12 +4764,13 @@
           min: 10,
           max: 120,
           step: 1,
-          value: Number(appData.profile.age) || 36,
+          value: Number(historicalProfile.age) || 36,
           formatItem: (item) => String(item),
           formatValue: (item) => `${item} anos`,
           saveLabel: "Salvar idade",
           onSave: (age) => {
-            appData.profile.age = String(age);
+            if (date === todayISO()) appData.profile.age = String(age);
+            updateDailySnapshot(date, { profilePatch: { age: String(age) } });
             saveData();
             closeWeightPicker();
             renderAll();
@@ -4611,12 +4785,13 @@
           min: 100,
           max: 250,
           step: 1,
-          value: Number(appData.profile.heightCm) || 174,
+          value: Number(historicalProfile.heightCm) || 174,
           formatItem: formatHeight,
           formatValue: (item) => `${formatHeight(item)} m`,
           saveLabel: "Salvar altura",
           onSave: (height) => {
-            appData.profile.heightCm = String(height);
+            if (date === todayISO()) appData.profile.heightCm = String(height);
+            updateDailySnapshot(date, { profilePatch: { heightCm: String(height) } });
             saveData();
             closeWeightPicker();
             renderAll();
@@ -4651,31 +4826,38 @@
 
     function renderProfile() {
       const profile = appData.profile;
-      const basal = calculateBasal(profile);
-      const targetRange = dailyTargetRange();
+      const selectedDate = selectedHomeDate();
+      const historicalProfile = profileForDate(selectedDate);
+      const basal = calculateBasal(historicalProfile);
+      const targetRange = dailyTargetRange(selectedDate);
       const firstName = (profile.name || "Robson").trim().split(" ")[0] || "Robson";
       greetingTitle.textContent = `Olá, ${firstName}`;
       profileButton.classList.toggle("has-photo", Boolean(profile.photoData));
       profileButton.style.backgroundImage = profile.photoData ? `url("${profile.photoData}")` : "";
       profileButton.textContent = profile.photoData ? "" : firstName.slice(0, 1).toUpperCase();
-      profileAgeLabel.textContent = profile.age ? `${profile.age} anos` : "-- anos";
-      profileWeightLabel.textContent = profile.weightKg ? `${formatWeight(profile.weightKg)}kg` : "-- kg";
-      profileHeightLabel.textContent = profile.heightCm
-        ? `${(Number(profile.heightCm) / 100).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}m`
+      profileAgeLabel.textContent = historicalProfile.age ? `${historicalProfile.age} anos` : "-- anos";
+      profileWeightLabel.textContent = historicalProfile.weightKg ? `${formatWeight(historicalProfile.weightKg)}kg` : "-- kg";
+      profileHeightLabel.textContent = historicalProfile.heightCm
+        ? `${(Number(historicalProfile.heightCm) / 100).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}m`
         : "-- m";
+      const maintainWeight = isMaintainWeightMode(selectedDate);
+      profileGoalLabel.textContent = maintainWeight ? "Manter peso" : "Perder peso";
+      profileGoalLabel.setAttribute("aria-label", maintainWeight ? "Objetivo atual: manter peso. Alterar para perder peso" : "Objetivo atual: perder peso. Alterar para manter peso");
       profileName.value = profile.name || "";
       profileWeight.value = profile.weightKg || "";
       profileHeight.value = profile.heightCm || "";
       profileAge.value = profile.age || "";
       profileSex.value = profile.sex || "male";
-      goalBannerValue.textContent = `${formatIntegerKcal(targetRange.min)} - ${formatIntegerKcal(targetRange.max)} kcal`;
+      goalBannerValue.textContent = maintainWeight
+        ? `${formatIntegerKcal(targetRange.max)} kcal`
+        : `${formatIntegerKcal(targetRange.min)} - ${formatIntegerKcal(targetRange.max)} kcal`;
       profileBasalInfo.textContent = basal
-        ? `Gasto basal estimado: ${formatIntegerKcal(basal)} kcal/dia. Atividades de hoje: ${formatIntegerKcal(targetRange.activity)} kcal. Meta usada: ${formatIntegerKcal(targetRange.min)} - ${formatIntegerKcal(targetRange.max)} kcal/dia.`
+        ? `Gasto basal estimado: ${formatIntegerKcal(basal)} kcal/dia. Atividades de hoje: ${formatIntegerKcal(targetRange.activity)} kcal. Meta usada: ${maintainWeight ? formatIntegerKcal(targetRange.max) : `${formatIntegerKcal(targetRange.min)} - ${formatIntegerKcal(targetRange.max)}`} kcal/dia.`
         : "Informe peso, altura e idade para estimar o gasto diário.";
     }
 
-    function waterTarget() {
-      const weight = Number(String(appData.profile.weightKg).replace(",", ".")) || 0;
+    function waterTarget(date = todayISO()) {
+      const weight = Number(String(profileForDate(date).weightKg).replace(",", ".")) || 0;
       return weight ? Math.max(250, Math.floor((weight * 35) / 250) * 250) : 3000;
     }
 
@@ -4737,48 +4919,55 @@
       return Math.max(0, Math.min(1, (now - start) / (end - start)));
     }
 
-    function calculateDayScore(consumed, spent) {
-      const today = todayISO();
-      const targetRange = dailyTargetRange(today);
-      const adjustedTarget = Math.max(1, targetRange.min);
-      const waterNow = Number(appData.water?.[today]) || 0;
-      const waterExpected = Math.min(waterTarget(), expectedWaterCupCount() * 250);
+    function calculateDayScore(consumed, spent, date = selectedHomeDate()) {
+      const targetRange = dailyTargetRange(date);
+      const maintainWeight = isMaintainWeightMode(date);
+      const adjustedTarget = Math.max(1, maintainWeight ? targetRange.max : targetRange.min);
+      const excess = consumed - adjustedTarget;
+      const dangerThresholdReached = maintainWeight ? excess >= 200 : excess > 150;
+      const waterNow = Number(appData.water?.[date]) || 0;
+      const isToday = date === todayISO();
+      const waterExpected = Math.min(waterTarget(date), (isToday ? expectedWaterCupCount() : Math.ceil(waterTarget(date) / 250)) * 250);
       const waterScore = waterExpected > 0 ? Math.min(100, Math.round((waterNow / waterExpected) * 100)) : 100;
       const includeWater = appData.settings?.includeWaterInSummary !== false;
-      const mealScoreData = calculateMealTimingScore();
+      const mealScoreData = calculateMealTimingScore(date);
       const calorieRatio = consumed / adjustedTarget;
+      const dayProgress = isToday ? expectedDayProgress() : 1;
       let calorieScore = 100;
-      if (consumed > adjustedTarget + 150) {
-        calorieScore = Math.max(0, 100 - Math.round(((consumed - adjustedTarget - 150) / adjustedTarget) * 140));
-      } else if (expectedDayProgress() > 0.35 && calorieRatio < expectedDayProgress() * 0.55) {
-        calorieScore = Math.max(30, Math.round((calorieRatio / Math.max(0.1, expectedDayProgress() * 0.55)) * 100));
+      if (dangerThresholdReached) {
+        const toleratedExcess = maintainWeight ? 200 : 150;
+        calorieScore = Math.max(0, 100 - Math.round(((excess - toleratedExcess) / adjustedTarget) * 140));
+      } else if (dayProgress > 0.35 && calorieRatio < dayProgress * 0.55) {
+        calorieScore = Math.max(30, Math.round((calorieRatio / Math.max(0.1, dayProgress * 0.55)) * 100));
       }
       let score = Math.max(0, Math.min(100, Math.round(
         includeWater
           ? calorieScore * 0.4 + mealScoreData.score * 0.2 + waterScore * 0.4
           : calorieScore * 0.7 + mealScoreData.score * 0.3
       )));
-      if (consumed > targetRange.min + 50) {
+      if (maintainWeight ? excess > 0 : consumed > targetRange.min + 50) {
         score = Math.min(score, 79);
       }
       const alerts = [];
-      if (consumed > adjustedTarget + 150) {
-        alerts.push({ level: "danger", text: `Você passou da meta em ${formatIntegerKcal(consumed - adjustedTarget)} kcal.` });
+      if (dangerThresholdReached) {
+        alerts.push({ level: "danger", text: `Você passou da meta em ${formatIntegerKcal(excess)} kcal.` });
+      } else if (maintainWeight && excess > 0) {
+        alerts.push({ level: "warn", text: `Você está ${formatIntegerKcal(excess)} kcal acima da meta, dentro da faixa de atenção.` });
       }
       if (mealScoreData.alert) alerts.push(mealScoreData.alert);
       if (includeWater && waterExpected > 0 && waterNow < waterExpected) {
         alerts.push({ level: "warn", text: `Água abaixo do esperado para este horário: ${waterNow}ml de ${waterExpected}ml.` });
       }
-      if (expectedDayProgress() > 0.45 && calorieScore < 70 && consumed <= adjustedTarget) {
+      if (dayProgress > 0.45 && calorieScore < 70 && consumed <= adjustedTarget) {
         alerts.push({ level: "warn", text: "Consumo calórico baixo para este horário." });
       }
       const alert = alerts.find((item) => item.level === "danger") || alerts[0] || { level: "ok", text: "Dia no controle. Continue assim." };
       return { score, alert };
     }
 
-    function calculateMealTimingScore() {
-      const now = currentAppMinutes();
-      const todayMeals = appData.meals.filter((item) => item.date === todayISO());
+    function calculateMealTimingScore(date = todayISO()) {
+      const now = date === todayISO() ? currentAppMinutes() : 24 * 60;
+      const selectedDateMeals = appData.meals.filter((item) => item.date === date);
       let totalWeight = 0;
       let earned = 0;
       let worstAlert = null;
@@ -4788,7 +4977,7 @@
         if (now < mealMinute) return;
         const weight = 100 / mealTypes.length;
         totalWeight += weight;
-        const registered = todayMeals.find((item) => item.mealType === meal.id);
+        const registered = selectedDateMeals.find((item) => item.mealType === meal.id);
         if (registered) {
           const registeredMinute = minutesFromTime(registered.mealTime || time);
           const delay = Math.max(0, registeredMinute - mealMinute);
@@ -6161,7 +6350,8 @@
       minimumStart.setDate(minimumStart.getDate() - (minimumHistoryDays - 1));
       const registeredDates = [
         ...[...appData.meals, ...appData.expenses].map((item) => item.date),
-        ...Object.keys(appData.weightHistory || {})
+        ...Object.keys(appData.weightHistory || {}),
+        ...Object.keys(appData.dailySnapshots || {})
       ]
         .filter((date) => /^\d{4}-\d{2}-\d{2}$/.test(date || "") && date <= todayISO())
         .sort();
@@ -6193,7 +6383,7 @@
           isoDate: date,
           consumed: round(daily[date].consumed),
           spent: round(daily[date].spent),
-          weight: Number(appData.weightHistory?.[date]) || 0,
+          weight: Number(profileForDate(date).weightKg) || Number(appData.weightHistory?.[date]) || 0,
           targetRange: dailyTargetRange(date)
         };
       });
@@ -6205,10 +6395,13 @@
       const maxAbs = Math.max(...data.flatMap((item) => [item.consumed, item.targetRange.max]), 1);
       const barAreaHeight = 122;
       const bars = data.map((item) => {
+        const maintainWeight = isMaintainWeightMode(item.isoDate);
         const height = Math.max(item.weight ? 18 : 8, item.consumed / maxAbs * barAreaHeight);
         const minBottom = Math.min(barAreaHeight, Math.max(0, item.targetRange.min / maxAbs * barAreaHeight));
         const maxBottom = Math.min(barAreaHeight, Math.max(0, item.targetRange.max / maxAbs * barAreaHeight));
-        const status = item.consumed > item.targetRange.max ? "over" : item.consumed >= item.targetRange.min ? "range" : "low";
+        const status = maintainWeight
+          ? item.consumed >= item.targetRange.max + 200 ? "over" : item.consumed > item.targetRange.max ? "range" : "low"
+          : item.consumed > item.targetRange.max ? "over" : item.consumed >= item.targetRange.min ? "range" : "low";
         const weightLabel = `${formatWeight(item.weight)}kg`;
         const visibleBarHeight = Math.max(height, 12);
         const title = `${item.consumed} kcal consumidas; ${item.spent} kcal em atividades; meta ${round(item.targetRange.min)} a ${round(item.targetRange.max)} kcal; peso ${weightLabel}`;
@@ -6240,6 +6433,8 @@
           mealDate.value = selectedDate;
           expenseDate.value = selectedDate;
           periodButtons.forEach((item) => item.classList.toggle("active", currentPeriod === "hoje" && item.dataset.period === "hoje"));
+          renderProfile();
+          renderTotals(currentPeriod);
           renderMealsProgress();
           renderChart();
           renderConsumption(currentPeriod);
@@ -6280,18 +6475,19 @@
       const protein = round(meals.reduce((sum, item) => sum + item.protein, 0));
       const carbs = round(meals.reduce((sum, item) => sum + item.carbs, 0));
       const balance = round(consumed - spent);
-      const targetRange = dailyTargetRange();
-      const target = targetRange.min;
+      const macroDate = /^\d{4}-\d{2}-\d{2}$/.test(period || "") ? period : todayISO();
+      const targetRange = dailyTargetRange(macroDate);
+      const maintainWeight = isMaintainWeightMode(macroDate);
+      const target = maintainWeight ? targetRange.max : targetRange.min;
       const remaining = round(target - consumed);
       const percent = Math.max(0, Math.min(100, Math.round((consumed / Math.max(target, 1)) * 100)));
-      const dayScore = calculateDayScore(consumed, spent);
-      const macroDate = /^\d{4}-\d{2}-\d{2}$/.test(period || "") ? period : todayISO();
+      const dayScore = calculateDayScore(consumed, spent, macroDate);
       const macroWeight =
         Number(appData.weightHistory?.[macroDate]) ||
         Number(String(appData.profile.weightKg).replace(",", ".")) ||
         70;
       const proteinTarget = Math.max(1, round(macroWeight * 1.6));
-      const carbsTarget = Math.max(130, round((dailyTargetRange(macroDate).min * 0.45) / 4));
+      const carbsTarget = Math.max(130, round((dailyTarget(macroDate) * 0.45) / 4));
       const proteinPercent = Math.max(0, Math.min(100, Math.round((protein / proteinTarget) * 100)));
       const carbsPercent = Math.max(0, Math.min(100, Math.round((carbs / carbsTarget) * 100)));
 
@@ -6301,7 +6497,11 @@
       remainingKcal.textContent = remaining < 0
         ? `+${formatIntegerKcal(Math.abs(remaining))}`
         : formatIntegerKcal(remaining);
-      remainingKcal.classList.toggle("over", remaining < 0);
+      const maintenanceExcess = consumed - targetRange.max;
+      const caloriesAttentionLimit = maintainWeight && maintenanceExcess > 0 && maintenanceExcess < 200;
+      const caloriesOverLimit = maintainWeight ? maintenanceExcess >= 200 : consumed > targetRange.max;
+      remainingKcal.classList.toggle("warn", caloriesAttentionLimit);
+      remainingKcal.classList.toggle("over", maintainWeight ? caloriesOverLimit : remaining < 0);
       const moodLevel = Math.min(dayScore.alert.level === "ok" ? 4 : 3, Math.floor(dayScore.score / 20));
       const moodLabels = ["Muito ruim", "Ruim", "Regular", "Bom", "Ótimo"];
       const moodClasses = ["very-bad", "bad", "regular", "good", "excellent"];
@@ -6315,31 +6515,39 @@
       calorieFill.style.setProperty("--width", `${percent}%`);
       proteinFill.style.setProperty("--width", `${proteinPercent}%`);
       carbsFill.style.setProperty("--width", `${carbsPercent}%`);
-      const caloriesOverLimit = consumed > targetRange.max;
       const carbsOverLimit = carbs > carbsTarget;
+      calorieFill.classList.toggle("attention-limit", caloriesAttentionLimit);
       calorieFill.classList.toggle("over-limit", caloriesOverLimit);
       carbsFill.classList.toggle("over-limit", carbsOverLimit);
+      metricConsumed.classList.toggle("attention-limit", caloriesAttentionLimit);
       metricConsumed.classList.toggle("over-limit", caloriesOverLimit);
       metricCarbs.classList.toggle("over-limit", carbsOverLimit);
       proteinFill.classList.remove("over-limit");
       metricProtein.classList.remove("over-limit");
-      renderCalorieRange(consumed, targetRange);
+      renderCalorieRange(consumed, targetRange, macroDate);
     }
 
-    function renderCalorieRange(consumed, targetRange = dailyTargetRange()) {
+    function renderCalorieRange(consumed, targetRange = dailyTargetRange(), date = selectedHomeDate()) {
       const min = Number(targetRange.min) || 0;
       const max = Math.max(min + 1, Number(targetRange.max) || min + 1);
-      const width = Math.max(0, Math.min(100, (consumed / max) * 100));
-      const minLeft = Math.max(0, Math.min(100, (min / max) * 100));
+      const maintainWeight = isMaintainWeightMode(date);
+      const scaleMax = maintainWeight ? max + 200 : max;
+      const width = Math.max(0, Math.min(100, (consumed / scaleMax) * 100));
+      const minLeft = Math.max(0, Math.min(100, (min / scaleMax) * 100));
+      const maxLeft = Math.max(0, Math.min(100, (max / scaleMax) * 100));
       calorieRangeCurrentLabel.textContent = formatIntegerKcal(consumed);
       calorieRangeMinMarker.style.setProperty("--left", `${minLeft}%`);
       calorieRangeMinLabel.parentElement.style.setProperty("--left", `${minLeft}%`);
+      calorieRangeMaxMarker.style.setProperty("--left", `${maxLeft}%`);
+      calorieRangeMaxLabel.parentElement.style.setProperty("--left", `${maxLeft}%`);
+      calorieRangeMinMarker.classList.toggle("hidden", maintainWeight);
+      calorieRangeMinLabel.parentElement.classList.toggle("hidden", maintainWeight);
       calorieRangeMinLabel.textContent = formatIntegerKcal(min);
       calorieRangeMaxLabel.textContent = formatIntegerKcal(max);
       calorieRangeFill.style.setProperty("--width", `${width}%`);
-      calorieRange.classList.toggle("good", consumed < min);
-      calorieRange.classList.toggle("warn", consumed >= min && consumed < max);
-      calorieRange.classList.toggle("danger", consumed >= max);
+      calorieRange.classList.toggle("good", maintainWeight ? consumed <= max : consumed < min);
+      calorieRange.classList.toggle("warn", maintainWeight ? consumed > max && consumed < max + 200 : consumed >= min && consumed < max);
+      calorieRange.classList.toggle("danger", maintainWeight ? consumed >= max + 200 : consumed >= max);
     }
 
     function deleteMealRecord(mealId) {
@@ -6576,7 +6784,7 @@
 
     function renderAll() {
       renderProfile();
-      renderTotals("hoje");
+      renderTotals(currentPeriod);
       renderMealsProgress();
       renderWater();
       renderMealTypeOptions();
@@ -6621,6 +6829,15 @@
     profileAgeLabel.addEventListener("click", () => editQuickProfileNumber("age"));
     profileHeightLabel.addEventListener("click", () => editQuickProfileNumber("height"));
     profileWeightLabel.addEventListener("click", () => editQuickProfileNumber("weight"));
+    profileGoalLabel.addEventListener("click", () => {
+      const date = selectedHomeDate();
+      const nextMode = isMaintainWeightMode(date) ? "lose" : "maintain";
+      if (date !== todayISO() && !confirm(`Alterar o objetivo salvo de ${date.split("-").reverse().join("/")} para ${nextMode === "maintain" ? "Manter peso" : "Perder peso"}?`)) return;
+      updateDailySnapshot(date, { weightGoalMode: nextMode });
+      if (date === todayISO()) appData.settings.weightGoalMode = nextMode;
+      saveData();
+      renderAll();
+    });
     profilePhotoInput.addEventListener("change", async () => {
       const file = profilePhotoInput.files?.[0];
       if (!file) return;
@@ -6838,6 +7055,10 @@
       if (savedWeight > 0) {
         appData.weightHistory[todayISO()] = savedWeight;
       }
+      updateDailySnapshot(todayISO(), {
+        profilePatch: appData.profile,
+        weightGoalMode: appData.settings.weightGoalMode
+      });
       saveData();
       renderAll();
       alert("Perfil salvo.");
