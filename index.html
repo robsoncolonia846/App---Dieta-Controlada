@@ -2903,7 +2903,6 @@
                   <option value="female">Feminino</option>
                 </select>
               </label>
-              <label>Meta mínima diária em kcal <input id="profile-target" inputmode="decimal" placeholder="Calculada automaticamente" /></label>
               <button class="button" id="save-profile">Salvar perfil</button>
               <div class="muted" id="profile-basal-info">Gasto diário estimado: -- kcal/dia.</div>
             </div>
@@ -3113,7 +3112,6 @@
     const profileHeight = document.getElementById("profile-height");
     const profileAge = document.getElementById("profile-age");
     const profileSex = document.getElementById("profile-sex");
-    const profileTarget = document.getElementById("profile-target");
     const saveProfile = document.getElementById("save-profile");
     const profileBasalInfo = document.getElementById("profile-basal-info");
     const mealNotifications = document.getElementById("meal-notifications");
@@ -3597,13 +3595,13 @@
         .join("");
     }
 
+    const minimumDailyCalorieTarget = 1400;
     const defaultProfile = {
       name: "Robson",
       weightKg: "",
       heightCm: "",
       age: "",
       sex: "male",
-      calorieTarget: "",
       photoData: ""
     };
     const defaultMealTimes = Object.fromEntries(mealTypes.map((item) => [item.id, item.defaultTime]));
@@ -4494,11 +4492,11 @@
     }
 
     function baseDailyTargetRange() {
-      const manualTarget = Number(String(appData.profile.calorieTarget).replace(",", ".")) || 0;
-      const baseMax = manualTarget ? manualTarget + 500 : maintenanceTarget();
+      const calculatedMax = maintenanceTarget();
+      const baseMax = Math.max(0, calculatedMax) || 1920;
       return {
-        min: Math.max(0, baseMax - 500) || 1420,
-        max: Math.max(0, baseMax) || 1920
+        min: Math.max(minimumDailyCalorieTarget, baseMax - 500),
+        max: Math.max(minimumDailyCalorieTarget, baseMax)
       };
     }
 
@@ -4669,7 +4667,6 @@
       profileHeight.value = profile.heightCm || "";
       profileAge.value = profile.age || "";
       profileSex.value = profile.sex || "male";
-      profileTarget.value = profile.calorieTarget || "";
       goalBannerValue.textContent = `${formatKcalValue(targetRange.min)} - ${formatKcalValue(targetRange.max)} kcal`;
       profileBasalInfo.textContent = basal
         ? `Gasto basal estimado: ${formatKcalValue(basal)} kcal/dia. Atividades de hoje: ${formatKcalValue(targetRange.activity)} kcal. Meta usada: ${formatKcalValue(targetRange.min)} - ${formatKcalValue(targetRange.max)} kcal/dia.`
@@ -6835,7 +6832,6 @@
         heightCm: profileHeight.value.trim(),
         age: profileAge.value.trim(),
         sex: profileSex.value,
-        calorieTarget: profileTarget.value.trim(),
         photoData: appData.profile.photoData || ""
       };
       if (savedWeight > 0) {
