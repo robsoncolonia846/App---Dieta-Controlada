@@ -5465,15 +5465,20 @@
     function adjustedGramAmount(item, currentValue, direction) {
       const registered = registeredGramAmount(item, currentValue);
       const tiers = gramAmountTiers(registered);
+      const upwardStep = Math.max(5, Math.floor(registered / 2 / 5) * 5);
+      if (currentValue > registered) {
+        const offset = currentValue - registered;
+        const stepCount = direction < 0
+          ? Math.max(0, Math.ceil(offset / upwardStep) - 1)
+          : Math.floor(offset / upwardStep) + 1;
+        return registered + stepCount * upwardStep;
+      }
       if (direction < 0) {
-        if (currentValue > registered) {
-          return Math.max(registered, currentValue - Math.max(5, Math.floor(registered / 2 / 5) * 5));
-        }
         return tiers.filter((value) => value < currentValue).pop() ?? tiers[0];
       }
       const higherTier = tiers.find((value) => value > currentValue);
       if (higherTier !== undefined) return higherTier;
-      return currentValue + Math.max(5, Math.floor(registered / 2 / 5) * 5);
+      return registered + upwardStep;
     }
 
     function adjustRecommendationItemAmount(recommendationIndex, itemIndex, direction, shouldRender = true) {
