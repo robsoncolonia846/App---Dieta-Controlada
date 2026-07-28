@@ -656,6 +656,14 @@
       vertical-align: middle;
     }
 
+    .calorie-range-labels > span:not(:first-child) .range-info {
+      position: absolute;
+      left: 50%;
+      bottom: 14px;
+      margin-left: 0;
+      transform: translateX(-50%);
+    }
+
     .range-info summary {
       width: 13px;
       height: 13px;
@@ -2715,7 +2723,6 @@
             <div class="goal-banner">
               <div class="goal-banner-main">
                 <span>🔥 Meta do dia: <span id="goal-banner-value">0 - 0 kcal</span></span>
-                <span>→</span>
               </div>
               <div class="calorie-range" id="calorie-range">
                 <div class="calorie-range-track" aria-label="Faixa de calorias da meta diária">
