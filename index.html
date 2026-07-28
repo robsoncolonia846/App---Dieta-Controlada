@@ -656,10 +656,10 @@
       vertical-align: middle;
     }
 
-    .calorie-range-labels > span:not(:first-child) .range-info {
+    .calorie-range-marker .range-info {
       position: absolute;
       left: 50%;
-      bottom: 14px;
+      bottom: 13px;
       margin-left: 0;
       transform: translateX(-50%);
     }
@@ -2727,13 +2727,13 @@
               <div class="calorie-range" id="calorie-range">
                 <div class="calorie-range-track" aria-label="Faixa de calorias da meta diária">
                   <div class="calorie-range-fill" id="calorie-range-fill"></div>
-                  <span class="calorie-range-marker min" id="calorie-range-min-marker" style="--left: 0%;"></span>
-                  <span class="calorie-range-marker max" id="calorie-range-max-marker" style="--left: 100%;"></span>
+                  <span class="calorie-range-marker min" id="calorie-range-min-marker" style="--left: 0%;"><details class="range-info"><summary aria-label="Entenda o déficit de 500 kcal">i</summary><div class="range-info-box">Meta com déficit de 500 kcal em relação ao gasto diário.</div></details></span>
+                  <span class="calorie-range-marker max" id="calorie-range-max-marker" style="--left: 100%;"><details class="range-info"><summary aria-label="Entenda o gasto diário">i</summary><div class="range-info-box">Gasto diário estimado, somando as atividades registradas no dia, caso ocorram.</div></details></span>
                 </div>
                 <div class="calorie-range-labels">
                   <span id="calorie-range-current-label" style="--left: 0%;">0</span>
-                  <span style="--left: 0%;"><span id="calorie-range-min-label">0</span><details class="range-info"><summary aria-label="Entenda o déficit de 500 kcal">i</summary><div class="range-info-box">Meta com déficit de 500 kcal em relação ao gasto diário.</div></details></span>
-                  <span style="--left: 100%;"><span id="calorie-range-max-label">0</span><details class="range-info"><summary aria-label="Entenda o gasto diário">i</summary><div class="range-info-box">Gasto diário estimado, somando as atividades registradas no dia, caso ocorram.</div></details></span>
+                  <span style="--left: 0%;"><span id="calorie-range-min-label">0</span></span>
+                  <span style="--left: 100%;"><span id="calorie-range-max-label">0</span></span>
                 </div>
               </div>
             </div>
