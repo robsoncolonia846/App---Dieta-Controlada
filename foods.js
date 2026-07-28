@@ -1242,5 +1242,18 @@ export const foods = [
       { id: "gramas", name: "Gramas", grams: 1 },
       { id: "excel", name: "100g", grams: 100 }
     ]
+  },
+  {
+    id: "pastel-de-carne-frito",
+    name: "Pastel de Carne Frito",
+    icon: "🥟",
+    category: "Alimenta??o",
+    caloriesPer100g: 394,
+    proteinPer100g: 10.1,
+    carbsPer100g: 43.8,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "50g", grams: 50 }
+    ]
   }
 ];
