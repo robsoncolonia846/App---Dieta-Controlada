@@ -2727,7 +2727,7 @@
               <div class="calorie-range" id="calorie-range">
                 <div class="calorie-range-track" aria-label="Faixa de calorias da meta diária">
                   <div class="calorie-range-fill" id="calorie-range-fill"></div>
-                  <span class="calorie-range-marker min" id="calorie-range-min-marker" style="--left: 0%;"><details class="range-info"><summary aria-label="Entenda o déficit de 500 kcal">i</summary><div class="range-info-box">Meta com déficit de 500 kcal em relação ao gasto diário.</div></details></span>
+                  <span class="calorie-range-marker min" id="calorie-range-min-marker" style="--left: 0%;"><details class="range-info"><summary id="calorie-range-min-info-summary" aria-label="Entenda o déficit calórico">i</summary><div class="range-info-box" id="calorie-range-min-info-box">Meta com déficit calórico em relação ao gasto diário.</div></details></span>
                   <span class="calorie-range-marker max" id="calorie-range-max-marker" style="--left: 100%;"><details class="range-info"><summary aria-label="Entenda o gasto diário">i</summary><div class="range-info-box">Gasto diário estimado, somando as atividades registradas no dia, caso ocorram.</div></details></span>
                 </div>
                 <div class="calorie-range-labels">
@@ -3083,6 +3083,8 @@
     const calorieRangeMaxMarker = document.getElementById("calorie-range-max-marker");
     const calorieRangeMinLabel = document.getElementById("calorie-range-min-label");
     const calorieRangeMaxLabel = document.getElementById("calorie-range-max-label");
+    const calorieRangeMinInfoSummary = document.getElementById("calorie-range-min-info-summary");
+    const calorieRangeMinInfoBox = document.getElementById("calorie-range-min-info-box");
     const calorieRangeFill = document.getElementById("calorie-range-fill");
     const dayMood = document.getElementById("day-mood");
     const dayMoodFace = document.getElementById("day-mood-face");
@@ -6599,6 +6601,7 @@
       const min = Number(targetRange.min) || 0;
       const max = Math.max(min + 1, Number(targetRange.max) || min + 1);
       const maintainWeight = isMaintainWeightMode(date);
+      const deficitKcal = weightGoalModeForDate(date) === "lose-slow" ? 250 : 500;
       const scaleMax = maintainWeight ? max + 200 : max;
       const width = Math.max(0, Math.min(100, (consumed / scaleMax) * 100));
       const minLeft = Math.max(0, Math.min(100, (min / scaleMax) * 100));
@@ -6612,6 +6615,8 @@
       calorieRangeMinLabel.parentElement.classList.toggle("hidden", maintainWeight);
       calorieRangeMinLabel.textContent = formatIntegerKcal(min);
       calorieRangeMaxLabel.textContent = formatIntegerKcal(max);
+      calorieRangeMinInfoSummary.setAttribute("aria-label", `Entenda o déficit de ${deficitKcal} kcal`);
+      calorieRangeMinInfoBox.textContent = `Meta com déficit de ${deficitKcal} kcal em relação ao gasto diário.`;
       calorieRangeFill.style.setProperty("--width", `${width}%`);
       calorieRange.classList.toggle("good", maintainWeight ? consumed <= max : consumed < min);
       calorieRange.classList.toggle("warn", maintainWeight ? consumed > max && consumed < max + 200 : consumed >= min && consumed < max);
