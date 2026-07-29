@@ -5332,16 +5332,22 @@
       const text = String(amount).trim().toLowerCase();
       const match = text.match(/([\d,.]+)/);
       if (!match) return null;
-      const value = /^1\s*\/\s*2\b/.test(text) ? 0.5 : Number(match[1].replace(",", "."));
+      const mixedHalf = text.match(/^(\d+)\s+1\s*\/\s*2\b/);
+      const value = mixedHalf
+        ? Number(mixedHalf[1]) + 0.5
+        : /^1\s*\/\s*2\b/.test(text)
+        ? 0.5
+        : Number(match[1].replace(",", "."));
       if (!Number.isFinite(value)) return null;
       if (text.includes("ml")) return { value, unit: "ml", step: 50, label: "ml" };
       if (text.includes("g")) return { value, unit: "g", step: 10, label: "g" };
-      if (text.includes("fatia")) return { value, unit: "fatia", step: 1, label: value === 1 ? "fatia" : "fatias" };
-      if (text.includes("ovo")) return { value, unit: "ovo", step: 1, label: value === 1 ? "ovo" : "ovos" };
-      if (text.includes("colher")) return { value, unit: "colher", step: 1, label: value === 1 ? "colher" : "colheres" };
-      if (text.includes("concha")) return { value, unit: "concha", step: 1, label: value === 1 ? "concha" : "conchas" };
+      if (text.includes("fatia")) return { value, unit: "fatia", step: 0.5, label: value === 1 ? "fatia" : "fatias" };
+      if (text.includes("ovo")) return { value, unit: "ovo", step: 0.5, label: value === 1 ? "ovo" : "ovos" };
+      if (text.includes("colher")) return { value, unit: "colher", step: 0.5, label: value === 1 ? "colher" : "colheres" };
+      if (text.includes("concha")) return { value, unit: "concha", step: 0.5, label: value === 1 ? "concha" : "conchas" };
+      if (text.includes("porção") || text.includes("porcao")) return { value, unit: "porcao", step: 0.5, label: value === 1 ? "porção" : "porções" };
       if (text.includes("unidade") || text.includes("unid")) return { value, unit: "unidade", step: 0.5, label: value === 1 ? "unidade" : "unidades" };
-      return { value, unit: "unidade", step: 1, label: value === 1 ? "unidade" : "unidades" };
+      return { value, unit: "unidade", step: 0.5, label: value === 1 ? "unidade" : "unidades" };
     }
 
     function formatAdjustedAmount(parsed, value) {
@@ -5352,6 +5358,7 @@
         ovo: "ovos",
         colher: "colheres",
         concha: "conchas",
+        porcao: "porções",
         unidade: "unidades"
       };
       const singularByUnit = {
@@ -5359,12 +5366,16 @@
         ovo: "ovo",
         colher: "colher",
         concha: "concha",
+        porcao: "porção",
         unidade: "unidade"
       };
-      if (parsed.unit === "unidade" && roundedValue === 0.5) return "1/2 unidade";
+      const singularLabel = singularByUnit[parsed.unit] || parsed.label.replace(/s$/, "");
+      const pluralLabel = pluralByUnit[parsed.unit] || parsed.label;
+      if (roundedValue === 0.5) return `1/2 ${singularLabel}`;
+      if (roundedValue % 1 === 0.5) return `${Math.floor(roundedValue)} 1/2 ${pluralLabel}`;
       const label = roundedValue === 1
-        ? (singularByUnit[parsed.unit] || parsed.label.replace(/s$/, ""))
-        : (pluralByUnit[parsed.unit] || parsed.label);
+        ? singularLabel
+        : pluralLabel;
       return `${roundedValue} ${label}`;
     }
 
@@ -5490,6 +5501,21 @@
       return registered + upwardStep;
     }
 
+    function adjustedCountAmount(currentValue, direction) {
+      if (direction > 0) {
+        if (currentValue < 0.5) return 0.5;
+        if (currentValue < 1) return 1;
+        if (currentValue < 1.5) return 1.5;
+        if (currentValue < 2) return 2;
+        return Math.floor(currentValue) + 1;
+      }
+      if (currentValue <= 0.5) return 0.5;
+      if (currentValue <= 1) return 0.5;
+      if (currentValue <= 1.5) return 1;
+      if (currentValue <= 2) return 1.5;
+      return Math.max(2, Math.ceil(currentValue) - 1);
+    }
+
     function adjustRecommendationItemAmount(recommendationIndex, itemIndex, direction, shouldRender = true) {
       const option = currentRecommendationOptions?.[recommendationIndex];
       const item = option?.items?.[itemIndex];
@@ -5512,7 +5538,7 @@
           : Math.ceil(parsed.value / parsed.step) * parsed.step - parsed.step;
         nextValue = Math.max(minValue, nextValue);
       } else {
-        nextValue = Math.max(minValue, parsed.value + parsed.step * direction);
+        nextValue = adjustedCountAmount(parsed.value, direction);
       }
       const ratio = item.baseAmountValue ? nextValue / item.baseAmountValue : 1;
       item.amount = formatAdjustedAmount(parsed, nextValue);
