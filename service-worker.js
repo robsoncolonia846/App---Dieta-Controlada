@@ -1,4 +1,4 @@
-const CACHE_NAME = "dieta-controlada-pwa-v207";
+const CACHE_NAME = "dieta-controlada-pwa-v209";
 
 importScripts("./firebase-config.js");
 importScripts("https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js");
