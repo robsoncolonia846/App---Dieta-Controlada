@@ -6703,7 +6703,7 @@
       const plotLeft = 26;
       const plotRight = 352;
       const plotTop = 14;
-      const plotBottom = 60;
+      const plotBottom = 74;
       const weights = weighted.map((item) => item.weight);
       let minWeight = Math.min(...weights);
       let maxWeight = Math.max(...weights);
@@ -6736,7 +6736,7 @@
         const anchor = targetIndex === 0 ? "start" : targetIndex === 29 ? "end" : "middle";
         return `
           <text x="${x}" y="${valueY}" text-anchor="${anchor}" fill="#23852a" font-size="6.5" font-weight="900">${formatWeight(item.weight)}kg</text>
-          <text x="${x}" y="86" text-anchor="${anchor}" fill="${targetIndex === 29 ? "#209b26" : "#899383"}" font-size="6" font-weight="${targetIndex === 29 ? "900" : "700"}">${series[targetIndex].date}</text>
+          <text x="${x}" y="84" text-anchor="${anchor}" fill="${targetIndex === 29 ? "#209b26" : "#899383"}" font-size="6" font-weight="${targetIndex === 29 ? "900" : "700"}">${series[targetIndex].date}</text>
         `;
       }).join("");
       const firstDate = series[0]?.date || "";
