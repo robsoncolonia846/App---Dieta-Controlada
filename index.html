@@ -280,6 +280,16 @@
       text-overflow: ellipsis;
     }
 
+    .history-period-value.under-target,
+    .history-period-weight.loss {
+      color: #23852a;
+    }
+
+    .history-period-value.over-target,
+    .history-period-weight.gain {
+      color: #d64343;
+    }
+
     .history-period-weight {
       color: #65705f;
       font-size: 7px;
@@ -292,15 +302,15 @@
       margin-top: 0;
       padding: 2px 6px;
       border-radius: 999px;
-      background: #ecefeb;
-      color: #65705f;
+      background: #e9f7e7;
+      color: #25872b;
       font-size: 6px;
       font-weight: 950;
     }
 
     .history-period-badge.good {
-      background: #ecefeb;
-      color: #65705f;
+      background: #fff4d3;
+      color: #9a6a00;
     }
 
     .history-period-badge.empty {
@@ -6638,11 +6648,17 @@
           : `${period.weightDifference > 0 ? "+" : ""}${formatWeight(period.weightDifference)}kg`;
         const badgeText = !period.hasData ? "Sem dados" : period.excellent ? "Excelente" : "Bom";
         const badgeClass = !period.hasData ? "empty" : period.excellent ? "" : "good";
+        const balanceClass = period.averageBalance === null
+          ? ""
+          : period.averageBalance > 0 ? "over-target" : "under-target";
+        const weightClass = period.weightDifference === null || period.weightDifference === 0
+          ? ""
+          : period.weightDifference > 0 ? "gain" : "loss";
         return `
           <div class="history-period-row">
             <span class="history-period-title">${period.days} dias</span>
-            <span class="history-period-value">${balanceText}</span>
-            <span class="history-period-weight">${weightDifferenceText}</span>
+            <span class="history-period-value ${balanceClass}">${balanceText}</span>
+            <span class="history-period-weight ${weightClass}">${weightDifferenceText}</span>
             <span class="history-period-badge ${badgeClass}">${badgeText}</span>
           </div>
         `;
