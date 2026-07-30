@@ -6622,7 +6622,10 @@
           Math.round((new Date(`${last.isoDate}T12:00:00`) - new Date(`${first.isoDate}T12:00:00`)) / 86400000)
         );
         weeklyWeightChange = ((last.weight - first.weight) / elapsedDays) * 7;
-        weightDifference = last.weight - first.weight;
+        const comparisonWeight = days === 30
+          ? Math.max(...weightedDays.map((item) => item.weight))
+          : first.weight;
+        weightDifference = last.weight - comparisonWeight;
       }
       const deficitDifference = averageBalance === null
         ? Infinity
@@ -6692,7 +6695,7 @@
       const height = 92;
       const plotLeft = 26;
       const plotRight = 352;
-      const plotTop = 8;
+      const plotTop = 14;
       const plotBottom = 60;
       const weights = weighted.map((item) => item.weight);
       let minWeight = Math.min(...weights);
@@ -6707,19 +6710,20 @@
       const xFor = (index) => plotLeft + (index / Math.max(1, series.length - 1)) * (plotRight - plotLeft);
       const yFor = (weight) => plotBottom - ((weight - minWeight) / Math.max(0.1, maxWeight - minWeight)) * (plotBottom - plotTop);
       const points = weighted.map((item) => `${xFor(item.index).toFixed(1)},${yFor(item.weight).toFixed(1)}`).join(" ");
-      const pointDots = weighted.map((item, index) => {
-        const isLast = index === weighted.length - 1;
-        return `<circle cx="${xFor(item.index).toFixed(1)}" cy="${yFor(item.weight).toFixed(1)}" r="${isLast ? 3.2 : 1.8}" fill="${isLast ? "#209b26" : "#fff"}" stroke="#209b26" stroke-width="1.3"></circle>`;
-      }).join("");
-
       const labelIndexes = [0, 8, 14, 22, 29];
-      const dataLabels = labelIndexes.map((targetIndex) => {
+      const labelPoints = labelIndexes.map((targetIndex) => {
         const item = weighted.reduce((closest, candidate) =>
           Math.abs(candidate.index - targetIndex) < Math.abs(closest.index - targetIndex) ? candidate : closest
         , weighted[0]);
+        return { targetIndex, item };
+      });
+      const highlightedDots = labelPoints.map(({ item }) =>
+        `<circle cx="${xFor(item.index).toFixed(1)}" cy="${yFor(item.weight).toFixed(1)}" r="2.8" fill="#209b26" stroke="#ffffff" stroke-width="1.2"></circle>`
+      ).join("");
+      const dataLabels = labelPoints.map(({ targetIndex, item }) => {
         const x = xFor(item.index);
         const y = yFor(item.weight);
-        const valueY = y < 17 ? y + 11 : y - 5;
+        const valueY = Math.max(7, y - 5);
         const anchor = targetIndex === 0 ? "start" : targetIndex === 29 ? "end" : "middle";
         return `
           <text x="${x}" y="${valueY}" text-anchor="${anchor}" fill="#23852a" font-size="6.5" font-weight="900">${formatWeight(item.weight)}kg</text>
@@ -6737,7 +6741,7 @@
           <text x="1" y="${plotTop + 3}" fill="#899383" font-size="6">${formatWeight(maxWeight)}</text>
           <text x="1" y="${plotBottom + 2}" fill="#899383" font-size="6">${formatWeight(minWeight)}</text>
           <polyline points="${points}" fill="none" stroke="#209b26" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></polyline>
-          ${pointDots}
+          ${highlightedDots}
           ${dataLabels}
         </svg>
       `;
