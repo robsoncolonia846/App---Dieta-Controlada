@@ -733,6 +733,19 @@ export const foods = [
     ]
   },
   {
+    id: "peixe-frito",
+    name: "Peixe Frito",
+    icon: "🐟",
+    category: "Alimentação",
+    caloriesPer100g: 220,
+    proteinPer100g: 24,
+    carbsPer100g: 0,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "100g", grams: 100 }
+    ]
+  },
+  {
     id: "presunto",
     name: "Presunto",
     category: "Alimenta??o",
