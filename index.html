@@ -224,6 +224,94 @@
       max-width: 100%;
     }
 
+    .history-overview {
+      display: grid;
+      grid-template-columns: minmax(142px, 0.9fr) minmax(0, 1.1fr);
+      gap: 8px;
+      align-items: stretch;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #edf0ea;
+    }
+
+    .history-period-summary {
+      display: grid;
+      align-content: center;
+      gap: 7px;
+      min-width: 0;
+      padding-right: 7px;
+      border-right: 1px solid #edf0ea;
+    }
+
+    .history-period-row {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 5px;
+      min-width: 0;
+      line-height: 1;
+    }
+
+    .history-period-title {
+      color: #65705f;
+      font-size: 8px;
+      font-weight: 950;
+      white-space: nowrap;
+    }
+
+    .history-period-value {
+      color: #23852a;
+      font-size: 8px;
+      font-weight: 950;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .history-period-badge {
+      justify-self: end;
+      margin-top: 0;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: #e9f7e7;
+      color: #25872b;
+      font-size: 6px;
+      font-weight: 950;
+    }
+
+    .history-period-badge.good {
+      background: #fff4d3;
+      color: #9a6a00;
+    }
+
+    .history-period-badge.empty {
+      background: #f0f2ee;
+      color: #7c8677;
+    }
+
+    .weight-trend-chart {
+      min-width: 0;
+      min-height: 105px;
+      display: grid;
+      align-items: center;
+    }
+
+    .weight-trend-chart svg {
+      display: block;
+      width: 100%;
+      height: 108px;
+      overflow: visible;
+    }
+
+    .weight-trend-empty {
+      min-height: 105px;
+      display: grid;
+      place-items: center;
+      color: #8a9385;
+      font-size: 9px;
+      font-weight: 800;
+      text-align: center;
+    }
+
     .chart {
       position: relative;
       min-height: 188px;
@@ -2818,6 +2906,10 @@
 
             <div class="card home-extra" style="margin-top: 14px;">
               <h2>Histórico</h2>
+              <div class="history-overview">
+                <div class="history-period-summary" id="history-period-summary"></div>
+                <div class="weight-trend-chart" id="weight-trend-chart" aria-label="Evolução do peso nos últimos 30 dias"></div>
+              </div>
               <div class="chart" id="balance-chart" aria-label="Histórico diário">
               </div>
             </div>
@@ -3056,6 +3148,8 @@
     const sections = document.querySelectorAll("main > section");
     const periodButtons = document.querySelectorAll(".period-button");
     const chart = document.getElementById("balance-chart");
+    const historyPeriodSummary = document.getElementById("history-period-summary");
+    const weightTrendChart = document.getElementById("weight-trend-chart");
     const greetingTitle = document.getElementById("greeting-title");
     const profileButton = document.getElementById("profile-button");
     const aiAssistantButton = document.getElementById("ai-assistant-button");
@@ -6477,9 +6571,123 @@
       });
     }
 
+    function historyPeriodMetrics(data, days) {
+      const sample = data.slice(-days);
+      const trackedDays = sample.filter((item) => item.consumed > 0);
+      const averageBalance = trackedDays.length
+        ? trackedDays.reduce((sum, item) => sum + item.consumed - item.targetRange.max, 0) / trackedDays.length
+        : null;
+      const averagePlannedDeficit = trackedDays.length
+        ? trackedDays.reduce((sum, item) => sum + Math.max(0, item.targetRange.max - item.targetRange.min), 0) / trackedDays.length
+        : 0;
+      const weightedDays = sample.filter((item) => item.weight > 0);
+      let weeklyWeightChange = null;
+      if (weightedDays.length > 1) {
+        const first = weightedDays[0];
+        const last = weightedDays[weightedDays.length - 1];
+        const elapsedDays = Math.max(
+          1,
+          Math.round((new Date(`${last.isoDate}T12:00:00`) - new Date(`${first.isoDate}T12:00:00`)) / 86400000)
+        );
+        weeklyWeightChange = ((last.weight - first.weight) / elapsedDays) * 7;
+      }
+      const deficitDifference = averageBalance === null
+        ? Infinity
+        : Math.abs(Math.abs(Math.min(0, averageBalance)) - averagePlannedDeficit);
+      return {
+        days,
+        averageBalance,
+        weeklyWeightChange,
+        hasData: trackedDays.length > 0,
+        excellent: deficitDifference <= 100
+      };
+    }
+
+    function renderHistoryPeriodSummary(data) {
+      const periods = [7, 15, 30].map((days) => historyPeriodMetrics(data, days));
+      historyPeriodSummary.innerHTML = periods.map((period) => {
+        const balanceText = period.averageBalance === null
+          ? "-- kcal/dia"
+          : `${period.averageBalance > 0 ? "+" : ""}${round(period.averageBalance).toLocaleString("pt-BR")} kcal/dia`;
+        const badgeText = !period.hasData ? "Sem dados" : period.excellent ? "Excelente" : "Bom";
+        const badgeClass = !period.hasData ? "empty" : period.excellent ? "" : "good";
+        return `
+          <div class="history-period-row">
+            <span class="history-period-title">${period.days} dias</span>
+            <span class="history-period-value">${balanceText}</span>
+            <span class="history-period-badge ${badgeClass}">${badgeText}</span>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderWeightTrendChart(data) {
+      const series = data.slice(-30);
+      const weighted = series
+        .map((item, index) => ({ ...item, index }))
+        .filter((item) => item.weight > 0);
+      if (weighted.length === 0) {
+        weightTrendChart.innerHTML = '<div class="weight-trend-empty">Registre seu peso para acompanhar a evolução em 30 dias.</div>';
+        return;
+      }
+
+      const width = 240;
+      const height = 108;
+      const plotLeft = 25;
+      const plotRight = 230;
+      const plotTop = 10;
+      const plotBottom = 78;
+      const weights = weighted.map((item) => item.weight);
+      let minWeight = Math.min(...weights);
+      let maxWeight = Math.max(...weights);
+      if (maxWeight - minWeight < 1) {
+        minWeight -= 0.5;
+        maxWeight += 0.5;
+      } else {
+        minWeight -= 0.2;
+        maxWeight += 0.2;
+      }
+      const xFor = (index) => plotLeft + (index / Math.max(1, series.length - 1)) * (plotRight - plotLeft);
+      const yFor = (weight) => plotBottom - ((weight - minWeight) / Math.max(0.1, maxWeight - minWeight)) * (plotBottom - plotTop);
+      const points = weighted.map((item) => `${xFor(item.index).toFixed(1)},${yFor(item.weight).toFixed(1)}`).join(" ");
+      const pointDots = weighted.map((item, index) => {
+        const isLast = index === weighted.length - 1;
+        return `<circle cx="${xFor(item.index).toFixed(1)}" cy="${yFor(item.weight).toFixed(1)}" r="${isLast ? 3.2 : 1.8}" fill="${isLast ? "#209b26" : "#fff"}" stroke="#209b26" stroke-width="1.3"></circle>`;
+      }).join("");
+      const last = weighted[weighted.length - 1];
+      const lastX = xFor(last.index);
+      const lastY = yFor(last.weight);
+      const labelX = Math.max(plotLeft, Math.min(plotRight - 27, lastX - 13));
+      const labelY = Math.max(1, lastY - 18);
+      const firstDate = series[0]?.date || "";
+      const lastDate = series[series.length - 1]?.date || "";
+
+      weightTrendChart.innerHTML = `
+        <svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Peso nos últimos 30 dias, de ${firstDate} a ${lastDate}">
+          <line x1="${plotLeft}" y1="${plotTop}" x2="${plotRight}" y2="${plotTop}" stroke="#edf0ea" stroke-width="1"></line>
+          <line x1="${plotLeft}" y1="${(plotTop + plotBottom) / 2}" x2="${plotRight}" y2="${(plotTop + plotBottom) / 2}" stroke="#edf0ea" stroke-width="1"></line>
+          <line x1="${plotLeft}" y1="${plotBottom}" x2="${plotRight}" y2="${plotBottom}" stroke="#dfe5dc" stroke-width="1"></line>
+          <text x="1" y="${plotTop + 3}" fill="#899383" font-size="6">${formatWeight(maxWeight)}</text>
+          <text x="1" y="${plotBottom + 2}" fill="#899383" font-size="6">${formatWeight(minWeight)}</text>
+          <polyline points="${points}" fill="none" stroke="#209b26" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></polyline>
+          ${pointDots}
+          <rect x="${labelX}" y="${labelY}" width="27" height="13" rx="6.5" fill="#209b26"></rect>
+          <text x="${labelX + 13.5}" y="${labelY + 9}" text-anchor="middle" fill="#fff" font-size="6.5" font-weight="900">${formatWeight(last.weight)}</text>
+          <text x="${plotLeft}" y="101" fill="#899383" font-size="6">${firstDate}</text>
+          <text x="${plotRight}" y="101" text-anchor="end" fill="#209b26" font-size="6" font-weight="900">${lastDate}</text>
+        </svg>
+      `;
+    }
+
+    function renderHistoryOverview(data) {
+      renderHistoryPeriodSummary(data);
+      renderWeightTrendChart(data);
+    }
+
     function renderChart() {
       const data = historyDaysSeries();
       chart.setAttribute("aria-label", `Histórico diário com ${data.length} dias`);
+      renderHistoryOverview(data);
       const maxAbs = Math.max(...data.flatMap((item) => [
         item.consumed,
         isMaintainWeightMode(item.isoDate) ? item.targetRange.max + 200 : item.targetRange.max
