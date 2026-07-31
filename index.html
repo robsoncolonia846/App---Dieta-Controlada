@@ -237,9 +237,44 @@
     }
 
     .history-overview-title {
-      grid-area: title;
       align-self: start;
       margin: 1px 0 0;
+    }
+
+    .history-overview-heading {
+      grid-area: title;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .weight-trend-periods {
+      display: inline-flex;
+      gap: 3px;
+      padding: 2px;
+      border-radius: 999px;
+      background: #f1f4ed;
+    }
+
+    .weight-trend-period {
+      min-width: 34px;
+      border: 0;
+      border-radius: 999px;
+      padding: 4px 7px;
+      background: transparent;
+      color: #7b8675;
+      font: inherit;
+      font-size: 8px;
+      font-weight: 950;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .weight-trend-period.active {
+      background: #209b26;
+      color: #fff;
+      box-shadow: 0 2px 6px rgba(32, 155, 38, 0.18);
     }
 
     .history-period-summary {
@@ -2937,7 +2972,13 @@
 
             <div class="card home-extra" style="margin-top: 14px;">
               <div class="history-overview">
-                <h2 class="history-overview-title">Histórico</h2>
+                <div class="history-overview-heading">
+                  <h2 class="history-overview-title">Histórico</h2>
+                  <div class="weight-trend-periods" aria-label="Período do gráfico de peso">
+                    <button class="weight-trend-period active" type="button" data-weight-trend-period="30" aria-pressed="true">30d</button>
+                    <button class="weight-trend-period" type="button" data-weight-trend-period="max" aria-pressed="false">Máx.</button>
+                  </div>
+                </div>
                 <div class="history-period-summary" id="history-period-summary"></div>
                 <div class="weight-trend-chart" id="weight-trend-chart" aria-label="Evolução do peso nos últimos 30 dias"></div>
               </div>
@@ -3181,6 +3222,7 @@
     const chart = document.getElementById("balance-chart");
     const historyPeriodSummary = document.getElementById("history-period-summary");
     const weightTrendChart = document.getElementById("weight-trend-chart");
+    const weightTrendPeriodButtons = document.querySelectorAll("[data-weight-trend-period]");
     const greetingTitle = document.getElementById("greeting-title");
     const profileButton = document.getElementById("profile-button");
     const aiAssistantButton = document.getElementById("ai-assistant-button");
@@ -3299,6 +3341,7 @@
     const storageKey = "dieta-controlada-web:v1";
     const recoveryStorageKey = "dieta-controlada-web:recovery:v1";
     const navigationStorageKey = "dieta-controlada-web:last-tab";
+    const weightTrendPeriodStorageKey = "dieta-controlada-web:weight-trend-period";
     const maxRecoverySnapshots = 8;
     const formatSigned = (value) => value > 0 ? `+${value}` : `${value}`;
     const normalizeText = (value) => value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
@@ -3710,6 +3753,11 @@
         .replace(/\bunidade\b/gi, "Unid.");
     }
 
+    function compactKcalLabel(value) {
+      const kcal = Number(value);
+      return Number.isFinite(kcal) ? ` • ${round(kcal)} kcal` : "";
+    }
+
     function renderDietDashboard() {
       if (!dietDashboard) return;
       dietProfileWeight.textContent = profileWeightLabel.textContent;
@@ -3736,7 +3784,7 @@
               <div class="recommended-item-main">
                 <div class="meal-name">${escapeHTML(item.name)}</div>
                 <div class="item-detail-row">
-                  <div class="muted">${escapeHTML(compactAmountLabel(item.amount))}${item.kcal ? ` • ${round(item.kcal)} kcal` : ""}</div>
+                  <div class="muted">${escapeHTML(compactAmountLabel(item.amount))}${compactKcalLabel(item.kcal)}</div>
                   ${canAdjustItemAmount(item) ? `
                     <span class="quantity-controls" aria-label="Ajustar quantidade de ${escapeHTML(item.name)}">
                       <button class="qty-button" type="button" data-diet-adjust-meal="${mealType.id}" data-diet-adjust-option="${selectedOptionIndex}" data-diet-adjust-item="${itemIndex}" data-diet-adjust-delta="-1">−</button>
@@ -3903,6 +3951,7 @@
     let currentFoodMode = "popular";
     const minimumHistoryDays = 30;
     let currentPeriod = "hoje";
+    let weightTrendPeriod = localStorage.getItem(weightTrendPeriodStorageKey) === "max" ? "max" : "30";
     let currentMealDetail = mealTypes[0].id;
     let selectedRecommendationIndex = null;
     let currentRecommendationOptions = [];
@@ -5303,7 +5352,7 @@
               <div class="recommended-item-main">
                 <div class="meal-name">${item.name}</div>
                 <div class="item-detail-row">
-                  <div class="muted">${escapeHTML(compactAmountLabel(item.amount))}${item.kcal ? ` • ${round(item.kcal)} kcal` : ""}</div>
+                  <div class="muted">${escapeHTML(compactAmountLabel(item.amount))}${compactKcalLabel(item.kcal)}</div>
                   ${canAdjustItemAmount(item) ? `
                     <span class="quantity-controls" aria-label="Ajustar quantidade de ${item.name}">
                       <button class="qty-button" type="button" data-adjust-rec="${index}" data-adjust-item="${itemIndex}" data-adjust-delta="-1" aria-label="Diminuir ${item.name}">−</button>
@@ -5667,9 +5716,9 @@
       }
       const ratio = item.baseAmountValue ? nextValue / item.baseAmountValue : 1;
       item.amount = formatAdjustedAmount(parsed, nextValue);
-      if (item.baseKcal) item.kcal = Math.round(item.baseKcal * ratio);
-      if (item.baseProtein) item.protein = Number((item.baseProtein * ratio).toFixed(1));
-      if (item.baseCarbs) item.carbs = Number((item.baseCarbs * ratio).toFixed(1));
+      item.kcal = Math.round((Number(item.baseKcal) || 0) * ratio);
+      item.protein = Number(((Number(item.baseProtein) || 0) * ratio).toFixed(1));
+      item.carbs = Number(((Number(item.baseCarbs) || 0) * ratio).toFixed(1));
       recalculateRecommendation(option);
       if (shouldRender) renderRecommendationOptions();
     }
@@ -5903,7 +5952,7 @@
               <div class="recommended-item-main">
                 <div class="meal-name">${food.name}</div>
                 <div class="item-detail-row">
-                  <div class="muted">${escapeHTML(compactAmountLabel(food.amount))}${food.kcal ? ` • ${round(food.kcal)} kcal` : ""}</div>
+                  <div class="muted">${escapeHTML(compactAmountLabel(food.amount))}${compactKcalLabel(food.kcal)}</div>
                   ${canAdjustItemAmount(food) ? `
                     <span class="quantity-controls" aria-label="Ajustar quantidade de ${food.name}">
                       <button class="qty-button" type="button" data-home-adjust-meal="${item.id}" data-home-adjust-item="${itemIndex}" data-home-adjust-delta="-1" aria-label="Diminuir ${food.name}">−</button>
@@ -6679,9 +6728,24 @@
       const monthNames = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
       const dataByDate = new Map(data.map((item) => [item.isoDate, item]));
       const today = appDayDate();
-      const series = Array.from({ length: 30 }, (_, index) => {
-        const date = new Date(today);
-        date.setDate(date.getDate() - (29 - index));
+      const knownWeightDates = [
+        ...Object.entries(appData.weightHistory || {})
+          .filter(([date, value]) => /^\d{4}-\d{2}-\d{2}$/.test(date) && date <= todayISO() && Number(value) > 0)
+          .map(([date]) => date),
+        ...Object.entries(appData.dailySnapshots || {})
+          .filter(([date, snapshot]) => /^\d{4}-\d{2}-\d{2}$/.test(date) && date <= todayISO() && Number(snapshot?.profile?.weightKg) > 0)
+          .map(([date]) => date)
+      ].sort();
+      const defaultStart = new Date(today);
+      defaultStart.setDate(defaultStart.getDate() - 29);
+      const maximumStart = knownWeightDates.length
+        ? new Date(`${knownWeightDates[0]}T12:00:00`)
+        : defaultStart;
+      const start = weightTrendPeriod === "max" && maximumStart < defaultStart ? maximumStart : defaultStart;
+      const seriesLength = Math.max(1, Math.round((today - start) / 86400000) + 1);
+      const series = Array.from({ length: seriesLength }, (_, index) => {
+        const date = new Date(start);
+        date.setDate(date.getDate() + index);
         const isoDate = localISODate(date);
         const existing = dataByDate.get(isoDate);
         return existing || {
@@ -6694,7 +6758,8 @@
         .map((item, index) => ({ ...item, index }))
         .filter((item) => item.weight > 0);
       if (weighted.length === 0) {
-        weightTrendChart.innerHTML = '<div class="weight-trend-empty">Registre seu peso para acompanhar a evolução em 30 dias.</div>';
+        const periodText = weightTrendPeriod === "max" ? "todo o período" : "30 dias";
+        weightTrendChart.innerHTML = `<div class="weight-trend-empty">Registre seu peso para acompanhar a evolução em ${periodText}.</div>`;
         return;
       }
 
@@ -6717,7 +6782,10 @@
       const xFor = (index) => plotLeft + (index / Math.max(1, series.length - 1)) * (plotRight - plotLeft);
       const yFor = (weight) => plotBottom - ((weight - minWeight) / Math.max(0.1, maxWeight - minWeight)) * (plotBottom - plotTop);
       const points = weighted.map((item) => `${xFor(item.index).toFixed(1)},${yFor(item.weight).toFixed(1)}`).join(" ");
-      const labelIndexes = [0, 8, 14, 22, 29];
+      const lastIndex = series.length - 1;
+      const labelIndexes = weightTrendPeriod === "30"
+        ? [0, 8, 14, 22, lastIndex]
+        : [0, Math.round(lastIndex * 0.25), Math.round(lastIndex * 0.5), Math.round(lastIndex * 0.75), lastIndex];
       const labelPoints = labelIndexes.map((targetIndex) => {
         const item = weighted.reduce((closest, candidate) =>
           Math.abs(candidate.index - targetIndex) < Math.abs(closest.index - targetIndex) ? candidate : closest
@@ -6733,17 +6801,17 @@
         const x = xFor(item.index);
         const y = yFor(item.weight);
         const valueY = Math.max(7, y - 5);
-        const anchor = targetIndex === 0 ? "start" : targetIndex === 29 ? "end" : "middle";
+        const anchor = targetIndex === 0 ? "start" : targetIndex === lastIndex ? "end" : "middle";
         return `
           <text x="${x}" y="${valueY}" text-anchor="${anchor}" fill="#23852a" font-size="6.5" font-weight="900">${formatWeight(item.weight)}kg</text>
-          <text x="${x}" y="84" text-anchor="${anchor}" fill="${targetIndex === 29 ? "#209b26" : "#899383"}" font-size="6" font-weight="${targetIndex === 29 ? "900" : "700"}">${series[targetIndex].date}</text>
+          <text x="${x}" y="84" text-anchor="${anchor}" fill="${targetIndex === lastIndex ? "#209b26" : "#899383"}" font-size="6" font-weight="${targetIndex === lastIndex ? "900" : "700"}">${series[targetIndex].date}</text>
         `;
       }).join("");
       const firstDate = series[0]?.date || "";
       const lastDate = series[series.length - 1]?.date || "";
 
       weightTrendChart.innerHTML = `
-        <svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Peso nos últimos 30 dias, de ${firstDate} a ${lastDate}">
+        <svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Peso de ${firstDate} a ${lastDate}">
           <line x1="${plotLeft}" y1="${plotTop}" x2="${plotRight}" y2="${plotTop}" stroke="#edf0ea" stroke-width="1"></line>
           <line x1="${plotLeft}" y1="${(plotTop + plotBottom) / 2}" x2="${plotRight}" y2="${(plotTop + plotBottom) / 2}" stroke="#edf0ea" stroke-width="1"></line>
           <line x1="${plotLeft}" y1="${plotBottom}" x2="${plotRight}" y2="${plotBottom}" stroke="#dfe5dc" stroke-width="1"></line>
@@ -6757,6 +6825,15 @@
     }
 
     function renderHistoryOverview(data) {
+      weightTrendPeriodButtons.forEach((button) => {
+        const active = button.dataset.weightTrendPeriod === weightTrendPeriod;
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-pressed", String(active));
+      });
+      weightTrendChart.setAttribute(
+        "aria-label",
+        weightTrendPeriod === "max" ? "Evolução do peso em todo o período" : "Evolução do peso nos últimos 30 dias"
+      );
       renderHistoryPeriodSummary(data);
       renderWeightTrendChart(data);
     }
@@ -6851,10 +6928,10 @@
     function renderTotals(period = currentPeriod) {
       const meals = periodMeals(period);
       const expenses = periodExpenses(period);
-      const consumed = round(meals.reduce((sum, item) => sum + item.calories, 0));
-      const spent = round(expenses.reduce((sum, item) => sum + item.calories, 0));
-      const protein = round(meals.reduce((sum, item) => sum + item.protein, 0));
-      const carbs = round(meals.reduce((sum, item) => sum + item.carbs, 0));
+      const consumed = round(meals.reduce((sum, item) => sum + (Number(item.calories) || 0), 0));
+      const spent = round(expenses.reduce((sum, item) => sum + (Number(item.calories) || 0), 0));
+      const protein = round(meals.reduce((sum, item) => sum + (Number(item.protein) || 0), 0));
+      const carbs = round(meals.reduce((sum, item) => sum + (Number(item.carbs) || 0), 0));
       const balance = round(consumed - spent);
       const macroDate = /^\d{4}-\d{2}-\d{2}$/.test(period || "") ? period : todayISO();
       const targetRange = dailyTargetRange(macroDate);
@@ -7621,6 +7698,14 @@
         button.classList.add("active");
         currentPeriod = button.dataset.period;
         renderAll();
+      });
+    });
+
+    weightTrendPeriodButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        weightTrendPeriod = button.dataset.weightTrendPeriod === "max" ? "max" : "30";
+        localStorage.setItem(weightTrendPeriodStorageKey, weightTrendPeriod);
+        renderHistoryOverview(historyDaysSeries());
       });
     });
 
