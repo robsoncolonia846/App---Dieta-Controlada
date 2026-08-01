@@ -590,6 +590,7 @@ export const foods = [
   {
     id: "outros",
     name: "Outros",
+    icon: "🥘",
     category: "Alimentação",
     caloriesPer100g: 100,
     proteinPer100g: 0,
@@ -921,6 +922,7 @@ export const foods = [
   {
     id: "brigadeiro",
     name: "Brigadeiro",
+    icon: "🍫",
     category: "Alimenta??o",
     caloriesPer100g: 400,
     proteinPer100g: 8.5,
@@ -1067,6 +1069,7 @@ export const foods = [
   {
     id: "acucar-cristal",
     name: "Açúcar Cristal",
+    icon: "🍬",
     category: "Alimenta??o",
     caloriesPer100g: 387,
     proteinPer100g: 0.3,
@@ -1079,6 +1082,7 @@ export const foods = [
   {
     id: "azeite-oliva-extra-virgem",
     name: "Azeite de Oliva Extra Virgem",
+    icon: "🫒",
     category: "Alimenta??o",
     caloriesPer100g: 884,
     proteinPer100g: 0,
@@ -1091,6 +1095,7 @@ export const foods = [
   {
     id: "manteiga-com-sal",
     name: "Manteiga com Sal",
+    icon: "🧈",
     category: "Alimenta??o",
     caloriesPer100g: 726,
     proteinPer100g: 0.4,
@@ -1103,6 +1108,7 @@ export const foods = [
   {
     id: "margarina-com-sal",
     name: "Margarina com Sal",
+    icon: "🧈",
     category: "Alimenta??o",
     caloriesPer100g: 596,
     proteinPer100g: 0,
@@ -1127,6 +1133,7 @@ export const foods = [
   {
     id: "mandioca-cozida",
     name: "Mandioca Cozida",
+    icon: "🍠",
     category: "Alimenta??o",
     caloriesPer100g: 125,
     proteinPer100g: 0.6,
@@ -1139,6 +1146,7 @@ export const foods = [
   {
     id: "aveia-em-flocos",
     name: "Aveia em Flocos",
+    icon: "🥣",
     category: "Alimenta??o",
     caloriesPer100g: 394,
     proteinPer100g: 13.9,
@@ -1151,6 +1159,7 @@ export const foods = [
   {
     id: "tapioca-com-manteiga",
     name: "Tapioca com Manteiga",
+    icon: "🫓",
     category: "Alimenta??o",
     caloriesPer100g: 348,
     proteinPer100g: 0.1,
@@ -1163,6 +1172,7 @@ export const foods = [
   {
     id: "mamao-formosa",
     name: "Mamão Formosa",
+    icon: "🥭",
     category: "Alimenta??o",
     caloriesPer100g: 45,
     proteinPer100g: 0.8,
@@ -1175,6 +1185,7 @@ export const foods = [
   {
     id: "abacate",
     name: "Abacate",
+    icon: "🥑",
     category: "Alimenta??o",
     caloriesPer100g: 96,
     proteinPer100g: 1.2,
@@ -1187,6 +1198,7 @@ export const foods = [
   {
     id: "atum-conserva-oleo",
     name: "Atum em Conserva com Óleo",
+    icon: "🐟",
     category: "Alimenta??o",
     caloriesPer100g: 166,
     proteinPer100g: 26.2,
@@ -1199,6 +1211,7 @@ export const foods = [
   {
     id: "sardinha-assada",
     name: "Sardinha Assada",
+    icon: "🐟",
     category: "Alimenta??o",
     caloriesPer100g: 164,
     proteinPer100g: 32.2,
@@ -1235,6 +1248,7 @@ export const foods = [
   {
     id: "granola",
     name: "Granola",
+    icon: "🥣",
     category: "Alimenta??o",
     caloriesPer100g: 471,
     proteinPer100g: 10.1,
