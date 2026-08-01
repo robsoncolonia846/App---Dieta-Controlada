@@ -504,7 +504,7 @@ export const foods = [
     id: "macarrao-com-carne-moida",
     name: "Macarrão com Carne Moida",
     category: "Alimenta??o",
-    caloriesPer100g: 400,
+    caloriesPer100g: 200,
     proteinPer100g: 5.8,
     carbsPer100g: 31,
     servings: [
