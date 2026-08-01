@@ -513,6 +513,20 @@ export const foods = [
     ]
   },
   {
+    id: "macarrao-carne-moida-molho-queijos",
+    name: "Macarrão com Carne Moída e Molho de Queijos",
+    aliases: ["Macarrão carne moída e molho de queijos"],
+    icon: "🍝",
+    category: "Alimentação",
+    caloriesPer100g: 300,
+    proteinPer100g: 13,
+    carbsPer100g: 20,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "100g", grams: 100 }
+    ]
+  },
+  {
     id: "macarrao-instantaneo-miojo",
     name: "Macarrão instantâneo (Miojo)",
     aliases: ["Miojo", "Macarrão instantâneo"],
