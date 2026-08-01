@@ -443,24 +443,24 @@ export const foods = [
     id: "leite-desnatado",
     name: "Leite Desnatado",
     category: "Alimenta??o",
-    caloriesPer100g: 74,
-    proteinPer100g: 6.8,
-    carbsPer100g: 10,
+    caloriesPer100g: 37,
+    proteinPer100g: 3.4,
+    carbsPer100g: 5,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "porcao-na", name: "Por??o", grams: 100 }
+      { id: "excel", name: "100ml", grams: 100 }
     ]
   },
   {
     id: "leite-integral",
     name: "Leite Integral",
     category: "Alimenta??o",
-    caloriesPer100g: 124,
-    proteinPer100g: 6.8,
-    carbsPer100g: 9.6,
+    caloriesPer100g: 62,
+    proteinPer100g: 3.4,
+    carbsPer100g: 4.8,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "porcao-na", name: "Por??o", grams: 100 }
+      { id: "excel", name: "100ml", grams: 100 }
     ]
   },
   {
