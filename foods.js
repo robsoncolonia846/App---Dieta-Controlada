@@ -299,12 +299,12 @@ export const foods = [
     id: "doce-de-leite",
     name: "Doce De Leite",
     category: "Alimenta??o",
-    caloriesPer100g: 70,
-    proteinPer100g: 1.5,
-    carbsPer100g: 11,
+    caloriesPer100g: 300,
+    proteinPer100g: 7.5,
+    carbsPer100g: 55,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "porcao-na", name: "Por??o", grams: 100 }
+      { id: "excel", name: "20g", grams: 20 }
     ]
   },
   {
@@ -769,8 +769,7 @@ export const foods = [
     carbsPer100g: 0.5,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "fatia", name: "Fatia", grams: 100 },
-      { id: "porcao-na", name: "Por??o", grams: 100 }
+      { id: "fatia", name: "Fatia", grams: 100 }
     ]
   },
   {
