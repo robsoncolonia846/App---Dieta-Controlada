@@ -789,7 +789,7 @@ export const foods = [
     id: "queijo-mucarela",
     name: "Queijo Muçarela",
     category: "Alimenta??o",
-    caloriesPer100g: 95,
+    caloriesPer100g: 80,
     proteinPer100g: 6,
     carbsPer100g: 1,
     servings: [
