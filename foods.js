@@ -789,9 +789,9 @@ export const foods = [
     id: "queijo-fatia",
     name: "Queijo Fatia",
     category: "Alimenta??o",
-    caloriesPer100g: 96,
-    proteinPer100g: 22,
-    carbsPer100g: 3,
+    caloriesPer100g: 80,
+    proteinPer100g: 6,
+    carbsPer100g: 1,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
       { id: "fatia", name: "Fatia", grams: 100 }
