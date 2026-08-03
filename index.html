@@ -6301,7 +6301,7 @@
       const total = Number(appData.water?.[today]) || 0;
       const target = waterTarget();
       const targetCupCount = Math.ceil(target / 250);
-      const cupCount = Math.max(12, targetCupCount, Math.ceil(total / 250));
+      const cupCount = targetCupCount;
       const filled = Math.min(cupCount, Math.floor(total / 250));
       const expected = Math.min(targetCupCount, expectedWaterCupCount());
       waterTotal.textContent = total.toLocaleString("pt-BR");
