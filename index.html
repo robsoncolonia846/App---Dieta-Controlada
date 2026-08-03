@@ -2942,7 +2942,7 @@
               <div class="log-summary">
                 <div>
                   <div class="water-title-row">
-                    <h2>Hidratação</h2>
+                    <h2 id="water-title">Hidratação</h2>
                     <div class="water-time-range" aria-label="Intervalo diário para beber água">
                       <span>das</span>
                       <button class="water-time-text" id="water-start-label" type="button" aria-label="Editar início da hidratação">9h</button>
@@ -2963,7 +2963,7 @@
               <div class="water-grid" id="water-cups"></div>
               <div class="water-footer">
                 <div class="muted">Meta diária: <strong id="water-goal">3000 ml</strong></div>
-                <div class="water-summary-setting">
+                <div class="water-summary-setting hidden" aria-hidden="true">
                   <span>Incluir no resumo diário</span>
                   <button class="water-score-toggle" type="button" id="water-score-toggle" role="switch" aria-checked="true" aria-label="Incluir hidratação no resumo diário"></button>
                 </div>
@@ -3264,6 +3264,7 @@
     const waterTotal = document.getElementById("water-total");
     const waterGoal = document.getElementById("water-goal");
     const waterCups = document.getElementById("water-cups");
+    const waterTitle = document.getElementById("water-title");
     const addWaterQuick = document.getElementById("add-water-quick");
     const removeWater = document.getElementById("remove-water");
     const waterScoreToggle = document.getElementById("water-score-toggle");
@@ -3856,7 +3857,7 @@
       water: appData.water && typeof appData.water === "object" ? appData.water : {},
       settings: {
         ...(appData.settings && typeof appData.settings === "object" ? appData.settings : {}),
-        includeWaterInSummary: appData.settings?.includeWaterInSummary !== false,
+        includeWaterInSummary: true,
         mealNotifications: appData.settings?.mealNotifications === true,
         waterNotifications: appData.settings?.waterNotifications === true,
         waterStartTime: appData.settings?.waterStartTime || "09:00",
@@ -5145,7 +5146,7 @@
       const isToday = date === todayISO();
       const waterExpected = Math.min(waterTarget(date), (isToday ? expectedWaterCupCount() : Math.ceil(waterTarget(date) / 250)) * 250);
       const waterScore = waterExpected > 0 ? Math.min(100, Math.round((waterNow / waterExpected) * 100)) : 100;
-      const includeWater = appData.settings?.includeWaterInSummary !== false;
+      const includeWater = true;
       const mealScoreData = calculateMealTimingScore(date);
       const calorieRatio = consumed / adjustedTarget;
       const dayProgress = isToday ? expectedDayProgress() : 1;
@@ -6297,20 +6298,23 @@
     }
 
     function renderWater() {
-      const today = todayISO();
-      const total = Number(appData.water?.[today]) || 0;
-      const target = waterTarget();
+      const selectedDate = selectedHomeDate();
+      const total = Number(appData.water?.[selectedDate]) || 0;
+      const target = waterTarget(selectedDate);
       const targetCupCount = Math.ceil(target / 250);
       const cupCount = targetCupCount;
       const filled = Math.min(cupCount, Math.floor(total / 250));
-      const expected = Math.min(targetCupCount, expectedWaterCupCount());
+      const expected = selectedDate < todayISO()
+        ? targetCupCount
+        : Math.min(targetCupCount, expectedWaterCupCount());
+      waterTitle.textContent = "Hidratação";
       waterTotal.textContent = total.toLocaleString("pt-BR");
       waterGoal.textContent = `${target.toLocaleString("pt-BR")} ml`;
       waterStartTime.value = appData.settings?.waterStartTime || "09:00";
       waterEndTime.value = appData.settings?.waterEndTime || "19:00";
       waterStartLabel.textContent = formatWaterHour(waterStartTime.value);
       waterEndLabel.textContent = formatWaterHour(waterEndTime.value);
-      waterScoreToggle.setAttribute("aria-checked", String(appData.settings?.includeWaterInSummary !== false));
+      waterScoreToggle.setAttribute("aria-checked", "true");
       waterCups.innerHTML = Array.from({ length: cupCount }, (_, index) => {
         const state = index < filled ? "filled" : index < expected ? "pending" : "";
         return `<div class="cup ${state}"></div>`;
@@ -6318,11 +6322,11 @@
     }
 
     function addWater(amount) {
-      const today = todayISO();
-      appData.water[today] = Math.max(0, (Number(appData.water[today]) || 0) + amount);
+      const selectedDate = selectedHomeDate();
+      appData.water[selectedDate] = Math.max(0, (Number(appData.water[selectedDate]) || 0) + amount);
       saveData();
       renderWater();
-      renderTotals("hoje");
+      renderTotals(currentPeriod);
     }
 
     function formatWaterHour(time = "00:00") {
@@ -6890,6 +6894,7 @@
           renderProfile();
           renderTotals(currentPeriod);
           renderMealsProgress();
+          renderWater();
           renderChart();
           renderConsumption(currentPeriod);
           renderExpenses(currentPeriod);
