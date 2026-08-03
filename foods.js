@@ -1051,7 +1051,7 @@ export const foods = [
     proteinPer100g: 0,
     carbsPer100g: 0,
     servings: [
-      { id: "porcao", name: "Porção", grams: 100 }
+      { id: "unidade", name: "Unidade", grams: 100 }
     ]
   },
   {
@@ -1063,7 +1063,7 @@ export const foods = [
     proteinPer100g: 0,
     carbsPer100g: 5,
     servings: [
-      { id: "porcao", name: "Porção", grams: 100 }
+      { id: "unidade", name: "Unidade", grams: 100 }
     ]
   },
   {
@@ -1075,7 +1075,7 @@ export const foods = [
     proteinPer100g: 0,
     carbsPer100g: 10,
     servings: [
-      { id: "porcao", name: "Porção", grams: 100 }
+      { id: "unidade", name: "Unidade", grams: 100 }
     ]
   },
   {
