@@ -179,12 +179,12 @@ export const foods = [
     name: "Bife \u00e0 Parmegiana",
     icon: "\ud83e\udd69",
     category: "Alimenta??o",
-    caloriesPer100g: 225,
+    caloriesPer100g: 240,
     proteinPer100g: 17,
     carbsPer100g: 12,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "excel", name: "100g", grams: 100 }
+      { id: "excel", name: "50g", grams: 50 }
     ]
   },
   {
