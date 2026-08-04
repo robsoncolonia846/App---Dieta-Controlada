@@ -655,7 +655,7 @@ export const foods = [
     name: "Panqueca de Frango",
     aliases: ["Panqueca (Frango)"],
     category: "Alimenta??o",
-    caloriesPer100g: 175,
+    caloriesPer100g: 180,
     proteinPer100g: 14,
     carbsPer100g: 16,
     servings: [

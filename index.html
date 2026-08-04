@@ -1120,67 +1120,6 @@
       gap: 10px;
     }
 
-    .water-summary-setting {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 8px;
-      min-width: 0;
-      color: #273123;
-      font-size: 12px;
-      font-weight: 800;
-      text-align: right;
-    }
-
-    .water-score-toggle {
-      width: 54px;
-      height: 28px;
-      flex: 0 0 auto;
-      position: relative;
-      border: 0;
-      border-radius: 999px;
-      background: #209b26;
-      color: #fff;
-      transition: background 160ms ease;
-    }
-
-    .water-score-toggle::before {
-      content: "ON";
-      position: absolute;
-      left: 8px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 9px;
-      font-weight: 950;
-    }
-
-    .water-score-toggle::after {
-      content: "";
-      position: absolute;
-      width: 22px;
-      height: 22px;
-      right: 3px;
-      top: 3px;
-      border-radius: 50%;
-      background: #fff;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
-      transition: transform 160ms ease;
-    }
-
-    .water-score-toggle[aria-checked="false"] {
-      background: #a7ada4;
-    }
-
-    .water-score-toggle[aria-checked="false"]::before {
-      content: "OFF";
-      left: auto;
-      right: 6px;
-    }
-
-    .water-score-toggle[aria-checked="false"]::after {
-      transform: translateX(-26px);
-    }
-
     .meal-detail-header {
       display: grid;
       gap: 4px;
@@ -2648,195 +2587,6 @@
       gap: 8px;
     }
 
-    .ai-assistant-button {
-      width: 42px;
-      height: 42px;
-      border: 0;
-      border-radius: 50%;
-      padding: 3px;
-      background: conic-gradient(#168fff, #12c87c, #9adf20, #ffd21a, #ff532f, #cc45d8, #168fff);
-      box-shadow: 0 8px 18px rgba(40, 130, 55, .22);
-      cursor: pointer;
-    }
-
-    .ai-assistant-button span,
-    .ai-chat-avatar span {
-      display: grid;
-      width: 100%;
-      height: 100%;
-      place-items: center;
-      border-radius: 50%;
-      background: #080a09;
-      color: #fff;
-      font-weight: 900;
-    }
-
-    .ai-assistant-button span {
-      font-size: 14px;
-    }
-
-    .ai-chat-modal {
-      position: fixed;
-      inset: 0;
-      z-index: 120;
-      display: grid;
-      place-items: end center;
-      background: rgba(18, 25, 20, .45);
-    }
-
-    .ai-chat-modal.hidden {
-      display: none;
-    }
-
-    .ai-chat-sheet {
-      width: min(100%, 430px);
-      height: min(82vh, 700px);
-      display: grid;
-      grid-template-rows: auto 1fr auto;
-      overflow: hidden;
-      border-radius: 28px 28px 0 0;
-      background: #f7f9f4;
-      box-shadow: 0 -12px 40px rgba(0, 0, 0, .2);
-    }
-
-    .ai-chat-modal.keyboard-open .ai-chat-sheet {
-      height: 100%;
-      max-height: 100%;
-    }
-
-    .ai-chat-head {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 16px 18px;
-      border-bottom: 1px solid #e1e6dc;
-      background: #fff;
-    }
-
-    .ai-chat-avatar {
-      display: grid;
-      width: 38px;
-      height: 38px;
-      padding: 3px;
-      place-items: center;
-      border-radius: 50%;
-      background: conic-gradient(#168fff, #12c87c, #9adf20, #ffd21a, #ff532f, #cc45d8, #168fff);
-    }
-
-    .ai-chat-avatar span {
-      font-size: 12px;
-    }
-
-    .ai-chat-head strong {
-      flex: 1;
-    }
-
-    .ai-chat-close {
-      border: 0;
-      background: transparent;
-      color: #5f675d;
-      font-size: 28px;
-      cursor: pointer;
-    }
-
-    .ai-chat-messages {
-      display: flex;
-      flex-direction: column;
-      flex: 0 0 auto;
-      gap: 10px;
-      overflow: visible;
-      padding: 16px;
-    }
-
-    .ai-chat-body {
-      min-height: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      overflow-y: auto;
-      overscroll-behavior: contain;
-      touch-action: pan-y;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .ai-message {
-      max-width: 86%;
-      padding: 11px 13px;
-      border-radius: 17px;
-      line-height: 1.38;
-      white-space: pre-line;
-    }
-
-    .ai-message.assistant {
-      align-self: flex-start;
-      border-bottom-left-radius: 5px;
-      background: #fff;
-      color: #223122;
-    }
-
-    .ai-message.user {
-      align-self: flex-end;
-      border-bottom-right-radius: 5px;
-      background: #168b37;
-      color: #fff;
-    }
-
-    .ai-chat-options {
-      display: flex;
-      flex: 0 0 auto;
-      flex-wrap: wrap;
-      gap: 7px;
-      padding: 0 16px 16px;
-    }
-
-    .ai-chat-option {
-      border: 1px solid #95ca88;
-      border-radius: 999px;
-      padding: 8px 11px;
-      background: #fff;
-      color: #167d35;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    .ai-chat-compose {
-      display: grid;
-      grid-template-columns: 1fr auto auto;
-      gap: 7px;
-      padding: 12px;
-      border-top: 1px solid #e1e6dc;
-      background: #fff;
-    }
-
-    .ai-chat-input {
-      min-width: 0;
-      border: 1px solid #d7ded2;
-      border-radius: 18px;
-      padding: 11px 13px;
-      font: inherit;
-    }
-
-    .ai-chat-send,
-    .ai-chat-mic {
-      width: 44px;
-      height: 44px;
-      border: 0;
-      border-radius: 50%;
-      background: #168b37;
-      color: #fff;
-      font-size: 18px;
-      cursor: pointer;
-    }
-
-    .ai-chat-mic {
-      background: #eef4ea;
-      color: #168b37;
-    }
-
-    .ai-chat-mic.hidden {
-      display: none;
-    }
-
   </style>
 </head>
 <body>
@@ -2857,7 +2607,6 @@
               </div>
             </div>
             <div class="topbar-actions">
-              <button class="ai-assistant-button hidden" id="ai-assistant-button" type="button" aria-label="Abrir assistente de alimentação" aria-hidden="true" hidden><span>IA</span></button>
               <button class="avatar-button" id="profile-button" type="button" aria-label="Escolher foto do perfil">R</button>
             </div>
             <input class="hidden" id="profile-photo-input" type="file" accept="image/*" />
@@ -2970,10 +2719,6 @@
               <div class="water-grid" id="water-cups"></div>
               <div class="water-footer">
                 <div class="muted">Meta diária: <strong id="water-goal">3000 ml</strong></div>
-                <div class="water-summary-setting hidden" aria-hidden="true">
-                  <span>Incluir no resumo diário</span>
-                  <button class="water-score-toggle" type="button" id="water-score-toggle" role="switch" aria-checked="true" aria-label="Incluir hidratação no resumo diário"></button>
-                </div>
               </div>
             </div>
 
@@ -3187,25 +2932,6 @@
     </div>
   </div>
 
-  <div class="ai-chat-modal hidden" id="ai-chat-modal" role="dialog" aria-modal="true" aria-labelledby="ai-chat-title">
-    <div class="ai-chat-sheet">
-      <div class="ai-chat-head">
-        <div class="ai-chat-avatar"><span>IA</span></div>
-        <strong id="ai-chat-title">Assistente de alimentação</strong>
-        <button class="ai-chat-close" id="ai-chat-close" type="button" aria-label="Fechar assistente">×</button>
-      </div>
-      <div class="ai-chat-body">
-        <div class="ai-chat-messages" id="ai-chat-messages"></div>
-        <div class="ai-chat-options" id="ai-chat-options"></div>
-      </div>
-      <div class="ai-chat-compose">
-        <input class="ai-chat-input" id="ai-chat-input" placeholder="Digite sua resposta..." autocomplete="off" />
-        <button class="ai-chat-mic" id="ai-chat-mic" type="button" aria-label="Ditado por voz">🎙️</button>
-        <button class="ai-chat-send" id="ai-chat-send" type="button" aria-label="Enviar mensagem">➤</button>
-      </div>
-    </div>
-  </div>
-
   <script src="./firebase-config.js"></script>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
@@ -3232,15 +2958,6 @@
     const weightTrendPeriodButtons = document.querySelectorAll("[data-weight-trend-period]");
     const greetingTitle = document.getElementById("greeting-title");
     const profileButton = document.getElementById("profile-button");
-    const aiAssistantButton = document.getElementById("ai-assistant-button");
-    const aiChatModal = document.getElementById("ai-chat-modal");
-    const aiChatClose = document.getElementById("ai-chat-close");
-    const aiChatMessages = document.getElementById("ai-chat-messages");
-    const aiChatBody = document.querySelector(".ai-chat-body");
-    const aiChatOptions = document.getElementById("ai-chat-options");
-    const aiChatInput = document.getElementById("ai-chat-input");
-    const aiChatSend = document.getElementById("ai-chat-send");
-    const aiChatMic = document.getElementById("ai-chat-mic");
     const profilePhotoInput = document.getElementById("profile-photo-input");
     const profileAgeLabel = document.getElementById("profile-age-label");
     const profileWeightLabel = document.getElementById("profile-weight-label");
@@ -3274,7 +2991,6 @@
     const waterTitle = document.getElementById("water-title");
     const addWaterQuick = document.getElementById("add-water-quick");
     const removeWater = document.getElementById("remove-water");
-    const waterScoreToggle = document.getElementById("water-score-toggle");
     const waterStartTime = document.getElementById("water-start-time");
     const waterEndTime = document.getElementById("water-end-time");
     const waterStartLabel = document.getElementById("water-start-label");
@@ -3864,7 +3580,6 @@
       water: appData.water && typeof appData.water === "object" ? appData.water : {},
       settings: {
         ...(appData.settings && typeof appData.settings === "object" ? appData.settings : {}),
-        includeWaterInSummary: true,
         mealNotifications: appData.settings?.mealNotifications === true,
         waterNotifications: appData.settings?.waterNotifications === true,
         waterStartTime: appData.settings?.waterStartTime || "09:00",
@@ -3977,322 +3692,6 @@
     let profilePickerValues = [];
     let profilePickerSelectedIndex = 0;
     let profilePickerFormatValue = (value) => String(value);
-    let aiChatStep = "meal";
-    let aiChatMealType = "";
-    let aiChatDraftItems = [];
-    let aiPendingFood = null;
-
-    const aiMealAliases = {
-      cafe: ["cafe", "cafe da manha", "café", "café da manhã"],
-      almoco: ["almoco", "almoço"],
-      "lanche-tarde": ["lanche", "lanche da tarde", "cafe da tarde", "café da tarde"],
-      jantar: ["jantar", "janta"]
-    };
-
-    function addAiMessage(text, author = "assistant") {
-      const bubble = document.createElement("div");
-      bubble.className = `ai-message ${author}`;
-      bubble.textContent = text;
-      aiChatMessages.appendChild(bubble);
-      requestAnimationFrame(() => {
-        aiChatBody.scrollTop = aiChatBody.scrollHeight;
-      });
-    }
-
-    function setAiOptions(options = []) {
-      aiChatOptions.innerHTML = options
-        .map((option) => `<button class="ai-chat-option" type="button" data-ai-value="${option.value}">${option.label}</button>`)
-        .join("");
-      aiChatOptions.querySelectorAll("[data-ai-value]").forEach((button) => {
-        button.addEventListener("click", () => processAiChatInput(button.dataset.aiValue, button.textContent));
-      });
-      requestAnimationFrame(() => {
-        aiChatBody.scrollTop = aiChatBody.scrollHeight;
-      });
-    }
-
-    function resetAiChat() {
-      aiChatStep = "meal";
-      aiChatMealType = "";
-      aiChatDraftItems = [];
-      aiPendingFood = null;
-      aiChatMessages.innerHTML = "";
-      aiChatInput.value = "";
-      addAiMessage("Olá! O que você deseja registrar?");
-      setAiOptions(mealTypes.map((meal) => ({
-        value: meal.id,
-        label: `${meal.icon} ${mealDetailLabels[meal.id] || meal.name}`
-      })));
-    }
-
-    function mealTypeFromAiText(text) {
-      const normalized = normalizeText(text);
-      return Object.entries(aiMealAliases).find(([, aliases]) =>
-        aliases.some((alias) => normalized.includes(normalizeText(alias)))
-      )?.[0] || "";
-    }
-
-    function foodFromAiSegment(segment) {
-      const cleaned = normalizeText(segment)
-        .replace(/\b\d+(?:[.,]\d+)?\s*(?:kg|g|gramas?|ml|litros?|l|unidades?|unid\.?|fatias?|colheres?|conchas?)?\b/g, " ")
-        .replace(/\b(de|do|da|um|uma|e)\b/g, " ")
-        .replace(/\s+/g, " ")
-        .trim();
-      if (!cleaned) return null;
-      const exactNameMatches = foods.filter((food) => normalizeText(food.name).trim() === cleaned);
-      if (exactNameMatches.length === 1) return exactNameMatches[0];
-      const matchingFoods = foods.filter((food) =>
-        [food.name, ...(food.aliases || [])].some((label) => {
-          const normalizedLabel = normalizeText(label).trim();
-          return normalizedLabel === cleaned ||
-            normalizedLabel.includes(cleaned) ||
-            cleaned.includes(normalizedLabel);
-        })
-      );
-      return matchingFoods.length === 1 ? matchingFoods[0] : null;
-    }
-
-    function aiFoodSuggestions(text) {
-      const query = normalizeText(text)
-        .replace(/\b\d+(?:[.,]\d+)?\s*(?:kg|g|gramas?|ml|litros?|l|unidades?|unid\.?|fatias?|colheres?|conchas?)?\b/g, " ")
-        .replace(/\b(de|do|da|um|uma|e)\b/g, " ")
-        .replace(/\s+/g, " ")
-        .trim();
-      if (!query) return [];
-      const seen = new Set();
-      return foods
-        .filter((food) => {
-          const labels = [food.name, ...(food.aliases || [])].map((label) => normalizeText(label));
-          return labels.some((label) => label.includes(query) || query.includes(label));
-        })
-        .sort((a, b) => {
-          const aName = normalizeText(a.name);
-          const bName = normalizeText(b.name);
-          const aExact = aName === query ? 0 : 1;
-          const bExact = bName === query ? 0 : 1;
-          return aExact - bExact || a.name.localeCompare(b.name, "pt-BR");
-        })
-        .filter((food) => {
-          if (seen.has(food.id)) return false;
-          seen.add(food.id);
-          return true;
-        })
-        .slice(0, 8);
-    }
-
-    function parseAiFoodList(text) {
-      const normalizedSeparators = String(text)
-        .replace(/\s+(?:e|mais)\s+(?=\d)/gi, ",")
-        .replace(/[;\n]+/g, ",");
-      const segments = normalizedSeparators.split(",").map((item) => item.trim()).filter(Boolean);
-      const parsed = [];
-      const unresolved = [];
-      segments.forEach((segment) => {
-        const amountMatch = segment.match(/(\d+(?:[.,]\d+)?)\s*(kg|g|gramas?|ml|litros?|l|unidades?|unid\.?|fatias?|colheres?|conchas?)?/i);
-        const food = foodFromAiSegment(segment);
-        if (!amountMatch || !food) {
-          unresolved.push(segment);
-          return;
-        }
-        let value = Number(amountMatch[1].replace(",", "."));
-        let unit = normalizeText(amountMatch[2] || "unidade").replace(/\.$/, "");
-        if (unit === "kg") {
-          value *= 1000;
-          unit = "g";
-        } else if (unit === "l" || unit.startsWith("litro")) {
-          value *= 1000;
-          unit = "ml";
-        } else if (unit.startsWith("grama")) {
-          unit = "g";
-        } else if (unit.startsWith("unid")) {
-          unit = "unidade";
-        } else if (unit.startsWith("fatia")) {
-          unit = "fatia";
-        } else if (unit.startsWith("colher")) {
-          unit = "colher";
-        } else if (unit.startsWith("concha")) {
-          unit = "concha";
-        }
-        const amount = `${value} ${unit}`;
-        const amountParsed = parseAmount(amount);
-        let grams = value;
-        let servingName = unit === "g" ? "Gramas" : unit === "ml" ? "ml" : unit;
-        let servingId = unit === "g" ? "gramas" : unit;
-        if (amountParsed && !["g", "ml"].includes(amountParsed.unit)) {
-          const serving = servingForAmountUnit(food, amountParsed.unit);
-          if (!serving) {
-            unresolved.push(segment);
-            return;
-          }
-          grams = round(value * Number(serving.grams));
-          servingName = serving.name || amountParsed.label;
-          servingId = serving.id || amountParsed.unit;
-        }
-        const nutrition = calculateNutrition(food, grams);
-        parsed.push({ food, value, unit, grams, servingName, servingId, nutrition });
-      });
-      return { parsed, unresolved };
-    }
-
-    function aiDraftSummary() {
-      const lines = aiChatDraftItems.map((item) =>
-        `• ${item.food.name} — ${item.value} ${item.unit} (${formatKcalValue(item.nutrition.calories)} kcal)`
-      );
-      const totals = aiChatDraftItems.reduce((sum, item) => ({
-        kcal: sum.kcal + item.nutrition.calories,
-        protein: sum.protein + item.nutrition.protein,
-        carbs: sum.carbs + item.nutrition.carbs
-      }), { kcal: 0, protein: 0, carbs: 0 });
-      return `${lines.join("\n")}\n\nTotal: ${formatKcalValue(totals.kcal)} kcal · ${round(totals.protein)}g proteína · ${round(totals.carbs)}g carboidratos\n\nEstá correto?`;
-    }
-
-    function registerAiMeal() {
-      const mealType = mealTypes.find((meal) => meal.id === aiChatMealType) || mealTypes[0];
-      const now = Date.now();
-      const registrationDate = selectedHomeDate();
-      aiChatDraftItems.forEach((item, index) => {
-        appData.meals.unshift({
-          id: `${now}-${index}`,
-          updatedAt: now + index,
-          date: registrationDate,
-          foodId: item.food.id,
-          foodName: item.food.name,
-          mealType: mealType.id,
-          mealTypeName: mealType.name,
-          mealTime: appData.mealTimes?.[mealType.id] || defaultMealTimes[mealType.id],
-          grams: item.grams,
-          quantity: item.value,
-          servingName: item.servingName,
-          servingId: item.servingId,
-          ...item.nutrition
-        });
-      });
-      saveData();
-      renderAll();
-      addAiMessage(`${mealDetailLabels[mealType.id] || mealType.name} registrado com sucesso.`, "assistant");
-      aiChatStep = "done";
-      setAiOptions([
-        { value: "novo", label: "Registrar outra refeição" },
-        { value: "fechar", label: "Concluir" }
-      ]);
-    }
-
-    function processAiChatInput(rawValue, displayValue = "") {
-      const text = String(rawValue || "").trim();
-      if (!text) return;
-      addAiMessage(displayValue || text, "user");
-      aiChatInput.value = "";
-
-      if (text.startsWith("whatsapp-missing:")) {
-        const missingFood = decodeURIComponent(text.slice("whatsapp-missing:".length));
-        const mealLabel = mealDetailLabels[aiChatMealType] || aiChatMealType || "refeição";
-        const personName = appData.profile?.name || "Usuário do app";
-        const message = `Olá, Robson! ${personName} tentou registrar o alimento "${missingFood}" em ${mealLabel}, mas ele ainda não está cadastrado no app. Pode cadastrar?`;
-        window.open(`https://wa.me/5553997074641?text=${encodeURIComponent(message)}`, "_blank", "noopener,noreferrer");
-        addAiMessage("Abri o WhatsApp com a solicitação pronta. Basta enviar a mensagem ao administrador.");
-        setAiOptions([]);
-        return;
-      }
-
-      if (text.startsWith("food:")) {
-        const foodId = text.slice(5);
-        aiPendingFood = foods.find((food) => food.id === foodId) || null;
-        if (!aiPendingFood) {
-          addAiMessage("Não encontrei esse alimento. Tente escrever o nome novamente.");
-          aiChatStep = "foods";
-          return;
-        }
-        aiChatStep = "food-quantity";
-        setAiOptions([]);
-        addAiMessage(`Qual foi a quantidade de ${aiPendingFood.name}?\nExemplo: 120g, 1 unidade ou 2 fatias.`);
-        return;
-      }
-
-      if (aiChatStep === "meal") {
-        const selected = mealTypes.some((meal) => meal.id === text) ? text : mealTypeFromAiText(text);
-        if (!selected) {
-          addAiMessage("Não consegui identificar a refeição. Escolha café, almoço, lanche ou jantar.");
-          return;
-        }
-        aiChatMealType = selected;
-        aiChatStep = "foods";
-        setAiOptions([]);
-        addAiMessage(`O que você comeu no ${normalizeText(mealDetailLabels[selected] || selected)}?\nExemplo: 100g de arroz, 50g de feijão e 120g de carne.`);
-        return;
-      }
-
-      if (aiChatStep === "foods") {
-        const result = parseAiFoodList(text);
-        if (!result.parsed.length || result.unresolved.length) {
-          const unresolvedText = result.unresolved[0] || text;
-          const suggestions = aiFoodSuggestions(unresolvedText);
-          if (suggestions.length >= 1) {
-            aiChatDraftItems = result.parsed;
-            addAiMessage(`Encontrei estas opções para “${unresolvedText}”. Qual delas você comeu?`);
-            setAiOptions(suggestions.map((food) => ({
-              value: `food:${food.id}`,
-              label: food.name
-            })));
-            return;
-          }
-          addAiMessage(`Não encontrei “${unresolvedText}” na nossa lista de alimentos.\nVamos falar com o administrador para cadastrar este alimento.`);
-          setAiOptions([{
-            value: `whatsapp-missing:${encodeURIComponent(unresolvedText)}`,
-            label: "Avisar administrador pelo WhatsApp"
-          }]);
-          return;
-        }
-        aiChatDraftItems = result.parsed;
-        aiChatStep = "confirm";
-        addAiMessage(aiDraftSummary());
-        setAiOptions([
-          { value: "confirmar", label: "✓ Confirmar e registrar" },
-          { value: "corrigir", label: "Corrigir" },
-          { value: "cancelar", label: "Cancelar" }
-        ]);
-        return;
-      }
-
-      if (aiChatStep === "food-quantity") {
-        const result = parseAiFoodList(`${text} de ${aiPendingFood?.name || ""}`);
-        if (!result.parsed.length || result.unresolved.length) {
-          addAiMessage(`Não consegui entender a quantidade de ${aiPendingFood?.name || "alimento"}.\nTente assim: 120g, 1 unidade ou 2 fatias.`);
-          return;
-        }
-        aiChatDraftItems.push(result.parsed[0]);
-        aiPendingFood = null;
-        aiChatStep = "confirm";
-        addAiMessage(aiDraftSummary());
-        setAiOptions([
-          { value: "confirmar", label: "✓ Confirmar e registrar" },
-          { value: "corrigir", label: "Corrigir" },
-          { value: "cancelar", label: "Cancelar" }
-        ]);
-        return;
-      }
-
-      if (aiChatStep === "confirm") {
-        const command = normalizeText(text);
-        if (command.includes("confirm")) {
-          registerAiMeal();
-        } else if (command.includes("corrig")) {
-          aiChatStep = "foods";
-          setAiOptions([]);
-          addAiMessage("Escreva novamente a lista completa com as quantidades corrigidas.");
-        } else {
-          resetAiChat();
-        }
-        return;
-      }
-
-      if (aiChatStep === "done") {
-        if (normalizeText(text).includes("novo") || normalizeText(text).includes("outra")) {
-          resetAiChat();
-        } else {
-          aiChatModal.classList.add("hidden");
-        }
-      }
-    }
     let profilePickerScrollFrame = 0;
 
     mealDate.value = todayISO();
@@ -5153,7 +4552,6 @@
       const isToday = date === todayISO();
       const waterExpected = Math.min(waterTarget(date), (isToday ? expectedWaterCupCount() : Math.ceil(waterTarget(date) / 250)) * 250);
       const waterScore = waterExpected > 0 ? Math.min(100, Math.round((waterNow / waterExpected) * 100)) : 100;
-      const includeWater = true;
       const mealScoreData = calculateMealTimingScore(date);
       const calorieRatio = consumed / adjustedTarget;
       const dayProgress = isToday ? expectedDayProgress() : 1;
@@ -5165,9 +4563,7 @@
         calorieScore = Math.max(30, Math.round((calorieRatio / Math.max(0.1, dayProgress * 0.55)) * 100));
       }
       let score = Math.max(0, Math.min(100, Math.round(
-        includeWater
-          ? calorieScore * 0.4 + mealScoreData.score * 0.2 + waterScore * 0.4
-          : calorieScore * 0.7 + mealScoreData.score * 0.3
+        calorieScore * 0.4 + mealScoreData.score * 0.2 + waterScore * 0.4
       )));
       if (maintainWeight ? excess > 0 : consumed > targetRange.min + 50) {
         score = Math.min(score, 79);
@@ -5179,7 +4575,7 @@
         alerts.push({ level: "warn", text: `Você está ${formatIntegerKcal(excess)} kcal acima da meta, dentro da faixa de atenção.` });
       }
       if (mealScoreData.alert) alerts.push(mealScoreData.alert);
-      if (includeWater && waterExpected > 0 && waterNow < waterExpected) {
+      if (waterExpected > 0 && waterNow < waterExpected) {
         alerts.push({ level: "warn", text: `Água abaixo do esperado para este horário: ${waterNow}ml de ${waterExpected}ml.` });
       }
       if (dayProgress > 0.45 && calorieScore < 70 && consumed <= adjustedTarget) {
@@ -6321,7 +5717,6 @@
       waterEndTime.value = appData.settings?.waterEndTime || "19:00";
       waterStartLabel.textContent = formatWaterHour(waterStartTime.value);
       waterEndLabel.textContent = formatWaterHour(waterEndTime.value);
-      waterScoreToggle.setAttribute("aria-checked", "true");
       waterCups.innerHTML = Array.from({ length: cupCount }, (_, index) => {
         const state = index < filled ? "filled" : index < expected ? "pending" : "";
         return `<div class="cup ${state}"></div>`;
@@ -7506,11 +6901,6 @@
     waterEndTime.addEventListener("change", saveWaterInterval);
     waterStartLabel.addEventListener("click", () => openWaterTimePicker(waterStartTime));
     waterEndLabel.addEventListener("click", () => openWaterTimePicker(waterEndTime));
-    waterScoreToggle.addEventListener("click", () => {
-      appData.settings.includeWaterInSummary = !(appData.settings.includeWaterInSummary !== false);
-      saveData();
-      renderAll();
-    });
 
     saveProfile.addEventListener("click", () => {
       const savedWeight = Number(String(profileWeight.value).trim().replace(",", "."));
@@ -7541,71 +6931,6 @@
         renderFoodOptions(button.dataset.foodMode);
       });
     });
-
-    function syncAiChatViewport() {
-      const viewport = window.visualViewport;
-      if (!viewport || aiChatModal.classList.contains("hidden")) return;
-      aiChatModal.style.height = `${viewport.height}px`;
-      aiChatModal.style.top = `${viewport.offsetTop}px`;
-      aiChatModal.style.bottom = "auto";
-    }
-
-    function closeAiChat() {
-      aiChatModal.classList.add("hidden");
-      aiChatModal.classList.remove("keyboard-open");
-      aiChatModal.removeAttribute("style");
-    }
-
-    aiAssistantButton.addEventListener("click", () => {
-      aiChatModal.classList.remove("hidden");
-      resetAiChat();
-      syncAiChatViewport();
-    });
-    aiChatClose.addEventListener("click", closeAiChat);
-    aiChatModal.addEventListener("click", (event) => {
-      if (event.target === aiChatModal) closeAiChat();
-    });
-    aiChatInput.addEventListener("focus", () => {
-      aiChatModal.classList.add("keyboard-open");
-      syncAiChatViewport();
-    });
-    aiChatInput.addEventListener("blur", () => {
-      window.setTimeout(() => {
-        aiChatModal.classList.remove("keyboard-open");
-        syncAiChatViewport();
-      }, 120);
-    });
-    window.visualViewport?.addEventListener("resize", syncAiChatViewport);
-    window.visualViewport?.addEventListener("scroll", syncAiChatViewport);
-    aiChatSend.addEventListener("click", () => processAiChatInput(aiChatInput.value));
-    aiChatInput.addEventListener("keydown", (event) => {
-      if (event.key === "Enter") processAiChatInput(aiChatInput.value);
-    });
-
-    const SpeechRecognitionApi = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SpeechRecognitionApi) {
-      aiChatMic.classList.add("hidden");
-    } else {
-      aiChatMic.addEventListener("click", () => {
-        const recognition = new SpeechRecognitionApi();
-        recognition.lang = "pt-BR";
-        recognition.interimResults = false;
-        recognition.maxAlternatives = 1;
-        aiChatMic.textContent = "●";
-        recognition.addEventListener("result", (event) => {
-          aiChatInput.value = event.results[0][0].transcript;
-          aiChatInput.focus();
-        });
-        recognition.addEventListener("end", () => {
-          aiChatMic.textContent = "🎙️";
-        });
-        recognition.addEventListener("error", () => {
-          aiChatMic.textContent = "🎙️";
-          addAiMessage("Não consegui usar o microfone. Você pode continuar digitando.");
-        });
-        recognition.start();
-      });
-    }
 
     foodSearch.addEventListener("input", () => renderFoodOptions("all"));
     mealDate.addEventListener("input", renderMealLog);
