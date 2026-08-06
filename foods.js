@@ -1308,5 +1308,32 @@ export const foods = [
       { id: "gramas", name: "Gramas", grams: 1 },
       { id: "excel", name: "50g", grams: 50 }
     ]
+  },
+  {
+    id: "torta-de-bolacha",
+    name: "Torta de Bolacha",
+    aliases: ["Torta Bolacha"],
+    icon: "\ud83c\udf70",
+    category: "Alimenta??o",
+    caloriesPer100g: 200,
+    proteinPer100g: 3,
+    carbsPer100g: 30,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "100g", grams: 100 }
+    ]
+  },
+  {
+    id: "arroz-doce",
+    name: "Arroz Doce",
+    icon: "\ud83c\udf5a",
+    category: "Alimenta??o",
+    caloriesPer100g: 200,
+    proteinPer100g: 4,
+    carbsPer100g: 36,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "100g", grams: 100 }
+    ]
   }
 ];
