@@ -408,12 +408,12 @@ export const foods = [
     id: "iogurte-zero",
     name: "Iogurte Zero",
     category: "Alimenta??o",
-    caloriesPer100g: 26,
+    caloriesPer100g: 25,
     proteinPer100g: 5.5,
     carbsPer100g: 7.2,
     servings: [
-      { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "200ml", name: "200 ml", grams: 200 }
+      { id: "mililitros", name: "Mililitros", grams: 1 },
+      { id: "excel", name: "100ml", grams: 100 }
     ]
   },
   {
@@ -1301,7 +1301,7 @@ export const foods = [
     name: "Pastel de Carne Frito",
     icon: "🥟",
     category: "Alimenta??o",
-    caloriesPer100g: 394,
+    caloriesPer100g: 400,
     proteinPer100g: 10.1,
     carbsPer100g: 43.8,
     servings: [
