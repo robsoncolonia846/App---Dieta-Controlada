@@ -53,6 +53,31 @@
       line-height: 1;
     }
 
+    .editable-greeting {
+      max-width: 100%;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      font: inherit;
+      font-weight: inherit;
+      letter-spacing: inherit;
+      line-height: inherit;
+      text-align: left;
+      overflow-wrap: anywhere;
+      cursor: pointer;
+    }
+
+    .topbar > div:first-child {
+      min-width: 0;
+    }
+
+    .editable-greeting:focus-visible {
+      outline: 2px solid #209b26;
+      outline-offset: 3px;
+    }
+
     .topbar {
       display: flex;
       align-items: center;
@@ -2594,7 +2619,7 @@
         <header>
           <div class="topbar">
             <div>
-              <h1 id="greeting-title">Olá, Robson</h1>
+              <h1><button class="editable-greeting" id="greeting-title" type="button" title="Editar nome">Olá, Robson</button></h1>
               <div class="profile-meta" aria-label="Dados rápidos do perfil">
                 <button class="quick-profile-button" id="profile-age-label" type="button">-- anos</button>
                 <button class="quick-profile-button" id="profile-height-label" type="button">-- m</button>
@@ -3212,6 +3237,9 @@
       { id: "beach-tennis-leve", name: "Beach Tennis (Leve)", icon: "🏖️", caloriesPerHour: 200 },
       { id: "beach-tennis-moderado", name: "Beach Tennis (Moderado)", icon: "🏖️", caloriesPerHour: 400 },
       { id: "beach-tennis-intenso", name: "Beach Tennis (Intenso)", icon: "🏖️", caloriesPerHour: 600 },
+      { id: "caminhada-leve", name: "Caminhada (Leve)", icon: "🚶", caloriesPerHour: 200 },
+      { id: "caminhada-moderada", name: "Caminhada (Moderada)", icon: "🚶", caloriesPerHour: 300 },
+      { id: "caminhada-intensa", name: "Caminhada (Intensa)", icon: "🚶", caloriesPerHour: 400 },
       { id: "bicicleta-ergometrica-leve", name: "Bicicleta ergométrica (Leve)", icon: "🚲", caloriesPerHour: 200 },
       { id: "bicicleta-ergometrica-moderada", name: "Bicicleta ergométrica (Moderada)", icon: "🚲", caloriesPerHour: 400 },
       { id: "bicicleta-ergometrica-intensa", name: "Bicicleta ergométrica (Intensa)", icon: "🚲", caloriesPerHour: 600 }
@@ -6910,6 +6938,24 @@
     waterEndTime.addEventListener("change", saveWaterInterval);
     waterStartLabel.addEventListener("click", () => openWaterTimePicker(waterStartTime));
     waterEndLabel.addEventListener("click", () => openWaterTimePicker(waterEndTime));
+
+    greetingTitle.addEventListener("click", () => {
+      const currentName = String(appData.profile?.name || "").trim();
+      const nextName = window.prompt("Digite seu nome", currentName);
+      if (nextName === null) return;
+      const normalizedName = nextName.trim();
+      if (!normalizedName) {
+        alert("Informe um nome válido.");
+        return;
+      }
+      appData.profile.name = normalizedName;
+      updateDailySnapshot(todayISO(), {
+        profilePatch: appData.profile,
+        weightGoalMode: appData.settings.weightGoalMode
+      });
+      saveData();
+      renderAll();
+    });
 
     saveProfile.addEventListener("click", () => {
       const savedWeight = Number(String(profileWeight.value).trim().replace(",", "."));
