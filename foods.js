@@ -1335,5 +1335,18 @@ export const foods = [
       { id: "gramas", name: "Gramas", grams: 1 },
       { id: "excel", name: "50g", grams: 50 }
     ]
+  },
+  {
+    id: "coca-cola-original",
+    name: "Coca-Cola Original",
+    icon: "\ud83e\udd64",
+    category: "Alimenta??o",
+    caloriesPer100g: 42.5,
+    proteinPer100g: 0,
+    carbsPer100g: 10.5,
+    servings: [
+      { id: "mililitros", name: "Mililitros", grams: 1 },
+      { id: "excel", name: "200ml", grams: 200 }
+    ]
   }
 ];
