@@ -2428,6 +2428,8 @@
 
     .recommended-item[data-reorder-item] {
       -webkit-touch-callout: none;
+      user-select: none;
+      -webkit-user-select: none;
       transition: opacity 120ms ease, transform 120ms ease;
     }
 
@@ -4880,7 +4882,7 @@
         });
       });
       recommendationCarousel.querySelector(`[data-recommendation-index="${index}"]`)?.addEventListener("click", (event) => {
-        if (event.target.closest("button, input, select, textarea, [role='button']")) return;
+        if (!event.target.closest(".selected-pill")) return;
         toggleRecommendationRegister();
       });
       recommendationCarousel.querySelectorAll("[data-substitute-rec]").forEach((button) => {
@@ -4960,9 +4962,7 @@
       if (!recommendationRegisterArmed) return;
       if (editingMealId || editingDietTemplate) return;
       if (document.getElementById("refeicao-detalhe")?.classList.contains("hidden")) return;
-      if (event.target.closest("#meal-detail-register, [data-select-rec]")) return;
-      const selectedCard = recommendationCarousel.querySelector(`[data-recommendation-index="${selectedRecommendationIndex}"]`);
-      if (selectedCard?.contains(event.target)) return;
+      if (event.target.closest("#meal-detail-register, [data-select-rec], .selected-pill")) return;
       recommendationRegisterArmed = false;
       updateRecommendationRegisterVisibility();
     }
@@ -5049,6 +5049,41 @@
       }
     }
 
+    function mealItemReorderSiblings(state) {
+      return Array.from(state?.list?.children || [])
+        .filter((item) => item.matches?.("[data-reorder-item]") && item.dataset.reorderGroup === state.group);
+    }
+
+    function animateMealItemReorder(items, beforePositions) {
+      items.forEach((item) => {
+        const previousTop = beforePositions.get(item);
+        if (!Number.isFinite(previousTop)) return;
+        const deltaY = previousTop - item.getBoundingClientRect().top;
+        if (Math.abs(deltaY) < 1) return;
+        item.getAnimations?.().forEach((animation) => animation.cancel());
+        item.animate?.(
+          [{ transform: `translateY(${deltaY}px)` }, { transform: "translateY(0)" }],
+          { duration: 170, easing: "cubic-bezier(.2,.75,.25,1)" }
+        );
+      });
+    }
+
+    function previewMealItemReorder(state, target, placeAfter) {
+      if (!state?.active || !target || target === state.source) return;
+      const items = mealItemReorderSiblings(state);
+      const beforePositions = new Map(items.map((item) => [item, item.getBoundingClientRect().top]));
+      const reference = placeAfter ? target.nextSibling : target;
+      if (reference === state.source) return;
+      state.list.insertBefore(state.source, reference);
+      animateMealItemReorder(items, beforePositions);
+    }
+
+    function restoreMealItemReorderOrder(state) {
+      if (!state?.originalOrder?.length || !state.list?.isConnected) return;
+      const anchor = state.afterItemsAnchor?.parentElement === state.list ? state.afterItemsAnchor : null;
+      state.originalOrder.forEach((item) => state.list.insertBefore(item, anchor));
+    }
+
     function activateMealItemReorder() {
       const state = mealItemReorderState;
       if (!state || state.active || !state.source?.isConnected) return;
@@ -5077,13 +5112,30 @@
       state.lastY = clientY;
       state.ghost.style.top = `${Math.max(4, Math.min(window.innerHeight - state.ghost.offsetHeight - 4, clientY - state.offsetY))}px`;
 
+      const listRect = state.list.getBoundingClientRect();
+      let target = document.elementFromPoint(clientX, clientY)?.closest?.("[data-reorder-item]");
+      const validTarget = target
+        && target !== state.source
+        && target.parentElement === state.list
+        && target.dataset.reorderGroup === state.group;
+      if (!validTarget && clientX >= listRect.left && clientX <= listRect.right && clientY >= listRect.top - 24 && clientY <= listRect.bottom + 24) {
+        target = mealItemReorderSiblings(state)
+          .filter((item) => item !== state.source)
+          .sort((first, second) => {
+            const firstRect = first.getBoundingClientRect();
+            const secondRect = second.getBoundingClientRect();
+            return Math.abs(clientY - (firstRect.top + firstRect.height / 2))
+              - Math.abs(clientY - (secondRect.top + secondRect.height / 2));
+          })[0] || null;
+      }
+
       clearMealItemReorderTarget(state);
-      const target = document.elementFromPoint(clientX, clientY)?.closest?.("[data-reorder-item]");
       if (target && target !== state.source && target.parentElement === state.list && target.dataset.reorderGroup === state.group) {
         const rect = target.getBoundingClientRect();
         state.target = target;
         state.placeAfter = clientY >= rect.top + rect.height / 2;
         target.classList.add(state.placeAfter ? "reorder-after" : "reorder-before");
+        previewMealItemReorder(state, target, state.placeAfter);
       }
 
       const edgeSize = 72;
@@ -5111,6 +5163,8 @@
       suppressMealItemClickUntil = Date.now() + 650;
       if (commit && source?.isConnected && target?.isConnected) {
         persistMealItemReorder(source, target, placeAfter);
+      } else {
+        restoreMealItemReorderOrder(state);
       }
     }
 
@@ -5135,6 +5189,8 @@
         target: null,
         placeAfter: false,
         ghost: null,
+        originalOrder: siblings,
+        afterItemsAnchor: siblings[siblings.length - 1]?.nextSibling || null,
         timer: window.setTimeout(activateMealItemReorder, mealItemReorderHoldMs)
       };
     }
