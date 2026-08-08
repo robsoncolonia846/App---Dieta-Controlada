@@ -5202,7 +5202,11 @@
     }
 
     function preferredFoodServing(food) {
-      return food?.servings?.find((serving) => serving.id !== "gramas") || food?.servings?.[0] || null;
+      const servings = food?.servings || [];
+      return servings.find((serving) => serving.id === "excel")
+        || servings.find((serving) => !["gramas", "mililitros"].includes(serving.id))
+        || servings[0]
+        || null;
     }
 
     function measuredServingUnit(serving) {
