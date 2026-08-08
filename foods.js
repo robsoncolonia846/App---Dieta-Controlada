@@ -413,7 +413,7 @@ export const foods = [
     carbsPer100g: 7.2,
     servings: [
       { id: "mililitros", name: "Mililitros", grams: 1 },
-      { id: "excel", name: "100ml", grams: 100 }
+      { id: "excel", name: "200ml", grams: 200 }
     ]
   },
   {
@@ -961,7 +961,7 @@ export const foods = [
     name: "Cueca Virada (Grostoli)",
     imageSpritePosition: "100%",
     category: "Alimentação",
-    caloriesPer100g: 430,
+    caloriesPer100g: 400,
     proteinPer100g: 7,
     carbsPer100g: 52,
     servings: [
