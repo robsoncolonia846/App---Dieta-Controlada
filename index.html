@@ -6243,7 +6243,7 @@
       const dataLabels = labelPoints.map(({ targetIndex, item }) => {
         const x = xFor(item.index);
         const y = yFor(item.weight);
-        const valueY = Math.max(7, y - 5);
+        const valueY = Math.max(6, y - 9);
         const anchor = targetIndex === 0 ? "start" : targetIndex === lastIndex ? "end" : "middle";
         return `
           <text x="${x}" y="${valueY}" text-anchor="${anchor}" fill="#23852a" font-size="6.5" font-weight="900">${formatWeight(item.weight)}kg</text>
