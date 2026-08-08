@@ -2433,7 +2433,9 @@
       transition: opacity 120ms ease, transform 120ms ease;
     }
 
-    .recommended-item.reorder-source {
+    .recommended-item.reorder-source > .recommended-item-icon,
+    .recommended-item.reorder-source > .recommended-item-main > .meal-name,
+    .recommended-item.reorder-source > .recommended-item-main > .item-detail-row {
       opacity: 0.3;
     }
 
@@ -2462,6 +2464,12 @@
     .meal-reorder-ghost {
       position: fixed;
       z-index: 90;
+      display: grid;
+      grid-template-columns: 46px minmax(0, 1fr);
+      grid-template-rows: auto auto;
+      column-gap: 8px;
+      row-gap: 3px;
+      align-items: center;
       margin: 0;
       padding: 8px;
       border: 1px solid rgba(32, 155, 38, 0.45);
@@ -2470,6 +2478,21 @@
       box-shadow: 0 12px 28px rgba(23, 27, 20, 0.2);
       pointer-events: none;
       transform: scale(1.02);
+    }
+
+    .meal-reorder-ghost > .recommended-item-icon {
+      grid-column: 1;
+      grid-row: 1 / 3;
+    }
+
+    .meal-reorder-ghost .meal-name {
+      grid-column: 2;
+      grid-row: 1;
+    }
+
+    .meal-reorder-ghost .item-detail-row {
+      grid-column: 2;
+      grid-row: 2;
     }
 
     body.meal-item-reordering {
@@ -3584,8 +3607,8 @@
           const optionEdited = isDietOptionEdited(mealType.id, selectedOptionIndex);
           const foodsList = option.items.map((item, itemIndex) => `
             <div class="recommended-item" data-reorder-item="1" data-reorder-kind="diet" data-reorder-group="diet:${mealType.id}:${selectedOptionIndex}" data-reorder-index="${itemIndex}" data-reorder-meal="${mealType.id}" data-reorder-option="${selectedOptionIndex}">
-              <div class="recommended-item-icon">${foodVisualMarkup(item)}</div>
-              <div class="recommended-item-main">
+              <div class="recommended-item-icon" data-reorder-handle="1">${foodVisualMarkup(item)}</div>
+              <div class="recommended-item-main" data-reorder-handle="1">
                 <div class="meal-name">${escapeHTML(item.name)}</div>
                 <div class="item-detail-row">
                   <div class="muted">${escapeHTML(compactAmountLabel(item.amount))}${compactKcalLabel(item.kcal)}</div>
@@ -4832,8 +4855,8 @@
           ` : ""}
           ${option.items.map((item, itemIndex) => `
             <div class="recommended-item" data-reorder-item="1" data-reorder-kind="recommendation" data-reorder-group="recommendation:${index}" data-reorder-index="${itemIndex}" data-reorder-recommendation="${index}">
-              <div class="recommended-item-icon">${foodVisualMarkup(item)}</div>
-              <div class="recommended-item-main">
+              <div class="recommended-item-icon" data-reorder-handle="1">${foodVisualMarkup(item)}</div>
+              <div class="recommended-item-main" data-reorder-handle="1">
                 <div class="meal-name">${item.name}</div>
                 <div class="item-detail-row">
                   <div class="muted">${escapeHTML(compactAmountLabel(item.amount))}${compactKcalLabel(item.kcal)}</div>
@@ -5092,10 +5115,11 @@
       ghost.classList.remove("reorder-source", "reorder-before", "reorder-after");
       ghost.classList.add("meal-reorder-ghost");
       ghost.removeAttribute("data-reorder-item");
-      ghost.querySelectorAll("button, input, select, textarea, a").forEach((element) => element.setAttribute("tabindex", "-1"));
-      ghost.style.left = `${rect.left}px`;
+      ghost.querySelectorAll("button, input, select, textarea, a, .quantity-controls, .swap-icon, .item-remove-button").forEach((element) => element.remove());
+      const ghostWidth = Math.min(rect.width, 260);
+      ghost.style.left = `${Math.max(4, Math.min(window.innerWidth - ghostWidth - 4, rect.left))}px`;
       ghost.style.top = `${rect.top}px`;
-      ghost.style.width = `${rect.width}px`;
+      ghost.style.width = `${ghostWidth}px`;
       state.active = true;
       state.offsetY = state.lastY - rect.top;
       state.ghost = ghost;
@@ -5197,7 +5221,8 @@
 
     function reorderSourceFromTarget(target) {
       if (!(target instanceof Element) || target.closest(mealItemReorderInteractiveSelector)) return null;
-      return target.closest("[data-reorder-item]");
+      const handle = target.closest("[data-reorder-handle]");
+      return handle?.closest("[data-reorder-item]") || null;
     }
 
     function parseAmount(amount = "") {
@@ -5655,8 +5680,8 @@
           </div>
           ${option.items.map((food, itemIndex) => `
             <div class="recommended-item" data-reorder-item="1" data-reorder-kind="home" data-reorder-group="home:${item.id}" data-reorder-index="${itemIndex}" data-reorder-home-meal="${item.id}">
-              <div class="recommended-item-icon">${foodVisualMarkup(food)}</div>
-              <div class="recommended-item-main">
+              <div class="recommended-item-icon" data-reorder-handle="1">${foodVisualMarkup(food)}</div>
+              <div class="recommended-item-main" data-reorder-handle="1">
                 <div class="meal-name">${food.name}</div>
                 <div class="item-detail-row">
                   <div class="muted">${escapeHTML(compactAmountLabel(food.amount))}${compactKcalLabel(food.kcal)}</div>
