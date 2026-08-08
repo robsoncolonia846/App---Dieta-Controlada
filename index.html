@@ -2426,6 +2426,56 @@
       cursor: pointer;
     }
 
+    .recommended-item[data-reorder-item] {
+      -webkit-touch-callout: none;
+      transition: opacity 120ms ease, transform 120ms ease;
+    }
+
+    .recommended-item.reorder-source {
+      opacity: 0.3;
+    }
+
+    .recommended-item.reorder-before::before,
+    .recommended-item.reorder-after::after {
+      content: "";
+      position: absolute;
+      left: 8px;
+      right: 8px;
+      z-index: 8;
+      height: 3px;
+      border-radius: 2px;
+      background: #209b26;
+      box-shadow: 0 1px 5px rgba(32, 155, 38, 0.32);
+      pointer-events: none;
+    }
+
+    .recommended-item.reorder-before::before {
+      top: -5px;
+    }
+
+    .recommended-item.reorder-after::after {
+      bottom: -5px;
+    }
+
+    .meal-reorder-ghost {
+      position: fixed;
+      z-index: 90;
+      margin: 0;
+      padding: 8px;
+      border: 1px solid rgba(32, 155, 38, 0.45);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.97);
+      box-shadow: 0 12px 28px rgba(23, 27, 20, 0.2);
+      pointer-events: none;
+      transform: scale(1.02);
+    }
+
+    body.meal-item-reordering {
+      cursor: grabbing;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
     .activity-time-value {
       min-width: 64px;
       text-align: center;
@@ -3531,7 +3581,7 @@
           const kcal = option.kcal || 0;
           const optionEdited = isDietOptionEdited(mealType.id, selectedOptionIndex);
           const foodsList = option.items.map((item, itemIndex) => `
-            <div class="recommended-item">
+            <div class="recommended-item" data-reorder-item="1" data-reorder-kind="diet" data-reorder-group="diet:${mealType.id}:${selectedOptionIndex}" data-reorder-index="${itemIndex}" data-reorder-meal="${mealType.id}" data-reorder-option="${selectedOptionIndex}">
               <div class="recommended-item-icon">${foodVisualMarkup(item)}</div>
               <div class="recommended-item-main">
                 <div class="meal-name">${escapeHTML(item.name)}</div>
@@ -4779,7 +4829,7 @@
             </div>
           ` : ""}
           ${option.items.map((item, itemIndex) => `
-            <div class="recommended-item">
+            <div class="recommended-item" data-reorder-item="1" data-reorder-kind="recommendation" data-reorder-group="recommendation:${index}" data-reorder-index="${itemIndex}" data-reorder-recommendation="${index}">
               <div class="recommended-item-icon">${foodVisualMarkup(item)}</div>
               <div class="recommended-item-main">
                 <div class="meal-name">${item.name}</div>
@@ -4932,6 +4982,166 @@
 
     function recalculateRecommendation(option) {
       option.kcal = option.items.reduce((total, item) => total + (Number(item.kcal) || 0), 0);
+    }
+
+    let mealItemReorderState = null;
+    let suppressMealItemClickUntil = 0;
+    let lastMealItemTouchAt = 0;
+    const mealItemReorderHoldMs = 420;
+    const mealItemReorderInteractiveSelector = "button, input, select, textarea, a, [role='button']";
+
+    function moveMealItem(items, fromIndex, targetIndex, placeAfter) {
+      if (!Array.isArray(items) || fromIndex < 0 || fromIndex >= items.length) return false;
+      if (targetIndex < 0 || targetIndex >= items.length || fromIndex === targetIndex) return false;
+      let insertionIndex = targetIndex + (placeAfter ? 1 : 0);
+      const [movedItem] = items.splice(fromIndex, 1);
+      if (insertionIndex > fromIndex) insertionIndex -= 1;
+      insertionIndex = Math.max(0, Math.min(insertionIndex, items.length));
+      if (insertionIndex === fromIndex) {
+        items.splice(fromIndex, 0, movedItem);
+        return false;
+      }
+      items.splice(insertionIndex, 0, movedItem);
+      return true;
+    }
+
+    function persistMealItemReorder(source, target, placeAfter) {
+      const fromIndex = Number(source.dataset.reorderIndex);
+      const targetIndex = Number(target.dataset.reorderIndex);
+      if (!Number.isInteger(fromIndex) || !Number.isInteger(targetIndex)) return;
+
+      if (source.dataset.reorderKind === "home") {
+        const prepared = prepareHomeQuickMeal(source.dataset.reorderHomeMeal);
+        if (!prepared || !moveMealItem(prepared.option.items, fromIndex, targetIndex, placeAfter)) return;
+        saveHomeQuickMealOption(prepared.meal.id, prepared.option);
+        return;
+      }
+
+      if (source.dataset.reorderKind === "diet") {
+        const prepared = prepareDietQuickOption(source.dataset.reorderMeal, source.dataset.reorderOption);
+        if (!prepared || !moveMealItem(prepared.option.items, fromIndex, targetIndex, placeAfter)) return;
+        saveDietQuickOption(source.dataset.reorderMeal, prepared.optionIndex, prepared.option);
+        return;
+      }
+
+      const recommendationIndex = Number(source.dataset.reorderRecommendation);
+      const option = currentRecommendationOptions?.[recommendationIndex];
+      if (!option || !moveMealItem(option.items, fromIndex, targetIndex, placeAfter)) return;
+      recalculateRecommendation(option);
+      if (editingMealId) {
+        saveHomeQuickMealOption(editingMealId, option);
+        return;
+      }
+      if (editingDietTemplate) {
+        saveDietQuickOption(editingDietTemplate.mealTypeId, editingDietTemplate.optionIndex, option);
+      } else if (currentMealDetail) {
+        saveDietQuickOption(currentMealDetail, recommendationIndex, option);
+      }
+      renderRecommendationOptions();
+      updateRecommendationRegisterVisibility();
+    }
+
+    function clearMealItemReorderTarget(state) {
+      state?.target?.classList.remove("reorder-before", "reorder-after");
+      if (state) {
+        state.target = null;
+        state.placeAfter = false;
+      }
+    }
+
+    function activateMealItemReorder() {
+      const state = mealItemReorderState;
+      if (!state || state.active || !state.source?.isConnected) return;
+      const rect = state.source.getBoundingClientRect();
+      const ghost = state.source.cloneNode(true);
+      ghost.classList.remove("reorder-source", "reorder-before", "reorder-after");
+      ghost.classList.add("meal-reorder-ghost");
+      ghost.removeAttribute("data-reorder-item");
+      ghost.querySelectorAll("button, input, select, textarea, a").forEach((element) => element.setAttribute("tabindex", "-1"));
+      ghost.style.left = `${rect.left}px`;
+      ghost.style.top = `${rect.top}px`;
+      ghost.style.width = `${rect.width}px`;
+      state.active = true;
+      state.offsetY = state.lastY - rect.top;
+      state.ghost = ghost;
+      state.source.classList.add("reorder-source");
+      document.body.classList.add("meal-item-reordering");
+      document.body.appendChild(ghost);
+      navigator.vibrate?.(20);
+    }
+
+    function updateMealItemReorder(clientX, clientY) {
+      const state = mealItemReorderState;
+      if (!state?.active) return;
+      state.lastX = clientX;
+      state.lastY = clientY;
+      state.ghost.style.top = `${Math.max(4, Math.min(window.innerHeight - state.ghost.offsetHeight - 4, clientY - state.offsetY))}px`;
+
+      clearMealItemReorderTarget(state);
+      const target = document.elementFromPoint(clientX, clientY)?.closest?.("[data-reorder-item]");
+      if (target && target !== state.source && target.parentElement === state.list && target.dataset.reorderGroup === state.group) {
+        const rect = target.getBoundingClientRect();
+        state.target = target;
+        state.placeAfter = clientY >= rect.top + rect.height / 2;
+        target.classList.add(state.placeAfter ? "reorder-after" : "reorder-before");
+      }
+
+      const edgeSize = 72;
+      const scrollDelta = clientY < edgeSize ? -10 : clientY > window.innerHeight - edgeSize ? 10 : 0;
+      if (scrollDelta) {
+        const screen = document.querySelector(".screen");
+        if (screen && screen.scrollHeight > screen.clientHeight + 2) screen.scrollTop += scrollDelta;
+        else window.scrollBy(0, scrollDelta);
+      }
+    }
+
+    function finishMealItemReorder(commit = false) {
+      const state = mealItemReorderState;
+      if (!state) return;
+      window.clearTimeout(state.timer);
+      const source = state.source;
+      const target = state.target;
+      const placeAfter = state.placeAfter;
+      clearMealItemReorderTarget(state);
+      source?.classList.remove("reorder-source");
+      state.ghost?.remove();
+      document.body.classList.remove("meal-item-reordering");
+      mealItemReorderState = null;
+      if (!state.active) return;
+      suppressMealItemClickUntil = Date.now() + 650;
+      if (commit && source?.isConnected && target?.isConnected) {
+        persistMealItemReorder(source, target, placeAfter);
+      }
+    }
+
+    function beginMealItemReorder(source, clientX, clientY, inputType, touchId = null) {
+      if (!source?.parentElement) return;
+      const group = source.dataset.reorderGroup;
+      const siblings = Array.from(source.parentElement.children)
+        .filter((item) => item.matches?.("[data-reorder-item]") && item.dataset.reorderGroup === group);
+      if (siblings.length < 2) return;
+      finishMealItemReorder(false);
+      mealItemReorderState = {
+        source,
+        list: source.parentElement,
+        group,
+        inputType,
+        touchId,
+        startX: clientX,
+        startY: clientY,
+        lastX: clientX,
+        lastY: clientY,
+        active: false,
+        target: null,
+        placeAfter: false,
+        ghost: null,
+        timer: window.setTimeout(activateMealItemReorder, mealItemReorderHoldMs)
+      };
+    }
+
+    function reorderSourceFromTarget(target) {
+      if (!(target instanceof Element) || target.closest(mealItemReorderInteractiveSelector)) return null;
+      return target.closest("[data-reorder-item]");
     }
 
     function parseAmount(amount = "") {
@@ -5388,7 +5598,7 @@
             <button class="delete-record-button" type="button" data-delete-saved-meal="${item.id}" aria-label="Apagar refeição">×</button>
           </div>
           ${option.items.map((food, itemIndex) => `
-            <div class="recommended-item">
+            <div class="recommended-item" data-reorder-item="1" data-reorder-kind="home" data-reorder-group="home:${item.id}" data-reorder-index="${itemIndex}" data-reorder-home-meal="${item.id}">
               <div class="recommended-item-icon">${foodVisualMarkup(food)}</div>
               <div class="recommended-item-main">
                 <div class="meal-name">${food.name}</div>
@@ -6926,6 +7136,10 @@
       recommendationSwipeStart = { x: touch.clientX, y: touch.clientY };
     }, { passive: true });
     recommendationCarousel.addEventListener("touchend", (event) => {
+      if (mealItemReorderState?.active) {
+        recommendationSwipeStart = null;
+        return;
+      }
       if (!recommendationSwipeStart || event.changedTouches.length !== 1) return;
       const touch = event.changedTouches[0];
       const deltaX = touch.clientX - recommendationSwipeStart.x;
@@ -6935,6 +7149,74 @@
       swipeRecommendation(deltaX < 0 ? 1 : -1);
     }, { passive: true });
     document.addEventListener("click", disarmRecommendationRegisterOnOutsideClick, true);
+    document.addEventListener("click", (event) => {
+      if (Date.now() > suppressMealItemClickUntil || !event.target.closest?.("[data-reorder-item]")) return;
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+    }, true);
+    document.addEventListener("contextmenu", (event) => {
+      if (event.target.closest?.("[data-reorder-item]")) event.preventDefault();
+    });
+    document.addEventListener("touchstart", (event) => {
+      if (event.touches.length !== 1) return;
+      const source = reorderSourceFromTarget(event.target);
+      if (!source) return;
+      const touch = event.touches[0];
+      beginMealItemReorder(source, touch.clientX, touch.clientY, "touch", touch.identifier);
+    }, { passive: true });
+    document.addEventListener("touchmove", (event) => {
+      const state = mealItemReorderState;
+      if (!state || state.inputType !== "touch") return;
+      const touch = Array.from(event.touches).find((item) => item.identifier === state.touchId);
+      if (!touch) return;
+      state.lastX = touch.clientX;
+      state.lastY = touch.clientY;
+      if (!state.active) {
+        if (Math.hypot(touch.clientX - state.startX, touch.clientY - state.startY) > 9) finishMealItemReorder(false);
+        return;
+      }
+      event.preventDefault();
+      updateMealItemReorder(touch.clientX, touch.clientY);
+    }, { passive: false });
+    document.addEventListener("touchend", (event) => {
+      const state = mealItemReorderState;
+      if (!state || state.inputType !== "touch") return;
+      const touchEnded = Array.from(event.changedTouches).some((item) => item.identifier === state.touchId);
+      if (!touchEnded) return;
+      const wasActive = state.active;
+      finishMealItemReorder(wasActive);
+      lastMealItemTouchAt = Date.now();
+      if (wasActive) event.preventDefault();
+    }, { passive: false });
+    document.addEventListener("touchcancel", () => {
+      if (mealItemReorderState?.inputType === "touch") finishMealItemReorder(false);
+      lastMealItemTouchAt = Date.now();
+    });
+    document.addEventListener("mousedown", (event) => {
+      if (event.button !== 0 || Date.now() - lastMealItemTouchAt < 700) return;
+      const source = reorderSourceFromTarget(event.target);
+      if (!source) return;
+      beginMealItemReorder(source, event.clientX, event.clientY, "mouse");
+    });
+    document.addEventListener("mousemove", (event) => {
+      const state = mealItemReorderState;
+      if (!state || state.inputType !== "mouse") return;
+      state.lastX = event.clientX;
+      state.lastY = event.clientY;
+      if (!state.active) {
+        if (Math.hypot(event.clientX - state.startX, event.clientY - state.startY) > 9) finishMealItemReorder(false);
+        return;
+      }
+      event.preventDefault();
+      updateMealItemReorder(event.clientX, event.clientY);
+    });
+    document.addEventListener("mouseup", () => {
+      const state = mealItemReorderState;
+      if (!state || state.inputType !== "mouse") return;
+      finishMealItemReorder(state.active);
+    });
+    window.addEventListener("blur", () => finishMealItemReorder(false));
     addWaterQuick.addEventListener("click", () => addWater(250));
     removeWater.addEventListener("click", () => addWater(-250));
     waterStartTime.addEventListener("change", saveWaterInterval);
