@@ -2491,11 +2491,12 @@
       position: fixed;
       z-index: 90;
       display: grid;
-      grid-template-columns: 46px minmax(0, 1fr);
+      grid-template-columns: 54px minmax(0, 1fr) 34px 36px;
       grid-template-rows: auto auto;
       column-gap: 8px;
       row-gap: 3px;
       align-items: center;
+      box-sizing: border-box;
       margin: 0;
       padding: 8px;
       border: 1px solid rgba(32, 155, 38, 0.45);
@@ -2512,7 +2513,7 @@
     }
 
     .meal-reorder-ghost .meal-name {
-      grid-column: 2;
+      grid-column: 2 / -1;
       grid-row: 1;
     }
 
@@ -5043,7 +5044,8 @@
     let mealItemReorderState = null;
     let suppressMealItemClickUntil = 0;
     let lastMealItemTouchAt = 0;
-    const mealItemReorderHoldMs = 420;
+    const mealItemReorderHoldMs = 330;
+    const mealItemReorderMoveTolerance = 18;
     const mealItemReorderInteractiveSelector = "button, input, select, textarea, a, [role='button']";
 
     function moveMealItem(items, fromIndex, targetIndex, placeAfter) {
@@ -5148,8 +5150,8 @@
       ghost.classList.remove("reorder-source", "reorder-before", "reorder-after");
       ghost.classList.add("meal-reorder-ghost");
       ghost.removeAttribute("data-reorder-item");
-      ghost.querySelectorAll("button, input, select, textarea, a, .quantity-controls, .swap-icon, .item-remove-button").forEach((element) => element.remove());
-      const ghostWidth = Math.min(rect.width, 260);
+      ghost.querySelectorAll("button, input, select, textarea, a").forEach((element) => element.setAttribute("tabindex", "-1"));
+      const ghostWidth = rect.width;
       ghost.style.left = `${Math.max(4, Math.min(window.innerWidth - ghostWidth - 4, rect.left))}px`;
       ghost.style.top = `${rect.top}px`;
       ghost.style.width = `${ghostWidth}px`;
@@ -5254,8 +5256,7 @@
 
     function reorderSourceFromTarget(target) {
       if (!(target instanceof Element) || target.closest(mealItemReorderInteractiveSelector)) return null;
-      const handle = target.closest("[data-reorder-handle]");
-      return handle?.closest("[data-reorder-item]") || null;
+      return target.closest("[data-reorder-item]");
     }
 
     function parseAmount(amount = "") {
@@ -7287,7 +7288,7 @@
       state.lastX = touch.clientX;
       state.lastY = touch.clientY;
       if (!state.active) {
-        if (Math.hypot(touch.clientX - state.startX, touch.clientY - state.startY) > 9) finishMealItemReorder(false);
+        if (Math.hypot(touch.clientX - state.startX, touch.clientY - state.startY) > mealItemReorderMoveTolerance) finishMealItemReorder(false);
         return;
       }
       event.preventDefault();
@@ -7319,7 +7320,7 @@
       state.lastX = event.clientX;
       state.lastY = event.clientY;
       if (!state.active) {
-        if (Math.hypot(event.clientX - state.startX, event.clientY - state.startY) > 9) finishMealItemReorder(false);
+        if (Math.hypot(event.clientX - state.startX, event.clientY - state.startY) > mealItemReorderMoveTolerance) finishMealItemReorder(false);
         return;
       }
       event.preventDefault();
