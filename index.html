@@ -1413,6 +1413,14 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+    .recommendation-card.saved-meal-card {
+      cursor: default;
+      opacity: 1;
+      border-width: 1.5px;
+      box-shadow: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
     .recommendation-card[data-recommendation-index] .selected-pill {
       background: #fff;
       cursor: default;
@@ -5695,7 +5703,7 @@
       const mealTypeLabel = item.mealTypeName || mealType?.name || "Refeição";
       const mealTime = item.mealTime ? ` ${item.mealTime}` : "";
       return `
-        <div class="recommendation-card selected">
+        <div class="recommendation-card saved-meal-card">
           <div class="recommendation-head">
             <div class="recommendation-head-main">
               <span class="selected-pill">${mealType?.icon || "🍴"} ${mealTypeLabel}${mealTime}</span>
