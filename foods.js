@@ -1160,12 +1160,12 @@ export const foods = [
     name: "Aveia em Flocos",
     icon: "🥣",
     category: "Alimenta??o",
-    caloriesPer100g: 394,
+    caloriesPer100g: 400,
     proteinPer100g: 13.9,
     carbsPer100g: 66.6,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "excel", name: "30g", grams: 30 }
+      { id: "excel", name: "25g", grams: 25 }
     ]
   },
   {
