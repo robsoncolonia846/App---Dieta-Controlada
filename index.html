@@ -5445,6 +5445,7 @@
 
     function requiresWholeUnits(item = {}) {
       const name = normalizeText(item.name || item.foodName || "");
+      if (name === "ovo frito" || name === "ovo cozido") return false;
       return name.includes("ovo") || name.includes("omelete");
     }
 
