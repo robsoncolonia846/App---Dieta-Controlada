@@ -6721,9 +6721,7 @@
       metricConsumed.textContent = `${formatIntegerKcal(consumed)} kcal`;
       metricProtein.textContent = `${protein} g`;
       metricCarbs.textContent = `${carbs} g`;
-      remainingKcal.textContent = remaining < 0
-        ? `+${formatIntegerKcal(Math.abs(remaining))}`
-        : formatIntegerKcal(remaining);
+      remainingKcal.textContent = formatIntegerKcal(Math.max(0, remaining));
       const maintenanceExcess = consumed - targetRange.max;
       const caloriesAttentionLimit = maintainWeight && maintenanceExcess > 0 && maintenanceExcess < 200;
       const caloriesOverLimit = maintainWeight ? maintenanceExcess >= 200 : consumed > targetRange.max;
