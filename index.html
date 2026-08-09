@@ -1380,6 +1380,7 @@
       border-radius: 12px;
       color: #209b26;
       padding: 8px 12px;
+      font: inherit;
       font-weight: 950;
       background: #fff;
       cursor: pointer;
@@ -1402,6 +1403,23 @@
     .recommendation-card[data-recommendation-index] .kcal-pill {
       font-size: 12px;
       line-height: 1;
+    }
+
+    .recommendation-card[data-recommendation-index] {
+      cursor: default;
+      opacity: 1;
+      border-width: 1.5px;
+      box-shadow: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .recommendation-card[data-recommendation-index] .selected-pill {
+      background: #fff;
+      cursor: default;
+    }
+
+    .recommendation-card[data-recommendation-index] .selected-pill.armed {
+      background: #eaf6ea;
     }
 
     .recommended-item {
@@ -4836,7 +4854,7 @@
       `).join("");
       const optionEdited = option && !editingMealId && isDietOptionEdited(currentMealDetail, index);
       const optionCard = option ? `
-        <div class="recommendation-card selected" data-recommendation-index="${index}">
+        <div class="recommendation-card" data-recommendation-index="${index}">
           <div class="recommendation-head">
             <div class="recommendation-head-main">
               <span class="selected-pill">Opção ${String(index + 1).padStart(2, "0")}</span>
@@ -4873,6 +4891,9 @@
             </div>
           `).join("")}
           <button class="add-recommendation-item" type="button" data-add-item-rec="${index}">+ Adicionar item</button>
+          ${!editingMealId && !editingDietTemplate && option.items.length ? `
+            <button class="add-recommendation-item" type="button" data-launch-rec="${index}">Lançar dieta</button>
+          ` : ""}
         </div>
       ` : "";
       recommendationCarousel.innerHTML = [
@@ -4904,9 +4925,13 @@
           selectRecommendation(Number(button.dataset.selectRec), 0, false);
         });
       });
-      recommendationCarousel.querySelector(`[data-recommendation-index="${index}"]`)?.addEventListener("click", (event) => {
-        if (!event.target.closest(".selected-pill")) return;
-        toggleRecommendationRegister();
+      recommendationCarousel.querySelectorAll("[data-launch-rec]").forEach((button) => {
+        button.addEventListener("click", (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          selectedRecommendationIndex = Number(button.dataset.launchRec);
+          registerSelectedRecommendation();
+        });
       });
       recommendationCarousel.querySelectorAll("[data-substitute-rec]").forEach((button) => {
         button.addEventListener("click", (event) => {
@@ -4946,7 +4971,7 @@
 
     function updateRecommendationRegisterVisibility() {
       const editing = Boolean(editingMealId || editingDietTemplate);
-      mealDetailRegister.classList.toggle("hidden", !editing && (!recommendationRegisterArmed || selectedRecommendationIndex === null || !selectedRecommendationHasItems()));
+      mealDetailRegister.classList.toggle("hidden", !editing);
     }
 
     function createCustomRecommendationOption() {
