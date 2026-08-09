@@ -212,6 +212,45 @@ export const foods = [
     ]
   },
   {
+    id: "carne-assada-magra",
+    name: "Carne Assada Magra",
+    icon: "\ud83e\udd69",
+    category: "Alimentação",
+    caloriesPer100g: 220,
+    proteinPer100g: 30,
+    carbsPer100g: 0,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "100g", grams: 100 }
+    ]
+  },
+  {
+    id: "carne-assada-media",
+    name: "Carne Assada Média",
+    icon: "\ud83e\udd69",
+    category: "Alimentação",
+    caloriesPer100g: 280,
+    proteinPer100g: 27,
+    carbsPer100g: 0,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "100g", grams: 100 }
+    ]
+  },
+  {
+    id: "carne-assada-gorda",
+    name: "Carne Assada Gorda",
+    icon: "\ud83e\udd69",
+    category: "Alimentação",
+    caloriesPer100g: 340,
+    proteinPer100g: 24,
+    carbsPer100g: 0,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "100g", grams: 100 }
+    ]
+  },
+  {
     id: "carne-de-panela-agulha",
     name: "Carne de Panela (Agulha)",
     category: "Alimenta??o",
