@@ -114,7 +114,7 @@ export const foods = [
   {
     id: "bauru-file",
     name: "Bauru Filé",
-    imageSpritePosition: "50%",
+    imageSpritePosition: "14.2857%",
     category: "Alimenta??o",
     caloriesPer100g: 1760,
     proteinPer100g: 100,
@@ -998,7 +998,7 @@ export const foods = [
   {
     id: "cueca-virada-grostoli",
     name: "Cueca Virada (Grostoli)",
-    imageSpritePosition: "100%",
+    imageSpritePosition: "28.5714%",
     category: "Alimentação",
     caloriesPer100g: 400,
     proteinPer100g: 7,
@@ -1378,9 +1378,9 @@ export const foods = [
   {
     id: "biscoito-maizena",
     name: "Biscoito de Maisena",
-    icon: "\ud83c\udf6a",
+    imageSpritePosition: "42.8571%",
     category: "Alimenta??o",
-    caloriesPer100g: 430,
+    caloriesPer100g: 400,
     proteinPer100g: 7,
     carbsPer100g: 76,
     servings: [
@@ -1391,9 +1391,9 @@ export const foods = [
   {
     id: "biscoito-agua-e-sal",
     name: "Biscoito de Água e Sal",
-    icon: "\ud83c\udf6a",
+    imageSpritePosition: "57.1429%",
     category: "Alimenta??o",
-    caloriesPer100g: 430,
+    caloriesPer100g: 400,
     proteinPer100g: 8,
     carbsPer100g: 72,
     servings: [
@@ -1404,9 +1404,9 @@ export const foods = [
   {
     id: "biscoito-cream-cracker",
     name: "Biscoito Cream Cracker",
-    icon: "\ud83c\udf6a",
+    imageSpritePosition: "71.4286%",
     category: "Alimenta??o",
-    caloriesPer100g: 440,
+    caloriesPer100g: 450,
     proteinPer100g: 9,
     carbsPer100g: 70,
     servings: [
@@ -1417,7 +1417,7 @@ export const foods = [
   {
     id: "biscoito-rosquinha-doce",
     name: "Biscoito Rosquinha Doce",
-    icon: "\ud83c\udf6a",
+    imageSpritePosition: "85.7143%",
     category: "Alimenta??o",
     caloriesPer100g: 450,
     proteinPer100g: 7,
@@ -1430,9 +1430,9 @@ export const foods = [
   {
     id: "biscoito-recheado",
     name: "Biscoito Recheado",
-    icon: "\ud83c\udf6a",
+    imageSpritePosition: "100%",
     category: "Alimenta??o",
-    caloriesPer100g: 490,
+    caloriesPer100g: 450,
     proteinPer100g: 6,
     carbsPer100g: 67,
     servings: [
