@@ -308,29 +308,33 @@
       align-content: center;
       justify-content: end;
       justify-self: end;
-      gap: 5px;
+      gap: 2px;
       min-width: 0;
-      padding: 0;
-      border: 0;
+      padding: 0 0 0 7px;
+      border-left: 1px solid #edf0ea;
     }
 
     .history-period-row {
       display: grid;
-      grid-template-columns: auto auto auto;
+      grid-template-columns: 36px 70px 38px;
       align-items: center;
-      justify-content: start;
-      gap: 5px;
+      justify-content: center;
+      gap: 0;
       min-width: 0;
       line-height: 1;
+      text-align: center;
     }
 
-    .history-period-row:last-child {
-      margin-top: 1px;
-      padding-top: 5px;
+    .history-period-row + .history-period-row {
+      padding-top: 3px;
       border-top: 1px solid #edf0ea;
     }
 
     .history-period-title {
+      display: grid;
+      height: 100%;
+      padding: 0 4px;
+      place-items: center;
       color: #65705f;
       font-size: 8px;
       font-weight: 950;
@@ -338,6 +342,11 @@
     }
 
     .history-period-value {
+      display: grid;
+      height: 100%;
+      padding: 0 4px;
+      border-left: 1px solid #edf0ea;
+      place-items: center;
       color: #65705f;
       font-size: 8px;
       font-weight: 950;
@@ -357,6 +366,11 @@
     }
 
     .history-period-weight {
+      display: grid;
+      height: 100%;
+      padding: 0 4px;
+      border-left: 1px solid #edf0ea;
+      place-items: center;
       color: #65705f;
       font-size: 7px;
       font-weight: 900;
