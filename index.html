@@ -5456,7 +5456,13 @@
 
     function requiresWholeUnits(item = {}) {
       const name = normalizeText(item.name || item.foodName || "");
-      if (name === "ovo frito" || name === "ovo cozido") return false;
+      const foodId = String(item.foodId || "").toLowerCase();
+      if (
+        name === "ovo frito"
+        || name === "ovo cozido"
+        || name === "pao frances + ovo frito"
+        || foodId === "pao-frances-ovo-frito"
+      ) return false;
       return name.includes("ovo") || name.includes("omelete");
     }
 

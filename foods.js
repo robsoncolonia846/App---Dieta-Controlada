@@ -742,7 +742,7 @@ export const foods = [
     id: "pao-frances-ovo-frito",
     name: "Pão Frances + Ovo Frito",
     category: "Alimenta??o",
-    caloriesPer100g: 250,
+    caloriesPer100g: 300,
     proteinPer100g: 11,
     carbsPer100g: 30,
     servings: [
