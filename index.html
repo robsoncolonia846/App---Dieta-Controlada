@@ -6392,16 +6392,24 @@
     function historyRecordedDates() {
       return [
         ...[...appData.meals, ...appData.expenses].map((item) => item.date),
-        ...Object.keys(appData.water || {}),
-        ...Object.keys(appData.weightHistory || {}),
-        ...Object.keys(appData.dailySnapshots || {})
+        ...Object.entries(appData.water || {})
+          .filter(([, amount]) => Number(amount) > 0)
+          .map(([date]) => date)
       ]
         .filter((date) => /^\d{4}-\d{2}-\d{2}$/.test(date || "") && date <= todayISO())
+        .filter((date, index, dates) => dates.indexOf(date) === index)
         .sort();
     }
 
-    function historyStartDate() {
+    function firstHistoryRecordDate() {
       return historyRecordedDates()[0] || todayISO();
+    }
+
+    function historyStartDate() {
+      const firstRecord = new Date(`${firstHistoryRecordDate()}T12:00:00`);
+      const minimumStart = appDayDate();
+      minimumStart.setDate(minimumStart.getDate() - 6);
+      return localISODate(firstRecord < minimumStart ? firstRecord : minimumStart);
     }
 
     function historyDaysSeries() {
@@ -6443,7 +6451,7 @@
       const completedDays = data.filter((item) => item.isoDate < todayISO());
       const fromStart = days === null;
       const sample = fromStart
-        ? data.filter((item) => item.isoDate >= historyStartDate())
+        ? data.filter((item) => item.isoDate >= firstHistoryRecordDate())
         : completedDays.slice(-days);
       const trackedDays = sample.filter((item) => item.consumed > 0);
       const averageBalance = trackedDays.length
@@ -6512,20 +6520,10 @@
       const monthNames = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
       const dataByDate = new Map(data.map((item) => [item.isoDate, item]));
       const today = appDayDate();
-      const knownWeightDates = [
-        ...Object.entries(appData.weightHistory || {})
-          .filter(([date, value]) => /^\d{4}-\d{2}-\d{2}$/.test(date) && date <= todayISO() && Number(value) > 0)
-          .map(([date]) => date),
-        ...Object.entries(appData.dailySnapshots || {})
-          .filter(([date, snapshot]) => /^\d{4}-\d{2}-\d{2}$/.test(date) && date <= todayISO() && Number(snapshot?.profile?.weightKg) > 0)
-          .map(([date]) => date)
-      ].sort();
       const defaultStart = new Date(today);
       defaultStart.setDate(defaultStart.getDate() - 29);
-      const maximumStart = knownWeightDates.length
-        ? new Date(`${knownWeightDates[0]}T12:00:00`)
-        : defaultStart;
-      const start = weightTrendPeriod === "max" && maximumStart < defaultStart ? maximumStart : defaultStart;
+      const maximumStart = new Date(`${historyStartDate()}T12:00:00`);
+      const start = weightTrendPeriod === "max" ? maximumStart : defaultStart;
       const seriesLength = Math.max(1, Math.round((today - start) / 86400000) + 1);
       const series = Array.from({ length: seriesLength }, (_, index) => {
         const date = new Date(start);
