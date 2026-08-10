@@ -114,7 +114,7 @@ export const foods = [
   {
     id: "bauru-file",
     name: "Bauru Filé",
-    imageSpritePosition: "14.2857%",
+    imageSpritePosition: "12.5%",
     category: "Alimenta??o",
     caloriesPer100g: 1760,
     proteinPer100g: 100,
@@ -998,7 +998,7 @@ export const foods = [
   {
     id: "cueca-virada-grostoli",
     name: "Cueca Virada (Grostoli)",
-    imageSpritePosition: "28.5714%",
+    imageSpritePosition: "25%",
     category: "Alimentação",
     caloriesPer100g: 400,
     proteinPer100g: 7,
@@ -1378,7 +1378,7 @@ export const foods = [
   {
     id: "biscoito-maizena",
     name: "Biscoito de Maisena",
-    imageSpritePosition: "42.8571%",
+    imageSpritePosition: "37.5%",
     category: "Alimenta??o",
     caloriesPer100g: 400,
     proteinPer100g: 7,
@@ -1391,7 +1391,7 @@ export const foods = [
   {
     id: "biscoito-agua-e-sal",
     name: "Biscoito de Água e Sal",
-    imageSpritePosition: "57.1429%",
+    imageSpritePosition: "50%",
     category: "Alimenta??o",
     caloriesPer100g: 400,
     proteinPer100g: 8,
@@ -1404,7 +1404,7 @@ export const foods = [
   {
     id: "biscoito-cream-cracker",
     name: "Biscoito Cream Cracker",
-    imageSpritePosition: "71.4286%",
+    imageSpritePosition: "62.5%",
     category: "Alimenta??o",
     caloriesPer100g: 450,
     proteinPer100g: 9,
@@ -1417,7 +1417,7 @@ export const foods = [
   {
     id: "biscoito-rosquinha-doce",
     name: "Biscoito Rosquinha Doce",
-    imageSpritePosition: "85.7143%",
+    imageSpritePosition: "75%",
     category: "Alimenta??o",
     caloriesPer100g: 450,
     proteinPer100g: 7,
@@ -1430,11 +1430,24 @@ export const foods = [
   {
     id: "biscoito-recheado",
     name: "Biscoito Recheado",
-    imageSpritePosition: "100%",
+    imageSpritePosition: "87.5%",
     category: "Alimenta??o",
     caloriesPer100g: 450,
     proteinPer100g: 6,
     carbsPer100g: 67,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "10g", grams: 10 }
+    ]
+  },
+  {
+    id: "biscoito-vovo-sentada",
+    name: "Biscoito Vovó Sentada",
+    imageSpritePosition: "100%",
+    category: "Alimenta??o",
+    caloriesPer100g: 500,
+    proteinPer100g: 7,
+    carbsPer100g: 70,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
       { id: "porcao", name: "10g", grams: 10 }
