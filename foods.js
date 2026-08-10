@@ -1376,6 +1376,71 @@ export const foods = [
     ]
   },
   {
+    id: "biscoito-maizena",
+    name: "Biscoito de Maisena",
+    icon: "\ud83c\udf6a",
+    category: "Alimenta??o",
+    caloriesPer100g: 430,
+    proteinPer100g: 7,
+    carbsPer100g: 76,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "10g", grams: 10 }
+    ]
+  },
+  {
+    id: "biscoito-agua-e-sal",
+    name: "Biscoito de Água e Sal",
+    icon: "\ud83c\udf6a",
+    category: "Alimenta??o",
+    caloriesPer100g: 430,
+    proteinPer100g: 8,
+    carbsPer100g: 72,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "10g", grams: 10 }
+    ]
+  },
+  {
+    id: "biscoito-cream-cracker",
+    name: "Biscoito Cream Cracker",
+    icon: "\ud83c\udf6a",
+    category: "Alimenta??o",
+    caloriesPer100g: 440,
+    proteinPer100g: 9,
+    carbsPer100g: 70,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "10g", grams: 10 }
+    ]
+  },
+  {
+    id: "biscoito-rosquinha-doce",
+    name: "Biscoito Rosquinha Doce",
+    icon: "\ud83c\udf6a",
+    category: "Alimenta??o",
+    caloriesPer100g: 450,
+    proteinPer100g: 7,
+    carbsPer100g: 73,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "10g", grams: 10 }
+    ]
+  },
+  {
+    id: "biscoito-recheado",
+    name: "Biscoito Recheado",
+    icon: "\ud83c\udf6a",
+    category: "Alimenta??o",
+    caloriesPer100g: 490,
+    proteinPer100g: 6,
+    carbsPer100g: 67,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "10g", grams: 10 }
+    ]
+  },
+  {
     id: "coca-cola-original",
     name: "Coca-Cola Original",
     icon: "\ud83e\udd64",
