@@ -4617,7 +4617,11 @@
     function showMealRecommendationOptions(mealType) {
       mealUseSuggestion.classList.add("hidden");
       const options = recommendationsForMeal(mealType.id);
-      currentRecommendationOptions = options.map(hydrateDietOption);
+      currentRecommendationOptions = [
+        { kcal: 0, custom: true, homeCreateSlot: true, items: [] },
+        ...options.map(hydrateDietOption)
+      ];
+      selectedRecommendationIndex = 0;
       recommendationRegisterArmed = false;
       renderRecommendationOptions();
       openTab("refeicao-detalhe");
@@ -4854,21 +4858,35 @@
       }
       const index = selectedRecommendationIndex;
       const option = currentRecommendationOptions[index];
-      const optionTabs = currentRecommendationOptions.map((_, optionIndex) => `
+      const includesCreateOption = currentRecommendationOptions[0]?.homeCreateSlot === true;
+      const dietOptionIndex = includesCreateOption ? index - 1 : index;
+      const optionLabel = includesCreateOption && index === 0
+        ? "Criar"
+        : `Opção ${String(dietOptionIndex + 1).padStart(2, "0")}`;
+      const optionTabs = currentRecommendationOptions.map((tabOption, optionIndex) => {
+        const tabDietIndex = includesCreateOption ? optionIndex - 1 : optionIndex;
+        const tabLabel = tabOption.homeCreateSlot
+          ? "<span>Criar</span>"
+          : `<span>Opção</span>${String(tabDietIndex + 1).padStart(2, "0")}`;
+        return `
         <button
           class="diet-option-tab ${optionIndex === selectedRecommendationIndex ? "active" : ""}"
           type="button"
           data-select-rec="${optionIndex}"
-        ><span>Opção</span>${String(optionIndex + 1).padStart(2, "0")}</button>
-      `).join("");
-      const optionEdited = option && !editingMealId && isDietOptionEdited(currentMealDetail, index);
+        >${tabLabel}</button>
+      `;
+      }).join("");
+      const optionEdited = option
+        && dietOptionIndex >= 0
+        && !editingMealId
+        && isDietOptionEdited(currentMealDetail, dietOptionIndex);
       const optionCard = option ? `
         <div class="recommendation-card" data-recommendation-index="${index}">
           <div class="recommendation-head">
             <div class="recommendation-head-main">
-              <span class="selected-pill">Opção ${String(index + 1).padStart(2, "0")}</span>
+              <span class="selected-pill">${optionLabel}</span>
               ${optionEdited ? '<span class="edited-pill">Editado</span>' : ""}
-              ${optionEdited ? `<button class="diet-reset-button" type="button" data-reset-diet-meal="${currentMealDetail}" data-reset-diet-option="${index}">Usar Sugestão</button>` : ""}
+              ${optionEdited ? `<button class="diet-reset-button" type="button" data-reset-diet-meal="${currentMealDetail}" data-reset-diet-option="${dietOptionIndex}">Usar Sugestão</button>` : ""}
               <span class="kcal-pill">${option.kcal} kcal</span>
               ${editingMealId ? `<button class="item-edit-button" type="button" data-add-item-rec="${index}">+ Item</button>` : ""}
             </div>
@@ -4907,19 +4925,9 @@
       ` : "";
       recommendationCarousel.innerHTML = [
         optionTabs ? `<div class="diet-option-tabs meal-detail-option-tabs" style="--option-count: ${optionCount};">${optionTabs}</div>` : "",
-        optionCard,
-        `<button class="recommendation-card empty" type="button" data-create-custom-option="1">
-          <div class="create-option-content">
-            <span class="avatar-button" aria-hidden="true">+</span>
-            <span>Criar nova opção</span>
-          </div>
-        </button>`
+        optionCard
       ].join("");
       recommendationDots.innerHTML = "";
-      recommendationCarousel.querySelector("[data-create-custom-option]")?.addEventListener("click", (event) => {
-        event.preventDefault();
-        createCustomRecommendationOption();
-      });
       recommendationCarousel.querySelectorAll("[data-delete-editing-meal]").forEach((button) => {
         button.addEventListener("click", (event) => {
           event.preventDefault();
@@ -5093,7 +5101,10 @@
       if (editingDietTemplate) {
         saveDietQuickOption(editingDietTemplate.mealTypeId, editingDietTemplate.optionIndex, option);
       } else if (currentMealDetail) {
-        saveDietQuickOption(currentMealDetail, recommendationIndex, option);
+        const dietOptionIndex = currentRecommendationOptions[0]?.homeCreateSlot === true
+          ? recommendationIndex - 1
+          : recommendationIndex;
+        if (dietOptionIndex >= 0) saveDietQuickOption(currentMealDetail, dietOptionIndex, option);
       }
       renderRecommendationOptions();
       updateRecommendationRegisterVisibility();
