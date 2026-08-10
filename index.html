@@ -316,12 +316,18 @@
 
     .history-period-row {
       display: grid;
-      grid-template-columns: auto auto auto auto;
+      grid-template-columns: auto auto auto;
       align-items: center;
       justify-content: start;
       gap: 5px;
       min-width: 0;
       line-height: 1;
+    }
+
+    .history-period-row:last-child {
+      margin-top: 1px;
+      padding-top: 5px;
+      border-top: 1px solid #edf0ea;
     }
 
     .history-period-title {
@@ -355,27 +361,6 @@
       font-size: 7px;
       font-weight: 900;
       white-space: nowrap;
-    }
-
-    .history-period-badge {
-      justify-self: start;
-      margin-top: 0;
-      padding: 2px 6px;
-      border-radius: 999px;
-      background: #e9f7e7;
-      color: #25872b;
-      font-size: 6px;
-      font-weight: 950;
-    }
-
-    .history-period-badge.good {
-      background: #fff4d3;
-      color: #9a6a00;
-    }
-
-    .history-period-badge.empty {
-      background: #f0f2ee;
-      color: #7c8677;
     }
 
     .weight-trend-chart {
@@ -3802,7 +3787,6 @@
     let selectedTimeUnit = "minutes";
     const activityDraftMinutes = Object.fromEntries(activityPresets.map((item) => [item.id, 30]));
     let currentFoodMode = "popular";
-    const minimumHistoryDays = 30;
     let currentPeriod = "hoje";
     let weightTrendPeriod = localStorage.getItem(weightTrendPeriodStorageKey) === "max" ? "max" : "30";
     let currentMealDetail = mealTypes[0].id;
@@ -6391,22 +6375,26 @@
         : "Selecione uma atividade e informe o tempo.";
     }
 
-    function historyDaysSeries() {
-      const monthNames = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
-      const today = appDayDate();
-      const minimumStart = new Date(today);
-      minimumStart.setDate(minimumStart.getDate() - (minimumHistoryDays - 1));
-      const registeredDates = [
+    function historyRecordedDates() {
+      return [
         ...[...appData.meals, ...appData.expenses].map((item) => item.date),
+        ...Object.keys(appData.water || {}),
         ...Object.keys(appData.weightHistory || {}),
         ...Object.keys(appData.dailySnapshots || {})
       ]
         .filter((date) => /^\d{4}-\d{2}-\d{2}$/.test(date || "") && date <= todayISO())
         .sort();
-      const firstRegisteredDate = registeredDates[0];
-      const registeredStart = firstRegisteredDate ? new Date(`${firstRegisteredDate}T12:00:00`) : null;
-      const start = registeredStart && registeredStart < minimumStart ? registeredStart : minimumStart;
-      const days = Math.max(minimumHistoryDays, Math.round((today - start) / 86400000) + 1);
+    }
+
+    function historyStartDate() {
+      return historyRecordedDates()[0] || todayISO();
+    }
+
+    function historyDaysSeries() {
+      const monthNames = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
+      const today = appDayDate();
+      const start = new Date(`${historyStartDate()}T12:00:00`);
+      const days = Math.max(1, Math.round((today - start) / 86400000) + 1);
       const dates = Array.from({ length: days }, (_, index) => {
         const date = new Date(start);
         date.setDate(date.getDate() + index);
@@ -6437,16 +6425,16 @@
       });
     }
 
-    function historyPeriodMetrics(data, days) {
+    function historyPeriodMetrics(data, days = null) {
       const completedDays = data.filter((item) => item.isoDate < todayISO());
-      const sample = completedDays.slice(-days);
+      const fromStart = days === null;
+      const sample = fromStart
+        ? data.filter((item) => item.isoDate >= historyStartDate())
+        : completedDays.slice(-days);
       const trackedDays = sample.filter((item) => item.consumed > 0);
       const averageBalance = trackedDays.length
         ? trackedDays.reduce((sum, item) => sum + item.consumed - item.targetRange.max, 0) / trackedDays.length
         : null;
-      const averagePlannedDeficit = trackedDays.length
-        ? trackedDays.reduce((sum, item) => sum + Math.max(0, item.targetRange.max - item.targetRange.min), 0) / trackedDays.length
-        : 0;
       const weightedDays = sample.filter((item) => item.weight > 0);
       let weeklyWeightChange = null;
       let weightDifference = null;
@@ -6469,21 +6457,20 @@
           weightDifference = last.weight - first.weight;
         }
       }
-      const deficitDifference = averageBalance === null
-        ? Infinity
-        : Math.abs(Math.abs(Math.min(0, averageBalance)) - averagePlannedDeficit);
       return {
         days,
+        title: fromStart ? "Início" : `${days} dias`,
         averageBalance,
         weeklyWeightChange,
-        weightDifference,
-        hasData: trackedDays.length > 0,
-        excellent: deficitDifference <= 100
+        weightDifference
       };
     }
 
     function renderHistoryPeriodSummary(data) {
-      const periods = [7, 15, 30].map((days) => historyPeriodMetrics(data, days));
+      const periods = [
+        ...[7, 15, 30].map((days) => historyPeriodMetrics(data, days)),
+        historyPeriodMetrics(data)
+      ];
       historyPeriodSummary.innerHTML = periods.map((period) => {
         const balanceText = period.averageBalance === null
           ? "-- kcal/dia"
@@ -6491,8 +6478,6 @@
         const weightDifferenceText = period.weightDifference === null
           ? "-- kg"
           : `${period.weightDifference > 0 ? "+" : ""}${formatWeight(period.weightDifference)}kg`;
-        const badgeText = !period.hasData ? "Sem dados" : period.excellent ? "Excelente" : "Bom";
-        const badgeClass = !period.hasData ? "empty" : period.excellent ? "" : "good";
         const balanceClass = period.averageBalance === null
           ? ""
           : period.averageBalance > 0 ? "over-target" : "under-target";
@@ -6501,10 +6486,9 @@
           : period.weightDifference > 0 ? "gain" : "loss";
         return `
           <div class="history-period-row">
-            <span class="history-period-title">${period.days} dias</span>
+            <span class="history-period-title">${period.title}</span>
             <span class="history-period-value ${balanceClass}">${balanceText}</span>
             <span class="history-period-weight ${weightClass}">${weightDifferenceText}</span>
-            <span class="history-period-badge ${badgeClass}">${badgeText}</span>
           </div>
         `;
       }).join("");
