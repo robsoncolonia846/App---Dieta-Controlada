@@ -528,6 +528,34 @@ export const foods = [
     ]
   },
   {
+    id: "maionese",
+    name: "Maionese",
+    icon: "\ud83e\udd63",
+    image: "./maionese.png",
+    category: "Alimentação",
+    caloriesPer100g: 600,
+    proteinPer100g: 1,
+    carbsPer100g: 1,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "10g", grams: 10 }
+    ]
+  },
+  {
+    id: "maionese-light",
+    name: "Maionese Light",
+    icon: "\ud83e\udd63",
+    image: "./maionese.png",
+    category: "Alimentação",
+    caloriesPer100g: 150,
+    proteinPer100g: 0.5,
+    carbsPer100g: 6,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "10g", grams: 10 }
+    ]
+  },
+  {
     id: "macarrao",
     name: "Macarrão",
     category: "Alimentação",
