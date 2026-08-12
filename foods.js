@@ -62,6 +62,19 @@ export const foods = [
     ]
   },
   {
+    id: "bala",
+    name: "Bala",
+    icon: "\ud83c\udf6c",
+    category: "Alimenta\u00e7\u00e3o",
+    caloriesPer100g: 20,
+    proteinPer100g: 0,
+    carbsPer100g: 5,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "unidade", name: "Unidade", grams: 100 }
+    ]
+  },
+  {
     id: "banana",
     name: "Banana",
     category: "Alimenta??o",
