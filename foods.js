@@ -164,7 +164,7 @@ export const foods = [
   },
   {
     id: "bife-frito",
-    name: "Bife Frito",
+    name: "Bife de Res Frito",
     category: "Alimenta??o",
     caloriesPer100g: 240,
     proteinPer100g: 30,
@@ -176,7 +176,7 @@ export const foods = [
   },
   {
     id: "bife-a-parmegiana",
-    name: "Bife \u00e0 Parmegiana",
+    name: "Bife de Res à Parmegiana",
     icon: "\ud83e\udd69",
     category: "Alimenta??o",
     caloriesPer100g: 240,
