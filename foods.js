@@ -41,12 +41,12 @@ export const foods = [
     name: "Amendoim",
     icon: "🥜",
     category: "Alimenta??o",
-    caloriesPer100g: 580,
+    caloriesPer100g: 600,
     proteinPer100g: 26,
     carbsPer100g: 16,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "excel", name: "25g", grams: 25 }
+      { id: "excel", name: "10g", grams: 10 }
     ]
   },
   {
@@ -1486,7 +1486,7 @@ export const foods = [
     name: "Bife de Fígado",
     icon: "\ud83e\udd69",
     category: "Alimenta??o",
-    caloriesPer100g: 225,
+    caloriesPer100g: 200,
     proteinPer100g: 29.9,
     carbsPer100g: 4.2,
     servings: [

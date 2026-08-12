@@ -527,6 +527,25 @@
       overflow: hidden;
     }
 
+    .chart-note {
+      position: absolute;
+      top: 4px;
+      bottom: 18px;
+      left: 50%;
+      max-height: calc(100% - 22px);
+      color: #243119;
+      font-size: 7px;
+      font-weight: 950;
+      line-height: 1;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transform: translateX(-50%) rotate(180deg);
+      pointer-events: none;
+    }
+
     .chart-weight {
       position: absolute;
       left: 50%;
@@ -4348,7 +4367,7 @@
       return date < todayISO() ? "lose-fast" : normalizeWeightGoalMode(appData.settings?.weightGoalMode);
     }
 
-    function buildDailySnapshot(date, profile, weightGoalMode, updatedAt = Date.now()) {
+    function buildDailySnapshot(date, profile, weightGoalMode, updatedAt = Date.now(), note = "") {
       const normalizedProfile = normalizedSnapshotProfile(profile);
       const normalizedMode = normalizeWeightGoalMode(weightGoalMode);
       const targetRange = targetRangeForProfile(normalizedProfile, normalizedMode);
@@ -4358,18 +4377,20 @@
         profile: normalizedProfile,
         weightGoalMode: normalizedMode,
         baseMin: targetRange.min,
-        baseMax: targetRange.max
+        baseMax: targetRange.max,
+        note: String(note || "").trim().replace(/\s+/g, " ").slice(0, 60)
       };
     }
 
-    function updateDailySnapshot(date, { profilePatch = {}, weightGoalMode, updatedAt = Date.now() } = {}) {
-      const current = exactDailySnapshot(date) || dailySnapshotForDate(date);
+    function updateDailySnapshot(date, { profilePatch = {}, weightGoalMode, note, updatedAt = Date.now() } = {}) {
+      const exact = exactDailySnapshot(date);
+      const current = exact || dailySnapshotForDate(date);
       const profile = normalizedSnapshotProfile({
         ...(current?.profile || fallbackProfileForDate(date)),
         ...profilePatch
       });
       const mode = weightGoalMode || current?.weightGoalMode || weightGoalModeForDate(date);
-      const snapshot = buildDailySnapshot(date, profile, mode, updatedAt);
+      const snapshot = buildDailySnapshot(date, profile, mode, updatedAt, note === undefined ? exact?.note : note);
       appData.dailySnapshots[date] = snapshot;
       return snapshot;
     }
@@ -4391,7 +4412,8 @@
             date,
             existing.profile || fallbackProfileForDate(date),
             existing.weightGoalMode || (date < today ? "lose-fast" : appData.settings.weightGoalMode),
-            Number(existing.updatedAt) || 1
+            Number(existing.updatedAt) || 1,
+            existing.note
           );
           if (JSON.stringify(existing) !== JSON.stringify(normalized)) {
             appData.dailySnapshots[date] = normalized;
@@ -6626,6 +6648,61 @@
       renderWeightTrendChart(data);
     }
 
+    let suppressHistoryDayClickUntil = 0;
+
+    function editHistoryDayNote(date) {
+      const currentNote = String(exactDailySnapshot(date)?.note || "");
+      const formattedDate = date.split("-").reverse().join("/");
+      const response = window.prompt(
+        `Observação de ${formattedDate}\nDeixe vazio para apagar.`,
+        currentNote
+      );
+      if (response === null) return;
+      const note = response.trim().replace(/\s+/g, " ").slice(0, 60);
+      if (note === currentNote) return;
+      updateDailySnapshot(date, { note });
+      saveData();
+      renderChart();
+    }
+
+    function bindHistoryNoteLongPress(button) {
+      let timer = 0;
+      let startX = 0;
+      let startY = 0;
+      let pointerId = null;
+
+      const cancel = () => {
+        window.clearTimeout(timer);
+        timer = 0;
+        pointerId = null;
+      };
+
+      button.addEventListener("pointerdown", (event) => {
+        if (event.target.closest("[data-history-weight]")) return;
+        if (event.pointerType === "mouse" && event.button !== 0) return;
+        cancel();
+        pointerId = event.pointerId;
+        startX = event.clientX;
+        startY = event.clientY;
+        timer = window.setTimeout(() => {
+          timer = 0;
+          suppressHistoryDayClickUntil = Date.now() + 900;
+          navigator.vibrate?.(20);
+          editHistoryDayNote(button.dataset.historyDate);
+        }, 550);
+      });
+
+      button.addEventListener("pointermove", (event) => {
+        if (event.pointerId !== pointerId) return;
+        if (Math.hypot(event.clientX - startX, event.clientY - startY) > 10) cancel();
+      });
+      button.addEventListener("pointerup", cancel);
+      button.addEventListener("pointercancel", cancel);
+      button.addEventListener("contextmenu", (event) => {
+        if (!event.target.closest("[data-history-weight]")) event.preventDefault();
+      });
+    }
+
     function renderChart() {
       const data = historyDaysSeries();
       chart.setAttribute("aria-label", `Histórico diário com ${data.length} dias`);
@@ -6650,9 +6727,11 @@
         const targetDescription = maintainWeight
           ? `meta ${round(item.targetRange.max)} kcal`
           : `meta ${round(item.targetRange.min)} a ${round(item.targetRange.max)} kcal`;
-        const title = `${item.consumed} kcal consumidas; ${item.spent} kcal em atividades; ${targetDescription}; peso ${weightLabel}`;
+        const note = String(exactDailySnapshot(item.isoDate)?.note || "").trim();
+        const noteMarkup = note ? `<span class="chart-note">${escapeHTML(note)}</span>` : "";
+        const title = `${item.consumed} kcal consumidas; ${item.spent} kcal em atividades; ${targetDescription}; peso ${weightLabel}${note ? `; observação: ${note}` : ""}`;
         const selectedDate = currentPeriod === "hoje" ? todayISO() : currentPeriod;
-        return `<button type="button" class="chart-col ${selectedDate === item.isoDate ? "selected" : ""}" data-history-date="${item.isoDate}" title="${title}" aria-label="Abrir registros de ${item.isoDate.split("-").reverse().join("/")}. ${title}"><div class="chart-bar-area" style="--bar-height: ${height}px;"><div class="chart-value ${status}">${item.consumed}</div>${targetMarkers}<div class="chart-bar ${status}" style="height: ${visibleBarHeight}px;"><span class="chart-weight" data-history-weight="${item.isoDate}" title="Editar peso de ${item.date}">${weightLabel}</span></div></div><div class="chart-date"><span class="chart-weekday">${item.weekday}</span><span>${item.date}</span></div></button>`;
+        return `<button type="button" class="chart-col ${selectedDate === item.isoDate ? "selected" : ""}" data-history-date="${item.isoDate}" title="${escapeHTML(title)}" aria-label="Abrir registros de ${item.isoDate.split("-").reverse().join("/")}. ${escapeHTML(title)}"><div class="chart-bar-area" style="--bar-height: ${height}px;"><div class="chart-value ${status}">${item.consumed}</div>${targetMarkers}<div class="chart-bar ${status}" style="height: ${visibleBarHeight}px;">${noteMarkup}<span class="chart-weight" data-history-weight="${item.isoDate}" title="Editar peso de ${item.date}">${weightLabel}</span></div></div><div class="chart-date"><span class="chart-weekday">${item.weekday}</span><span>${item.date}</span></div></button>`;
       }).join("");
 
       chart.innerHTML = bars;
@@ -6673,7 +6752,13 @@
         });
       });
       chart.querySelectorAll("[data-history-date]").forEach((button) => {
-        button.addEventListener("click", () => {
+        bindHistoryNoteLongPress(button);
+        button.addEventListener("click", (event) => {
+          if (Date.now() < suppressHistoryDayClickUntil) {
+            event.preventDefault();
+            event.stopPropagation();
+            return;
+          }
           const selectedDate = button.dataset.historyDate;
           currentPeriod = selectedDate === todayISO() ? "hoje" : selectedDate;
           mealDate.value = selectedDate;
