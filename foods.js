@@ -1482,6 +1482,19 @@ export const foods = [
     ]
   },
   {
+    id: "bife-de-figado",
+    name: "Bife de Fígado",
+    icon: "\ud83e\udd69",
+    category: "Alimenta??o",
+    caloriesPer100g: 225,
+    proteinPer100g: 29.9,
+    carbsPer100g: 4.2,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "50g", grams: 50 }
+    ]
+  },
+  {
     id: "coca-cola-original",
     name: "Coca-Cola Original",
     icon: "\ud83e\udd64",
