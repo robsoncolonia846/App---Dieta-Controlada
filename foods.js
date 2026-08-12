@@ -1495,6 +1495,19 @@ export const foods = [
     ]
   },
   {
+    id: "pacoquinha",
+    name: "Paçoquinha",
+    icon: "\ud83e\udd5c",
+    category: "Alimenta??o",
+    caloriesPer100g: 500,
+    proteinPer100g: 17.33,
+    carbsPer100g: 48,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "unidade", name: "Unidade", grams: 15 }
+    ]
+  },
+  {
     id: "coca-cola-original",
     name: "Coca-Cola Original",
     icon: "\ud83e\udd64",
