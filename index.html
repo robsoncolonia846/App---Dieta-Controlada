@@ -5407,7 +5407,9 @@
       return {
         kcal: Math.round((Number(food.caloriesPer100g) || 0) * grams / 100),
         protein: Number(((Number(food.proteinPer100g) || 0) * grams / 100).toFixed(1)),
-        carbs: Number(((Number(food.carbsPer100g) || 0) * grams / 100).toFixed(1))
+        carbs: Number(((Number(food.carbsPer100g) || 0) * grams / 100).toFixed(1)),
+        fat: Number(((Number(food.fatPer100g) || 0) * grams / 100).toFixed(1)),
+        fiber: Number(((Number(food.fiberPer100g) || 0) * grams / 100).toFixed(1))
       };
     }
 
@@ -5419,7 +5421,7 @@
     function estimateMacrosFromFood(item) {
       const food = findFoodByName(item.name, item.foodId);
       const nutrition = nutritionFromFood(food, item.amount);
-      return nutrition || { protein: 0, carbs: 0 };
+      return nutrition || { protein: 0, carbs: 0, fat: 0, fiber: 0 };
     }
 
     function hydrateRecommendationItem(item, option) {
@@ -5439,6 +5441,8 @@
         hydrated.kcal = nutrition.kcal;
         hydrated.protein = nutrition.protein;
         hydrated.carbs = nutrition.carbs;
+        hydrated.fat = nutrition.fat;
+        hydrated.fiber = nutrition.fiber;
       } else if (!Number(hydrated.kcal)) {
         hydrated.kcal = Math.round((Number(option.kcal) || 0) / Math.max(1, option.items.length));
       }
@@ -5447,6 +5451,8 @@
       hydrated.baseKcal = Number(hydrated.kcal) || 0;
       hydrated.baseProtein = Number(hydrated.protein) || 0;
       hydrated.baseCarbs = Number(hydrated.carbs) || 0;
+      hydrated.baseFat = Number(hydrated.fat) || 0;
+      hydrated.baseFiber = Number(hydrated.fiber) || 0;
       return hydrated;
     }
 
@@ -5529,6 +5535,8 @@
         item.baseKcal = Number(item.kcal) || estimateKcalFromFood(item) || 0;
         item.baseProtein = Number(item.protein) || 0;
         item.baseCarbs = Number(item.carbs) || 0;
+        item.baseFat = Number(item.fat) || 0;
+        item.baseFiber = Number(item.fiber) || 0;
       }
       const minValue = parsed.step;
       let nextValue;
@@ -5551,6 +5559,8 @@
       item.kcal = Math.round((Number(item.baseKcal) || 0) * ratio);
       item.protein = Number(((Number(item.baseProtein) || 0) * ratio).toFixed(1));
       item.carbs = Number(((Number(item.baseCarbs) || 0) * ratio).toFixed(1));
+      item.fat = Number(((Number(item.baseFat) || 0) * ratio).toFixed(1));
+      item.fiber = Number(((Number(item.baseFiber) || 0) * ratio).toFixed(1));
       recalculateRecommendation(option);
       if (shouldRender) renderRecommendationOptions();
     }
@@ -5654,7 +5664,9 @@
         amount,
         kcal: Math.round((Number(food.caloriesPer100g) || 0) * grams / 100),
         protein: Number(((Number(food.proteinPer100g) || 0) * grams / 100).toFixed(1)),
-        carbs: Number(((Number(food.carbsPer100g) || 0) * grams / 100).toFixed(1))
+        carbs: Number(((Number(food.carbsPer100g) || 0) * grams / 100).toFixed(1)),
+        fat: Number(((Number(food.fatPer100g) || 0) * grams / 100).toFixed(1)),
+        fiber: Number(((Number(food.fiberPer100g) || 0) * grams / 100).toFixed(1))
       };
     }
 
@@ -5673,7 +5685,9 @@
         icon: item.icon,
         kcal: Number(item.kcal) || undefined,
         protein: Number(item.protein) || undefined,
-        carbs: Number(item.carbs) || undefined
+        carbs: Number(item.carbs) || undefined,
+        fat: Number(item.fat) || undefined,
+        fiber: Number(item.fiber) || undefined
       };
     }
 
@@ -5710,7 +5724,9 @@
             amount,
             kcal: Number(meal.calories) || 0,
             protein: Number(meal.protein) || 0,
-            carbs: Number(meal.carbs) || 0
+            carbs: Number(meal.carbs) || 0,
+            fat: Number(meal.fat) || 0,
+            fiber: Number(meal.fiber) || 0
           }]
         };
       }
@@ -5752,6 +5768,8 @@
       meal.calories = round(option.kcal || 0);
       meal.protein = round(option.items.reduce((total, item) => total + (Number(item.protein) || 0), 0));
       meal.carbs = round(option.items.reduce((total, item) => total + (Number(item.carbs) || 0), 0));
+      meal.fat = round(option.items.reduce((total, item) => total + (Number(item.fat) || 0), 0));
+      meal.fiber = round(option.items.reduce((total, item) => total + (Number(item.fiber) || 0), 0));
       touchRecord(meal);
       saveData();
       renderAll();
@@ -6082,6 +6100,8 @@
       const itemsLabel = option.items.map((item) => `${item.name} (${item.amount})`).join(", ") || "Sem itens";
       const proteinTotal = option.items.reduce((total, item) => total + (Number(item.protein) || 0), 0);
       const carbsTotal = option.items.reduce((total, item) => total + (Number(item.carbs) || 0), 0);
+      const fatTotal = option.items.reduce((total, item) => total + (Number(item.fat) || 0), 0);
+      const fiberTotal = option.items.reduce((total, item) => total + (Number(item.fiber) || 0), 0);
       if (editingMealId) {
         const existingMeal = appData.meals.find((item) => item.id === editingMealId);
         if (!existingMeal) return;
@@ -6097,6 +6117,8 @@
         existingMeal.calories = round(option.kcal || 0);
         existingMeal.protein = round(proteinTotal);
         existingMeal.carbs = round(carbsTotal);
+        existingMeal.fat = round(fatTotal);
+        existingMeal.fiber = round(fiberTotal);
         touchRecord(existingMeal);
         saveData();
         editingMealType = null;
@@ -6124,7 +6146,9 @@
         servingId: "dieta-sugerida",
         calories: round(option.kcal || 0),
         protein: round(proteinTotal),
-        carbs: round(carbsTotal)
+        carbs: round(carbsTotal),
+        fat: round(fatTotal),
+        fiber: round(fiberTotal)
       });
       saveData();
       editingMealType = null;
@@ -6243,7 +6267,9 @@
       return {
         calories: round((food.caloriesPer100g || 0) * factor),
         protein: round((food.proteinPer100g || 0) * factor),
-        carbs: round((food.carbsPer100g || 0) * factor)
+        carbs: round((food.carbsPer100g || 0) * factor),
+        fat: round((food.fatPer100g || 0) * factor),
+        fiber: round((food.fiberPer100g || 0) * factor)
       };
     }
 
@@ -6824,6 +6850,30 @@
       });
     }
 
+    function savedMealNutrient(meal, nutrient) {
+      const savedValue = Number(meal?.[nutrient]);
+      if (meal?.[nutrient] !== undefined && meal?.[nutrient] !== null && Number.isFinite(savedValue)) {
+        return Math.max(0, savedValue);
+      }
+      if (meal?.servingId === "dieta-sugerida") {
+        const option = savedMealToRecommendationOption(meal);
+        return option.items.reduce((total, item) => total + (Number(item[nutrient]) || 0), 0);
+      }
+      const food = findFoodByName(meal?.foodName, meal?.foodId);
+      const grams = Number(meal?.grams) || 0;
+      if (food && grams > 0) {
+        const property = nutrient === "fat" ? "fatPer100g" : "fiberPer100g";
+        return Math.max(0, (Number(food[property]) || 0) * grams / 100);
+      }
+      if (nutrient === "fat") {
+        const calories = Number(meal?.calories) || 0;
+        const protein = Number(meal?.protein) || 0;
+        const carbs = Number(meal?.carbs) || 0;
+        return Math.max(0, (calories - protein * 4 - carbs * 4) / 9);
+      }
+      return 0;
+    }
+
     function renderTotals(period = currentPeriod) {
       const meals = periodMeals(period);
       const expenses = periodExpenses(period);
@@ -6831,15 +6881,8 @@
       const spent = round(expenses.reduce((sum, item) => sum + (Number(item.calories) || 0), 0));
       const protein = round(meals.reduce((sum, item) => sum + (Number(item.protein) || 0), 0));
       const carbs = round(meals.reduce((sum, item) => sum + (Number(item.carbs) || 0), 0));
-      const fat = round(meals.reduce((sum, item) => {
-        const savedFat = Number(item.fat);
-        if (Number.isFinite(savedFat)) return sum + Math.max(0, savedFat);
-        const itemCalories = Number(item.calories) || 0;
-        const itemProtein = Number(item.protein) || 0;
-        const itemCarbs = Number(item.carbs) || 0;
-        return sum + Math.max(0, (itemCalories - itemProtein * 4 - itemCarbs * 4) / 9);
-      }, 0));
-      const fiber = round(meals.reduce((sum, item) => sum + (Number(item.fiber) || 0), 0));
+      const fat = round(meals.reduce((sum, item) => sum + savedMealNutrient(item, "fat"), 0));
+      const fiber = round(meals.reduce((sum, item) => sum + savedMealNutrient(item, "fiber"), 0));
       const balance = round(consumed - spent);
       const macroDate = /^\d{4}-\d{2}-\d{2}$/.test(period || "") ? period : todayISO();
       const targetRange = dailyTargetRange(macroDate);

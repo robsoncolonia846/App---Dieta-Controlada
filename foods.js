@@ -1560,3 +1560,45 @@ export const foods = [
     ]
   }
 ];
+
+// Fibras médias por 100 g/ml. Preparações caseiras usam uma referência média.
+const fiberPer100gById = {
+  "abacaxi": 1.4, "abobora": 2.8, "alface": 1.3, "amendoim": 8.5,
+  "arroz": 1.6, "banana": 2.6, "batata-com-maionese": 1.5,
+  "batata-palha": 4, "batata-frita": 3.8, "batata-inglesa": 1.8,
+  "bauru-file": 4, "bergamota": 1.8, "beterraba-cozida-assada": 2,
+  "beterraba-crua": 2.8, "bife-a-parmegiana": 0.8, "brocolis": 3.3,
+  "carne-acebolada-com-maionese": 0.7, "carne-de-panela-agulha": 0.4,
+  "cenoura-cozida-assada": 3, "cenoura-crua": 3.2, "couve": 3.1,
+  "doce-de-leite": 0.2, "empada-folhada": 1.1, "estrogonof": 0.5,
+  "feijao": 8.5, "frango-sobrecoxa-ao-molho": 0.4, "goiabada": 5.4,
+  "iogurte-zero": 0, "laranja": 2.2, "lazanha-de-carne-moida": 1.7,
+  "lazanha-de-frango": 1.5, "maca": 2.4, "macarrao": 1.8,
+  "massa-alho-e-oleo": 1.8, "macarrao-com-carne-moida": 1.5,
+  "macarrao-carne-moida-molho-queijos": 1.3, "macarrao-instantaneo-miojo": 2.6,
+  "melancia": 0.4, "morango": 2, "omelete-com-queijo": 0.1,
+  "panqueca-carne-moida": 1.2, "panqueca-frango": 1.2,
+  "pao-caseiro": 2.7, "pao-de-forma": 4.1, "pao-frances": 2.3,
+  "pao-frances-ovo-frito": 1.2, "pao-frances-ovo-mexido": 1.2,
+  "pao-com-queijo-e-presunto": 1.5, "repolho": 2.5, "tomate-cereja": 1.2,
+  "uva": 0.9, "arroz-com-carne": 1.2, "bolo-de-banana-com-canela": 2.1,
+  "bolo-de-cenoura": 1.3, "bolo-de-aniversario": 1.1, "brigadeiro": 0.8,
+  "bolo-de-chocolate-com-calda": 2.2, "cueca-virada-grostoli": 1.2,
+  "pizza": 2.3, "salsichao-frito": 0.2, "salsichao-grelhado": 0.2,
+  "acucar-cristal": 0, "batata-doce-cozida": 2.2, "mandioca-cozida": 1.6,
+  "aveia-em-flocos": 9.1, "tapioca-com-manteiga": 0.4, "mamao-formosa": 1.8,
+  "abacate": 6.3, "queijo-cottage": 0, "granola": 7.5, "quentao": 0.3,
+  "pure-de-batatas": 1.3, "pastel-de-carne-frito": 2.2, "torta-de-bolacha": 1.1,
+  "arroz-doce": 0.6, "biscoito-maizena": 1.5, "biscoito-agua-e-sal": 2.4,
+  "biscoito-cream-cracker": 2.8, "biscoito-rosquinha-doce": 1.8,
+  "biscoito-recheado": 2.5, "biscoito-vovo-sentada": 1.6, "pacoquinha": 5.5
+};
+
+foods.forEach((food) => {
+  const calories = Number(food.caloriesPer100g) || 0;
+  const protein = Number(food.proteinPer100g) || 0;
+  const carbs = Number(food.carbsPer100g) || 0;
+  // Mantém a gordura compatível com as kcal e macros personalizados já cadastrados.
+  food.fatPer100g = Number(Math.max(0, (calories - protein * 4 - carbs * 4) / 9).toFixed(1));
+  food.fiberPer100g = Number(fiberPer100gById[food.id]) || 0;
+});
