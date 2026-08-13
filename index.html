@@ -1476,7 +1476,7 @@
     .recommended-item {
       position: relative;
       display: grid;
-      grid-template-columns: 48px minmax(0, 1fr) 30px 34px;
+      grid-template-columns: 54px minmax(0, 1fr) 34px 36px;
       grid-template-rows: auto auto auto auto;
       align-items: center;
       column-gap: 8px;
@@ -1504,10 +1504,6 @@
     }
 
     .recommended-item-main .item-detail-row {
-      display: contents;
-    }
-
-    .recommended-item-main .item-detail-row .muted {
       grid-column: 2;
       grid-row: 2;
       min-width: 0;
@@ -1529,7 +1525,7 @@
     }
 
     .recommended-item-main .item-nutrients-row {
-      grid-column: 2;
+      grid-column: 2 / -1;
       grid-row: 3;
       min-width: 0;
       color: #788078;
@@ -1540,13 +1536,6 @@
 
     .recommended-item-main .item-nutrients-row.secondary {
       grid-row: 4;
-    }
-
-    .recommended-item-main .item-detail-row .quantity-controls {
-      grid-column: 3 / 5;
-      grid-row: 3;
-      justify-self: end;
-      margin-left: 0;
     }
 
     .recommended-item-actions {
@@ -3414,7 +3403,11 @@
     const todayISO = () => appDayISO();
     let foods = [];
     try {
-      const dataModule = await import("./foods.js");
+      const previewRevision = new URLSearchParams(window.location.search).get("preview");
+      const foodsModuleUrl = previewRevision
+        ? `./foods.js?preview=${encodeURIComponent(previewRevision)}`
+        : "./foods.js?v=13.08.2026_Rev.16";
+      const dataModule = await import(foodsModuleUrl);
       if (Array.isArray(dataModule.foods)) {
         foods = dataModule.foods;
       }
