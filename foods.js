@@ -33,7 +33,7 @@ const foods = [
     carbsPer100g: 1.7,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "excel", name: "50g", grams: 50 }
+      { id: "excel", name: "10g", grams: 10 }
     ]
   },
   {
@@ -321,7 +321,7 @@ const foods = [
     carbsPer100g: 12,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "excel", name: "50g", grams: 50 }
+      { id: "excel", name: "10g", grams: 10 }
     ]
   },
   {
@@ -333,7 +333,7 @@ const foods = [
     carbsPer100g: 7.7,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "excel", name: "50g", grams: 50 }
+      { id: "excel", name: "10g", grams: 10 }
     ]
   },
   {

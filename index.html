@@ -3593,6 +3593,15 @@
       ]
     };
 
+    const tenGramDefaultFoods = new Set(["alface", "cenoura crua", "cenoura cozida/assada"]);
+    Object.values(mealRecommendations).forEach((options) => {
+      options.forEach((option) => {
+        option.items.forEach((item) => {
+          if (tenGramDefaultFoods.has(normalizeText(item.name || ""))) item.amount = "10g";
+        });
+      });
+    });
+
 
     if (new URLSearchParams(window.location.search).get("clear") === "1") {
       alert("A limpeza de dados por link foi desativada para proteger o histórico.");
@@ -3607,7 +3616,11 @@
     }
 
     function normalizeWholeUnitItem(itemRaw) {
-      return { ...(itemRaw || {}) };
+      const item = { ...(itemRaw || {}) };
+      if (normalizeText(String(item.amount || "")).includes("vontade")) {
+        item.amount = "10g";
+      }
+      return item;
     }
 
     function normalizeWholeUnitOption(optionRaw) {
@@ -3622,6 +3635,22 @@
         mealId,
         Array.isArray(options) ? options.map(normalizeWholeUnitOption) : []
       ]));
+    }
+
+    function normalizeAtWillMealRecord(mealRaw) {
+      const meal = { ...(mealRaw || {}) };
+      const servingText = `${meal.servingId || ""} ${meal.servingName || ""}`;
+      if (!normalizeText(servingText).includes("vontade")) return meal;
+      const food = findFoodByName(meal.foodName || meal.name, meal.foodId);
+      const nutrition = nutritionFromFood(food, "10g");
+      return {
+        ...meal,
+        grams: 10,
+        quantity: 1,
+        servingId: "excel",
+        servingName: "10g",
+        ...(nutrition || {})
+      };
     }
 
     function hydrateDietOption(optionRaw) {
@@ -3766,11 +3795,11 @@
       photoData: ""
     };
     const defaultMealTimes = Object.fromEntries(mealTypes.map((item) => [item.id, item.defaultTime]));
-    const dietSuggestionPlanVersion = "integer-units-1600-v1";
+    const dietSuggestionPlanVersion = "measured-at-will-10g-v2";
 
     let appData = parseStoredJson(localStorage.getItem(storageKey), { meals: [], expenses: [] });
     appData = {
-      meals: Array.isArray(appData.meals) ? appData.meals : [],
+      meals: Array.isArray(appData.meals) ? appData.meals.map(normalizeAtWillMealRecord) : [],
       expenses: Array.isArray(appData.expenses) ? appData.expenses : [],
       deletedMealIds: appData.deletedMealIds && typeof appData.deletedMealIds === "object" ? appData.deletedMealIds : {},
       deletedExpenseIds: appData.deletedExpenseIds && typeof appData.deletedExpenseIds === "object" ? appData.deletedExpenseIds : {},
@@ -3800,7 +3829,7 @@
         if (!snapshotData || typeof snapshotData !== "object") return;
         appData.deletedMealIds = mergeDeletionMaps(snapshotData.deletedMealIds, appData.deletedMealIds);
         appData.deletedExpenseIds = mergeDeletionMaps(snapshotData.deletedExpenseIds, appData.deletedExpenseIds);
-        appData.meals = mergeRecordCollections(appData.meals, snapshotData.meals, appData.deletedMealIds);
+        appData.meals = mergeRecordCollections(appData.meals, snapshotData.meals, appData.deletedMealIds).map(normalizeAtWillMealRecord);
         appData.expenses = mergeRecordCollections(appData.expenses, snapshotData.expenses, appData.deletedExpenseIds);
         appData.water = { ...(snapshotData.water || {}), ...appData.water };
         appData.weightHistory = { ...(snapshotData.weightHistory || {}), ...appData.weightHistory };
@@ -4026,7 +4055,7 @@
       appData = {
         ...localData,
         ...remoteData,
-        meals: mergeRecordCollections(localData.meals, remoteData.meals, deletedMealIds),
+        meals: mergeRecordCollections(localData.meals, remoteData.meals, deletedMealIds).map(normalizeAtWillMealRecord),
         expenses: mergeRecordCollections(localData.expenses, remoteData.expenses, deletedExpenseIds),
         deletedMealIds,
         deletedExpenseIds,
