@@ -5551,6 +5551,14 @@
     }
 
     function adjustedGramAmount(item, currentValue, direction) {
+      const foodId = String(item?.foodId || findFoodByName(item?.name)?.id || "").toLowerCase();
+      const saladFoodIds = new Set([
+        "alface", "beterraba-crua", "brocolis", "cenoura-crua",
+        "couve", "repolho", "tomate-cereja"
+      ]);
+      if (saladFoodIds.has(foodId)) {
+        return Math.max(10, Math.round(Number(currentValue) || 10) + (direction > 0 ? 10 : -10));
+      }
       const registered = registeredGramAmount(item, currentValue);
       const tiers = gramAmountTiers(registered);
       const upwardStep = Math.max(5, Math.floor(registered / 2 / 5) * 5);
