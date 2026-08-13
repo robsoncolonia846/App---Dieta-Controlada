@@ -1477,7 +1477,7 @@
       position: relative;
       display: grid;
       grid-template-columns: 54px minmax(0, 1fr) 34px 36px;
-      grid-template-rows: auto auto;
+      grid-template-rows: auto auto auto auto;
       align-items: center;
       column-gap: 8px;
       row-gap: 3px;
@@ -1511,7 +1511,7 @@
 
     .recommended-item > .recommended-item-icon {
       grid-column: 1;
-      grid-row: 1 / 3;
+      grid-row: 1 / 5;
     }
 
     .recommended-item > .swap-icon {
@@ -1522,6 +1522,21 @@
     .recommended-item > .item-remove-button {
       grid-column: 4;
       grid-row: 2;
+    }
+
+    .recommended-item-main .item-nutrients-row {
+      grid-column: 2 / -1;
+      grid-row: 3;
+      min-width: 0;
+      color: #788078;
+      font-size: 10px;
+      line-height: 1.25;
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+
+    .recommended-item-main .item-nutrients-row.secondary {
+      grid-row: 4;
     }
 
     .recommended-item-actions {
@@ -3673,6 +3688,13 @@
       return Number.isFinite(kcal) ? ` • ${round(kcal)} kcal` : "";
     }
 
+    function compactItemNutrients(item = {}, line = 1) {
+      const value = (number) => `${Number(number || 0).toLocaleString("pt-BR", { maximumFractionDigits: 1 })}g`;
+      return line === 1
+        ? `Carb. ${value(item.carbs)} · Açúc. ${value(item.freeSugar)} · Gord. sat. ${value(item.saturatedFat)}`
+        : `Prot. ${value(item.protein)} · Fib. ${value(item.fiber)}`;
+    }
+
     function renderDietDashboard() {
       if (!dietDashboard) return;
       dietProfileWeight.textContent = profileWeightLabel.textContent;
@@ -3707,6 +3729,8 @@
                     </span>
                   ` : ""}
                 </div>
+                <div class="item-nutrients-row">${escapeHTML(compactItemNutrients(item, 1))}</div>
+                <div class="item-nutrients-row secondary">${escapeHTML(compactItemNutrients(item, 2))}</div>
               </div>
               <button class="swap-icon" type="button" data-diet-substitute-meal="${mealType.id}" data-diet-substitute-option="${selectedOptionIndex}" data-diet-substitute-item="${itemIndex}" aria-label="Substituir ${escapeHTML(item.name)}">⇄</button>
               <button class="item-remove-button" type="button" data-diet-remove-meal="${mealType.id}" data-diet-remove-option="${selectedOptionIndex}" data-diet-remove-item="${itemIndex}" aria-label="Excluir ${escapeHTML(item.name)}">×</button>
@@ -4355,7 +4379,8 @@
     function targetRangeForProfile(profile, weightGoalMode = "lose-fast") {
       const calculatedMax = maintenanceTarget(profile);
       const baseMax = Math.round(Math.max(0, calculatedMax) || 1920);
-      const deficit = normalizeWeightGoalMode(weightGoalMode) === "lose-slow" ? 250 : 500;
+      const normalizedMode = normalizeWeightGoalMode(weightGoalMode);
+      const deficit = normalizedMode === "maintain" ? 0 : normalizedMode === "lose-slow" ? 250 : 500;
       return {
         min: Math.max(minimumDailyCalorieTarget, baseMax - deficit),
         max: Math.max(minimumDailyCalorieTarget, baseMax)
@@ -4476,7 +4501,9 @@
     function baseDailyTargetRange(date = todayISO()) {
       const snapshot = dailySnapshotForDate(date);
       if (snapshot && Number(snapshot.baseMin) > 0 && Number(snapshot.baseMax) > 0) {
-        return { min: Math.round(Number(snapshot.baseMin)), max: Math.round(Number(snapshot.baseMax)) };
+        const savedMax = Math.round(Number(snapshot.baseMax));
+        const savedMode = normalizeWeightGoalMode(snapshot.weightGoalMode || weightGoalModeForDate(date));
+        return { min: savedMode === "maintain" ? savedMax : Math.round(Number(snapshot.baseMin)), max: savedMax };
       }
       return targetRangeForProfile(profileForDate(date), weightGoalModeForDate(date));
     }
@@ -4664,7 +4691,7 @@
       profileHeight.value = profile.heightCm || "";
       profileAge.value = profile.age || "";
       profileSex.value = profile.sex || "male";
-      goalBannerValue.textContent = `${formatIntegerKcal(targetRange.min)} kcal`;
+      goalBannerValue.textContent = `${formatIntegerKcal(maintainWeight ? targetRange.max : targetRange.min)} kcal`;
       profileBasalInfo.textContent = basal
         ? `Gasto basal estimado: ${formatIntegerKcal(basal)} kcal/dia. Atividades de hoje: ${formatIntegerKcal(targetRange.activity)} kcal. Meta usada: ${maintainWeight ? formatIntegerKcal(targetRange.max) : `${formatIntegerKcal(targetRange.min)} - ${formatIntegerKcal(targetRange.max)}`} kcal/dia.`
         : "Informe peso, altura e idade para estimar o gasto diário.";
@@ -4803,7 +4830,7 @@
       const sugarScore = maximumNutrientScore(freeSugar, targets.freeSugar, dayProgress);
       const saturatedFatScore = maximumNutrientScore(saturatedFat, targets.saturatedFat, dayProgress);
       let score = Math.max(0, Math.min(100, Math.round(
-        calorieScore * 0.4 + waterScore * 0.25 + carbsScore * 0.1 + proteinScore * 0.1 +
+        calorieScore * 0.5 + waterScore * 0.15 + carbsScore * 0.1 + proteinScore * 0.1 +
         fiberScore * 0.05 + sugarScore * 0.05 + saturatedFatScore * 0.05
       )));
       if (maintainWeight ? excess > 0 : consumed > targetRange.min + 50) score = Math.min(score, 94);
@@ -5016,6 +5043,8 @@
                     </span>
                   ` : ""}
                 </div>
+                <div class="item-nutrients-row">${escapeHTML(compactItemNutrients(item, 1))}</div>
+                <div class="item-nutrients-row secondary">${escapeHTML(compactItemNutrients(item, 2))}</div>
               </div>
               <button class="swap-icon" type="button" data-substitute-rec="${index}" data-substitute-item="${itemIndex}" aria-label="Trocar ${item.name}">⇄</button>
               <button class="item-remove-button" type="button" data-ignore-rec="${index}" data-ignore-item="${itemIndex}" aria-label="Desconsiderar ${item.name}">×</button>
@@ -5875,6 +5904,8 @@
                     </span>
                   ` : ""}
                 </div>
+                <div class="item-nutrients-row">${escapeHTML(compactItemNutrients(food, 1))}</div>
+                <div class="item-nutrients-row secondary">${escapeHTML(compactItemNutrients(food, 2))}</div>
               </div>
               <button class="swap-icon" type="button" data-home-substitute-meal="${item.id}" data-home-substitute-item="${itemIndex}" aria-label="Substituir ${food.name}">⇄</button>
               <button class="item-remove-button" type="button" data-home-remove-meal="${item.id}" data-home-remove-item="${itemIndex}" aria-label="Excluir ${food.name}">×</button>
@@ -7025,9 +7056,10 @@
     }
 
     function renderCalorieRange(consumed, targetRange = dailyTargetRange(), date = selectedHomeDate()) {
-      const min = Number(targetRange.min) || 0;
-      const max = Math.max(min + 1, Number(targetRange.max) || min + 1);
       const maintainWeight = isMaintainWeightMode(date);
+      const rawMax = Number(targetRange.max) || 1;
+      const min = maintainWeight ? rawMax : Number(targetRange.min) || 0;
+      const max = Math.max(1, rawMax);
       const deficitKcal = weightGoalModeForDate(date) === "lose-slow" ? 250 : 500;
       const scaleMax = max;
       const width = Math.max(0, Math.min(100, (consumed / scaleMax) * 100));
