@@ -3125,6 +3125,7 @@
   </div>
 
   <script src="./firebase-config.js"></script>
+  <script src="./foods.js"></script>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
     import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
@@ -3397,19 +3398,7 @@
     };
     const appDayISO = (date = new Date()) => localISODate(appDayDate(date));
     const todayISO = () => appDayISO();
-    let foods = [];
-    try {
-      const previewRevision = new URLSearchParams(window.location.search).get("preview");
-      const foodsModuleUrl = previewRevision
-        ? `./foods.js?preview=${encodeURIComponent(previewRevision)}`
-        : "./foods.js?v=13.08.2026_Rev.16";
-      const dataModule = await import(foodsModuleUrl);
-      if (Array.isArray(dataModule.foods)) {
-        foods = dataModule.foods;
-      }
-    } catch (error) {
-      console.warn("Base de alimentos não carregou.", error);
-    }
+    const foods = Array.isArray(globalThis.DIETA_FOODS) ? globalThis.DIETA_FOODS : [];
     const activityPresets = [
       { id: "beach-tennis-leve", name: "Beach Tennis (Leve)", icon: "🏖️", caloriesPerHour: 200 },
       { id: "beach-tennis-moderado", name: "Beach Tennis (Moderado)", icon: "🏖️", caloriesPerHour: 400 },
@@ -3456,7 +3445,7 @@
         ] },
         { kcal: 0, items: [
           { icon: "🍳", name: "Omelete com Queijo", amount: "100g" },
-          { icon: "🍅", name: "Tomate Cereja", amount: "à vontade" },
+          { icon: "🍅", name: "Tomate Cereja", amount: "50g" },
           { icon: "🥖", name: "Pão Caseiro", amount: "50g" }
         ] },
         { kcal: 0, items: [
@@ -3482,27 +3471,27 @@
           { icon: "🍚", name: "Arroz", amount: "100g" },
           { icon: "🫘", name: "Feijão", amount: "100g" },
           { icon: "🍗", name: "Frango Grelhado", amount: "120g" },
-          { icon: "🥬", name: "Couve", amount: "à vontade" },
-          { icon: "🍅", name: "Tomate Cereja", amount: "à vontade" }
+          { icon: "🥬", name: "Couve", amount: "50g" },
+          { icon: "🍅", name: "Tomate Cereja", amount: "50g" }
         ] },
         { kcal: 0, items: [
           { icon: "🍚", name: "Arroz", amount: "120g" },
           { icon: "🥩", name: "Carne Moida", amount: "90g" },
-          { icon: "🥦", name: "Brocolis", amount: "à vontade" },
+          { icon: "🥦", name: "Brocolis", amount: "50g" },
           { icon: "🥕", name: "Cenoura Cozida/Assada", amount: "100g" }
         ] },
         { kcal: 0, items: [
           { icon: "🥔", name: "Batata Inglesa", amount: "140g" },
           { icon: "🥩", name: "Carne Grelhada", amount: "100g" },
           { icon: "🍚", name: "Arroz", amount: "100g" },
-          { icon: "🥬", name: "Alface", amount: "à vontade" },
-          { icon: "🍅", name: "Tomate Cereja", amount: "à vontade" }
+          { icon: "🥬", name: "Alface", amount: "50g" },
+          { icon: "🍅", name: "Tomate Cereja", amount: "50g" }
         ] },
         { kcal: 0, items: [
           { icon: "🍝", name: "Macarrão", amount: "90g" },
           { icon: "🍗", name: "Frango Desfiado", amount: "100g" },
           { icon: "🫘", name: "Feijão", amount: "70g" },
-          { icon: "🥬", name: "Repolho", amount: "à vontade" }
+          { icon: "🥬", name: "Repolho", amount: "50g" }
         ] },
         { kcal: 0, items: [
           { icon: "🍚", name: "Arroz", amount: "90g" },
@@ -3513,14 +3502,14 @@
         { kcal: 0, items: [
           { icon: "🥞", name: "Panqueca de Frango", amount: "170g" },
           { icon: "🍚", name: "Arroz", amount: "90g" },
-          { icon: "🥬", name: "Alface", amount: "à vontade" },
-          { icon: "🥕", name: "Cenoura Crua", amount: "à vontade" }
+          { icon: "🥬", name: "Alface", amount: "50g" },
+          { icon: "🥕", name: "Cenoura Crua", amount: "50g" }
         ] },
         { kcal: 0, items: [
           { icon: "🍛", name: "Estrogonof", amount: "130g" },
           { icon: "🍚", name: "Arroz", amount: "100g" },
           { icon: "🫘", name: "Feijão", amount: "80g" },
-          { icon: "🥦", name: "Brocolis", amount: "à vontade" }
+          { icon: "🥦", name: "Brocolis", amount: "50g" }
         ] }
       ],
       "lanche-tarde": [
@@ -3563,43 +3552,43 @@
           { icon: "🥩", name: "Carne Grelhada", amount: "100g" },
           { icon: "🍚", name: "Arroz", amount: "80g" },
           { icon: "🥔", name: "Batata Inglesa", amount: "100g" },
-          { icon: "🍅", name: "Tomate Cereja", amount: "à vontade" }
+          { icon: "🍅", name: "Tomate Cereja", amount: "50g" }
         ] },
         { kcal: 0, items: [
           { icon: "🍝", name: "Macarrão", amount: "100g" },
           { icon: "🍗", name: "Frango Grelhado", amount: "120g" },
-          { icon: "🥬", name: "Couve", amount: "à vontade" }
+          { icon: "🥬", name: "Couve", amount: "50g" }
         ] },
         { kcal: 0, items: [
           { icon: "🍚", name: "Arroz", amount: "80g" },
           { icon: "🫘", name: "Feijão", amount: "80g" },
           { icon: "🥩", name: "Carne de Panela (Agulha)", amount: "90g" },
-          { icon: "🥬", name: "Alface", amount: "à vontade" }
+          { icon: "🥬", name: "Alface", amount: "50g" }
         ] },
         { kcal: 0, items: [
           { icon: "🐟", name: "Peixe Assado (Anchova)", amount: "120g" },
           { icon: "🥔", name: "Batata Inglesa", amount: "100g" },
           { icon: "🍚", name: "Arroz", amount: "90g" },
-          { icon: "🥦", name: "Brocolis", amount: "à vontade" }
+          { icon: "🥦", name: "Brocolis", amount: "50g" }
         ] },
         { kcal: 0, items: [
           { icon: "🥩", name: "Carne Moida", amount: "70g" },
           { icon: "🍚", name: "Arroz", amount: "94g" },
           { icon: "🥚", name: "Ovo Cozido", amount: "1 unidade" },
-          { icon: "🍅", name: "Tomate Cereja", amount: "à vontade" },
-          { icon: "🥬", name: "Couve", amount: "à vontade" }
+          { icon: "🍅", name: "Tomate Cereja", amount: "50g" },
+          { icon: "🥬", name: "Couve", amount: "50g" }
         ] },
         { kcal: 0, items: [
           { icon: "🍳", name: "Omelete", amount: "200g" },
           { icon: "🥔", name: "Batata Inglesa", amount: "150g" },
-          { icon: "🥬", name: "Repolho", amount: "à vontade" },
-          { icon: "🥕", name: "Cenoura Crua", amount: "à vontade" }
+          { icon: "🥬", name: "Repolho", amount: "50g" },
+          { icon: "🥕", name: "Cenoura Crua", amount: "50g" }
         ] },
         { kcal: 0, items: [
           { icon: "🥞", name: "Panqueca de Carne Moída", amount: "150g" },
           { icon: "🍚", name: "Arroz", amount: "100g" },
-          { icon: "🥬", name: "Alface", amount: "à vontade" },
-          { icon: "🟣", name: "Beterraba Crua", amount: "à vontade" }
+          { icon: "🥬", name: "Alface", amount: "50g" },
+          { icon: "🟣", name: "Beterraba Crua", amount: "50g" }
         ] }
       ]
     };
@@ -6996,6 +6985,9 @@
       const saturatedFatPercent = Math.max(0, Math.min(100, Math.round((saturatedFat / saturatedFatTarget) * 100)));
       const fiberPercent = Math.max(0, Math.min(100, Math.round((fiber / fiberTarget) * 100)));
       const sugarPercent = Math.max(0, Math.min(100, Math.round((sugar / sugarTarget) * 100)));
+      const nutrientDayProgress = expectedDayProgress(macroDate);
+      const proteinBelowExpected = nutrientDayProgress > 0.05 && protein < proteinTarget * nutrientDayProgress;
+      const fiberBelowExpected = nutrientDayProgress > 0.05 && fiber < fiberTarget * nutrientDayProgress;
 
       metricConsumed.textContent = `${formatIntegerKcal(consumed)} kcal`;
       metricProtein.textContent = `${protein} g`;
@@ -7046,6 +7038,10 @@
       metricProtein.classList.remove("over-limit");
       fiberFill.classList.remove("over-limit");
       metricFiber.classList.remove("over-limit");
+      proteinFill.classList.toggle("attention-limit", proteinBelowExpected);
+      metricProtein.classList.toggle("attention-limit", proteinBelowExpected);
+      fiberFill.classList.toggle("attention-limit", fiberBelowExpected);
+      metricFiber.classList.toggle("attention-limit", fiberBelowExpected);
       renderCalorieRange(consumed, targetRange, macroDate);
     }
 

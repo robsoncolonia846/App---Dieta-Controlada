@@ -1,4 +1,4 @@
-export const foods = [
+const foods = [
   {
     id: "abacaxi",
     name: "Abacaxi",
@@ -28,12 +28,12 @@ export const foods = [
     id: "alface",
     name: "Alface",
     category: "Alimenta??o",
-    caloriesPer100g: 0,
+    caloriesPer100g: 15,
     proteinPer100g: 1.3,
     carbsPer100g: 1.7,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "a-vontade", name: "A Vontade", grams: 100 }
+      { id: "excel", name: "50g", grams: 50 }
     ]
   },
   {
@@ -180,12 +180,12 @@ export const foods = [
     name: "Beterraba Crua",
     icon: "🟣",
     category: "Alimenta??o",
-    caloriesPer100g: 0,
+    caloriesPer100g: 49,
     proteinPer100g: 1.9,
     carbsPer100g: 11.1,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "a-vontade", name: "A Vontade", grams: 100 }
+      { id: "excel", name: "50g", grams: 50 }
     ]
   },
   {
@@ -217,12 +217,12 @@ export const foods = [
     id: "brocolis",
     name: "Brocolis",
     category: "Alimenta??o",
-    caloriesPer100g: 0,
+    caloriesPer100g: 25,
     proteinPer100g: 3.6,
     carbsPer100g: 4,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "a-vontade", name: "A Vontade", grams: 100 }
+      { id: "excel", name: "50g", grams: 50 }
     ]
   },
   {
@@ -328,12 +328,12 @@ export const foods = [
     id: "cenoura-crua",
     name: "Cenoura Crua",
     category: "Alimenta??o",
-    caloriesPer100g: 0,
+    caloriesPer100g: 34,
     proteinPer100g: 1.3,
     carbsPer100g: 7.7,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "a-vontade", name: "A Vontade", grams: 100 }
+      { id: "excel", name: "50g", grams: 50 }
     ]
   },
   {
@@ -365,12 +365,12 @@ export const foods = [
     id: "couve",
     name: "Couve",
     category: "Alimenta??o",
-    caloriesPer100g: 0,
+    caloriesPer100g: 27,
     proteinPer100g: 2.9,
     carbsPer100g: 4.3,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "a-vontade", name: "A Vontade", grams: 100 }
+      { id: "excel", name: "50g", grams: 50 }
     ]
   },
   {
@@ -931,12 +931,12 @@ export const foods = [
     id: "repolho",
     name: "Repolho",
     category: "Alimenta??o",
-    caloriesPer100g: 0,
+    caloriesPer100g: 17,
     proteinPer100g: 0.9,
     carbsPer100g: 3.9,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "a-vontade", name: "A Vontade", grams: 100 }
+      { id: "excel", name: "50g", grams: 50 }
     ]
   },
   {
@@ -969,12 +969,12 @@ export const foods = [
     id: "tomate-cereja",
     name: "Tomate Cereja",
     category: "Alimenta??o",
-    caloriesPer100g: 0,
+    caloriesPer100g: 18,
     proteinPer100g: 1.1,
     carbsPer100g: 3.1,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "a-vontade", name: "A Vontade", grams: 100 }
+      { id: "excel", name: "50g", grams: 50 }
     ]
   },
   {
@@ -1660,3 +1660,5 @@ foods.forEach((food) => {
   food.saturatedFatPer100g = Number((estimatedTotalFat * saturatedFatRatio(food.id)).toFixed(1));
   food.freeSugarPer100g = Number(Math.min(carbs, Number(freeSugarPer100gById[food.id]) || 0).toFixed(1));
 });
+
+globalThis.DIETA_FOODS = foods;
