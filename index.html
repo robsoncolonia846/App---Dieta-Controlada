@@ -640,6 +640,10 @@
       letter-spacing: -0.035em;
     }
 
+    .hero.summary-card {
+      padding-bottom: 16px;
+    }
+
     .summary-remaining {
       display: flex;
       align-items: center;
@@ -1556,7 +1560,7 @@
       display: block;
       background-image: url("./food-images.jpg");
       background-repeat: no-repeat;
-      background-size: 900% 100%;
+      background-size: 1000% 100%;
       background-position: var(--sprite-position, 0%) center;
     }
 
@@ -2814,7 +2818,7 @@
               </div>
             </div>
 
-            <div class="hero">
+            <div class="hero summary-card">
               <div class="summary-header">
                 <div>
                   <div class="title summary-title">Resumo diário</div>
@@ -2847,12 +2851,16 @@
                     <div class="progress-track"><div class="progress-fill macro" id="protein-fill"></div></div>
                   </div>
                   <div class="progress-row">
-                    <div class="progress-row-head"><span>Gorduras</span><strong id="metric-fat">0 g</strong></div>
-                    <div class="progress-track"><div class="progress-fill macro" id="fat-fill"></div></div>
+                    <div class="progress-row-head"><span>Gorduras saturadas</span><strong id="metric-saturated-fat">0 g</strong></div>
+                    <div class="progress-track"><div class="progress-fill macro" id="saturated-fat-fill"></div></div>
                   </div>
                   <div class="progress-row">
                     <div class="progress-row-head"><span>Fibras</span><strong id="metric-fiber">0 g</strong></div>
                     <div class="progress-track"><div class="progress-fill macro" id="fiber-fill"></div></div>
+                  </div>
+                  <div class="progress-row">
+                    <div class="progress-row-head"><span>Açúcares</span><strong id="metric-sugar">0 g</strong></div>
+                    <div class="progress-track"><div class="progress-fill macro" id="sugar-fill"></div></div>
                   </div>
                 </div>
               </div>
@@ -3157,8 +3165,9 @@
     const calorieFill = document.getElementById("calorie-fill");
     const proteinFill = document.getElementById("protein-fill");
     const carbsFill = document.getElementById("carbs-fill");
-    const fatFill = document.getElementById("fat-fill");
+    const saturatedFatFill = document.getElementById("saturated-fat-fill");
     const fiberFill = document.getElementById("fiber-fill");
+    const sugarFill = document.getElementById("sugar-fill");
     const remainingKcal = document.getElementById("remaining-kcal");
     const mealProgressList = document.getElementById("meal-progress-list");
     const waterTotal = document.getElementById("water-total");
@@ -3192,8 +3201,9 @@
     const metricConsumed = document.getElementById("metric-consumed");
     const metricProtein = document.getElementById("metric-protein");
     const metricCarbs = document.getElementById("metric-carbs");
-    const metricFat = document.getElementById("metric-fat");
+    const metricSaturatedFat = document.getElementById("metric-saturated-fat");
     const metricFiber = document.getElementById("metric-fiber");
+    const metricSugar = document.getElementById("metric-sugar");
     const mealDate = document.getElementById("meal-date");
     const mealGrams = document.getElementById("meal-grams");
     const mealTypeOptions = document.getElementById("meal-type-options");
@@ -5408,8 +5418,9 @@
         kcal: Math.round((Number(food.caloriesPer100g) || 0) * grams / 100),
         protein: Number(((Number(food.proteinPer100g) || 0) * grams / 100).toFixed(1)),
         carbs: Number(((Number(food.carbsPer100g) || 0) * grams / 100).toFixed(1)),
-        fat: Number(((Number(food.fatPer100g) || 0) * grams / 100).toFixed(1)),
-        fiber: Number(((Number(food.fiberPer100g) || 0) * grams / 100).toFixed(1))
+        fiber: Number(((Number(food.fiberPer100g) || 0) * grams / 100).toFixed(1)),
+        saturatedFat: Number(((Number(food.saturatedFatPer100g) || 0) * grams / 100).toFixed(1)),
+        sugar: Number(((Number(food.sugarPer100g) || 0) * grams / 100).toFixed(1))
       };
     }
 
@@ -5421,7 +5432,7 @@
     function estimateMacrosFromFood(item) {
       const food = findFoodByName(item.name, item.foodId);
       const nutrition = nutritionFromFood(food, item.amount);
-      return nutrition || { protein: 0, carbs: 0, fat: 0, fiber: 0 };
+      return nutrition || { protein: 0, carbs: 0, fiber: 0, saturatedFat: 0, sugar: 0 };
     }
 
     function hydrateRecommendationItem(item, option) {
@@ -5441,8 +5452,9 @@
         hydrated.kcal = nutrition.kcal;
         hydrated.protein = nutrition.protein;
         hydrated.carbs = nutrition.carbs;
-        hydrated.fat = nutrition.fat;
         hydrated.fiber = nutrition.fiber;
+        hydrated.saturatedFat = nutrition.saturatedFat;
+        hydrated.sugar = nutrition.sugar;
       } else if (!Number(hydrated.kcal)) {
         hydrated.kcal = Math.round((Number(option.kcal) || 0) / Math.max(1, option.items.length));
       }
@@ -5451,8 +5463,9 @@
       hydrated.baseKcal = Number(hydrated.kcal) || 0;
       hydrated.baseProtein = Number(hydrated.protein) || 0;
       hydrated.baseCarbs = Number(hydrated.carbs) || 0;
-      hydrated.baseFat = Number(hydrated.fat) || 0;
       hydrated.baseFiber = Number(hydrated.fiber) || 0;
+      hydrated.baseSaturatedFat = Number(hydrated.saturatedFat) || 0;
+      hydrated.baseSugar = Number(hydrated.sugar) || 0;
       return hydrated;
     }
 
@@ -5535,8 +5548,9 @@
         item.baseKcal = Number(item.kcal) || estimateKcalFromFood(item) || 0;
         item.baseProtein = Number(item.protein) || 0;
         item.baseCarbs = Number(item.carbs) || 0;
-        item.baseFat = Number(item.fat) || 0;
         item.baseFiber = Number(item.fiber) || 0;
+        item.baseSaturatedFat = Number(item.saturatedFat) || 0;
+        item.baseSugar = Number(item.sugar) || 0;
       }
       const minValue = parsed.step;
       let nextValue;
@@ -5559,8 +5573,9 @@
       item.kcal = Math.round((Number(item.baseKcal) || 0) * ratio);
       item.protein = Number(((Number(item.baseProtein) || 0) * ratio).toFixed(1));
       item.carbs = Number(((Number(item.baseCarbs) || 0) * ratio).toFixed(1));
-      item.fat = Number(((Number(item.baseFat) || 0) * ratio).toFixed(1));
       item.fiber = Number(((Number(item.baseFiber) || 0) * ratio).toFixed(1));
+      item.saturatedFat = Number(((Number(item.baseSaturatedFat) || 0) * ratio).toFixed(1));
+      item.sugar = Number(((Number(item.baseSugar) || 0) * ratio).toFixed(1));
       recalculateRecommendation(option);
       if (shouldRender) renderRecommendationOptions();
     }
@@ -5665,8 +5680,9 @@
         kcal: Math.round((Number(food.caloriesPer100g) || 0) * grams / 100),
         protein: Number(((Number(food.proteinPer100g) || 0) * grams / 100).toFixed(1)),
         carbs: Number(((Number(food.carbsPer100g) || 0) * grams / 100).toFixed(1)),
-        fat: Number(((Number(food.fatPer100g) || 0) * grams / 100).toFixed(1)),
-        fiber: Number(((Number(food.fiberPer100g) || 0) * grams / 100).toFixed(1))
+        fiber: Number(((Number(food.fiberPer100g) || 0) * grams / 100).toFixed(1)),
+        saturatedFat: Number(((Number(food.saturatedFatPer100g) || 0) * grams / 100).toFixed(1)),
+        sugar: Number(((Number(food.sugarPer100g) || 0) * grams / 100).toFixed(1))
       };
     }
 
@@ -5686,8 +5702,9 @@
         kcal: Number(item.kcal) || undefined,
         protein: Number(item.protein) || undefined,
         carbs: Number(item.carbs) || undefined,
-        fat: Number(item.fat) || undefined,
-        fiber: Number(item.fiber) || undefined
+        fiber: Number(item.fiber) || undefined,
+        saturatedFat: Number(item.saturatedFat) || undefined,
+        sugar: Number(item.sugar) || undefined
       };
     }
 
@@ -5725,8 +5742,9 @@
             kcal: Number(meal.calories) || 0,
             protein: Number(meal.protein) || 0,
             carbs: Number(meal.carbs) || 0,
-            fat: Number(meal.fat) || 0,
-            fiber: Number(meal.fiber) || 0
+            fiber: Number(meal.fiber) || 0,
+            saturatedFat: Number(meal.saturatedFat) || 0,
+            sugar: Number(meal.sugar) || 0
           }]
         };
       }
@@ -5768,8 +5786,9 @@
       meal.calories = round(option.kcal || 0);
       meal.protein = round(option.items.reduce((total, item) => total + (Number(item.protein) || 0), 0));
       meal.carbs = round(option.items.reduce((total, item) => total + (Number(item.carbs) || 0), 0));
-      meal.fat = round(option.items.reduce((total, item) => total + (Number(item.fat) || 0), 0));
       meal.fiber = round(option.items.reduce((total, item) => total + (Number(item.fiber) || 0), 0));
+      meal.saturatedFat = round(option.items.reduce((total, item) => total + (Number(item.saturatedFat) || 0), 0));
+      meal.sugar = round(option.items.reduce((total, item) => total + (Number(item.sugar) || 0), 0));
       touchRecord(meal);
       saveData();
       renderAll();
@@ -6100,8 +6119,9 @@
       const itemsLabel = option.items.map((item) => `${item.name} (${item.amount})`).join(", ") || "Sem itens";
       const proteinTotal = option.items.reduce((total, item) => total + (Number(item.protein) || 0), 0);
       const carbsTotal = option.items.reduce((total, item) => total + (Number(item.carbs) || 0), 0);
-      const fatTotal = option.items.reduce((total, item) => total + (Number(item.fat) || 0), 0);
       const fiberTotal = option.items.reduce((total, item) => total + (Number(item.fiber) || 0), 0);
+      const saturatedFatTotal = option.items.reduce((total, item) => total + (Number(item.saturatedFat) || 0), 0);
+      const sugarTotal = option.items.reduce((total, item) => total + (Number(item.sugar) || 0), 0);
       if (editingMealId) {
         const existingMeal = appData.meals.find((item) => item.id === editingMealId);
         if (!existingMeal) return;
@@ -6117,8 +6137,9 @@
         existingMeal.calories = round(option.kcal || 0);
         existingMeal.protein = round(proteinTotal);
         existingMeal.carbs = round(carbsTotal);
-        existingMeal.fat = round(fatTotal);
         existingMeal.fiber = round(fiberTotal);
+        existingMeal.saturatedFat = round(saturatedFatTotal);
+        existingMeal.sugar = round(sugarTotal);
         touchRecord(existingMeal);
         saveData();
         editingMealType = null;
@@ -6147,8 +6168,9 @@
         calories: round(option.kcal || 0),
         protein: round(proteinTotal),
         carbs: round(carbsTotal),
-        fat: round(fatTotal),
-        fiber: round(fiberTotal)
+        fiber: round(fiberTotal),
+        saturatedFat: round(saturatedFatTotal),
+        sugar: round(sugarTotal)
       });
       saveData();
       editingMealType = null;
@@ -6268,8 +6290,9 @@
         calories: round((food.caloriesPer100g || 0) * factor),
         protein: round((food.proteinPer100g || 0) * factor),
         carbs: round((food.carbsPer100g || 0) * factor),
-        fat: round((food.fatPer100g || 0) * factor),
-        fiber: round((food.fiberPer100g || 0) * factor)
+        fiber: round((food.fiberPer100g || 0) * factor),
+        saturatedFat: round((food.saturatedFatPer100g || 0) * factor),
+        sugar: round((food.sugarPer100g || 0) * factor)
       };
     }
 
@@ -6862,14 +6885,14 @@
       const food = findFoodByName(meal?.foodName, meal?.foodId);
       const grams = Number(meal?.grams) || 0;
       if (food && grams > 0) {
-        const property = nutrient === "fat" ? "fatPer100g" : "fiberPer100g";
+        const nutrientProperties = {
+          fiber: "fiberPer100g",
+          saturatedFat: "saturatedFatPer100g",
+          sugar: "sugarPer100g"
+        };
+        const property = nutrientProperties[nutrient];
+        if (!property) return 0;
         return Math.max(0, (Number(food[property]) || 0) * grams / 100);
-      }
-      if (nutrient === "fat") {
-        const calories = Number(meal?.calories) || 0;
-        const protein = Number(meal?.protein) || 0;
-        const carbs = Number(meal?.carbs) || 0;
-        return Math.max(0, (calories - protein * 4 - carbs * 4) / 9);
       }
       return 0;
     }
@@ -6881,8 +6904,9 @@
       const spent = round(expenses.reduce((sum, item) => sum + (Number(item.calories) || 0), 0));
       const protein = round(meals.reduce((sum, item) => sum + (Number(item.protein) || 0), 0));
       const carbs = round(meals.reduce((sum, item) => sum + (Number(item.carbs) || 0), 0));
-      const fat = round(meals.reduce((sum, item) => sum + savedMealNutrient(item, "fat"), 0));
       const fiber = round(meals.reduce((sum, item) => sum + savedMealNutrient(item, "fiber"), 0));
+      const saturatedFat = round(meals.reduce((sum, item) => sum + savedMealNutrient(item, "saturatedFat"), 0));
+      const sugar = round(meals.reduce((sum, item) => sum + savedMealNutrient(item, "sugar"), 0));
       const balance = round(consumed - spent);
       const macroDate = /^\d{4}-\d{2}-\d{2}$/.test(period || "") ? period : todayISO();
       const targetRange = dailyTargetRange(macroDate);
@@ -6897,18 +6921,21 @@
         70;
       const proteinTarget = Math.max(1, round(macroWeight * 1.6));
       const carbsTarget = Math.max(130, round((dailyTarget(macroDate) * 0.45) / 4));
-      const fatTarget = Math.max(1, round((dailyTarget(macroDate) * 0.3) / 9));
+      const saturatedFatTarget = Math.max(1, round((dailyTarget(macroDate) * 0.1) / 9));
       const fiberTarget = 25;
+      const sugarTarget = Math.max(1, round((dailyTarget(macroDate) * 0.1) / 4));
       const proteinPercent = Math.max(0, Math.min(100, Math.round((protein / proteinTarget) * 100)));
       const carbsPercent = Math.max(0, Math.min(100, Math.round((carbs / carbsTarget) * 100)));
-      const fatPercent = Math.max(0, Math.min(100, Math.round((fat / fatTarget) * 100)));
+      const saturatedFatPercent = Math.max(0, Math.min(100, Math.round((saturatedFat / saturatedFatTarget) * 100)));
       const fiberPercent = Math.max(0, Math.min(100, Math.round((fiber / fiberTarget) * 100)));
+      const sugarPercent = Math.max(0, Math.min(100, Math.round((sugar / sugarTarget) * 100)));
 
       metricConsumed.textContent = `${formatIntegerKcal(consumed)} kcal`;
       metricProtein.textContent = `${protein} g`;
       metricCarbs.textContent = `${carbs} g`;
-      metricFat.textContent = `${fat} g`;
+      metricSaturatedFat.textContent = `${saturatedFat} g`;
       metricFiber.textContent = `${fiber} g`;
+      metricSugar.textContent = `${sugar} g`;
       remainingKcal.textContent = remaining > 0
         ? `+${formatIntegerKcal(remaining)}`
         : remaining < 0
@@ -6932,18 +6959,22 @@
       calorieFill.style.setProperty("--width", `${percent}%`);
       proteinFill.style.setProperty("--width", `${proteinPercent}%`);
       carbsFill.style.setProperty("--width", `${carbsPercent}%`);
-      fatFill.style.setProperty("--width", `${fatPercent}%`);
+      saturatedFatFill.style.setProperty("--width", `${saturatedFatPercent}%`);
       fiberFill.style.setProperty("--width", `${fiberPercent}%`);
+      sugarFill.style.setProperty("--width", `${sugarPercent}%`);
       const carbsOverLimit = carbs > carbsTarget;
-      const fatOverLimit = fat > fatTarget;
+      const saturatedFatOverLimit = saturatedFat > saturatedFatTarget;
+      const sugarOverLimit = sugar > sugarTarget;
       calorieFill.classList.toggle("attention-limit", caloriesAttentionLimit);
       calorieFill.classList.toggle("over-limit", caloriesOverLimit);
       carbsFill.classList.toggle("over-limit", carbsOverLimit);
       metricConsumed.classList.toggle("attention-limit", caloriesAttentionLimit);
       metricConsumed.classList.toggle("over-limit", caloriesOverLimit);
       metricCarbs.classList.toggle("over-limit", carbsOverLimit);
-      fatFill.classList.toggle("over-limit", fatOverLimit);
-      metricFat.classList.toggle("over-limit", fatOverLimit);
+      saturatedFatFill.classList.toggle("over-limit", saturatedFatOverLimit);
+      metricSaturatedFat.classList.toggle("over-limit", saturatedFatOverLimit);
+      sugarFill.classList.toggle("over-limit", sugarOverLimit);
+      metricSugar.classList.toggle("over-limit", sugarOverLimit);
       proteinFill.classList.remove("over-limit");
       metricProtein.classList.remove("over-limit");
       fiberFill.classList.remove("over-limit");

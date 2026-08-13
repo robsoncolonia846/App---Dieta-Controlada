@@ -140,7 +140,7 @@ export const foods = [
   {
     id: "bauru-file",
     name: "Bauru Filé",
-    imageSpritePosition: "12.5%",
+    imageSpritePosition: "11.111%",
     category: "Alimenta??o",
     caloriesPer100g: 1760,
     proteinPer100g: 100,
@@ -570,7 +570,7 @@ export const foods = [
     id: "maionese",
     name: "Maionese",
     icon: "\ud83e\udd63",
-    image: "./maionese.png",
+    imageSpritePosition: "100%",
     category: "Alimentação",
     caloriesPer100g: 600,
     proteinPer100g: 1,
@@ -584,7 +584,7 @@ export const foods = [
     id: "maionese-light",
     name: "Maionese Light",
     icon: "\ud83e\udd63",
-    image: "./maionese.png",
+    imageSpritePosition: "100%",
     category: "Alimentação",
     caloriesPer100g: 150,
     proteinPer100g: 0.5,
@@ -1065,7 +1065,7 @@ export const foods = [
   {
     id: "cueca-virada-grostoli",
     name: "Cueca Virada (Grostoli)",
-    imageSpritePosition: "25%",
+    imageSpritePosition: "22.222%",
     category: "Alimentação",
     caloriesPer100g: 400,
     proteinPer100g: 7,
@@ -1445,7 +1445,7 @@ export const foods = [
   {
     id: "biscoito-maizena",
     name: "Biscoito de Maisena",
-    imageSpritePosition: "37.5%",
+    imageSpritePosition: "33.333%",
     category: "Alimenta??o",
     caloriesPer100g: 400,
     proteinPer100g: 7,
@@ -1458,7 +1458,7 @@ export const foods = [
   {
     id: "biscoito-agua-e-sal",
     name: "Biscoito de Água e Sal",
-    imageSpritePosition: "50%",
+    imageSpritePosition: "44.444%",
     category: "Alimenta??o",
     caloriesPer100g: 400,
     proteinPer100g: 8,
@@ -1471,7 +1471,7 @@ export const foods = [
   {
     id: "biscoito-cream-cracker",
     name: "Biscoito Cream Cracker",
-    imageSpritePosition: "62.5%",
+    imageSpritePosition: "55.556%",
     category: "Alimenta??o",
     caloriesPer100g: 450,
     proteinPer100g: 9,
@@ -1484,7 +1484,7 @@ export const foods = [
   {
     id: "biscoito-rosquinha-doce",
     name: "Biscoito Rosquinha Doce",
-    imageSpritePosition: "75%",
+    imageSpritePosition: "66.667%",
     category: "Alimenta??o",
     caloriesPer100g: 450,
     proteinPer100g: 7,
@@ -1497,7 +1497,7 @@ export const foods = [
   {
     id: "biscoito-recheado",
     name: "Biscoito Recheado",
-    imageSpritePosition: "87.5%",
+    imageSpritePosition: "77.778%",
     category: "Alimenta??o",
     caloriesPer100g: 450,
     proteinPer100g: 6,
@@ -1510,7 +1510,7 @@ export const foods = [
   {
     id: "biscoito-vovo-sentada",
     name: "Biscoito Vovó Sentada",
-    imageSpritePosition: "100%",
+    imageSpritePosition: "88.889%",
     category: "Alimenta??o",
     caloriesPer100g: 500,
     proteinPer100g: 7,
@@ -1594,11 +1594,51 @@ const fiberPer100gById = {
   "biscoito-recheado": 2.5, "biscoito-vovo-sentada": 1.6, "pacoquinha": 5.5
 };
 
+// Açúcares totais médios por 100 g/ml. O valor nunca ultrapassa o carboidrato cadastrado.
+const sugarPer100gById = {
+  "abacaxi": 10, "abobora": 2.8, "alface": 0.8, "amendoim": 4.7,
+  "banana": 12.2, "bergamota": 8.5, "beterraba-cozida-assada": 7,
+  "beterraba-crua": 6.8, "brocolis": 1.7, "cenoura-cozida-assada": 4.7,
+  "cenoura-crua": 4.7, "cerveja": 0.1, "couve": 0.8, "doce-de-leite": 50,
+  "estrogonof": 2.2, "feijao": 0.3, "goiabada": 68, "iogurte-zero": 4.5,
+  "laranja": 8.5, "lazanha-de-carne-moida": 3.2, "lazanha-de-frango": 2.8,
+  "leite-desnatado": 5, "leite-integral": 4.8, "maca": 14,
+  "maionese": 0.6, "maionese-light": 3, "melancia": 6.2, "morango": 4.9,
+  "pao-caseiro": 5, "pao-de-forma": 4.5, "pao-frances": 2.8,
+  "repolho": 3.2, "requeijao": 2.4, "requeijao-light": 2.4,
+  "tomate-cereja": 2.7, "uva": 16, "bolo-de-banana-com-canela": 24,
+  "bolo-de-cenoura": 27, "bolo-de-aniversario": 38, "brigadeiro": 55,
+  "bolo-de-chocolate-com-calda": 52, "cueca-virada-grostoli": 12,
+  "pizza": 4, "vinho-seco": 0.6, "vinho-suave": 6,
+  "cafe-com-uma-colher-acucar": 5, "cafe-com-duas-colheres-acucar": 10,
+  "acucar-cristal": 99.6, "batata-doce-cozida": 5.7, "mandioca-cozida": 1.7,
+  "aveia-em-flocos": 1, "tapioca-com-manteiga": 0.4, "mamao-formosa": 7.8,
+  "abacate": 0.7, "granola": 24, "quentao": 15, "pure-de-batatas": 1.4,
+  "torta-de-bolacha": 18, "arroz-doce": 15, "biscoito-maizena": 22,
+  "biscoito-agua-e-sal": 4, "biscoito-cream-cracker": 5,
+  "biscoito-rosquinha-doce": 25, "biscoito-recheado": 35,
+  "biscoito-vovo-sentada": 25, "pacoquinha": 38, "coca-cola-original": 10.5
+};
+
+function saturatedFatRatio(foodId) {
+  if (/azeite/.test(foodId)) return 0.14;
+  if (/amendoim|pacoquinha/.test(foodId)) return 0.16;
+  if (/peixe|atum|sardinha/.test(foodId)) return 0.25;
+  if (/maionese/.test(foodId)) return 0.16;
+  if (/margarina/.test(foodId)) return 0.3;
+  if (/manteiga|queijo|requeijao|leite|iogurte/.test(foodId)) return 0.6;
+  if (/carne|bife|figado|lombo|salsichao|presunto|coracao/.test(foodId)) return 0.4;
+  if (/frango|ovo|omelete/.test(foodId)) return 0.32;
+  if (/bolo|biscoito|pizza|pastel|torta|brigadeiro|doce|goiabada|cueca/.test(foodId)) return 0.35;
+  return 0.25;
+}
+
 foods.forEach((food) => {
   const calories = Number(food.caloriesPer100g) || 0;
   const protein = Number(food.proteinPer100g) || 0;
   const carbs = Number(food.carbsPer100g) || 0;
-  // Mantém a gordura compatível com as kcal e macros personalizados já cadastrados.
-  food.fatPer100g = Number(Math.max(0, (calories - protein * 4 - carbs * 4) / 9).toFixed(1));
+  const estimatedTotalFat = Math.max(0, (calories - protein * 4 - carbs * 4) / 9);
   food.fiberPer100g = Number(fiberPer100gById[food.id]) || 0;
+  food.saturatedFatPer100g = Number((estimatedTotalFat * saturatedFatRatio(food.id)).toFixed(1));
+  food.sugarPer100g = Number(Math.min(carbs, Number(sugarPer100gById[food.id]) || 0).toFixed(1));
 });
