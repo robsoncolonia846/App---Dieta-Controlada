@@ -1620,6 +1620,24 @@ const sugarPer100gById = {
   "biscoito-vovo-sentada": 25, "pacoquinha": 38, "coca-cola-original": 10.5
 };
 
+// Açúcares livres/adicionados por 100 g/ml. Não inclui o açúcar natural
+// de frutas inteiras, verduras ou leite sem açúcar adicionado.
+const freeSugarPer100gById = {
+  "doce-de-leite": 45, "goiabada": 68,
+  "pao-caseiro": 3, "pao-de-forma": 4,
+  "bolo-de-banana-com-canela": 20, "bolo-de-cenoura": 27,
+  "bolo-de-aniversario": 38, "brigadeiro": 55,
+  "bolo-de-chocolate-com-calda": 52, "cueca-virada-grostoli": 12,
+  "pizza": 2, "cafe-com-uma-colher-acucar": 5,
+  "cafe-com-duas-colheres-acucar": 10, "acucar-cristal": 99.6,
+  "granola": 18, "quentao": 15, "torta-de-bolacha": 18,
+  "arroz-doce": 12, "biscoito-maizena": 22,
+  "biscoito-agua-e-sal": 3, "biscoito-cream-cracker": 4,
+  "biscoito-rosquinha-doce": 25, "biscoito-recheado": 35,
+  "biscoito-vovo-sentada": 25, "pacoquinha": 32,
+  "coca-cola-original": 10.5
+};
+
 function saturatedFatRatio(foodId) {
   if (/azeite/.test(foodId)) return 0.14;
   if (/amendoim|pacoquinha/.test(foodId)) return 0.16;
@@ -1640,5 +1658,5 @@ foods.forEach((food) => {
   const estimatedTotalFat = Math.max(0, (calories - protein * 4 - carbs * 4) / 9);
   food.fiberPer100g = Number(fiberPer100gById[food.id]) || 0;
   food.saturatedFatPer100g = Number((estimatedTotalFat * saturatedFatRatio(food.id)).toFixed(1));
-  food.sugarPer100g = Number(Math.min(carbs, Number(sugarPer100gById[food.id]) || 0).toFixed(1));
+  food.freeSugarPer100g = Number(Math.min(carbs, Number(freeSugarPer100gById[food.id]) || 0).toFixed(1));
 });

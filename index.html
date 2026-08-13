@@ -2802,13 +2802,13 @@
           <section id="hoje">
             <div class="goal-banner">
               <div class="goal-banner-main">
-                <span>🔥 Meta do dia: <span id="goal-banner-value">0 - 0 kcal</span></span>
+                <span>🔥 Meta do dia: <span id="goal-banner-value">0 kcal</span></span>
               </div>
               <div class="calorie-range" id="calorie-range">
                 <div class="calorie-range-track" aria-label="Faixa de calorias da meta diária">
                   <div class="calorie-range-fill" id="calorie-range-fill"></div>
                   <span class="calorie-range-marker min" id="calorie-range-min-marker" style="--left: 0%;"><details class="range-info"><summary id="calorie-range-min-info-summary" aria-label="Entenda o déficit calórico">i</summary><div class="range-info-box" id="calorie-range-min-info-box">Meta com déficit calórico em relação ao gasto diário.</div></details></span>
-                  <span class="calorie-range-marker max" id="calorie-range-max-marker" style="--left: 100%;"><details class="range-info"><summary aria-label="Entenda o gasto diário">i</summary><div class="range-info-box">Gasto diário estimado, somando as atividades registradas no dia, caso ocorram.</div></details></span>
+                  <span class="calorie-range-marker max" id="calorie-range-max-marker" style="--left: 100%;" aria-hidden="true"></span>
                 </div>
                 <div class="calorie-range-labels">
                   <span id="calorie-range-current-label" style="--left: 0%;">0</span>
@@ -2847,20 +2847,20 @@
                     <div class="progress-track"><div class="progress-fill macro" id="carbs-fill"></div></div>
                   </div>
                   <div class="progress-row">
-                    <div class="progress-row-head"><span>Proteínas</span><strong id="metric-protein">0 g</strong></div>
-                    <div class="progress-track"><div class="progress-fill macro" id="protein-fill"></div></div>
+                    <div class="progress-row-head"><span>Açúcares</span><strong id="metric-sugar">0 g</strong></div>
+                    <div class="progress-track"><div class="progress-fill macro" id="sugar-fill"></div></div>
                   </div>
                   <div class="progress-row">
                     <div class="progress-row-head"><span>Gorduras saturadas</span><strong id="metric-saturated-fat">0 g</strong></div>
                     <div class="progress-track"><div class="progress-fill macro" id="saturated-fat-fill"></div></div>
                   </div>
                   <div class="progress-row">
-                    <div class="progress-row-head"><span>Fibras</span><strong id="metric-fiber">0 g</strong></div>
-                    <div class="progress-track"><div class="progress-fill macro" id="fiber-fill"></div></div>
+                    <div class="progress-row-head"><span>Proteínas</span><strong id="metric-protein">0 g</strong></div>
+                    <div class="progress-track"><div class="progress-fill macro" id="protein-fill"></div></div>
                   </div>
                   <div class="progress-row">
-                    <div class="progress-row-head"><span>Açúcares</span><strong id="metric-sugar">0 g</strong></div>
-                    <div class="progress-track"><div class="progress-fill macro" id="sugar-fill"></div></div>
+                    <div class="progress-row-head"><span>Fibras</span><strong id="metric-fiber">0 g</strong></div>
+                    <div class="progress-track"><div class="progress-fill macro" id="fiber-fill"></div></div>
                   </div>
                 </div>
               </div>
@@ -4664,9 +4664,7 @@
       profileHeight.value = profile.heightCm || "";
       profileAge.value = profile.age || "";
       profileSex.value = profile.sex || "male";
-      goalBannerValue.textContent = maintainWeight
-        ? `${formatIntegerKcal(targetRange.max)} kcal`
-        : `${formatIntegerKcal(targetRange.min)} - ${formatIntegerKcal(targetRange.max)} kcal`;
+      goalBannerValue.textContent = `${formatIntegerKcal(targetRange.min)} kcal`;
       profileBasalInfo.textContent = basal
         ? `Gasto basal estimado: ${formatIntegerKcal(basal)} kcal/dia. Atividades de hoje: ${formatIntegerKcal(targetRange.activity)} kcal. Meta usada: ${maintainWeight ? formatIntegerKcal(targetRange.max) : `${formatIntegerKcal(targetRange.min)} - ${formatIntegerKcal(targetRange.max)}`} kcal/dia.`
         : "Informe peso, altura e idade para estimar o gasto diário.";
@@ -5420,7 +5418,7 @@
         carbs: Number(((Number(food.carbsPer100g) || 0) * grams / 100).toFixed(1)),
         fiber: Number(((Number(food.fiberPer100g) || 0) * grams / 100).toFixed(1)),
         saturatedFat: Number(((Number(food.saturatedFatPer100g) || 0) * grams / 100).toFixed(1)),
-        sugar: Number(((Number(food.sugarPer100g) || 0) * grams / 100).toFixed(1))
+        freeSugar: Number(((Number(food.freeSugarPer100g) || 0) * grams / 100).toFixed(1))
       };
     }
 
@@ -5432,7 +5430,7 @@
     function estimateMacrosFromFood(item) {
       const food = findFoodByName(item.name, item.foodId);
       const nutrition = nutritionFromFood(food, item.amount);
-      return nutrition || { protein: 0, carbs: 0, fiber: 0, saturatedFat: 0, sugar: 0 };
+      return nutrition || { protein: 0, carbs: 0, fiber: 0, saturatedFat: 0, freeSugar: 0 };
     }
 
     function hydrateRecommendationItem(item, option) {
@@ -5454,7 +5452,7 @@
         hydrated.carbs = nutrition.carbs;
         hydrated.fiber = nutrition.fiber;
         hydrated.saturatedFat = nutrition.saturatedFat;
-        hydrated.sugar = nutrition.sugar;
+        hydrated.freeSugar = nutrition.freeSugar;
       } else if (!Number(hydrated.kcal)) {
         hydrated.kcal = Math.round((Number(option.kcal) || 0) / Math.max(1, option.items.length));
       }
@@ -5465,7 +5463,7 @@
       hydrated.baseCarbs = Number(hydrated.carbs) || 0;
       hydrated.baseFiber = Number(hydrated.fiber) || 0;
       hydrated.baseSaturatedFat = Number(hydrated.saturatedFat) || 0;
-      hydrated.baseSugar = Number(hydrated.sugar) || 0;
+      hydrated.baseFreeSugar = Number(hydrated.freeSugar) || 0;
       return hydrated;
     }
 
@@ -5550,7 +5548,7 @@
         item.baseCarbs = Number(item.carbs) || 0;
         item.baseFiber = Number(item.fiber) || 0;
         item.baseSaturatedFat = Number(item.saturatedFat) || 0;
-        item.baseSugar = Number(item.sugar) || 0;
+        item.baseFreeSugar = Number(item.freeSugar) || 0;
       }
       const minValue = parsed.step;
       let nextValue;
@@ -5575,7 +5573,7 @@
       item.carbs = Number(((Number(item.baseCarbs) || 0) * ratio).toFixed(1));
       item.fiber = Number(((Number(item.baseFiber) || 0) * ratio).toFixed(1));
       item.saturatedFat = Number(((Number(item.baseSaturatedFat) || 0) * ratio).toFixed(1));
-      item.sugar = Number(((Number(item.baseSugar) || 0) * ratio).toFixed(1));
+      item.freeSugar = Number(((Number(item.baseFreeSugar) || 0) * ratio).toFixed(1));
       recalculateRecommendation(option);
       if (shouldRender) renderRecommendationOptions();
     }
@@ -5682,7 +5680,7 @@
         carbs: Number(((Number(food.carbsPer100g) || 0) * grams / 100).toFixed(1)),
         fiber: Number(((Number(food.fiberPer100g) || 0) * grams / 100).toFixed(1)),
         saturatedFat: Number(((Number(food.saturatedFatPer100g) || 0) * grams / 100).toFixed(1)),
-        sugar: Number(((Number(food.sugarPer100g) || 0) * grams / 100).toFixed(1))
+        freeSugar: Number(((Number(food.freeSugarPer100g) || 0) * grams / 100).toFixed(1))
       };
     }
 
@@ -5704,7 +5702,7 @@
         carbs: Number(item.carbs) || undefined,
         fiber: Number(item.fiber) || undefined,
         saturatedFat: Number(item.saturatedFat) || undefined,
-        sugar: Number(item.sugar) || undefined
+        freeSugar: Number(item.freeSugar) || undefined
       };
     }
 
@@ -5744,7 +5742,7 @@
             carbs: Number(meal.carbs) || 0,
             fiber: Number(meal.fiber) || 0,
             saturatedFat: Number(meal.saturatedFat) || 0,
-            sugar: Number(meal.sugar) || 0
+            freeSugar: savedMealNutrient(meal, "freeSugar")
           }]
         };
       }
@@ -5788,7 +5786,7 @@
       meal.carbs = round(option.items.reduce((total, item) => total + (Number(item.carbs) || 0), 0));
       meal.fiber = round(option.items.reduce((total, item) => total + (Number(item.fiber) || 0), 0));
       meal.saturatedFat = round(option.items.reduce((total, item) => total + (Number(item.saturatedFat) || 0), 0));
-      meal.sugar = round(option.items.reduce((total, item) => total + (Number(item.sugar) || 0), 0));
+      meal.freeSugar = round(option.items.reduce((total, item) => total + (Number(item.freeSugar) || 0), 0));
       touchRecord(meal);
       saveData();
       renderAll();
@@ -6121,7 +6119,7 @@
       const carbsTotal = option.items.reduce((total, item) => total + (Number(item.carbs) || 0), 0);
       const fiberTotal = option.items.reduce((total, item) => total + (Number(item.fiber) || 0), 0);
       const saturatedFatTotal = option.items.reduce((total, item) => total + (Number(item.saturatedFat) || 0), 0);
-      const sugarTotal = option.items.reduce((total, item) => total + (Number(item.sugar) || 0), 0);
+      const freeSugarTotal = option.items.reduce((total, item) => total + (Number(item.freeSugar) || 0), 0);
       if (editingMealId) {
         const existingMeal = appData.meals.find((item) => item.id === editingMealId);
         if (!existingMeal) return;
@@ -6139,7 +6137,7 @@
         existingMeal.carbs = round(carbsTotal);
         existingMeal.fiber = round(fiberTotal);
         existingMeal.saturatedFat = round(saturatedFatTotal);
-        existingMeal.sugar = round(sugarTotal);
+        existingMeal.freeSugar = round(freeSugarTotal);
         touchRecord(existingMeal);
         saveData();
         editingMealType = null;
@@ -6170,7 +6168,7 @@
         carbs: round(carbsTotal),
         fiber: round(fiberTotal),
         saturatedFat: round(saturatedFatTotal),
-        sugar: round(sugarTotal)
+        freeSugar: round(freeSugarTotal)
       });
       saveData();
       editingMealType = null;
@@ -6292,7 +6290,7 @@
         carbs: round((food.carbsPer100g || 0) * factor),
         fiber: round((food.fiberPer100g || 0) * factor),
         saturatedFat: round((food.saturatedFatPer100g || 0) * factor),
-        sugar: round((food.sugarPer100g || 0) * factor)
+        freeSugar: round((food.freeSugarPer100g || 0) * factor)
       };
     }
 
@@ -6888,7 +6886,7 @@
         const nutrientProperties = {
           fiber: "fiberPer100g",
           saturatedFat: "saturatedFatPer100g",
-          sugar: "sugarPer100g"
+          freeSugar: "freeSugarPer100g"
         };
         const property = nutrientProperties[nutrient];
         if (!property) return 0;
@@ -6906,7 +6904,7 @@
       const carbs = round(meals.reduce((sum, item) => sum + (Number(item.carbs) || 0), 0));
       const fiber = round(meals.reduce((sum, item) => sum + savedMealNutrient(item, "fiber"), 0));
       const saturatedFat = round(meals.reduce((sum, item) => sum + savedMealNutrient(item, "saturatedFat"), 0));
-      const sugar = round(meals.reduce((sum, item) => sum + savedMealNutrient(item, "sugar"), 0));
+      const sugar = round(meals.reduce((sum, item) => sum + savedMealNutrient(item, "freeSugar"), 0));
       const balance = round(consumed - spent);
       const macroDate = /^\d{4}-\d{2}-\d{2}$/.test(period || "") ? period : todayISO();
       const targetRange = dailyTargetRange(macroDate);
@@ -6996,12 +6994,14 @@
       calorieRangeMinLabel.parentElement.style.setProperty("--left", `${minLeft}%`);
       calorieRangeMaxMarker.style.setProperty("--left", `${maxLeft}%`);
       calorieRangeMaxLabel.parentElement.style.setProperty("--left", `${maxLeft}%`);
-      calorieRangeMinMarker.classList.toggle("hidden", maintainWeight);
-      calorieRangeMinLabel.parentElement.classList.toggle("hidden", maintainWeight);
+      calorieRangeMinMarker.classList.remove("hidden");
+      calorieRangeMinLabel.parentElement.classList.remove("hidden");
       calorieRangeMinLabel.textContent = formatIntegerKcal(min);
       calorieRangeMaxLabel.textContent = formatIntegerKcal(max);
-      calorieRangeMinInfoSummary.setAttribute("aria-label", `Entenda o déficit de ${deficitKcal} kcal`);
-      calorieRangeMinInfoBox.textContent = `Meta com déficit de ${deficitKcal} kcal em relação ao gasto diário.`;
+      calorieRangeMinInfoSummary.setAttribute("aria-label", maintainWeight ? "Entenda a meta diária" : `Entenda o déficit de ${deficitKcal} kcal`);
+      calorieRangeMinInfoBox.textContent = maintainWeight
+        ? "Meta mínima diária calculada a partir do gasto estimado."
+        : `Meta mínima com déficit de ${deficitKcal} kcal em relação ao gasto diário.`;
       calorieRangeFill.style.setProperty("--width", `${width}%`);
       calorieRange.classList.toggle("good", maintainWeight ? consumed <= max : consumed < min);
       calorieRange.classList.toggle("warn", !maintainWeight && consumed >= min && consumed < max);
