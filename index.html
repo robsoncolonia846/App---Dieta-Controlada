@@ -4809,14 +4809,15 @@
       if (maintainWeight ? excess > 0 : consumed > targetRange.min + 50) score = Math.min(score, 94);
 
       const alerts = [];
+      const timingSuffix = isToday && dayProgress < 1 ? " neste horário" : "";
       if (dangerThresholdReached) alerts.push({ level: "danger", text: `Calorias: ${formatIntegerKcal(excess)} kcal acima da meta.` });
-      if (waterExpected > 0 && waterNow < waterExpected) alerts.push({ level: "warn", text: `Água: ${waterNow}/${waterExpected} ml até agora.` });
-      if (dayProgress > 0.05 && calorieScore < 80 && consumed <= adjustedTarget) alerts.push({ level: "warn", text: "Calorias abaixo do esperado neste horário." });
-      if (dayProgress > 0.05 && proteinScore < 80) alerts.push({ level: "warn", text: "Proteínas abaixo do esperado até agora." });
-      if (dayProgress > 0.05 && fiberScore < 80) alerts.push({ level: "warn", text: "Fibras abaixo do esperado até agora." });
-      if (carbsScore < 80) alerts.push({ level: carbs > targets.carbs ? "danger" : "warn", text: "Carboidratos acima do esperado neste horário." });
-      if (sugarScore < 80) alerts.push({ level: freeSugar > targets.freeSugar ? "danger" : "warn", text: "Açúcares livres acima do esperado neste horário." });
-      if (saturatedFatScore < 80) alerts.push({ level: saturatedFat > targets.saturatedFat ? "danger" : "warn", text: "Gorduras saturadas acima do esperado neste horário." });
+      if (waterExpected > 0 && waterNow < waterExpected) alerts.push({ level: "warn", text: `Água abaixo do esperado${timingSuffix}.` });
+      if (dayProgress > 0.05 && calorieScore < 80 && consumed <= adjustedTarget) alerts.push({ level: "warn", text: `Calorias abaixo do esperado${timingSuffix}.` });
+      if (dayProgress > 0.05 && proteinScore < 80) alerts.push({ level: "warn", text: `Proteínas abaixo do esperado${timingSuffix}.` });
+      if (dayProgress > 0.05 && fiberScore < 80) alerts.push({ level: "warn", text: `Fibras abaixo do esperado${timingSuffix}.` });
+      if (carbsScore < 80) alerts.push({ level: carbs > targets.carbs ? "danger" : "warn", text: carbs > targets.carbs ? "Carboidratos acima da meta." : `Carboidratos acima do esperado${timingSuffix}.` });
+      if (sugarScore < 80) alerts.push({ level: freeSugar > targets.freeSugar ? "danger" : "warn", text: freeSugar > targets.freeSugar ? "Açúcares livres acima da meta." : `Açúcares livres acima do esperado${timingSuffix}.` });
+      if (saturatedFatScore < 80) alerts.push({ level: saturatedFat > targets.saturatedFat ? "danger" : "warn", text: saturatedFat > targets.saturatedFat ? "Gorduras saturadas acima da meta." : `Gorduras saturadas acima do esperado${timingSuffix}.` });
       const visibleAlerts = alerts.length ? alerts : [{ level: "ok", text: "Dia no controle. Continue assim." }];
       const alert = visibleAlerts.find((item) => item.level === "danger") || visibleAlerts.find((item) => item.level === "warn") || visibleAlerts[0];
       return { score, alert, alerts: visibleAlerts };
