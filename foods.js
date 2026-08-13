@@ -373,6 +373,19 @@ export const foods = [
     ]
   },
   {
+    id: "empada-folhada",
+    name: "Empada Folhada",
+    icon: "\ud83e\udd67",
+    category: "Alimenta\u00e7\u00e3o",
+    caloriesPer100g: 100,
+    proteinPer100g: 3,
+    carbsPer100g: 12,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "unidade", name: "Unidade", grams: 100 }
+    ]
+  },
+  {
     id: "estrogonof",
     name: "Estrogonof",
     category: "Alimenta??o",

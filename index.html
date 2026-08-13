@@ -529,10 +529,9 @@
 
     .chart-note {
       position: absolute;
-      top: 4px;
-      bottom: 18px;
+      top: calc(50% - 8px);
       left: 50%;
-      max-height: calc(100% - 22px);
+      max-height: calc(100% - 24px);
       color: #243119;
       font-size: 7px;
       font-weight: 950;
@@ -542,7 +541,7 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      transform: translateX(-50%) rotate(180deg);
+      transform: translate(-50%, -50%) rotate(180deg);
       pointer-events: none;
     }
 
