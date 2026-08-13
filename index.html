@@ -7068,8 +7068,8 @@
       calorieRangeMinLabel.parentElement.style.setProperty("--left", `${minLeft}%`);
       calorieRangeMaxMarker.style.setProperty("--left", `${maxLeft}%`);
       calorieRangeMaxLabel.parentElement.style.setProperty("--left", `${maxLeft}%`);
-      calorieRangeMinMarker.classList.remove("hidden");
-      calorieRangeMinLabel.parentElement.classList.remove("hidden");
+      calorieRangeMinMarker.classList.toggle("hidden", maintainWeight);
+      calorieRangeMinLabel.parentElement.classList.toggle("hidden", maintainWeight);
       calorieRangeMinLabel.textContent = formatIntegerKcal(min);
       calorieRangeMaxLabel.textContent = formatIntegerKcal(max);
       calorieRangeMinInfoSummary.setAttribute("aria-label", maintainWeight ? "Entenda a meta diária" : `Entenda o déficit de ${deficitKcal} kcal`);
