@@ -100,6 +100,19 @@ export const foods = [
     ]
   },
   {
+    id: "batata-palha",
+    name: "Batata Palha",
+    icon: "\ud83c\udf5f",
+    category: "Alimenta\u00e7\u00e3o",
+    caloriesPer100g: 500,
+    proteinPer100g: 5,
+    carbsPer100g: 50,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "10g", grams: 10 }
+    ]
+  },
+  {
     id: "batata-frita",
     name: "Batata Frita",
     imageSpritePosition: "0%",
