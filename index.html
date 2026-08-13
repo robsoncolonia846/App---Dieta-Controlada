@@ -623,7 +623,7 @@
       display: grid;
       grid-template-columns: minmax(132px, 0.9fr) 1.1fr;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
     .summary-header {
@@ -631,7 +631,13 @@
       align-items: flex-start;
       justify-content: space-between;
       gap: 10px;
-      margin-bottom: 6px;
+      margin: -4px 0 2px;
+    }
+
+    .hero .summary-title {
+      font-size: 18px;
+      line-height: 1;
+      letter-spacing: -0.035em;
     }
 
     .summary-remaining {
@@ -661,20 +667,20 @@
 
     .day-mood {
       display: grid;
-      gap: 8px;
+      gap: 5px;
       min-width: 0;
     }
 
     .mood-faces {
       display: grid;
       place-items: center;
-      min-height: 68px;
+      min-height: 64px;
     }
 
     .mood-face {
       --face-color: #ffd54f;
-      width: 62px;
-      height: 62px;
+      width: 58px;
+      height: 58px;
       border-radius: 50%;
       background: var(--face-color);
       color: #25321f;
@@ -751,24 +757,31 @@
 
     .mood-caption span {
       color: #6c7768;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 950;
     }
 
     .progress-list {
       display: grid;
-      gap: 8px;
+      gap: 3px;
     }
 
     .goal-alert {
-      margin-top: 10px;
-      padding: 10px 12px;
-      border-radius: 14px;
+      margin-top: 5px;
+      padding: 6px 9px;
+      height: 36px;
+      border-radius: 11px;
       background: #f6f8f4;
       color: #466b2d;
-      font-size: 13px;
+      font-size: 10px;
       font-weight: 800;
-      line-height: 1.25;
+      line-height: 1.18;
+      overflow-y: auto;
+      scrollbar-width: none;
+    }
+
+    .goal-alert::-webkit-scrollbar {
+      display: none;
     }
 
     .goal-alert.warn {
@@ -910,18 +923,19 @@
 
     .progress-row {
       display: grid;
-      gap: 4px;
+      gap: 1px;
     }
 
     .progress-row-head {
       display: flex;
       justify-content: space-between;
-      gap: 12px;
-      font-size: 12px;
+      gap: 8px;
+      font-size: 10.5px;
+      line-height: 1.1;
     }
 
     .progress-track {
-      height: 5px;
+      height: 4px;
       border-radius: 999px;
       background: #e4e4e8;
       overflow: hidden;
@@ -2803,7 +2817,7 @@
             <div class="hero">
               <div class="summary-header">
                 <div>
-                  <div class="title">Resumo diário</div>
+                  <div class="title summary-title">Resumo diário</div>
                 </div>
                 <div class="summary-remaining">
                   <div class="muted">Restante<br>kcal para hoje</div>
@@ -2831,6 +2845,14 @@
                   <div class="progress-row">
                     <div class="progress-row-head"><span>Proteínas</span><strong id="metric-protein">0 g</strong></div>
                     <div class="progress-track"><div class="progress-fill macro" id="protein-fill"></div></div>
+                  </div>
+                  <div class="progress-row">
+                    <div class="progress-row-head"><span>Gorduras</span><strong id="metric-fat">0 g</strong></div>
+                    <div class="progress-track"><div class="progress-fill macro" id="fat-fill"></div></div>
+                  </div>
+                  <div class="progress-row">
+                    <div class="progress-row-head"><span>Fibras</span><strong id="metric-fiber">0 g</strong></div>
+                    <div class="progress-track"><div class="progress-fill macro" id="fiber-fill"></div></div>
                   </div>
                 </div>
               </div>
@@ -3135,6 +3157,8 @@
     const calorieFill = document.getElementById("calorie-fill");
     const proteinFill = document.getElementById("protein-fill");
     const carbsFill = document.getElementById("carbs-fill");
+    const fatFill = document.getElementById("fat-fill");
+    const fiberFill = document.getElementById("fiber-fill");
     const remainingKcal = document.getElementById("remaining-kcal");
     const mealProgressList = document.getElementById("meal-progress-list");
     const waterTotal = document.getElementById("water-total");
@@ -3168,6 +3192,8 @@
     const metricConsumed = document.getElementById("metric-consumed");
     const metricProtein = document.getElementById("metric-protein");
     const metricCarbs = document.getElementById("metric-carbs");
+    const metricFat = document.getElementById("metric-fat");
+    const metricFiber = document.getElementById("metric-fiber");
     const mealDate = document.getElementById("meal-date");
     const mealGrams = document.getElementById("meal-grams");
     const mealTypeOptions = document.getElementById("meal-type-options");
@@ -4731,17 +4757,18 @@
       }
       const alerts = [];
       if (dangerThresholdReached) {
-        alerts.push({ level: "danger", text: `Você passou da meta em ${formatIntegerKcal(excess)} kcal.` });
+        alerts.push({ level: "danger", text: `Calorias: ${formatIntegerKcal(excess)} kcal acima da meta.` });
       }
       if (mealScoreData.alert) alerts.push(mealScoreData.alert);
       if (waterExpected > 0 && waterNow < waterExpected) {
-        alerts.push({ level: "warn", text: `Água abaixo do esperado para este horário: ${waterNow}ml de ${waterExpected}ml.` });
+        alerts.push({ level: "warn", text: `Água: ${waterNow}/${waterExpected} ml até agora.` });
       }
       if (dayProgress > 0.45 && calorieScore < 70 && consumed <= adjustedTarget) {
-        alerts.push({ level: "warn", text: "Consumo calórico baixo para este horário." });
+        alerts.push({ level: "warn", text: "Calorias abaixo do esperado neste horário." });
       }
-      const alert = alerts.find((item) => item.level === "danger") || alerts[0] || { level: "ok", text: "Dia no controle. Continue assim." };
-      return { score, alert };
+      const visibleAlerts = alerts.length ? alerts : [{ level: "ok", text: "Dia no controle. Continue assim." }];
+      const alert = visibleAlerts.find((item) => item.level === "danger") || visibleAlerts.find((item) => item.level === "warn") || visibleAlerts[0];
+      return { score, alert, alerts: visibleAlerts };
     }
 
     function calculateMealTimingScore(date = todayISO()) {
@@ -6804,6 +6831,15 @@
       const spent = round(expenses.reduce((sum, item) => sum + (Number(item.calories) || 0), 0));
       const protein = round(meals.reduce((sum, item) => sum + (Number(item.protein) || 0), 0));
       const carbs = round(meals.reduce((sum, item) => sum + (Number(item.carbs) || 0), 0));
+      const fat = round(meals.reduce((sum, item) => {
+        const savedFat = Number(item.fat);
+        if (Number.isFinite(savedFat)) return sum + Math.max(0, savedFat);
+        const itemCalories = Number(item.calories) || 0;
+        const itemProtein = Number(item.protein) || 0;
+        const itemCarbs = Number(item.carbs) || 0;
+        return sum + Math.max(0, (itemCalories - itemProtein * 4 - itemCarbs * 4) / 9);
+      }, 0));
+      const fiber = round(meals.reduce((sum, item) => sum + (Number(item.fiber) || 0), 0));
       const balance = round(consumed - spent);
       const macroDate = /^\d{4}-\d{2}-\d{2}$/.test(period || "") ? period : todayISO();
       const targetRange = dailyTargetRange(macroDate);
@@ -6818,12 +6854,18 @@
         70;
       const proteinTarget = Math.max(1, round(macroWeight * 1.6));
       const carbsTarget = Math.max(130, round((dailyTarget(macroDate) * 0.45) / 4));
+      const fatTarget = Math.max(1, round((dailyTarget(macroDate) * 0.3) / 9));
+      const fiberTarget = 25;
       const proteinPercent = Math.max(0, Math.min(100, Math.round((protein / proteinTarget) * 100)));
       const carbsPercent = Math.max(0, Math.min(100, Math.round((carbs / carbsTarget) * 100)));
+      const fatPercent = Math.max(0, Math.min(100, Math.round((fat / fatTarget) * 100)));
+      const fiberPercent = Math.max(0, Math.min(100, Math.round((fiber / fiberTarget) * 100)));
 
       metricConsumed.textContent = `${formatIntegerKcal(consumed)} kcal`;
       metricProtein.textContent = `${protein} g`;
       metricCarbs.textContent = `${carbs} g`;
+      metricFat.textContent = `${fat} g`;
+      metricFiber.textContent = `${fiber} g`;
       remainingKcal.textContent = remaining > 0
         ? `+${formatIntegerKcal(remaining)}`
         : remaining < 0
@@ -6841,21 +6883,28 @@
       dayMood.setAttribute("aria-label", `Desempenho do dia: ${moodLabels[moodLevel]}`);
       dayMoodFace.classList.remove(...moodClasses);
       dayMoodFace.classList.add(moodClasses[moodLevel]);
-      goalAlert.textContent = dayScore.alert.text;
+      goalAlert.textContent = dayScore.alerts.map((item) => item.text).join(" • ");
       goalAlert.classList.toggle("warn", dayScore.alert.level === "warn");
       goalAlert.classList.toggle("danger", dayScore.alert.level === "danger");
       calorieFill.style.setProperty("--width", `${percent}%`);
       proteinFill.style.setProperty("--width", `${proteinPercent}%`);
       carbsFill.style.setProperty("--width", `${carbsPercent}%`);
+      fatFill.style.setProperty("--width", `${fatPercent}%`);
+      fiberFill.style.setProperty("--width", `${fiberPercent}%`);
       const carbsOverLimit = carbs > carbsTarget;
+      const fatOverLimit = fat > fatTarget;
       calorieFill.classList.toggle("attention-limit", caloriesAttentionLimit);
       calorieFill.classList.toggle("over-limit", caloriesOverLimit);
       carbsFill.classList.toggle("over-limit", carbsOverLimit);
       metricConsumed.classList.toggle("attention-limit", caloriesAttentionLimit);
       metricConsumed.classList.toggle("over-limit", caloriesOverLimit);
       metricCarbs.classList.toggle("over-limit", carbsOverLimit);
+      fatFill.classList.toggle("over-limit", fatOverLimit);
+      metricFat.classList.toggle("over-limit", fatOverLimit);
       proteinFill.classList.remove("over-limit");
       metricProtein.classList.remove("over-limit");
+      fiberFill.classList.remove("over-limit");
+      metricFiber.classList.remove("over-limit");
       renderCalorieRange(consumed, targetRange, macroDate);
     }
 
