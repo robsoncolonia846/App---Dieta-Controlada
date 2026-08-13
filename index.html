@@ -2874,7 +2874,7 @@
                   </div>
                 </div>
               </div>
-              <div class="goal-alert" id="goal-alert">Dia no controle. Continue assim.</div>
+              <div class="goal-alert hidden" id="goal-alert">Dia no controle. Continue assim.</div>
             </div>
 
             <div class="card notification-card" style="margin-top: 14px;">
@@ -4831,21 +4831,8 @@
         calorieScore = Math.max(0, Math.round((calorieRatio / dayProgress) * 100));
       }
 
-      const meals = appData.meals.filter((item) => item.date === date);
-      const protein = meals.reduce((sum, item) => sum + (Number(item.protein) || 0), 0);
-      const carbs = meals.reduce((sum, item) => sum + (Number(item.carbs) || 0), 0);
-      const fiber = meals.reduce((sum, item) => sum + savedMealNutrient(item, "fiber"), 0);
-      const saturatedFat = meals.reduce((sum, item) => sum + savedMealNutrient(item, "saturatedFat"), 0);
-      const freeSugar = meals.reduce((sum, item) => sum + savedMealNutrient(item, "freeSugar"), 0);
-      const targets = dailyNutrientTargets(date);
-      const proteinScore = minimumNutrientScore(protein, targets.protein, dayProgress);
-      const fiberScore = minimumNutrientScore(fiber, targets.fiber, dayProgress);
-      const carbsScore = maximumNutrientScore(carbs, targets.carbs, dayProgress);
-      const sugarScore = maximumNutrientScore(freeSugar, targets.freeSugar, dayProgress);
-      const saturatedFatScore = maximumNutrientScore(saturatedFat, targets.saturatedFat, dayProgress);
       let score = Math.max(0, Math.min(100, Math.round(
-        calorieScore * 0.5 + waterScore * 0.15 + carbsScore * 0.1 + proteinScore * 0.1 +
-        fiberScore * 0.05 + sugarScore * 0.05 + saturatedFatScore * 0.05
+        calorieScore * 0.75 + waterScore * 0.25
       )));
       if (maintainWeight ? excess > 0 : consumed > targetRange.min + 50) score = Math.min(score, 94);
 
@@ -4854,11 +4841,7 @@
       if (dangerThresholdReached) alerts.push({ level: "danger", text: `Calorias: ${formatIntegerKcal(excess)} kcal acima da meta.` });
       if (waterExpected > 0 && waterNow < waterExpected) alerts.push({ level: "warn", text: `Água abaixo do esperado${timingSuffix}.` });
       if (dayProgress > 0.05 && calorieScore < 80 && consumed <= adjustedTarget) alerts.push({ level: "warn", text: `Calorias abaixo do esperado${timingSuffix}.` });
-      if (dayProgress > 0.05 && proteinScore < 80) alerts.push({ level: "warn", text: `Proteínas abaixo do esperado${timingSuffix}.` });
-      if (dayProgress > 0.05 && fiberScore < 80) alerts.push({ level: "warn", text: `Fibras abaixo do esperado${timingSuffix}.` });
-      if (carbsScore < 80) alerts.push({ level: carbs > targets.carbs ? "danger" : "warn", text: carbs > targets.carbs ? "Carboidratos acima da meta." : `Carboidratos acima do esperado${timingSuffix}.` });
-      if (sugarScore < 80) alerts.push({ level: freeSugar > targets.freeSugar ? "danger" : "warn", text: freeSugar > targets.freeSugar ? "Açúcares livres acima da meta." : `Açúcares livres acima do esperado${timingSuffix}.` });
-      if (saturatedFatScore < 80) alerts.push({ level: saturatedFat > targets.saturatedFat ? "danger" : "warn", text: saturatedFat > targets.saturatedFat ? "Gorduras saturadas acima da meta." : `Gorduras saturadas acima do esperado${timingSuffix}.` });
+      if (alerts.length) score = Math.min(score, 94);
       const visibleAlerts = alerts.length ? alerts : [{ level: "ok", text: "Dia no controle. Continue assim." }];
       const alert = visibleAlerts.find((item) => item.level === "danger") || visibleAlerts.find((item) => item.level === "warn") || visibleAlerts[0];
       return { score, alert, alerts: visibleAlerts };
