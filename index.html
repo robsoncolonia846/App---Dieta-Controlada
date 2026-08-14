@@ -117,6 +117,43 @@
       line-height: 1;
     }
 
+    .share-screen-button {
+      width: 27px;
+      height: 27px;
+      flex: 0 0 27px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      border: 1px solid #dce7d5;
+      border-radius: 50%;
+      background: #f7f9f3;
+      color: #209b26;
+      cursor: pointer;
+    }
+
+    .share-screen-button svg {
+      width: 14px;
+      height: 14px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .share-screen-button:disabled {
+      cursor: wait;
+      opacity: 0.6;
+    }
+
+    .share-screen-button.is-loading svg {
+      animation: share-spin 0.8s linear infinite;
+    }
+
+    @keyframes share-spin {
+      to { transform: rotate(360deg); }
+    }
+
     .avatar-button {
       width: 50px;
       height: 50px;
@@ -2784,6 +2821,14 @@
                   <option value="lose-slow">Perder peso lento</option>
                   <option value="lose-fast">Perder peso rápido</option>
                 </select>
+                <button class="share-screen-button" id="share-screen-button" type="button" aria-label="Compartilhar tela completa" title="Compartilhar tela" data-html2canvas-ignore="true">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="18" cy="5" r="2.5"></circle>
+                    <circle cx="6" cy="12" r="2.5"></circle>
+                    <circle cx="18" cy="19" r="2.5"></circle>
+                    <path d="m8.2 10.8 7.6-4.4M8.2 13.2l7.6 4.4"></path>
+                  </svg>
+                </button>
               </div>
             </div>
             <div class="topbar-actions">
@@ -2793,7 +2838,7 @@
           </div>
         </header>
 
-        <nav class="tabs" aria-label="Abas do app">
+        <nav class="tabs" aria-label="Abas do app" data-html2canvas-ignore="true">
           <button class="tab active" data-tab="hoje" aria-label="Home">
             <span class="tab-icon">🏠</span>
             <span class="tab-label">Home</span>
@@ -3126,6 +3171,7 @@
 
   <script src="./firebase-config.js"></script>
   <script src="./foods.js"></script>
+  <script src="./html2canvas.min.js"></script>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
     import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
@@ -3156,6 +3202,7 @@
     const profileWeightLabel = document.getElementById("profile-weight-label");
     const profileHeightLabel = document.getElementById("profile-height-label");
     const profileGoalLabel = document.getElementById("profile-goal-label");
+    const shareScreenButton = document.getElementById("share-screen-button");
     const dietProfileWeight = document.getElementById("diet-profile-weight");
     const dietProfileHeight = document.getElementById("diet-profile-height");
     const dietDashboard = document.getElementById("diet-dashboard");
@@ -4539,6 +4586,104 @@
 
     function formatWeight(value) {
       return Number(value).toLocaleString("pt-BR", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+    }
+
+    function canvasToPngBlob(canvas) {
+      return new Promise((resolve, reject) => {
+        canvas.toBlob((blob) => {
+          if (blob) resolve(blob);
+          else reject(new Error("Não foi possível montar a imagem."));
+        }, "image/png", 0.95);
+      });
+    }
+
+    function downloadSharedScreenshot(blob, fileName) {
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 1500);
+    }
+
+    async function shareCompleteScreen() {
+      if (!shareScreenButton || shareScreenButton.disabled) return;
+      if (typeof window.html2canvas !== "function") {
+        alert("O gerador da imagem ainda não carregou. Atualize o app e tente novamente.");
+        return;
+      }
+
+      const screen = document.querySelector(".screen");
+      if (!screen) return;
+      const previousWindowScroll = window.scrollY;
+      const previousScreenScroll = screen.scrollTop;
+      shareScreenButton.disabled = true;
+      shareScreenButton.classList.add("is-loading");
+      shareScreenButton.setAttribute("aria-label", "Gerando imagem para compartilhar");
+
+      try {
+        window.scrollTo({ top: 0, behavior: "auto" });
+        screen.scrollTo({ top: 0, behavior: "auto" });
+        await document.fonts?.ready;
+        await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+
+        const captureWidth = Math.ceil(screen.clientWidth || 480);
+        const captureHeight = Math.ceil(screen.scrollHeight || screen.clientHeight);
+        const maximumCanvasHeight = 14000;
+        const preferredScale = Math.min(2, Math.max(1, window.devicePixelRatio || 1));
+        const safeScale = Math.max(0.65, Math.min(preferredScale, maximumCanvasHeight / Math.max(captureHeight, 1)));
+        const canvas = await window.html2canvas(screen, {
+          backgroundColor: "#f5f7ef",
+          scale: safeScale,
+          useCORS: true,
+          allowTaint: false,
+          logging: false,
+          scrollX: 0,
+          scrollY: 0,
+          width: captureWidth,
+          height: captureHeight,
+          windowWidth: captureWidth,
+          windowHeight: captureHeight,
+          onclone: (clonedDocument) => {
+            const clonedScreen = clonedDocument.querySelector(".screen");
+            if (clonedScreen) {
+              clonedScreen.style.height = `${captureHeight}px`;
+              clonedScreen.style.maxHeight = "none";
+              clonedScreen.style.overflow = "visible";
+            }
+          }
+        });
+
+        const blob = await canvasToPngBlob(canvas);
+        const dateLabel = selectedHomeDate?.() || todayISO();
+        const fileName = `dieta-controlada-${dateLabel}.png`;
+        const file = new File([blob], fileName, { type: "image/png", lastModified: Date.now() });
+        const sharePayload = {
+          files: [file],
+          title: "Dieta Controlada",
+          text: `Meu acompanhamento no Dieta Controlada — ${dateLabel.split("-").reverse().join("/")}`
+        };
+
+        if (navigator.share && (!navigator.canShare || navigator.canShare(sharePayload))) {
+          await navigator.share(sharePayload);
+        } else {
+          downloadSharedScreenshot(blob, fileName);
+          alert("Imagem completa salva. Agora você pode enviá-la pelo WhatsApp.");
+        }
+      } catch (error) {
+        if (error?.name !== "AbortError") {
+          console.error("Falha ao compartilhar a tela completa.", error);
+          alert("Não foi possível gerar a imagem completa. Tente novamente após atualizar o app.");
+        }
+      } finally {
+        window.scrollTo({ top: previousWindowScroll, behavior: "auto" });
+        screen.scrollTo({ top: previousScreenScroll, behavior: "auto" });
+        shareScreenButton.disabled = false;
+        shareScreenButton.classList.remove("is-loading");
+        shareScreenButton.setAttribute("aria-label", "Compartilhar tela completa");
+      }
     }
 
     function closeWeightPicker() {
@@ -7392,6 +7537,7 @@
       saveData();
       renderAll();
     });
+    shareScreenButton.addEventListener("click", shareCompleteScreen);
     profilePhotoInput.addEventListener("change", async () => {
       const file = profilePhotoInput.files?.[0];
       if (!file) return;
