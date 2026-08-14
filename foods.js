@@ -1063,6 +1063,19 @@ const foods = [
     ]
   },
   {
+    id: "bolo-de-chocolate",
+    name: "Bolo de Chocolate",
+    icon: "🍰",
+    category: "Alimentação",
+    caloriesPer100g: 360,
+    proteinPer100g: 5,
+    carbsPer100g: 50,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "50g", grams: 50 }
+    ]
+  },
+  {
     id: "cueca-virada-grostoli",
     name: "Cueca Virada (Grostoli)",
     imageSpritePosition: "22.222%",
@@ -1583,7 +1596,8 @@ const fiberPer100gById = {
   "pao-com-queijo-e-presunto": 1.5, "repolho": 2.5, "tomate-cereja": 1.2,
   "uva": 0.9, "arroz-com-carne": 1.2, "bolo-de-banana-com-canela": 2.1,
   "bolo-de-cenoura": 1.3, "bolo-de-aniversario": 1.1, "brigadeiro": 0.8,
-  "bolo-de-chocolate-com-calda": 2.2, "cueca-virada-grostoli": 1.2,
+  "bolo-de-chocolate-com-calda": 2.2, "bolo-de-chocolate": 2.2,
+  "cueca-virada-grostoli": 1.2,
   "pizza": 2.3, "salsichao-frito": 0.2, "salsichao-grelhado": 0.2,
   "acucar-cristal": 0, "batata-doce-cozida": 2.2, "mandioca-cozida": 1.6,
   "aveia-em-flocos": 9.1, "tapioca-com-manteiga": 0.4, "mamao-formosa": 1.8,
@@ -1608,7 +1622,8 @@ const sugarPer100gById = {
   "repolho": 3.2, "requeijao": 2.4, "requeijao-light": 2.4,
   "tomate-cereja": 2.7, "uva": 16, "bolo-de-banana-com-canela": 24,
   "bolo-de-cenoura": 27, "bolo-de-aniversario": 38, "brigadeiro": 55,
-  "bolo-de-chocolate-com-calda": 52, "cueca-virada-grostoli": 12,
+  "bolo-de-chocolate-com-calda": 52, "bolo-de-chocolate": 28,
+  "cueca-virada-grostoli": 12,
   "pizza": 4, "vinho-seco": 0.6, "vinho-suave": 6,
   "cafe-com-uma-colher-acucar": 5, "cafe-com-duas-colheres-acucar": 10,
   "acucar-cristal": 99.6, "batata-doce-cozida": 5.7, "mandioca-cozida": 1.7,
@@ -1627,7 +1642,8 @@ const freeSugarPer100gById = {
   "pao-caseiro": 3, "pao-de-forma": 4,
   "bolo-de-banana-com-canela": 20, "bolo-de-cenoura": 27,
   "bolo-de-aniversario": 38, "brigadeiro": 55,
-  "bolo-de-chocolate-com-calda": 52, "cueca-virada-grostoli": 12,
+  "bolo-de-chocolate-com-calda": 52, "bolo-de-chocolate": 28,
+  "cueca-virada-grostoli": 12,
   "pizza": 2, "cafe-com-uma-colher-acucar": 5,
   "cafe-com-duas-colheres-acucar": 10, "acucar-cristal": 99.6,
   "granola": 18, "quentao": 15, "torta-de-bolacha": 18,

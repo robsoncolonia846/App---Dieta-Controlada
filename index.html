@@ -5776,6 +5776,18 @@
       return Math.max(2, Math.ceil(normalizedValue) - 1);
     }
 
+    function isBoiledEggItem(item = {}) {
+      const name = normalizeText(item.name || item.foodName || "");
+      const foodId = String(item.foodId || findFoodByName(item.name)?.id || "").toLowerCase();
+      return name === "ovo cozido" || foodId === "ovo-cozido";
+    }
+
+    function adjustedBoiledEggAmount(currentValue, direction) {
+      const normalizedValue = Math.max(0.5, Number(currentValue) || 1);
+      if (direction > 0) return normalizedValue < 1 ? 1 : 2;
+      return normalizedValue > 1 ? 1 : 0.5;
+    }
+
     function requiresWholeUnits(item = {}) {
       const name = normalizeText(item.name || item.foodName || "");
       const foodId = String(item.foodId || "").toLowerCase();
@@ -5812,6 +5824,8 @@
           ? Math.floor(parsed.value / parsed.step) * parsed.step + parsed.step
           : Math.ceil(parsed.value / parsed.step) * parsed.step - parsed.step;
         nextValue = Math.max(minValue, nextValue);
+      } else if (isBoiledEggItem(item)) {
+        nextValue = adjustedBoiledEggAmount(parsed.value, direction);
       } else if (requiresWholeUnits(item)) {
         nextValue = direction > 0
           ? Math.max(1, Math.floor(parsed.value) + 1)
@@ -6329,21 +6343,30 @@
     }
 
     function restoreDietOptionToDefault(mealTypeId, optionIndex) {
-      const defaultOption = mealRecommendations[mealTypeId]?.[optionIndex];
+      const safeOptionIndex = Math.max(0, Number(optionIndex) || 0);
+      const defaultOption = mealRecommendations[mealTypeId]?.[safeOptionIndex];
       if (!defaultOption) return;
       if (!confirm("Voltar esta opção para a sugestão padrão? As alterações salvas nesta opção serão perdidas.")) return;
       const currentOptions = recommendationsForMeal(mealTypeId);
-      currentOptions[optionIndex] = cloneDietOption(defaultOption);
+      currentOptions[safeOptionIndex] = cloneDietOption(defaultOption);
       appData.dietRecommendations[mealTypeId] = currentOptions.map(cloneDietOption);
+      dietSelectedOptions[mealTypeId] = safeOptionIndex;
       saveData();
-      if (editingDietTemplate?.mealTypeId === mealTypeId) {
+
+      const detailShowsThisDiet = visibleSectionId() === "refeicao-detalhe"
+        && currentMealDetail === mealTypeId
+        && !editingMealId;
+      if (editingDietTemplate?.mealTypeId === mealTypeId || detailShowsThisDiet) {
         currentRecommendationOptions = recommendationsForMeal(mealTypeId).map(hydrateDietOption);
-        selectedRecommendationIndex = Math.max(0, Math.min(optionIndex, Math.max(currentRecommendationOptions.length - 1, 0)));
-        renderRecommendationOptions();
+        selectedRecommendationIndex = Math.max(0, Math.min(safeOptionIndex, Math.max(currentRecommendationOptions.length - 1, 0)));
         mealUseSuggestion.classList.add("hidden");
       }
-      renderDietDashboard();
-      mealDetailSubtitle.textContent = "Sugestão padrão aplicada nesta opção";
+
+      renderAll();
+      if (detailShowsThisDiet) {
+        renderRecommendationOptions();
+        mealDetailSubtitle.textContent = "Sugestão padrão aplicada nesta opção";
+      }
     }
 
     function useDefaultDietSuggestion() {
