@@ -5784,8 +5784,9 @@
 
     function adjustedBoiledEggAmount(currentValue, direction) {
       const normalizedValue = Math.max(0.5, Number(currentValue) || 1);
-      if (direction > 0) return normalizedValue < 1 ? 1 : 2;
-      return normalizedValue > 1 ? 1 : 0.5;
+      if (direction > 0) return normalizedValue < 1 ? 1 : Math.floor(normalizedValue) + 1;
+      if (normalizedValue <= 1) return 0.5;
+      return Math.max(1, Math.ceil(normalizedValue) - 1);
     }
 
     function requiresWholeUnits(item = {}) {

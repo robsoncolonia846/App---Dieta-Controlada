@@ -374,6 +374,19 @@ const foods = [
     ]
   },
   {
+    id: "creme-de-ricota-light",
+    name: "Creme de Ricota Light",
+    icon: "\ud83e\uddc0",
+    category: "Alimenta\u00e7\u00e3o",
+    caloriesPer100g: 100,
+    proteinPer100g: 8,
+    carbsPer100g: 5,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "10g", grams: 10 }
+    ]
+  },
+  {
     id: "doce-de-leite",
     name: "Doce De Leite",
     category: "Alimenta??o",
@@ -674,12 +687,12 @@ const foods = [
     id: "morango",
     name: "Morango",
     category: "Alimenta??o",
-    caloriesPer100g: 32,
+    caloriesPer100g: 30,
     proteinPer100g: 0.8,
     carbsPer100g: 6.8,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "excel", name: "50g", grams: 50 }
+      { id: "excel", name: "100g", grams: 100 }
     ]
   },
   {
@@ -963,6 +976,19 @@ const foods = [
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
       { id: "excel", name: "10g", grams: 10 }
+    ]
+  },
+  {
+    id: "tomate",
+    name: "Tomate",
+    icon: "\ud83c\udf45",
+    category: "Alimenta\u00e7\u00e3o",
+    caloriesPer100g: 18,
+    proteinPer100g: 1.1,
+    carbsPer100g: 3.1,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "50g", grams: 50 }
     ]
   },
   {
