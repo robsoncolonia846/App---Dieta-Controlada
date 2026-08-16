@@ -138,6 +138,19 @@ const foods = [
     ]
   },
   {
+    id: "batata-ensopada",
+    name: "Batata Ensopada",
+    icon: "\ud83e\udd54",
+    category: "Alimenta\u00e7\u00e3o",
+    caloriesPer100g: 100,
+    proteinPer100g: 2,
+    carbsPer100g: 18,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "100g", grams: 100 }
+    ]
+  },
+  {
     id: "bauru-file",
     name: "Bauru Filé",
     imageSpritePosition: "11.111%",
@@ -810,6 +823,19 @@ const foods = [
     id: "pao-frances",
     name: "Pão Frances",
     category: "Alimenta??o",
+    caloriesPer100g: 300,
+    proteinPer100g: 8,
+    carbsPer100g: 58,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "50g", grams: 50 }
+    ]
+  },
+  {
+    id: "pao-torrado",
+    name: "Pão Torrado",
+    icon: "\ud83c\udf5e",
+    category: "Alimenta\u00e7\u00e3o",
     caloriesPer100g: 300,
     proteinPer100g: 8,
     carbsPer100g: 58,
@@ -1605,6 +1631,7 @@ const fiberPer100gById = {
   "abacaxi": 1.4, "abobora": 2.8, "alface": 1.3, "amendoim": 8.5,
   "arroz": 1.6, "banana": 2.6, "batata-com-maionese": 1.5,
   "batata-palha": 4, "batata-frita": 3.8, "batata-inglesa": 1.8,
+  "batata-ensopada": 1.8,
   "bauru-file": 4, "bergamota": 1.8, "beterraba-cozida-assada": 2,
   "beterraba-crua": 2.8, "bife-a-parmegiana": 0.8, "brocolis": 3.3,
   "carne-acebolada-com-maionese": 0.7, "carne-de-panela-agulha": 0.4,
@@ -1618,6 +1645,7 @@ const fiberPer100gById = {
   "melancia": 0.4, "morango": 2, "omelete-com-queijo": 0.1,
   "panqueca-carne-moida": 1.2, "panqueca-frango": 1.2,
   "pao-caseiro": 2.7, "pao-de-forma": 4.1, "pao-frances": 2.3,
+  "pao-torrado": 2.3,
   "pao-frances-ovo-frito": 1.2, "pao-frances-ovo-mexido": 1.2,
   "pao-com-queijo-e-presunto": 1.5, "repolho": 2.5, "tomate-cereja": 1.2,
   "uva": 0.9, "arroz-com-carne": 1.2, "bolo-de-banana-com-canela": 2.1,
@@ -1637,7 +1665,8 @@ const fiberPer100gById = {
 // Açúcares totais médios por 100 g/ml. O valor nunca ultrapassa o carboidrato cadastrado.
 const sugarPer100gById = {
   "abacaxi": 10, "abobora": 2.8, "alface": 0.8, "amendoim": 4.7,
-  "banana": 12.2, "bergamota": 8.5, "beterraba-cozida-assada": 7,
+  "banana": 12.2, "bergamota": 8.5, "batata-ensopada": 1.2,
+  "beterraba-cozida-assada": 7,
   "beterraba-crua": 6.8, "brocolis": 1.7, "cenoura-cozida-assada": 4.7,
   "cenoura-crua": 4.7, "cerveja": 0.1, "couve": 0.8, "doce-de-leite": 50,
   "estrogonof": 2.2, "feijao": 0.3, "goiabada": 68, "iogurte-zero": 4.5,
@@ -1645,6 +1674,7 @@ const sugarPer100gById = {
   "leite-desnatado": 5, "leite-integral": 4.8, "maca": 14,
   "maionese": 0.6, "maionese-light": 3, "melancia": 6.2, "morango": 4.9,
   "pao-caseiro": 5, "pao-de-forma": 4.5, "pao-frances": 2.8,
+  "pao-torrado": 2.8,
   "repolho": 3.2, "requeijao": 2.4, "requeijao-light": 2.4,
   "tomate-cereja": 2.7, "uva": 16, "bolo-de-banana-com-canela": 24,
   "bolo-de-cenoura": 27, "bolo-de-aniversario": 38, "brigadeiro": 55,
