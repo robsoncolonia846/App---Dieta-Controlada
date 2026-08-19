@@ -1612,6 +1612,18 @@ const foods = [
     ]
   },
   {
+    id: "tijolinho-mariola-banana",
+    name: "Tijolinho (Mariola) de Banana (15g)",
+    icon: "🍌",
+    category: "Alimentação",
+    caloriesPer100g: 200,
+    proteinPer100g: 0,
+    carbsPer100g: 53.333333,
+    servings: [
+      { id: "unidade", name: "Unidade", grams: 15 }
+    ]
+  },
+  {
     id: "coca-cola-original",
     name: "Coca-Cola Original",
     icon: "\ud83e\udd64",
@@ -1688,7 +1700,8 @@ const sugarPer100gById = {
   "torta-de-bolacha": 18, "arroz-doce": 15, "biscoito-maizena": 22,
   "biscoito-agua-e-sal": 4, "biscoito-cream-cracker": 5,
   "biscoito-rosquinha-doce": 25, "biscoito-recheado": 35,
-  "biscoito-vovo-sentada": 25, "pacoquinha": 38, "coca-cola-original": 10.5
+  "biscoito-vovo-sentada": 25, "pacoquinha": 38,
+  "tijolinho-mariola-banana": 46.7, "coca-cola-original": 10.5
 };
 
 // Açúcares livres/adicionados por 100 g/ml. Não inclui o açúcar natural
@@ -1707,6 +1720,7 @@ const freeSugarPer100gById = {
   "biscoito-agua-e-sal": 3, "biscoito-cream-cracker": 4,
   "biscoito-rosquinha-doce": 25, "biscoito-recheado": 35,
   "biscoito-vovo-sentada": 25, "pacoquinha": 32,
+  "tijolinho-mariola-banana": 40,
   "coca-cola-original": 10.5
 };
 
