@@ -1293,7 +1293,7 @@ const foods = [
     name: "Margarina com Sal",
     icon: "🧈",
     category: "Alimenta??o",
-    caloriesPer100g: 596,
+    caloriesPer100g: 700,
     proteinPer100g: 0,
     carbsPer100g: 0,
     servings: [
