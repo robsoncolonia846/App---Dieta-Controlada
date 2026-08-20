@@ -2227,6 +2227,23 @@
       margin-top: 2px;
     }
 
+    .home-activity-quick {
+      font-size: 21px;
+      line-height: 1;
+    }
+
+    .home-activity-quick.planned {
+      color: #168d28;
+      background: #eff9ec;
+      border-color: #a9d9a4;
+    }
+
+    .home-activity-quick.done {
+      background: #dff4dd;
+      border-color: #63b966;
+      box-shadow: inset 0 0 0 2px rgba(31, 161, 46, .1);
+    }
+
     .meal-card-heading {
       display: flex;
       align-items: baseline;
@@ -2453,6 +2470,163 @@
     .activity-option-list {
       display: grid;
       gap: 10px;
+    }
+
+    .activity-picker-panel .activity-option-list {
+      max-height: min(52vh, 480px);
+      overflow-x: hidden;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      touch-action: pan-y;
+      padding: 2px 2px 6px;
+    }
+
+    .activity-picker-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .activity-picker-heading strong {
+      color: #243119;
+      font-size: 16px;
+      font-weight: 950;
+    }
+
+    .activity-picker-close {
+      width: 34px;
+      height: 34px;
+      border: 0;
+      border-radius: 50%;
+      background: #f1f3ef;
+      color: #5d6857;
+      font-size: 22px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .activity-add-launcher {
+      margin: 0;
+    }
+
+    .activity-launch-footer {
+      margin-top: 12px;
+      padding-top: 11px;
+      border-top: 1px solid #edf0f5;
+    }
+
+    .activity-register-button:disabled {
+      background: #dfe5db;
+      color: #8b9586;
+      cursor: default;
+    }
+
+    .weekly-activity-plan {
+      display: grid;
+      gap: 12px;
+    }
+
+    .weekly-activity-card .diet-card-inner {
+      padding: 15px;
+    }
+
+    .weekly-activity-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 11px;
+    }
+
+    .weekly-activity-day {
+      color: #26341d;
+      font-size: 17px;
+      font-weight: 950;
+    }
+
+    .weekly-activity-status {
+      color: #7a8474;
+      font-size: 10px;
+      font-weight: 850;
+    }
+
+    .weekly-activity-selected {
+      border: 1px solid #e3e9df;
+      border-radius: 17px;
+      background: #f8faf6;
+      padding: 12px;
+    }
+
+    .weekly-activity-selected .activity-option-main {
+      grid-template-columns: 42px minmax(0, 1fr) auto 30px 30px;
+    }
+
+    .weekly-activity-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .weekly-activity-action {
+      min-height: 36px;
+      border: 0;
+      border-radius: 12px;
+      background: #edf6e8;
+      color: #27732d;
+      font-size: 11px;
+      font-weight: 950;
+      cursor: pointer;
+    }
+
+    .weekly-activity-action.remove {
+      background: #fff0f0;
+      color: #ca4046;
+    }
+
+    .weekly-activity-choice-list {
+      display: grid;
+      gap: 8px;
+      max-height: 46vh;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      touch-action: pan-y;
+      padding: 2px;
+    }
+
+    .weekly-activity-choice {
+      width: 100%;
+      border: 1px solid #e2e8de;
+      border-radius: 15px;
+      background: #fff;
+      padding: 10px 12px;
+      display: grid;
+      grid-template-columns: 38px minmax(0, 1fr) auto;
+      gap: 9px;
+      align-items: center;
+      text-align: left;
+      color: #26341d;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .weekly-activity-choice .activity-option-icon {
+      width: 38px;
+      height: 38px;
+    }
+
+    .weekly-activity-choice strong {
+      font-size: 12px;
+      line-height: 1.2;
+    }
+
+    .weekly-activity-choice span:last-child {
+      color: #3f7833;
+      font-size: 10px;
+      font-weight: 900;
+      white-space: nowrap;
     }
 
     .activity-option-card {
@@ -2924,9 +3098,9 @@
 
             <div class="card notification-card" style="margin-top: 14px;">
               <div class="meal-card-heading">
-                <h2>Refeições</h2>
-                <div class="muted" id="open-meal-tab">Escolha a refeição a registrar</div>
-                <button class="card-notification-bell" id="meal-notification-bell" type="button" aria-label="Ativar lembretes de refeições" aria-pressed="false">🔕</button>
+                <h2>Refeições e atividades</h2>
+                <div class="muted" id="open-meal-tab">Escolha o que deseja registrar</div>
+                <button class="card-notification-bell home-activity-quick" id="home-activity-quick" type="button" aria-label="Programar atividade da semana">🏃</button>
               </div>
               <div class="meal-progress-line" id="meal-progress-list"></div>
             </div>
@@ -3040,21 +3214,29 @@
             <div class="diet-page">
               <div class="diet-page-head training-page-head">
                 <h2>Atividades</h2>
-                <div class="muted">Ajuste o tempo e cadastre diretamente no item.</div>
+                <div class="muted">Programe uma atividade para cada dia da semana.</div>
               </div>
 
-              <article class="diet-card">
+              <div class="weekly-activity-plan" id="weekly-activity-plan"></div>
+
+              <article class="diet-card hidden" aria-hidden="true">
                 <div class="diet-card-inner training-card-body">
-                  <div class="diet-card-header">
-                    <div class="diet-card-icon">🏋️</div>
-                    <div>
-                      <div class="diet-card-title">Atividades disponíveis</div>
-                      <div class="diet-card-time">Ajuste em intervalos de 15 minutos</div>
+                  <button class="add-recommendation-item activity-add-launcher" id="open-activity-picker" type="button">+ Adicionar atividade</button>
+                  <div class="activity-picker-panel hidden" id="activity-picker-panel">
+                    <div class="activity-picker-heading">
+                      <div>
+                        <strong>Escolha uma atividade</strong>
+                        <div class="diet-card-time">Depois, ajuste o tempo</div>
+                      </div>
+                      <button class="activity-picker-close" id="close-activity-picker" type="button" aria-label="Fechar lista de atividades">×</button>
+                    </div>
+                    <div class="diet-card-divider"></div>
+                    <input id="expense-date" type="hidden" />
+                    <div class="activity-option-list" id="expense-options"></div>
+                    <div class="activity-launch-footer">
+                      <button class="activity-register-button" id="launch-selected-activity" type="button" disabled>Lançar atividade</button>
                     </div>
                   </div>
-                  <div class="diet-card-divider"></div>
-                  <input id="expense-date" type="hidden" />
-                  <div class="activity-option-list" id="expense-options"></div>
                   <div class="hidden" aria-hidden="true">
                     <div class="selector-tabs" id="time-unit-tabs">
                       <button class="selector-tab active" data-time-unit="minutes">Min</button>
@@ -3067,7 +3249,7 @@
                 </div>
               </article>
 
-              <article class="diet-card training-log-card">
+              <article class="diet-card training-log-card hidden" aria-hidden="true">
                 <div class="diet-card-inner">
                   <div class="log-summary">
                     <h2 id="expense-log-title">Atividades lançadas hoje</h2>
@@ -3273,6 +3455,12 @@
     const expenseInputLabel = document.getElementById("expense-input-label");
     const expenseMinutes = document.getElementById("expense-minutes");
     const expenseOptions = document.getElementById("expense-options");
+    const weeklyActivityPlanRoot = document.getElementById("weekly-activity-plan");
+    const homeActivityQuick = document.getElementById("home-activity-quick");
+    const openActivityPicker = document.getElementById("open-activity-picker");
+    const closeActivityPicker = document.getElementById("close-activity-picker");
+    const activityPickerPanel = document.getElementById("activity-picker-panel");
+    const launchSelectedActivity = document.getElementById("launch-selected-activity");
     const expensePreview = document.getElementById("expense-preview");
     const saveExpense = document.getElementById("save-expense");
     const expenseLogTitle = document.getElementById("expense-log-title");
@@ -3299,7 +3487,6 @@
     const waterNotifications = document.getElementById("water-notifications");
     const enableNotifications = document.getElementById("enable-notifications");
     const notificationStatus = document.getElementById("notification-status");
-    const mealNotificationBell = document.getElementById("meal-notification-bell");
     const waterNotificationBell = document.getElementById("water-notification-bell");
     const weightPickerModal = document.getElementById("weight-picker-modal");
     const weightPickerTitle = document.getElementById("weight-picker-title");
@@ -3385,7 +3572,8 @@
       deletedExpenseIds: data?.deletedExpenseIds && typeof data.deletedExpenseIds === "object" ? data.deletedExpenseIds : {},
       water: data?.water && typeof data.water === "object" ? data.water : {},
       weightHistory: data?.weightHistory && typeof data.weightHistory === "object" ? data.weightHistory : {},
-      dailySnapshots: data?.dailySnapshots && typeof data.dailySnapshots === "object" ? data.dailySnapshots : {}
+      dailySnapshots: data?.dailySnapshots && typeof data.dailySnapshots === "object" ? data.dailySnapshots : {},
+      settings: data?.settings && typeof data.settings === "object" ? data.settings : {}
     });
     const readRecoverySnapshots = () => {
       const snapshots = parseStoredJson(localStorage.getItem(recoveryStorageKey), []);
@@ -3456,6 +3644,15 @@
       { id: "bicicleta-ergometrica-leve", name: "Bicicleta ergométrica (Leve)", icon: "🚲", caloriesPerHour: 200 },
       { id: "bicicleta-ergometrica-moderada", name: "Bicicleta ergométrica (Moderada)", icon: "🚲", caloriesPerHour: 400 },
       { id: "bicicleta-ergometrica-intensa", name: "Bicicleta ergométrica (Intensa)", icon: "🚲", caloriesPerHour: 600 }
+    ];
+    const weeklyActivityDays = [
+      { id: "monday", dayIndex: 1, label: "Segunda-feira" },
+      { id: "tuesday", dayIndex: 2, label: "Terça-feira" },
+      { id: "wednesday", dayIndex: 3, label: "Quarta-feira" },
+      { id: "thursday", dayIndex: 4, label: "Quinta-feira" },
+      { id: "friday", dayIndex: 5, label: "Sexta-feira" },
+      { id: "saturday", dayIndex: 6, label: "Sábado" },
+      { id: "sunday", dayIndex: 0, label: "Domingo" }
     ];
     const mealTypes = [
       { id: "cafe", name: "Café", icon: "☕", defaultTime: "09:00" },
@@ -3842,6 +4039,16 @@
       photoData: ""
     };
     const defaultMealTimes = Object.fromEntries(mealTypes.map((item) => [item.id, item.defaultTime]));
+    function normalizeWeeklyActivityPlan(value) {
+      const source = value && typeof value === "object" ? value : {};
+      return Object.fromEntries(weeklyActivityDays.flatMap((day) => {
+        const plan = source[day.id];
+        const activity = activityPresets.find((item) => item.id === plan?.activityId);
+        if (!activity) return [];
+        const minutes = Math.max(15, Math.round(Number(plan.minutes) || 30));
+        return [[day.id, { activityId: activity.id, minutes }]];
+      }));
+    }
     const dietSuggestionPlanVersion = "measured-at-will-10g-v2";
 
     let appData = parseStoredJson(localStorage.getItem(storageKey), { meals: [], expenses: [] });
@@ -3861,7 +4068,8 @@
         waterStartTime: appData.settings?.waterStartTime || "09:00",
         waterEndTime: appData.settings?.waterEndTime || "19:00",
         weightGoalMode: normalizeWeightGoalMode(appData.settings?.weightGoalMode),
-        notificationsEnabled: appData.settings?.notificationsEnabled === true
+        notificationsEnabled: appData.settings?.notificationsEnabled === true,
+        weeklyActivityPlan: normalizeWeeklyActivityPlan(appData.settings?.weeklyActivityPlan)
       },
       notificationLog: appData.notificationLog && typeof appData.notificationLog === "object" ? appData.notificationLog : {},
       weightHistory: appData.weightHistory && typeof appData.weightHistory === "object" ? appData.weightHistory : {},
@@ -3881,7 +4089,9 @@
         appData.water = { ...(snapshotData.water || {}), ...appData.water };
         appData.weightHistory = { ...(snapshotData.weightHistory || {}), ...appData.weightHistory };
         appData.dailySnapshots = mergeDailySnapshots(appData.dailySnapshots, snapshotData.dailySnapshots);
+        appData.settings = { ...(snapshotData.settings || {}), ...appData.settings };
       });
+      appData.settings.weeklyActivityPlan = normalizeWeeklyActivityPlan(appData.settings?.weeklyActivityPlan);
       return beforeRecovery !== JSON.stringify(criticalRecoveryData(appData));
     }
 
@@ -3945,6 +4155,8 @@
     let selectedServingId = "";
     let selectedMealType = mealTypes[0].id;
     let selectedActivityId = null;
+    let activityPickerOpen = false;
+    let editingWeeklyActivityDay = null;
     let selectedTimeUnit = "minutes";
     const activityDraftMinutes = Object.fromEntries(activityPresets.map((item) => [item.id, 30]));
     let currentFoodMode = "popular";
@@ -4128,6 +4340,7 @@
       };
       appData.dietSuggestionPlanVersion = dietSuggestionPlanVersion;
       appData.settings.weightGoalMode = normalizeWeightGoalMode(appData.settings?.weightGoalMode);
+      appData.settings.weeklyActivityPlan = normalizeWeeklyActivityPlan(appData.settings?.weeklyActivityPlan);
       carryForwardTodayWeight();
       migrateDailySnapshots();
       localStorage.setItem(storageKey, JSON.stringify(appData));
@@ -4158,12 +4371,7 @@
       const connected = enabled && Boolean(appData.settings.fcmToken);
       mealNotifications.checked = appData.settings.mealNotifications;
       waterNotifications.checked = appData.settings.waterNotifications;
-      const mealBellActive = enabled && appData.settings.mealNotifications;
       const waterBellActive = enabled && appData.settings.waterNotifications;
-      mealNotificationBell.classList.toggle("active", mealBellActive);
-      mealNotificationBell.textContent = mealBellActive ? "🔔" : "🔕";
-      mealNotificationBell.setAttribute("aria-pressed", String(mealBellActive));
-      mealNotificationBell.setAttribute("aria-label", `${mealBellActive ? "Desativar" : "Ativar"} lembretes de refeições`);
       waterNotificationBell.classList.toggle("active", waterBellActive);
       waterNotificationBell.textContent = waterBellActive ? "🔔" : "🔕";
       waterNotificationBell.setAttribute("aria-pressed", String(waterBellActive));
@@ -5076,6 +5284,160 @@
       return /^\d{4}-\d{2}-\d{2}$/.test(currentPeriod || "") ? currentPeriod : todayISO();
     }
 
+    function weeklyActivityDayForDate(date) {
+      const dayIndex = new Date(`${date}T12:00:00`).getDay();
+      return weeklyActivityDays.find((day) => day.dayIndex === dayIndex) || weeklyActivityDays[0];
+    }
+
+    function plannedActivityForDate(date) {
+      const day = weeklyActivityDayForDate(date);
+      const plan = appData.settings.weeklyActivityPlan?.[day.id];
+      const activity = activityPresets.find((item) => item.id === plan?.activityId);
+      return plan && activity ? { day, plan, activity } : null;
+    }
+
+    function plannedActivityRecord(date, dayId) {
+      return appData.expenses.find((item) => item.date === date && item.source === "weekly-plan" && item.weeklyPlanDay === dayId);
+    }
+
+    function renderHomeActivityQuick() {
+      const selectedDate = selectedHomeDate();
+      const planned = plannedActivityForDate(selectedDate);
+      const launched = Boolean(planned && plannedActivityRecord(selectedDate, planned.day.id));
+      homeActivityQuick.classList.toggle("planned", Boolean(planned) && !launched);
+      homeActivityQuick.classList.toggle("done", launched);
+      homeActivityQuick.textContent = launched ? "✓" : "🏃";
+      const label = !planned
+        ? "Programar atividade para este dia"
+        : launched
+          ? `${planned.activity.name} já foi lançada em ${planned.day.label}`
+          : `Lançar ${planned.activity.name}, ${formatActivityDuration(planned.plan.minutes)}`;
+      homeActivityQuick.title = label;
+      homeActivityQuick.setAttribute("aria-label", label);
+    }
+
+    function launchPlannedActivityForDate() {
+      const registrationDate = selectedHomeDate();
+      const planned = plannedActivityForDate(registrationDate);
+      if (!planned) {
+        openTab("gasto");
+        return;
+      }
+      if (plannedActivityRecord(registrationDate, planned.day.id)) {
+        alert("A atividade programada já foi lançada nesta data.");
+        return;
+      }
+      const minutes = planned.plan.minutes;
+      editingExpenseId = null;
+      upsertExpenseRecord({
+        date: registrationDate,
+        activityId: planned.activity.id,
+        activity: planned.activity.name,
+        minutes,
+        calories: round((minutes / 60) * planned.activity.caloriesPerHour),
+        source: "weekly-plan",
+        weeklyPlanDay: planned.day.id
+      });
+      saveData();
+      currentPeriod = registrationDate === todayISO() ? "hoje" : registrationDate;
+      renderAll();
+    }
+
+    function renderWeeklyActivityPlan() {
+      const plan = appData.settings.weeklyActivityPlan || {};
+      weeklyActivityPlanRoot.innerHTML = weeklyActivityDays.map((day) => {
+        const configured = plan[day.id];
+        const activity = activityPresets.find((item) => item.id === configured?.activityId);
+        const editing = editingWeeklyActivityDay === day.id;
+        const minutes = Math.max(15, Number(configured?.minutes) || 30);
+        const calories = activity ? round((minutes / 60) * activity.caloriesPerHour) : 0;
+        const editor = editing ? `
+          <div class="weekly-activity-choice-list">
+            ${activityPresets.map((option) => `
+              <button class="weekly-activity-choice" type="button" data-weekly-choice="${option.id}" data-weekly-day="${day.id}">
+                <span class="activity-option-icon">${option.icon || "🏋️"}</span>
+                <strong>${option.name}</strong>
+                <span>${formatKcalValue(option.caloriesPerHour)} kcal/h</span>
+              </button>
+            `).join("")}
+          </div>
+          <button class="weekly-activity-action" type="button" data-weekly-cancel="${day.id}">Cancelar</button>
+        ` : "";
+        const selected = activity && !editing ? `
+          <div class="weekly-activity-selected">
+            <div class="activity-option-main">
+              <span class="activity-option-icon">${activity.icon || "🏋️"}</span>
+              <span class="activity-option-name">${activity.name}</span>
+              <span class="activity-time-value">${formatActivityDuration(minutes)}</span>
+              <span class="activity-option-rate">${formatKcalValue(calories)} kcal</span>
+              <button class="activity-time-button" type="button" data-weekly-adjust="-1" data-weekly-day="${day.id}" aria-label="Diminuir tempo">−</button>
+              <button class="activity-time-button" type="button" data-weekly-adjust="1" data-weekly-day="${day.id}" aria-label="Aumentar tempo">+</button>
+            </div>
+          </div>
+          <div class="weekly-activity-actions">
+            <button class="weekly-activity-action" type="button" data-weekly-open="${day.id}">Trocar atividade</button>
+            <button class="weekly-activity-action remove" type="button" data-weekly-remove="${day.id}">Remover</button>
+          </div>
+        ` : "";
+        const empty = !activity && !editing
+          ? `<button class="diet-add-item" type="button" data-weekly-open="${day.id}">+ Programar atividade</button>`
+          : "";
+        return `
+          <article class="diet-card weekly-activity-card">
+            <div class="diet-card-inner">
+              <div class="weekly-activity-header">
+                <strong class="weekly-activity-day">${day.label}</strong>
+                <span class="weekly-activity-status">${activity ? "Programada" : "Livre"}</span>
+              </div>
+              ${selected}${empty}${editor}
+            </div>
+          </article>
+        `;
+      }).join("");
+
+      weeklyActivityPlanRoot.querySelectorAll("[data-weekly-open]").forEach((button) => {
+        button.addEventListener("click", () => {
+          editingWeeklyActivityDay = button.dataset.weeklyOpen;
+          renderWeeklyActivityPlan();
+        });
+      });
+      weeklyActivityPlanRoot.querySelectorAll("[data-weekly-choice]").forEach((button) => {
+        button.addEventListener("click", () => {
+          appData.settings.weeklyActivityPlan[button.dataset.weeklyDay] = {
+            activityId: button.dataset.weeklyChoice,
+            minutes: 30
+          };
+          editingWeeklyActivityDay = null;
+          saveData();
+          renderAll();
+        });
+      });
+      weeklyActivityPlanRoot.querySelectorAll("[data-weekly-adjust]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const dayId = button.dataset.weeklyDay;
+          const current = appData.settings.weeklyActivityPlan[dayId];
+          if (!current) return;
+          current.minutes = adjustedActivityMinutes(current.minutes, Number(button.dataset.weeklyAdjust));
+          saveData();
+          renderAll();
+        });
+      });
+      weeklyActivityPlanRoot.querySelectorAll("[data-weekly-remove]").forEach((button) => {
+        button.addEventListener("click", () => {
+          if (!confirm("Tem certeza que quer remover esta atividade programada?")) return;
+          delete appData.settings.weeklyActivityPlan[button.dataset.weeklyRemove];
+          saveData();
+          renderAll();
+        });
+      });
+      weeklyActivityPlanRoot.querySelectorAll("[data-weekly-cancel]").forEach((button) => {
+        button.addEventListener("click", () => {
+          editingWeeklyActivityDay = null;
+          renderWeeklyActivityPlan();
+        });
+      });
+    }
+
     function renderMealsProgress() {
       const selectedDate = selectedHomeDate();
       const selectedDateMeals = appData.meals.filter((item) => item.date === selectedDate);
@@ -5092,6 +5454,7 @@
       mealProgressList.querySelectorAll("[data-open-meal-detail]").forEach((button) => {
         button.addEventListener("click", () => openMealDetail(button.dataset.openMealDetail));
       });
+      renderHomeActivityQuick();
     }
 
     function beginSavedMealEdit(meal, returnTab = "hoje") {
@@ -6693,6 +7056,9 @@
     }
 
     function renderExpenseOptions() {
+      openActivityPicker.classList.toggle("hidden", activityPickerOpen);
+      activityPickerPanel.classList.toggle("hidden", !activityPickerOpen);
+      launchSelectedActivity.disabled = !selectedActivityId;
       expenseOptions.innerHTML = activityPresets
         .map((item) => {
           const minutes = activityDraftMinutes[item.id] || 30;
@@ -6703,14 +7069,13 @@
             <div class="activity-option-main">
               <span class="activity-option-icon">${item.icon || "🏋️"}</span>
               <span class="activity-option-name">${item.name}</span>
-              <span class="activity-time-value" data-activity-time="${item.id}">${formatActivityDuration(minutes)}</span>
-              <span class="activity-option-rate" data-activity-kcal="${item.id}">${formatKcalValue(calories)} kcal</span>
-              <button class="activity-time-button" type="button" data-activity-minus="${item.id}" aria-label="Diminuir tempo de ${item.name}">−</button>
-              <button class="activity-time-button" type="button" data-activity-plus="${item.id}" aria-label="Aumentar tempo de ${item.name}">+</button>
+              ${selected ? `
+                <span class="activity-time-value" data-activity-time="${item.id}">${formatActivityDuration(minutes)}</span>
+                <span class="activity-option-rate" data-activity-kcal="${item.id}">${formatKcalValue(calories)} kcal</span>
+                <button class="activity-time-button" type="button" data-activity-minus="${item.id}" aria-label="Diminuir tempo de ${item.name}">−</button>
+                <button class="activity-time-button" type="button" data-activity-plus="${item.id}" aria-label="Aumentar tempo de ${item.name}">+</button>
+              ` : `<span class="activity-option-rate">${formatKcalValue(item.caloriesPerHour)} kcal/h</span>`}
             </div>
-            ${selected ? `<div class="activity-direct-actions">
-              <button class="activity-register-button" type="button" data-register-activity="${item.id}">Cadastrar</button>
-            </div>` : ""}
           </div>
         `;
         })
@@ -6741,28 +7106,42 @@
           if (activity && kcal) kcal.textContent = `${formatKcalValue(round((activityDraftMinutes[activityId] / 60) * activity.caloriesPerHour))} kcal`;
         });
       });
-      expenseOptions.querySelectorAll("[data-register-activity]").forEach((button) => {
-        button.addEventListener("click", (event) => {
-          event.stopPropagation();
-          const activity = activityPresets.find((item) => item.id === button.dataset.registerActivity);
-          if (!activity) return;
-          const minutes = activityDraftMinutes[activity.id] || 30;
-          const registrationDate = expenseDate.value || todayISO();
-          upsertExpenseRecord({
-            date: expenseDate.value || todayISO(),
-            activityId: activity.id,
-            activity: activity.name,
-            minutes,
-            calories: round((minutes / 60) * activity.caloriesPerHour)
-          });
-          saveData();
-          selectedActivityId = null;
-          currentPeriod = registrationDate === todayISO() ? "hoje" : registrationDate;
-          periodButtons.forEach((item) => item.classList.toggle("active", currentPeriod === "hoje" && item.dataset.period === "hoje"));
-          renderAll();
-        });
-      });
     }
+
+    function launchActivitySelection() {
+      const activity = activityPresets.find((item) => item.id === selectedActivityId);
+      if (!activity) return;
+      const minutes = activityDraftMinutes[activity.id] || 30;
+      const registrationDate = expenseDate.value || todayISO();
+      upsertExpenseRecord({
+        date: registrationDate,
+        activityId: activity.id,
+        activity: activity.name,
+        minutes,
+        calories: round((minutes / 60) * activity.caloriesPerHour)
+      });
+      saveData();
+      selectedActivityId = null;
+      activityPickerOpen = false;
+      currentPeriod = registrationDate === todayISO() ? "hoje" : registrationDate;
+      periodButtons.forEach((item) => item.classList.toggle("active", currentPeriod === "hoje" && item.dataset.period === "hoje"));
+      renderExpenseOptions();
+      renderAll();
+    }
+
+    openActivityPicker.addEventListener("click", () => {
+      selectedActivityId = null;
+      activityPickerOpen = true;
+      renderExpenseOptions();
+    });
+
+    closeActivityPicker.addEventListener("click", () => {
+      selectedActivityId = null;
+      activityPickerOpen = false;
+      renderExpenseOptions();
+    });
+
+    launchSelectedActivity.addEventListener("click", launchActivitySelection);
 
     function updateExpensePreview() {
       const activity = activityPresets.find((item) => item.id === selectedActivityId);
@@ -7452,6 +7831,7 @@
           }
           if (!confirm("Editar esta atividade? O registro original será mantido até você salvar a alteração.")) return;
           selectedActivityId = expense.activityId;
+          activityPickerOpen = true;
           editingExpenseId = expense.id;
           expenseDate.value = expense.date;
           activityDraftMinutes[activity.id] = Math.max(15, Number(expense.minutes) || 30);
@@ -7521,6 +7901,7 @@
           }
           if (!confirm("Editar esta atividade? O registro original será mantido até você salvar a alteração.")) return;
           selectedActivityId = expense.activityId;
+          activityPickerOpen = true;
           editingExpenseId = expense.id;
           expenseDate.value = expense.date;
           activityDraftMinutes[activity.id] = Math.max(15, Number(expense.minutes) || 30);
@@ -7550,6 +7931,7 @@
       renderMealLog();
       renderExpenseLog();
       renderDietDashboard();
+      renderWeeklyActivityPlan();
     }
 
     const mainTabNames = new Set(["hoje", "refeicao", "gasto"]);
@@ -7632,7 +8014,7 @@
     weightPickerModal.addEventListener("click", (event) => {
       if (event.target === weightPickerModal) closeWeightPicker();
     });
-    mealNotificationBell.addEventListener("click", () => toggleCardNotification("mealNotifications"));
+    homeActivityQuick.addEventListener("click", launchPlannedActivityForDate);
     waterNotificationBell.addEventListener("click", () => toggleCardNotification("waterNotifications"));
     enableNotifications.addEventListener("click", requestAppNotifications);
     mealNotifications.addEventListener("change", () => {
