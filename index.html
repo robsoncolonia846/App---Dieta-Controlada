@@ -6161,6 +6161,18 @@
       }));
     }
 
+    function showSubstituteModal() {
+      const wasHidden = substituteModal.classList.contains("hidden");
+      substituteModal.classList.remove("hidden");
+      if (wasHidden && history.state?.overlay !== "substitute") {
+        history.pushState(
+          { ...(history.state || {}), tab: visibleSectionId(), overlay: "substitute" },
+          "",
+          window.location.href
+        );
+      }
+    }
+
     function openSubstituteModal(recommendationIndex, itemIndex, homeMealId = null) {
       const item = currentRecommendationOptions?.[recommendationIndex]?.items?.[itemIndex];
       if (!item) return;
@@ -6203,7 +6215,7 @@
       };
       searchInput.addEventListener("input", renderSubstituteResults);
       renderSubstituteResults();
-      substituteModal.classList.remove("hidden");
+      showSubstituteModal();
       requestAnimationFrame(() => searchInput.focus());
     }
 
@@ -6247,11 +6259,15 @@
       };
       searchInput.addEventListener("input", renderAddItemResults);
       renderAddItemResults();
-      substituteModal.classList.remove("hidden");
+      showSubstituteModal();
       requestAnimationFrame(() => searchInput.focus());
     }
 
-    function closeSubstituteModal() {
+    function closeSubstituteModal({ fromHistory = false } = {}) {
+      if (!fromHistory && history.state?.overlay === "substitute") {
+        history.back();
+        return;
+      }
       substituteModal.classList.add("hidden");
       substituteTarget = null;
     }
@@ -8046,6 +8062,9 @@
     }
 
     window.addEventListener("popstate", (event) => {
+      if (!substituteModal.classList.contains("hidden")) {
+        closeSubstituteModal({ fromHistory: true });
+      }
       const tabFromState = event.state?.tab;
       const tabFromHash = window.location.hash?.replace("#", "");
       const targetTab = document.getElementById(tabFromState) ? tabFromState : document.getElementById(tabFromHash) ? tabFromHash : localStorage.getItem(navigationStorageKey) || "hoje";
