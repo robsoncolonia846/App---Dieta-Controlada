@@ -2523,6 +2523,39 @@
       cursor: default;
     }
 
+    .activity-quick-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 34;
+      display: grid;
+      align-items: end;
+      background: rgba(0, 0, 0, 0.58);
+    }
+
+    .activity-quick-sheet {
+      width: 100%;
+      max-width: 480px;
+      max-height: min(86vh, 760px);
+      margin: 0 auto;
+      overflow: hidden;
+      background: #fff;
+      border-radius: 24px 24px 0 0;
+      padding: 8px 16px max(18px, env(safe-area-inset-bottom));
+      box-shadow: 0 -16px 34px rgba(0, 0, 0, 0.18);
+    }
+
+    .activity-quick-sheet .activity-picker-panel {
+      display: flex;
+      flex-direction: column;
+      max-height: calc(min(86vh, 760px) - 18px);
+    }
+
+    .activity-quick-sheet .activity-option-list {
+      flex: 1;
+      min-height: 0;
+      max-height: none;
+    }
+
     .weekly-activity-plan {
       display: grid;
       gap: 12px;
@@ -3100,7 +3133,7 @@
               <div class="meal-card-heading">
                 <h2>Refeições e atividades</h2>
                 <div class="muted" id="open-meal-tab">Escolha o que deseja registrar</div>
-                <button class="card-notification-bell home-activity-quick" id="home-activity-quick" type="button" aria-label="Programar atividade da semana">🏃</button>
+                <button class="card-notification-bell home-activity-quick" id="home-activity-quick" type="button" aria-label="Adicionar atividade">🏋️</button>
               </div>
               <div class="meal-progress-line" id="meal-progress-list"></div>
             </div>
@@ -3222,21 +3255,6 @@
               <article class="diet-card hidden" aria-hidden="true">
                 <div class="diet-card-inner training-card-body">
                   <button class="add-recommendation-item activity-add-launcher" id="open-activity-picker" type="button">+ Adicionar atividade</button>
-                  <div class="activity-picker-panel hidden" id="activity-picker-panel">
-                    <div class="activity-picker-heading">
-                      <div>
-                        <strong>Escolha uma atividade</strong>
-                        <div class="diet-card-time">Depois, ajuste o tempo</div>
-                      </div>
-                      <button class="activity-picker-close" id="close-activity-picker" type="button" aria-label="Fechar lista de atividades">×</button>
-                    </div>
-                    <div class="diet-card-divider"></div>
-                    <input id="expense-date" type="hidden" />
-                    <div class="activity-option-list" id="expense-options"></div>
-                    <div class="activity-launch-footer">
-                      <button class="activity-register-button" id="launch-selected-activity" type="button" disabled>Lançar atividade</button>
-                    </div>
-                  </div>
                   <div class="hidden" aria-hidden="true">
                     <div class="selector-tabs" id="time-unit-tabs">
                       <button class="selector-tab active" data-time-unit="minutes">Min</button>
@@ -3334,6 +3352,27 @@
       <div class="weight-picker-actions">
         <button class="weight-picker-cancel" id="weight-picker-cancel" type="button">Cancelar</button>
         <button class="weight-picker-save" id="weight-picker-save" type="button">Salvar peso</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="activity-quick-modal hidden" id="activity-quick-modal" role="dialog" aria-modal="true" aria-labelledby="activity-quick-title">
+    <div class="activity-quick-sheet">
+      <div class="sheet-handle"></div>
+      <div class="activity-picker-panel hidden" id="activity-picker-panel">
+        <div class="activity-picker-heading">
+          <div>
+            <strong id="activity-quick-title">Escolha uma atividade</strong>
+            <div class="diet-card-time">Selecione e ajuste o tempo</div>
+          </div>
+          <button class="activity-picker-close" id="close-activity-picker" type="button" aria-label="Fechar lista de atividades">×</button>
+        </div>
+        <div class="diet-card-divider"></div>
+        <input id="expense-date" type="hidden" />
+        <div class="activity-option-list" id="expense-options"></div>
+        <div class="activity-launch-footer">
+          <button class="activity-register-button" id="launch-selected-activity" type="button" disabled>Lançar atividade</button>
+        </div>
       </div>
     </div>
   </div>
@@ -3460,6 +3499,7 @@
     const openActivityPicker = document.getElementById("open-activity-picker");
     const closeActivityPicker = document.getElementById("close-activity-picker");
     const activityPickerPanel = document.getElementById("activity-picker-panel");
+    const activityQuickModal = document.getElementById("activity-quick-modal");
     const launchSelectedActivity = document.getElementById("launch-selected-activity");
     const expensePreview = document.getElementById("expense-preview");
     const saveExpense = document.getElementById("save-expense");
@@ -5306,12 +5346,10 @@
       const launched = Boolean(planned && plannedActivityRecord(selectedDate, planned.day.id));
       homeActivityQuick.classList.toggle("planned", Boolean(planned) && !launched);
       homeActivityQuick.classList.toggle("done", launched);
-      homeActivityQuick.textContent = launched ? "✓" : "🏃";
-      const label = !planned
-        ? "Programar atividade para este dia"
-        : launched
-          ? `${planned.activity.name} já foi lançada em ${planned.day.label}`
-          : `Lançar ${planned.activity.name}, ${formatActivityDuration(planned.plan.minutes)}`;
+      homeActivityQuick.textContent = "🏋️";
+      const label = planned
+        ? `Adicionar atividade. Sugestão de ${planned.day.label}: ${planned.activity.name}`
+        : "Adicionar atividade";
       homeActivityQuick.title = label;
       homeActivityQuick.setAttribute("aria-label", label);
     }
@@ -5319,28 +5357,21 @@
     function launchPlannedActivityForDate() {
       const registrationDate = selectedHomeDate();
       const planned = plannedActivityForDate(registrationDate);
-      if (!planned) {
-        openTab("gasto");
-        return;
+      selectedActivityId = planned?.activity.id || null;
+      if (planned) {
+        activityDraftMinutes[planned.activity.id] = planned.plan.minutes;
       }
-      if (plannedActivityRecord(registrationDate, planned.day.id)) {
-        alert("A atividade programada já foi lançada nesta data.");
-        return;
-      }
-      const minutes = planned.plan.minutes;
       editingExpenseId = null;
-      upsertExpenseRecord({
-        date: registrationDate,
-        activityId: planned.activity.id,
-        activity: planned.activity.name,
-        minutes,
-        calories: round((minutes / 60) * planned.activity.caloriesPerHour),
-        source: "weekly-plan",
-        weeklyPlanDay: planned.day.id
-      });
-      saveData();
-      currentPeriod = registrationDate === todayISO() ? "hoje" : registrationDate;
-      renderAll();
+      expenseDate.value = registrationDate;
+      activityPickerOpen = true;
+      renderExpenseOptions();
+      if (history.state?.overlay !== "activity-picker") {
+        history.pushState(
+          { ...(history.state || {}), tab: visibleSectionId(), overlay: "activity-picker" },
+          "",
+          window.location.href
+        );
+      }
     }
 
     function renderWeeklyActivityPlan() {
@@ -7057,6 +7088,7 @@
 
     function renderExpenseOptions() {
       openActivityPicker.classList.toggle("hidden", activityPickerOpen);
+      activityQuickModal.classList.toggle("hidden", !activityPickerOpen);
       activityPickerPanel.classList.toggle("hidden", !activityPickerOpen);
       launchSelectedActivity.disabled = !selectedActivityId;
       expenseOptions.innerHTML = activityPresets
@@ -7111,6 +7143,7 @@
     function launchActivitySelection() {
       const activity = activityPresets.find((item) => item.id === selectedActivityId);
       if (!activity) return;
+      const closeHistoryOverlay = history.state?.overlay === "activity-picker";
       const minutes = activityDraftMinutes[activity.id] || 30;
       const registrationDate = expenseDate.value || todayISO();
       upsertExpenseRecord({
@@ -7127,6 +7160,17 @@
       periodButtons.forEach((item) => item.classList.toggle("active", currentPeriod === "hoje" && item.dataset.period === "hoje"));
       renderExpenseOptions();
       renderAll();
+      if (closeHistoryOverlay) history.back();
+    }
+
+    function closeActivityPickerModal({ fromHistory = false } = {}) {
+      if (!fromHistory && history.state?.overlay === "activity-picker") {
+        history.back();
+        return;
+      }
+      selectedActivityId = null;
+      activityPickerOpen = false;
+      renderExpenseOptions();
     }
 
     openActivityPicker.addEventListener("click", () => {
@@ -7135,10 +7179,9 @@
       renderExpenseOptions();
     });
 
-    closeActivityPicker.addEventListener("click", () => {
-      selectedActivityId = null;
-      activityPickerOpen = false;
-      renderExpenseOptions();
+    closeActivityPicker.addEventListener("click", () => closeActivityPickerModal());
+    activityQuickModal.addEventListener("click", (event) => {
+      if (event.target === activityQuickModal) closeActivityPickerModal();
     });
 
     launchSelectedActivity.addEventListener("click", launchActivitySelection);
@@ -8446,6 +8489,9 @@
     window.addEventListener("popstate", (event) => {
       if (!substituteModal.classList.contains("hidden")) {
         closeSubstituteModal({ fromHistory: true });
+      }
+      if (!activityQuickModal.classList.contains("hidden")) {
+        closeActivityPickerModal({ fromHistory: true });
       }
       const tabFromState = event.state?.tab;
       const tabFromHash = window.location.hash?.replace("#", "");
