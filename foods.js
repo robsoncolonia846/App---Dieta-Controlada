@@ -387,6 +387,19 @@ const foods = [
     ]
   },
   {
+    id: "coxinha-de-frango-frita",
+    name: "Coxinha de Frango Frita",
+    icon: "🍗",
+    category: "Alimentação",
+    caloriesPer100g: 280,
+    proteinPer100g: 12,
+    carbsPer100g: 30,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "50g", grams: 50 }
+    ]
+  },
+  {
     id: "creme-de-ricota-light",
     name: "Creme de Ricota Light",
     icon: "\ud83e\uddc0",
@@ -1673,6 +1686,7 @@ const fiberPer100gById = {
   "beterraba-crua": 2.8, "bife-a-parmegiana": 0.8, "brocolis": 3.3,
   "carne-acebolada-com-maionese": 0.7, "carne-de-panela-agulha": 0.4,
   "cenoura-cozida-assada": 3, "cenoura-crua": 3.2, "couve": 3.1,
+  "coxinha-de-frango-frita": 1.5,
   "doce-de-leite": 0.2, "empada-folhada": 1.1, "estrogonof": 0.5,
   "feijao": 8.5, "frango-sobrecoxa-ao-molho": 0.4, "goiabada": 5.4,
   "iogurte-zero": 0, "laranja": 2.2, "lazanha-de-carne-moida": 1.7,
@@ -1709,6 +1723,7 @@ const sugarPer100gById = {
   "beterraba-crua": 6.8, "brocolis": 1.7, "cenoura-cozida-assada": 4.7,
   "cenoura-crua": 4.7, "cerveja": 0.1, "couve": 0.8, "doce-de-leite": 50,
   "estrogonof": 2.2, "feijao": 0.3, "goiabada": 68, "iogurte-zero": 4.5,
+  "coxinha-de-frango-frita": 2,
   "laranja": 8.5, "lazanha-de-carne-moida": 3.2, "lazanha-de-frango": 2.8,
   "leite-desnatado": 5, "leite-integral": 4.8, "maca": 14,
   "maionese": 0.6, "maionese-light": 3, "melancia": 6.2, "morango": 4.9,
@@ -1741,7 +1756,8 @@ const freeSugarPer100gById = {
   "bolo-de-aniversario": 38, "brigadeiro": 55,
   "bolo-de-chocolate-com-calda": 52, "bolo-de-chocolate": 28,
   "cueca-virada-grostoli": 12,
-  "pizza": 2, "enroladinho-salsicha-frito": 2,
+  "pizza": 2, "coxinha-de-frango-frita": 2,
+  "enroladinho-salsicha-frito": 2,
   "enroladinho-salsicha-airfryer": 2, "cafe-com-uma-colher-acucar": 5,
   "cafe-com-duas-colheres-acucar": 10, "acucar-cristal": 99.6,
   "granola": 18, "quentao": 15, "torta-de-bolacha": 18,
