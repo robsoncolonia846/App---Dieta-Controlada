@@ -439,9 +439,25 @@ const foods = [
   },
   {
     id: "estrogonof",
-    name: "Estrogonof",
-    category: "Alimenta??o",
-    caloriesPer100g: 150,
+    name: "Strogonof de Carne",
+    aliases: ["Estrogonof", "Estrogonof de Carne"],
+    icon: "🍛",
+    category: "Alimentação",
+    caloriesPer100g: 250,
+    proteinPer100g: 18,
+    carbsPer100g: 4,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "50g", grams: 50 }
+    ]
+  },
+  {
+    id: "estrogonof-de-frango",
+    name: "Strogonof de Frango",
+    aliases: ["Estrogonof de Frango"],
+    icon: "🍛",
+    category: "Alimentação",
+    caloriesPer100g: 250,
     proteinPer100g: 18,
     carbsPer100g: 4,
     servings: [
@@ -1673,6 +1689,97 @@ const foods = [
       { id: "mililitros", name: "Mililitros", grams: 1 },
       { id: "excel", name: "200ml", grams: 200 }
     ]
+  },
+  {
+    id: "farofa",
+    name: "Farofa",
+    icon: "🥣",
+    category: "Alimentação",
+    caloriesPer100g: 400,
+    proteinPer100g: 5,
+    carbsPer100g: 75,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "10g", grams: 10 }
+    ]
+  },
+  {
+    id: "pudim-leite-condensado",
+    name: "Pudim (Leite Condensado)",
+    icon: "🍮",
+    category: "Alimentação",
+    caloriesPer100g: 300,
+    proteinPer100g: 5,
+    carbsPer100g: 50,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "50g", grams: 50 }
+    ]
+  },
+  {
+    id: "pudim-po-para-pudim",
+    name: "Pudim (Pó para Pudim)",
+    icon: "🍮",
+    category: "Alimentação",
+    caloriesPer100g: 150,
+    proteinPer100g: 3,
+    carbsPer100g: 27,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "50g", grams: 50 }
+    ]
+  },
+  {
+    id: "pessego-em-calda",
+    name: "Pêssego em Calda",
+    icon: "🍑",
+    category: "Alimentação",
+    caloriesPer100g: 80,
+    proteinPer100g: 0.4,
+    carbsPer100g: 20,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "50g", grams: 50 }
+    ]
+  },
+  {
+    id: "doce-de-figo",
+    name: "Doce de Figo",
+    icon: "🍬",
+    category: "Alimentação",
+    caloriesPer100g: 160,
+    proteinPer100g: 0.5,
+    carbsPer100g: 40,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "50g", grams: 50 }
+    ]
+  },
+  {
+    id: "abacaxi-em-calda",
+    name: "Abacaxi em Calda",
+    icon: "🍍",
+    category: "Alimentação",
+    caloriesPer100g: 150,
+    proteinPer100g: 0.4,
+    carbsPer100g: 37,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "50g", grams: 50 }
+    ]
+  },
+  {
+    id: "pudim-flan",
+    name: "Pudim (Flan)",
+    icon: "🍮",
+    category: "Alimentação",
+    caloriesPer100g: 140,
+    proteinPer100g: 3,
+    carbsPer100g: 24,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "50g", grams: 50 }
+    ]
   }
 ];
 
@@ -1687,7 +1794,8 @@ const fiberPer100gById = {
   "carne-acebolada-com-maionese": 0.7, "carne-de-panela-agulha": 0.4,
   "cenoura-cozida-assada": 3, "cenoura-crua": 3.2, "couve": 3.1,
   "coxinha-de-frango-frita": 1.5,
-  "doce-de-leite": 0.2, "empada-folhada": 1.1, "estrogonof": 0.5,
+  "doce-de-leite": 0.2, "empada-folhada": 1.1,
+  "estrogonof": 0.5, "estrogonof-de-frango": 0.5,
   "feijao": 8.5, "frango-sobrecoxa-ao-molho": 0.4, "goiabada": 5.4,
   "iogurte-zero": 0, "laranja": 2.2, "lazanha-de-carne-moida": 1.7,
   "lazanha-de-frango": 1.5, "maca": 2.4, "macarrao": 1.8,
@@ -1712,7 +1820,10 @@ const fiberPer100gById = {
   "pure-de-batatas": 1.3, "pastel-de-carne-frito": 2.2, "torta-de-bolacha": 1.1,
   "arroz-doce": 0.6, "biscoito-maizena": 1.5, "biscoito-agua-e-sal": 2.4,
   "biscoito-cream-cracker": 2.8, "biscoito-rosquinha-doce": 1.8,
-  "biscoito-recheado": 2.5, "biscoito-vovo-sentada": 1.6, "pacoquinha": 5.5
+  "biscoito-recheado": 2.5, "biscoito-vovo-sentada": 1.6, "pacoquinha": 5.5,
+  "farofa": 5, "pudim-leite-condensado": 0, "pudim-po-para-pudim": 0,
+  "pessego-em-calda": 0.8, "doce-de-figo": 2,
+  "abacaxi-em-calda": 1, "pudim-flan": 0
 };
 
 // Açúcares totais médios por 100 g/ml. O valor nunca ultrapassa o carboidrato cadastrado.
@@ -1722,7 +1833,8 @@ const sugarPer100gById = {
   "beterraba-cozida-assada": 7,
   "beterraba-crua": 6.8, "brocolis": 1.7, "cenoura-cozida-assada": 4.7,
   "cenoura-crua": 4.7, "cerveja": 0.1, "couve": 0.8, "doce-de-leite": 50,
-  "estrogonof": 2.2, "feijao": 0.3, "goiabada": 68, "iogurte-zero": 4.5,
+  "estrogonof": 2.2, "estrogonof-de-frango": 2.2,
+  "feijao": 0.3, "goiabada": 68, "iogurte-zero": 4.5,
   "coxinha-de-frango-frita": 2,
   "laranja": 8.5, "lazanha-de-carne-moida": 3.2, "lazanha-de-frango": 2.8,
   "leite-desnatado": 5, "leite-integral": 4.8, "maca": 14,
@@ -1744,7 +1856,10 @@ const sugarPer100gById = {
   "biscoito-agua-e-sal": 4, "biscoito-cream-cracker": 5,
   "biscoito-rosquinha-doce": 25, "biscoito-recheado": 35,
   "biscoito-vovo-sentada": 25, "pacoquinha": 38,
-  "tijolinho-mariola-banana": 46.7, "coca-cola-original": 10.5
+  "tijolinho-mariola-banana": 46.7, "coca-cola-original": 10.5,
+  "farofa": 1, "pudim-leite-condensado": 40, "pudim-po-para-pudim": 25,
+  "pessego-em-calda": 18, "doce-de-figo": 35,
+  "abacaxi-em-calda": 32, "pudim-flan": 20
 };
 
 // Açúcares livres/adicionados por 100 g/ml. Não inclui o açúcar natural
@@ -1766,7 +1881,10 @@ const freeSugarPer100gById = {
   "biscoito-rosquinha-doce": 25, "biscoito-recheado": 35,
   "biscoito-vovo-sentada": 25, "pacoquinha": 32,
   "tijolinho-mariola-banana": 40,
-  "coca-cola-original": 10.5
+  "coca-cola-original": 10.5,
+  "pudim-leite-condensado": 35, "pudim-po-para-pudim": 25,
+  "pessego-em-calda": 14, "doce-de-figo": 30,
+  "abacaxi-em-calda": 27, "pudim-flan": 17
 };
 
 function saturatedFatRatio(foodId) {
@@ -1778,7 +1896,7 @@ function saturatedFatRatio(foodId) {
   if (/manteiga|queijo|requeijao|leite|iogurte/.test(foodId)) return 0.6;
   if (/carne|bife|figado|lombo|salsich|presunto|coracao/.test(foodId)) return 0.4;
   if (/frango|ovo|omelete/.test(foodId)) return 0.32;
-  if (/bolo|biscoito|pizza|pastel|torta|brigadeiro|doce|goiabada|cueca/.test(foodId)) return 0.35;
+  if (/bolo|biscoito|pizza|pastel|torta|brigadeiro|doce|goiabada|cueca|pudim/.test(foodId)) return 0.35;
   return 0.25;
 }
 
