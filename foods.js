@@ -1678,6 +1678,19 @@ const foods = [
     ]
   },
   {
+    id: "chocolate-bis",
+    name: "Chocolate Bis",
+    icon: "🍫",
+    category: "Alimentação",
+    caloriesPer100g: 555.6,
+    proteinPer100g: 6.3,
+    carbsPer100g: 63,
+    saturatedFatPer100g: 14,
+    servings: [
+      { id: "unidade", name: "Unidade", grams: 6.3 }
+    ]
+  },
+  {
     id: "coca-cola-original",
     name: "Coca-Cola Original",
     icon: "\ud83e\udd64",
@@ -1821,6 +1834,7 @@ const fiberPer100gById = {
   "arroz-doce": 0.6, "biscoito-maizena": 1.5, "biscoito-agua-e-sal": 2.4,
   "biscoito-cream-cracker": 2.8, "biscoito-rosquinha-doce": 1.8,
   "biscoito-recheado": 2.5, "biscoito-vovo-sentada": 1.6, "pacoquinha": 5.5,
+  "chocolate-bis": 2.3,
   "farofa": 5, "pudim-leite-condensado": 0, "pudim-po-para-pudim": 0,
   "pessego-em-calda": 0.8, "doce-de-figo": 2,
   "abacaxi-em-calda": 1, "pudim-flan": 0
@@ -1855,7 +1869,7 @@ const sugarPer100gById = {
   "torta-de-bolacha": 18, "arroz-doce": 15, "biscoito-maizena": 22,
   "biscoito-agua-e-sal": 4, "biscoito-cream-cracker": 5,
   "biscoito-rosquinha-doce": 25, "biscoito-recheado": 35,
-  "biscoito-vovo-sentada": 25, "pacoquinha": 38,
+  "biscoito-vovo-sentada": 25, "pacoquinha": 38, "chocolate-bis": 40,
   "tijolinho-mariola-banana": 46.7, "coca-cola-original": 10.5,
   "farofa": 1, "pudim-leite-condensado": 40, "pudim-po-para-pudim": 25,
   "pessego-em-calda": 18, "doce-de-figo": 35,
@@ -1879,7 +1893,7 @@ const freeSugarPer100gById = {
   "arroz-doce": 12, "biscoito-maizena": 22,
   "biscoito-agua-e-sal": 3, "biscoito-cream-cracker": 4,
   "biscoito-rosquinha-doce": 25, "biscoito-recheado": 35,
-  "biscoito-vovo-sentada": 25, "pacoquinha": 32,
+  "biscoito-vovo-sentada": 25, "pacoquinha": 32, "chocolate-bis": 40,
   "tijolinho-mariola-banana": 40,
   "coca-cola-original": 10.5,
   "pudim-leite-condensado": 35, "pudim-po-para-pudim": 25,
@@ -1896,6 +1910,7 @@ function saturatedFatRatio(foodId) {
   if (/manteiga|queijo|requeijao|leite|iogurte/.test(foodId)) return 0.6;
   if (/carne|bife|figado|lombo|salsich|presunto|coracao/.test(foodId)) return 0.4;
   if (/frango|ovo|omelete/.test(foodId)) return 0.32;
+  if (/chocolate-bis/.test(foodId)) return 0.55;
   if (/bolo|biscoito|pizza|pastel|torta|brigadeiro|doce|goiabada|cueca|pudim/.test(foodId)) return 0.35;
   return 0.25;
 }
@@ -1906,7 +1921,7 @@ foods.forEach((food) => {
   const carbs = Number(food.carbsPer100g) || 0;
   const estimatedTotalFat = Math.max(0, (calories - protein * 4 - carbs * 4) / 9);
   food.fiberPer100g = Number(fiberPer100gById[food.id]) || 0;
-  food.saturatedFatPer100g = Number((estimatedTotalFat * saturatedFatRatio(food.id)).toFixed(1));
+  food.saturatedFatPer100g = Number(food.saturatedFatPer100g) || Number((estimatedTotalFat * saturatedFatRatio(food.id)).toFixed(1));
   food.freeSugarPer100g = Number(Math.min(carbs, Number(freeSugarPer100gById[food.id]) || 0).toFixed(1));
 });
 
