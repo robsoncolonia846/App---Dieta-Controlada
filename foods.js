@@ -480,6 +480,20 @@ const foods = [
     ]
   },
   {
+    id: "estrogonof-de-camarao",
+    name: "Strogonof de Camarão",
+    aliases: ["Estrogonof de Camarão"],
+    icon: "\ud83c\udf64",
+    category: "Alimenta\u00e7\u00e3o",
+    caloriesPer100g: 150,
+    proteinPer100g: 12,
+    carbsPer100g: 5,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "100g", grams: 100 }
+    ]
+  },
+  {
     id: "feijao",
     name: "Feijão",
     category: "Alimenta??o",
@@ -1864,6 +1878,7 @@ const fiberPer100gById = {
   "coxinha-de-frango-frita": 1.5,
   "doce-de-leite": 0.2, "empada-folhada": 1.1,
   "estrogonof": 0.5, "estrogonof-de-frango": 0.5,
+  "estrogonof-de-camarao": 0.5,
   "feijao": 8.5, "frango-sobrecoxa-ao-molho": 0.4, "goiabada": 5.4,
   "iogurte-zero": 0, "laranja": 2.2, "lazanha-de-carne-moida": 1.7,
   "lazanha-de-frango": 1.5, "maca": 2.4, "macarrao": 1.8,
@@ -1905,6 +1920,7 @@ const sugarPer100gById = {
   "beterraba-crua": 6.8, "brocolis": 1.7, "cenoura-cozida-assada": 4.7,
   "cenoura-crua": 4.7, "cerveja": 0.1, "couve": 0.8, "doce-de-leite": 50,
   "estrogonof": 2.2, "estrogonof-de-frango": 2.2,
+  "estrogonof-de-camarao": 2.2,
   "feijao": 0.3, "goiabada": 68, "iogurte-zero": 4.5,
   "coxinha-de-frango-frita": 2,
   "laranja": 8.5, "lazanha-de-carne-moida": 3.2, "lazanha-de-frango": 2.8,
