@@ -770,7 +770,7 @@ const foods = [
     name: "Mostarda Refogada",
     icon: "🥬",
     category: "Alimentação",
-    caloriesPer100g: 58,
+    caloriesPer100g: 60,
     proteinPer100g: 3.71,
     carbsPer100g: 8.17,
     saturatedFatPer100g: 0.2,
