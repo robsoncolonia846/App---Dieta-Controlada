@@ -7270,7 +7270,7 @@
       const sample = fromStart
         ? data.filter((item) => item.isoDate >= firstHistoryRecordDate())
         : completedDays.slice(-days);
-      const trackedDays = sample.filter((item) => item.consumed > 0);
+      const trackedDays = sample.filter((item) => item.isoDate < todayISO() && item.consumed > 0);
       const averageBalance = trackedDays.length
         ? trackedDays.reduce((sum, item) => sum + item.consumed - item.targetRange.max, 0) / trackedDays.length
         : null;

@@ -50,6 +50,20 @@ const foods = [
     ]
   },
   {
+    id: "chia",
+    name: "Chia",
+    icon: "🌱",
+    category: "Alimentação",
+    caloriesPer100g: 486,
+    proteinPer100g: 16.5,
+    carbsPer100g: 42.1,
+    saturatedFatPer100g: 3.3,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "10g", grams: 10 }
+    ]
+  },
+  {
     id: "arroz",
     name: "Arroz",
     category: "Alimenta??o",
@@ -735,6 +749,34 @@ const foods = [
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
       { id: "excel", name: "100g", grams: 100 }
+    ]
+  },
+  {
+    id: "mostarda-no-oleo",
+    name: "Mostarda no Óleo",
+    icon: "🥬",
+    category: "Alimentação",
+    caloriesPer100g: 160,
+    proteinPer100g: 3.71,
+    carbsPer100g: 8.17,
+    saturatedFatPer100g: 1.8,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "50g", grams: 50 }
+    ]
+  },
+  {
+    id: "mostarda-refogada",
+    name: "Mostarda Refogada",
+    icon: "🥬",
+    category: "Alimentação",
+    caloriesPer100g: 58,
+    proteinPer100g: 3.71,
+    carbsPer100g: 8.17,
+    saturatedFatPer100g: 0.2,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "50g", grams: 50 }
     ]
   },
   {
@@ -1798,7 +1840,7 @@ const foods = [
 
 // Fibras médias por 100 g/ml. Preparações caseiras usam uma referência média.
 const fiberPer100gById = {
-  "abacaxi": 1.4, "abobora": 2.8, "alface": 1.3, "amendoim": 8.5,
+  "abacaxi": 1.4, "abobora": 2.8, "alface": 1.3, "amendoim": 8.5, "chia": 34.4,
   "arroz": 1.6, "banana": 2.6, "batata-com-maionese": 1.5,
   "batata-palha": 4, "batata-frita": 3.8, "batata-inglesa": 1.8,
   "batata-ensopada": 1.8,
@@ -1814,7 +1856,8 @@ const fiberPer100gById = {
   "lazanha-de-frango": 1.5, "maca": 2.4, "macarrao": 1.8,
   "massa-alho-e-oleo": 1.8, "macarrao-com-carne-moida": 1.5,
   "macarrao-carne-moida-molho-queijos": 1.3, "macarrao-instantaneo-miojo": 2.6,
-  "melancia": 0.4, "morango": 2, "omelete-com-queijo": 0.1,
+  "melancia": 0.4, "morango": 2, "mostarda-no-oleo": 3.8, "mostarda-refogada": 3.8,
+  "omelete-com-queijo": 0.1,
   "panqueca-carne-moida": 1.2, "panqueca-frango": 1.2,
   "pao-caseiro": 2.7, "pao-de-forma": 4.1, "pao-frances": 2.3,
   "pao-torrado": 2.3,
@@ -1842,7 +1885,7 @@ const fiberPer100gById = {
 
 // Açúcares totais médios por 100 g/ml. O valor nunca ultrapassa o carboidrato cadastrado.
 const sugarPer100gById = {
-  "abacaxi": 10, "abobora": 2.8, "alface": 0.8, "amendoim": 4.7,
+  "abacaxi": 10, "abobora": 2.8, "alface": 0.8, "amendoim": 4.7, "chia": 0,
   "banana": 12.2, "bergamota": 8.5, "batata-ensopada": 1.2,
   "beterraba-cozida-assada": 7,
   "beterraba-crua": 6.8, "brocolis": 1.7, "cenoura-cozida-assada": 4.7,
