@@ -1199,6 +1199,19 @@ const foods = [
     ]
   },
   {
+    id: "bolinho-de-chuva",
+    name: "Bolinho de Chuva",
+    icon: "\ud83c\udf69",
+    category: "Alimenta\u00e7\u00e3o",
+    caloriesPer100g: 500,
+    proteinPer100g: 7,
+    carbsPer100g: 70,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "10g", grams: 10 }
+    ]
+  },
+  {
     id: "cueca-virada-grostoli",
     name: "Cueca Virada (Grostoli)",
     imageSpritePosition: "22.222%",
@@ -1866,6 +1879,7 @@ const fiberPer100gById = {
   "uva": 0.9, "arroz-com-carne": 1.2, "bolo-de-banana-com-canela": 2.1,
   "bolo-de-cenoura": 1.3, "bolo-de-aniversario": 1.1, "brigadeiro": 0.8,
   "bolo-de-chocolate-com-calda": 2.2, "bolo-de-chocolate": 2.2,
+  "bolinho-de-chuva": 1.2,
   "cueca-virada-grostoli": 1.2,
   "pizza": 2.3, "enroladinho-salsicha-frito": 1.5,
   "enroladinho-salsicha-airfryer": 1.5,
@@ -1902,6 +1916,7 @@ const sugarPer100gById = {
   "tomate-cereja": 2.7, "uva": 16, "bolo-de-banana-com-canela": 24,
   "bolo-de-cenoura": 27, "bolo-de-aniversario": 38, "brigadeiro": 55,
   "bolo-de-chocolate-com-calda": 52, "bolo-de-chocolate": 28,
+  "bolinho-de-chuva": 20,
   "cueca-virada-grostoli": 12,
   "pizza": 4, "enroladinho-salsicha-frito": 2,
   "enroladinho-salsicha-airfryer": 2, "vinho-seco": 0.6, "vinho-suave": 6,
@@ -1927,6 +1942,7 @@ const freeSugarPer100gById = {
   "bolo-de-banana-com-canela": 20, "bolo-de-cenoura": 27,
   "bolo-de-aniversario": 38, "brigadeiro": 55,
   "bolo-de-chocolate-com-calda": 52, "bolo-de-chocolate": 28,
+  "bolinho-de-chuva": 15,
   "cueca-virada-grostoli": 12,
   "pizza": 2, "coxinha-de-frango-frita": 2,
   "enroladinho-salsicha-frito": 2,
