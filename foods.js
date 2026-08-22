@@ -253,6 +253,19 @@ const foods = [
     ]
   },
   {
+    id: "caldo-de-legumes-com-frango",
+    name: "Caldo de Legumes com Frango",
+    icon: "\ud83c\udf72",
+    category: "Alimenta\u00e7\u00e3o",
+    caloriesPer100g: 70,
+    proteinPer100g: 8,
+    carbsPer100g: 5,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "100g", grams: 100 }
+    ]
+  },
+  {
     id: "carne-acebolada-com-maionese",
     name: "Carne Acebolada com Maionese",
     category: "Alimenta??o",
@@ -1887,6 +1900,7 @@ const fiberPer100gById = {
   "batata-ensopada": 1.8,
   "bauru-file": 4, "bergamota": 1.8, "beterraba-cozida-assada": 2,
   "beterraba-crua": 2.8, "bife-a-parmegiana": 0.8, "brocolis": 3.3,
+  "caldo-de-legumes-com-frango": 1.2,
   "carne-acebolada-com-maionese": 0.7, "carne-de-panela-agulha": 0.4,
   "cenoura-cozida-assada": 3, "cenoura-crua": 3.2, "couve": 3.1,
   "coxinha-de-frango-frita": 1.5,
@@ -1931,7 +1945,8 @@ const sugarPer100gById = {
   "abacaxi": 10, "abobora": 2.8, "alface": 0.8, "amendoim": 4.7, "chia": 0,
   "banana": 12.2, "bergamota": 8.5, "batata-ensopada": 1.2,
   "beterraba-cozida-assada": 7,
-  "beterraba-crua": 6.8, "brocolis": 1.7, "cenoura-cozida-assada": 4.7,
+  "beterraba-crua": 6.8, "brocolis": 1.7, "caldo-de-legumes-com-frango": 1.5,
+  "cenoura-cozida-assada": 4.7,
   "cenoura-crua": 4.7, "cerveja": 0.1, "couve": 0.8, "doce-de-leite": 50,
   "estrogonof": 2.2, "estrogonof-de-frango": 2.2,
   "estrogonof-de-camarao": 2.2, "estrogonof-de-camarao-com-queijo": 2.2,
