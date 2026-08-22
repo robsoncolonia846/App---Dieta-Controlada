@@ -556,7 +556,7 @@
     }
 
     .chart-value.under {
-      color: #2f6fae;
+      color: #8a6100;
     }
 
     .chart-value.over {
@@ -620,7 +620,7 @@
     }
 
     .chart-bar.under {
-      background: #8fc5ef;
+      background: #f3cf67;
     }
 
     .chart-bar.over {
@@ -874,7 +874,7 @@
     }
 
     .calorie-range.under .calorie-range-fill {
-      background: #3d82d1;
+      background: #f2c94c;
     }
 
     .calorie-range.warn .calorie-range-fill {
@@ -7802,7 +7802,7 @@
       calorieRangeMinInfoBox.textContent = maintainWeight
         ? "Meta diária calculada a partir do gasto estimado."
         : gainWeight
-          ? `Azul abaixo da manutenção; verde até a meta com superávit de ${adjustmentKcal} kcal; amarelo nas 250 kcal seguintes; vermelho acima disso.`
+          ? `Amarelo abaixo da manutenção; verde até a meta com superávit de ${adjustmentKcal} kcal; amarelo nas 250 kcal seguintes; vermelho acima disso.`
           : `Meta mínima com déficit de ${adjustmentKcal} kcal em relação ao gasto diário.`;
       calorieRangeFill.style.setProperty("--width", `${width}%`);
       calorieRange.classList.toggle("under", gainWeight && consumed < min);
