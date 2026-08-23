@@ -292,7 +292,7 @@
       grid-template-areas:
         "title summary"
         "chart chart";
-      gap: 5px 10px;
+      gap: 5px 6px;
       align-items: start;
       padding-bottom: 8px;
       border-bottom: 1px solid #edf0ea;
@@ -301,13 +301,15 @@
     .history-overview-title {
       align-self: start;
       margin: 1px 0 0;
+      font-size: 13px;
+      line-height: 1;
     }
 
     .history-overview-heading {
       grid-area: title;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
       min-width: 0;
     }
 
@@ -320,10 +322,10 @@
     }
 
     .weight-trend-period {
-      min-width: 34px;
+      min-width: 29px;
       border: 0;
       border-radius: 999px;
-      padding: 4px 7px;
+      padding: 4px 5px;
       background: transparent;
       color: #7b8675;
       font: inherit;
@@ -347,13 +349,13 @@
       justify-self: end;
       gap: 2px;
       min-width: 0;
-      padding: 0 0 0 7px;
+      padding: 0 0 0 4px;
       border-left: 1px solid #edf0ea;
     }
 
     .history-period-row {
       display: grid;
-      grid-template-columns: 56px 70px 38px;
+      grid-template-columns: 52px 62px 52px 38px;
       align-items: center;
       justify-content: center;
       gap: 0;
@@ -412,6 +414,23 @@
       font-size: 7px;
       font-weight: 900;
       white-space: nowrap;
+    }
+
+    @media (max-width: 350px) {
+      .history-overview {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+          "title"
+          "summary"
+          "chart";
+      }
+
+      .history-period-summary {
+        justify-self: end;
+        padding: 3px 0 0;
+        border-top: 1px solid #edf0ea;
+        border-left: 0;
+      }
     }
 
     .weight-trend-chart {
@@ -7323,6 +7342,7 @@
         : null;
       const weightedDays = sample.filter((item) => item.weight > 0);
       let weeklyWeightChange = null;
+      let dailyWeightChange = null;
       let weightDifference = null;
       if (weightedDays.length > 1) {
         const first = weightedDays[0];
@@ -7342,12 +7362,14 @@
         } else {
           weightDifference = last.weight - first.weight;
         }
+        dailyWeightChange = weightDifference / elapsedDays;
       }
       return {
         days,
         title: fromStart ? `Início (${sample.length}d)` : `${days} dias`,
         averageBalance,
         weeklyWeightChange,
+        dailyWeightChange,
         weightDifference
       };
     }
@@ -7361,6 +7383,12 @@
         const balanceText = period.averageBalance === null
           ? "-- kcal/dia"
           : `${period.averageBalance > 0 ? "+" : ""}${Math.round(period.averageBalance).toLocaleString("pt-BR", { maximumFractionDigits: 0 })} kcal/dia`;
+        const dailyWeightGrams = period.dailyWeightChange === null
+          ? null
+          : Math.round(period.dailyWeightChange * 1000);
+        const dailyWeightText = dailyWeightGrams === null
+          ? "-- g/dia"
+          : `${dailyWeightGrams > 0 ? "+" : ""}${dailyWeightGrams.toLocaleString("pt-BR")} g/dia`;
         const weightDifferenceText = period.weightDifference === null
           ? "-- kg"
           : `${period.weightDifference > 0 ? "+" : ""}${formatWeight(period.weightDifference)}kg`;
@@ -7370,10 +7398,14 @@
         const weightClass = period.weightDifference === null || period.weightDifference === 0
           ? ""
           : period.weightDifference > 0 ? "gain" : "loss";
+        const dailyWeightClass = dailyWeightGrams === null || dailyWeightGrams === 0
+          ? ""
+          : dailyWeightGrams > 0 ? "gain" : "loss";
         return `
           <div class="history-period-row">
             <span class="history-period-title">${period.title}</span>
             <span class="history-period-value ${balanceClass}">${balanceText}</span>
+            <span class="history-period-weight ${dailyWeightClass}">${dailyWeightText}</span>
             <span class="history-period-weight ${weightClass}">${weightDifferenceText}</span>
           </div>
         `;
