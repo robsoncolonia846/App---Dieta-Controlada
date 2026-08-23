@@ -5280,12 +5280,10 @@
 
     function calculateDayScore(consumed, spent, date = selectedHomeDate()) {
       const targetRange = dailyTargetRange(date);
-      const maintainWeight = isMaintainWeightMode(date);
-      const gainWeight = isGainWeightMode(date);
       const maximumTarget = usesMaximumDailyTarget(date);
       const adjustedTarget = Math.max(1, maximumTarget ? targetRange.max : targetRange.min);
       const excess = consumed - adjustedTarget;
-      const toleratedExcess = gainWeight ? 250 : maintainWeight ? 0 : 150;
+      const toleratedExcess = maximumTarget ? 250 : 150;
       const dangerThresholdReached = excess > toleratedExcess;
       const waterNow = Number(appData.water?.[date]) || 0;
       const isToday = date === todayISO();
@@ -7544,7 +7542,7 @@
       renderHistoryOverview(data);
       const maxAbs = Math.max(...data.flatMap((item) => [
         item.consumed,
-        item.targetRange.max + (isGainWeightMode(item.isoDate) ? 250 : 0)
+        item.targetRange.max + (usesMaximumDailyTarget(item.isoDate) ? 250 : 0)
       ]), 1);
       const barAreaHeight = 122;
       const bars = data.map((item) => {
@@ -7553,7 +7551,7 @@
         const maximumTarget = usesMaximumDailyTarget(item.isoDate);
         const lowerLimit = gainWeight ? item.targetRange.min : maximumTarget ? item.targetRange.max : item.targetRange.min;
         const upperLimit = item.targetRange.max;
-        const redLimit = gainWeight ? upperLimit + 250 : upperLimit;
+        const redLimit = maximumTarget ? upperLimit + 250 : upperLimit;
         const height = Math.max(item.weight ? 18 : 8, item.consumed / maxAbs * barAreaHeight);
         const minBottom = Math.min(barAreaHeight, Math.max(0, lowerLimit / maxAbs * barAreaHeight));
         const goalBottom = Math.min(barAreaHeight, Math.max(0, upperLimit / maxAbs * barAreaHeight));
@@ -7564,8 +7562,8 @@
             : item.consumed <= upperLimit
               ? "low"
               : item.consumed <= redLimit ? "range" : "over"
-          : maximumTarget
-            ? item.consumed > upperLimit ? "over" : "low"
+          : maintainWeight
+            ? item.consumed <= upperLimit ? "low" : item.consumed <= redLimit ? "range" : "over"
             : item.consumed >= upperLimit ? "over" : item.consumed >= lowerLimit ? "range" : "low";
         const weightLabel = `${formatWeight(item.weight)}kg`;
         const visibleBarHeight = Math.max(height, 12);
@@ -7577,7 +7575,7 @@
         const targetDescription = gainWeight
           ? `manutenção ${round(lowerLimit)} kcal, meta ${round(upperLimit)} kcal e limite ${round(redLimit)} kcal`
           : maintainWeight
-            ? `meta ${round(upperLimit)} kcal`
+            ? `meta ${round(upperLimit)} kcal e tolerância até ${round(redLimit)} kcal`
             : `meta ${round(lowerLimit)} a ${round(upperLimit)} kcal`;
         const note = String(exactDailySnapshot(item.isoDate)?.note || "").trim();
         const noteMarkup = note ? `<span class="chart-note">${escapeHTML(note)}</span>` : "";
@@ -7773,13 +7771,14 @@
       const rawMax = Number(targetRange.max) || 1;
       const min = gainWeight ? Number(targetRange.min) || 0 : maximumTarget ? rawMax : Number(targetRange.min) || 0;
       const max = Math.max(1, rawMax);
-      const redLimit = gainWeight ? max + 250 : max;
+      const redLimit = maximumTarget ? max + 250 : max;
+      const displayedMax = gainWeight ? redLimit : max;
       const adjustmentKcal = goalMode.endsWith("slow") ? 250 : 500;
       const scaleMax = redLimit;
       const width = Math.max(0, Math.min(100, (consumed / scaleMax) * 100));
       const minLeft = Math.max(0, Math.min(100, (min / scaleMax) * 100));
       const goalLeft = Math.max(0, Math.min(100, (max / scaleMax) * 100));
-      const maxLeft = Math.max(0, Math.min(100, (redLimit / scaleMax) * 100));
+      const maxLeft = Math.max(0, Math.min(100, (displayedMax / scaleMax) * 100));
       calorieRangeCurrentLabel.textContent = formatIntegerKcal(consumed);
       calorieRangeMinMarker.style.setProperty("--left", `${minLeft}%`);
       calorieRangeMinLabel.parentElement.style.setProperty("--left", `${minLeft}%`);
@@ -7793,14 +7792,14 @@
       calorieRangeGoalLabelWrap.classList.toggle("hidden", !gainWeight);
       calorieRangeMinLabel.textContent = formatIntegerKcal(min);
       calorieRangeGoalLabel.textContent = formatIntegerKcal(max);
-      calorieRangeMaxLabel.textContent = formatIntegerKcal(redLimit);
+      calorieRangeMaxLabel.textContent = formatIntegerKcal(displayedMax);
       calorieRangeMinInfoSummary.setAttribute("aria-label", maintainWeight
         ? "Entenda a meta diária"
         : gainWeight
           ? `Entenda o superávit de ${adjustmentKcal} kcal`
           : `Entenda o déficit de ${adjustmentKcal} kcal`);
       calorieRangeMinInfoBox.textContent = maintainWeight
-        ? "Meta diária calculada a partir do gasto estimado."
+        ? "Verde até a meta; amarelo nas 250 kcal seguintes; vermelho acima disso."
         : gainWeight
           ? `Amarelo abaixo da manutenção; verde até a meta com superávit de ${adjustmentKcal} kcal; amarelo nas 250 kcal seguintes; vermelho acima disso.`
           : `Meta mínima com déficit de ${adjustmentKcal} kcal em relação ao gasto diário.`;
@@ -7811,10 +7810,10 @@
         : maintainWeight ? consumed <= max : consumed < min);
       calorieRange.classList.toggle("warn", gainWeight
         ? consumed > max && consumed <= redLimit
-        : !maintainWeight && consumed >= min && consumed < max);
+        : maintainWeight ? consumed > max && consumed <= redLimit : consumed >= min && consumed < max);
       calorieRange.classList.toggle("danger", gainWeight
         ? consumed > redLimit
-        : maintainWeight ? consumed > max : consumed >= max);
+        : maintainWeight ? consumed > redLimit : consumed >= max);
     }
 
     function deleteMealRecord(mealId) {
