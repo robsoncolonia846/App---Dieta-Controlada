@@ -101,6 +101,20 @@ const foods = [
     ]
   },
   {
+    id: "batida-leite-banana-acucar",
+    name: "Batida de Leite com Banana e Açúcar",
+    aliases: ["Vitamina de Banana com Açúcar"],
+    icon: "\ud83e\udd64",
+    category: "Alimenta\u00e7\u00e3o",
+    caloriesPer100g: 88,
+    proteinPer100g: 2.4,
+    carbsPer100g: 17.2,
+    servings: [
+      { id: "mililitros", name: "Mililitros", grams: 1 },
+      { id: "excel", name: "250ml", grams: 250 }
+    ]
+  },
+  {
     id: "batata-com-maionese",
     name: "Batata com Maionese",
     icon: "🥔",
@@ -1895,7 +1909,8 @@ const foods = [
 // Fibras médias por 100 g/ml. Preparações caseiras usam uma referência média.
 const fiberPer100gById = {
   "abacaxi": 1.4, "abobora": 2.8, "alface": 1.3, "amendoim": 8.5, "chia": 34.4,
-  "arroz": 1.6, "banana": 2.6, "batata-com-maionese": 1.5,
+  "arroz": 1.6, "banana": 2.6, "batida-leite-banana-acucar": 1,
+  "batata-com-maionese": 1.5,
   "batata-palha": 4, "batata-frita": 3.8, "batata-inglesa": 1.8,
   "batata-ensopada": 1.8,
   "bauru-file": 4, "bergamota": 1.8, "beterraba-cozida-assada": 2,
@@ -1943,7 +1958,8 @@ const fiberPer100gById = {
 // Açúcares totais médios por 100 g/ml. O valor nunca ultrapassa o carboidrato cadastrado.
 const sugarPer100gById = {
   "abacaxi": 10, "abobora": 2.8, "alface": 0.8, "amendoim": 4.7, "chia": 0,
-  "banana": 12.2, "bergamota": 8.5, "batata-ensopada": 1.2,
+  "banana": 12.2, "batida-leite-banana-acucar": 14.5,
+  "bergamota": 8.5, "batata-ensopada": 1.2,
   "beterraba-cozida-assada": 7,
   "beterraba-crua": 6.8, "brocolis": 1.7, "caldo-de-legumes-com-frango": 1.5,
   "cenoura-cozida-assada": 4.7,
@@ -1983,6 +1999,7 @@ const sugarPer100gById = {
 // de frutas inteiras, verduras ou leite sem açúcar adicionado.
 const freeSugarPer100gById = {
   "doce-de-leite": 45, "goiabada": 68,
+  "batida-leite-banana-acucar": 4.8,
   "pao-caseiro": 3, "pao-de-forma": 4,
   "bolo-de-banana-com-canela": 20, "bolo-de-cenoura": 27,
   "bolo-de-aniversario": 38, "brigadeiro": 55,
