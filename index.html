@@ -1127,6 +1127,13 @@
       padding: 0;
     }
 
+    .meal-step-name {
+      display: grid;
+      min-height: 24px;
+      place-items: center;
+      line-height: 1.15;
+    }
+
     .meal-kcal-target {
       color: #466b2d;
       font-size: 11px;
@@ -2495,6 +2502,11 @@
       white-space: nowrap;
     }
 
+    #open-meal-tab span {
+      margin-left: 2px;
+      color: #a1a99b;
+    }
+
     .training-card-body {
       display: grid;
       gap: 10px;
@@ -3175,8 +3187,8 @@
             <div class="card notification-card" style="margin-top: 14px;">
               <div class="meal-card-heading">
                 <h2>Refeições e atividades</h2>
-                <div class="muted" id="open-meal-tab">Escolha o que deseja registrar</div>
-                <button class="card-notification-bell home-activity-quick" id="home-activity-quick" type="button" aria-label="Adicionar atividade">🏋️</button>
+                <div class="muted" id="open-meal-tab">Cadastrar atividade <span aria-hidden="true">→</span></div>
+                <button class="card-notification-bell home-activity-quick" id="home-activity-quick" type="button" aria-label="Cadastrar atividade">🏋️</button>
               </div>
               <div class="meal-progress-line" id="meal-progress-list"></div>
             </div>
@@ -5410,9 +5422,7 @@
       homeActivityQuick.classList.toggle("planned", Boolean(planned) && !launched);
       homeActivityQuick.classList.toggle("done", launched);
       homeActivityQuick.textContent = "🏋️";
-      const label = planned
-        ? `Adicionar atividade. Sugestão de ${planned.day.label}: ${planned.activity.name}`
-        : "Adicionar atividade";
+      const label = "Cadastrar atividade";
       homeActivityQuick.title = label;
       homeActivityQuick.setAttribute("aria-label", label);
     }
@@ -5543,7 +5553,8 @@
           .filter((item) => item.mealType === meal.id)
           .reduce((total, item) => total + (Number(item.calories) || 0), 0);
         const kcalLine = done ? `<div class="meal-kcal-target">${round(mealCalories)} kcal</div>` : "";
-        return `<button type="button" class="meal-step ${done ? "done" : ""}" data-open-meal-detail="${meal.id}"><div class="meal-icon">${meal.icon}</div><div>${meal.name}</div>${kcalLine}<div class="muted">${time}</div></button>`;
+        const mealLabel = mealDetailLabels[meal.id] || meal.name;
+        return `<button type="button" class="meal-step ${done ? "done" : ""}" data-open-meal-detail="${meal.id}"><div class="meal-icon">${meal.icon}</div><div class="meal-step-name">${mealLabel}</div>${kcalLine}<div class="muted">${time}</div></button>`;
       }).join("");
       mealProgressList.querySelectorAll("[data-open-meal-detail]").forEach((button) => {
         button.addEventListener("click", () => openMealDetail(button.dataset.openMealDetail));
