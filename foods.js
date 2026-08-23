@@ -655,6 +655,19 @@ const foods = [
     ]
   },
   {
+    id: "leite-condensado",
+    name: "Leite Condensado",
+    icon: "🥛",
+    category: "Alimentação",
+    caloriesPer100g: 300,
+    proteinPer100g: 7.5,
+    carbsPer100g: 55,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "10g", grams: 10 }
+    ]
+  },
+  {
     id: "leite-desnatado",
     name: "Leite Semidesnatado",
     aliases: ["Leite Semi Desnatado"],
@@ -1983,7 +1996,7 @@ const sugarPer100gById = {
   "feijao": 0.3, "goiabada": 68, "iogurte-zero": 4.5,
   "coxinha-de-frango-frita": 2,
   "laranja": 8.5, "lazanha-de-carne-moida": 3.2, "lazanha-de-frango": 2.8,
-  "leite-desnatado": 5, "leite-desnatado-zero-gordura": 5, "leite-integral": 4.8, "maca": 14,
+  "leite-condensado": 55, "leite-desnatado": 5, "leite-desnatado-zero-gordura": 5, "leite-integral": 4.8, "maca": 14,
   "maionese": 0.6, "maionese-light": 3, "melancia": 6.2, "morango": 4.9,
   "pao-caseiro": 5, "pao-de-forma": 4.5, "pao-frances": 2.8,
   "pao-torrado": 2.8,
@@ -2012,7 +2025,7 @@ const sugarPer100gById = {
 // Açúcares livres/adicionados por 100 g/ml. Não inclui o açúcar natural
 // de frutas inteiras, verduras ou leite sem açúcar adicionado.
 const freeSugarPer100gById = {
-  "doce-de-leite": 45, "goiabada": 68,
+  "doce-de-leite": 45, "goiabada": 68, "leite-condensado": 45,
   "batida-leite-banana-acucar": 4.8,
   "pao-caseiro": 3, "pao-de-forma": 4,
   "bolo-de-banana-com-canela": 20, "bolo-de-cenoura": 27,
