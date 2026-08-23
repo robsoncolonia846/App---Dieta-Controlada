@@ -353,7 +353,7 @@
 
     .history-period-row {
       display: grid;
-      grid-template-columns: 36px 70px 38px;
+      grid-template-columns: 56px 70px 38px;
       align-items: center;
       justify-content: center;
       gap: 0;
@@ -7345,7 +7345,7 @@
       }
       return {
         days,
-        title: fromStart ? "Início" : `${days} dias`,
+        title: fromStart ? `Início (${sample.length}d)` : `${days} dias`,
         averageBalance,
         weeklyWeightChange,
         weightDifference
