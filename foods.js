@@ -656,9 +656,10 @@ const foods = [
   },
   {
     id: "leite-desnatado",
-    name: "Leite Desnatado",
+    name: "Leite Semidesnatado",
+    aliases: ["Leite Desnatado", "Leite Semi Desnatado"],
     category: "Alimenta??o",
-    caloriesPer100g: 37,
+    caloriesPer100g: 40,
     proteinPer100g: 3.4,
     carbsPer100g: 5,
     servings: [
@@ -670,7 +671,7 @@ const foods = [
     id: "leite-integral",
     name: "Leite Integral",
     category: "Alimenta??o",
-    caloriesPer100g: 62,
+    caloriesPer100g: 60,
     proteinPer100g: 3.4,
     carbsPer100g: 4.8,
     servings: [
