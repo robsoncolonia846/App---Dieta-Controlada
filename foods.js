@@ -657,9 +657,22 @@ const foods = [
   {
     id: "leite-desnatado",
     name: "Leite Semidesnatado",
-    aliases: ["Leite Desnatado", "Leite Semi Desnatado"],
+    aliases: ["Leite Semi Desnatado"],
     category: "Alimenta??o",
-    caloriesPer100g: 40,
+    caloriesPer100g: 45,
+    proteinPer100g: 3.4,
+    carbsPer100g: 5,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "100ml", grams: 100 }
+    ]
+  },
+  {
+    id: "leite-desnatado-zero-gordura",
+    name: "Leite Desnatado",
+    aliases: ["Leite Desnatado Zero Gordura"],
+    category: "Alimenta??o",
+    caloriesPer100g: 35,
     proteinPer100g: 3.4,
     carbsPer100g: 5,
     servings: [
@@ -1970,7 +1983,7 @@ const sugarPer100gById = {
   "feijao": 0.3, "goiabada": 68, "iogurte-zero": 4.5,
   "coxinha-de-frango-frita": 2,
   "laranja": 8.5, "lazanha-de-carne-moida": 3.2, "lazanha-de-frango": 2.8,
-  "leite-desnatado": 5, "leite-integral": 4.8, "maca": 14,
+  "leite-desnatado": 5, "leite-desnatado-zero-gordura": 5, "leite-integral": 4.8, "maca": 14,
   "maionese": 0.6, "maionese-light": 3, "melancia": 6.2, "morango": 4.9,
   "pao-caseiro": 5, "pao-de-forma": 4.5, "pao-frances": 2.8,
   "pao-torrado": 2.8,
