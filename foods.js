@@ -1832,12 +1832,25 @@ const foods = [
     name: "Coca-Cola Original",
     icon: "\ud83e\udd64",
     category: "Alimenta??o",
-    caloriesPer100g: 42.5,
+    caloriesPer100g: 30,
     proteinPer100g: 0,
-    carbsPer100g: 10.5,
+    carbsPer100g: 7.5,
     servings: [
       { id: "mililitros", name: "Mililitros", grams: 1 },
-      { id: "excel", name: "200ml", grams: 200 }
+      { id: "excel", name: "100ml", grams: 100 }
+    ]
+  },
+  {
+    id: "refrigerante-fanta",
+    name: "Refrigerante Fanta",
+    icon: "\ud83e\udd64",
+    category: "Alimentação",
+    caloriesPer100g: 40,
+    proteinPer100g: 0,
+    carbsPer100g: 10,
+    servings: [
+      { id: "mililitros", name: "Mililitros", grams: 1 },
+      { id: "excel", name: "100ml", grams: 100 }
     ]
   },
   {
@@ -2016,7 +2029,7 @@ const sugarPer100gById = {
   "biscoito-agua-e-sal": 4, "biscoito-cream-cracker": 5,
   "biscoito-rosquinha-doce": 25, "biscoito-recheado": 35,
   "biscoito-vovo-sentada": 25, "pacoquinha": 38, "chocolate-bis": 40,
-  "tijolinho-mariola-banana": 46.7, "coca-cola-original": 10.5,
+  "tijolinho-mariola-banana": 46.7, "coca-cola-original": 7.5, "refrigerante-fanta": 10,
   "farofa": 1, "pudim-leite-condensado": 40, "pudim-po-para-pudim": 25,
   "pessego-em-calda": 18, "doce-de-figo": 35,
   "abacaxi-em-calda": 32, "pudim-flan": 20
@@ -2043,7 +2056,7 @@ const freeSugarPer100gById = {
   "biscoito-rosquinha-doce": 25, "biscoito-recheado": 35,
   "biscoito-vovo-sentada": 25, "pacoquinha": 32, "chocolate-bis": 40,
   "tijolinho-mariola-banana": 40,
-  "coca-cola-original": 10.5,
+  "coca-cola-original": 7.5, "refrigerante-fanta": 10,
   "pudim-leite-condensado": 35, "pudim-po-para-pudim": 25,
   "pessego-em-calda": 14, "doce-de-figo": 30,
   "abacaxi-em-calda": 27, "pudim-flan": 17
