@@ -1117,10 +1117,11 @@
       background: transparent;
       font: inherit;
       display: grid;
-      grid-template-rows: 36px 13px 24px 14px;
+      grid-template-rows: 36px 12px 24px 14px;
       align-items: center;
       justify-items: center;
-      gap: 4px;
+      row-gap: 1px;
+      column-gap: 4px;
       color: #8d918a;
       font-size: 10px;
       font-weight: 800;
@@ -1132,7 +1133,7 @@
     .meal-step-name {
       display: grid;
       height: 24px;
-      place-items: center;
+      place-items: start center;
       line-height: 1.15;
     }
 
@@ -1141,6 +1142,8 @@
       font-size: 11px;
       font-weight: 900;
       line-height: 1;
+      align-self: end;
+      transform: translateY(1px);
     }
 
     .meal-kcal-target.empty {
