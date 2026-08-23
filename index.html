@@ -1117,6 +1117,8 @@
       background: transparent;
       font: inherit;
       display: grid;
+      grid-template-rows: 36px 13px 24px 14px;
+      align-items: center;
       justify-items: center;
       gap: 4px;
       color: #8d918a;
@@ -1129,7 +1131,7 @@
 
     .meal-step-name {
       display: grid;
-      min-height: 24px;
+      height: 24px;
       place-items: center;
       line-height: 1.15;
     }
@@ -1139,7 +1141,14 @@
       font-size: 11px;
       font-weight: 900;
       line-height: 1;
-      margin-top: 2px;
+    }
+
+    .meal-kcal-target.empty {
+      visibility: hidden;
+    }
+
+    .meal-step > .muted {
+      line-height: 14px;
     }
 
     .meal-icon {
@@ -5552,9 +5561,11 @@
         const mealCalories = selectedDateMeals
           .filter((item) => item.mealType === meal.id)
           .reduce((total, item) => total + (Number(item.calories) || 0), 0);
-        const kcalLine = done ? `<div class="meal-kcal-target">${round(mealCalories)} kcal</div>` : "";
+        const kcalLine = done
+          ? `<div class="meal-kcal-target">${round(mealCalories)} kcal</div>`
+          : '<div class="meal-kcal-target empty" aria-hidden="true">0 kcal</div>';
         const mealLabel = mealDetailLabels[meal.id] || meal.name;
-        return `<button type="button" class="meal-step ${done ? "done" : ""}" data-open-meal-detail="${meal.id}"><div class="meal-icon">${meal.icon}</div><div class="meal-step-name">${mealLabel}</div>${kcalLine}<div class="muted">${time}</div></button>`;
+        return `<button type="button" class="meal-step ${done ? "done" : ""}" data-open-meal-detail="${meal.id}"><div class="meal-icon">${meal.icon}</div>${kcalLine}<div class="meal-step-name">${mealLabel}</div><div class="muted">${time}</div></button>`;
       }).join("");
       mealProgressList.querySelectorAll("[data-open-meal-detail]").forEach((button) => {
         button.addEventListener("click", () => openMealDetail(button.dataset.openMealDetail));
