@@ -428,6 +428,21 @@ const foods = [
     ]
   },
   {
+    id: "churros-recheado",
+    name: "Churros Recheado",
+    aliases: ["Churros de Doce de Leite", "Churros de Chocolate"],
+    icon: "🍩",
+    category: "Alimentação",
+    caloriesPer100g: 400,
+    proteinPer100g: 7.53,
+    carbsPer100g: 49.8,
+    saturatedFatPer100g: 6.28,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "50g", grams: 50 }
+    ]
+  },
+  {
     id: "coxinha-de-frango-frita",
     name: "Coxinha de Frango Frita",
     icon: "🍗",
@@ -1957,7 +1972,7 @@ const fiberPer100gById = {
   "beterraba-crua": 2.8, "bife-a-parmegiana": 0.8, "brocolis": 3.3,
   "caldo-de-legumes-com-frango": 1.2,
   "carne-acebolada-com-maionese": 0.7, "carne-de-panela-agulha": 0.4,
-  "cenoura-cozida-assada": 3, "cenoura-crua": 3.2, "couve": 3.1,
+  "cenoura-cozida-assada": 3, "cenoura-crua": 3.2, "couve": 3.1, "churros-recheado": 0.69,
   "coxinha-de-frango-frita": 1.5,
   "doce-de-leite": 0.2, "empada-folhada": 1.1,
   "estrogonof": 0.5, "estrogonof-de-frango": 0.5,
@@ -2003,7 +2018,7 @@ const sugarPer100gById = {
   "beterraba-cozida-assada": 7,
   "beterraba-crua": 6.8, "brocolis": 1.7, "caldo-de-legumes-com-frango": 1.5,
   "cenoura-cozida-assada": 4.7,
-  "cenoura-crua": 4.7, "cerveja": 0.1, "couve": 0.8, "doce-de-leite": 50,
+  "cenoura-crua": 4.7, "cerveja": 0.1, "couve": 0.8, "churros-recheado": 25, "doce-de-leite": 50,
   "estrogonof": 2.2, "estrogonof-de-frango": 2.2,
   "estrogonof-de-camarao": 2.2, "estrogonof-de-camarao-com-queijo": 2.2,
   "feijao": 0.3, "goiabada": 68, "iogurte-zero": 4.5,
@@ -2042,7 +2057,7 @@ const freeSugarPer100gById = {
   "batida-leite-banana-acucar": 4.8,
   "pao-caseiro": 3, "pao-de-forma": 4,
   "bolo-de-banana-com-canela": 20, "bolo-de-cenoura": 27,
-  "bolo-de-aniversario": 38, "brigadeiro": 55,
+  "bolo-de-aniversario": 38, "brigadeiro": 55, "churros-recheado": 25,
   "bolo-de-chocolate-com-calda": 52, "bolo-de-chocolate": 28,
   "bolinho-de-chuva": 15,
   "cueca-virada-grostoli": 12,

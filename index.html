@@ -6278,6 +6278,7 @@
     function requiresWholeUnits(item = {}) {
       const name = normalizeText(item.name || item.foodName || "");
       const foodId = String(item.foodId || "").toLowerCase();
+      if (name === "banana" || foodId === "banana") return true;
       if (
         name === "ovo frito"
         || name === "ovo cozido"
