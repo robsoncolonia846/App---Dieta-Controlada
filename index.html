@@ -7598,11 +7598,50 @@
       });
     }
 
+    let chartScaleFrame = 0;
+
+    function updateVisibleChartScale() {
+      const columns = [...chart.querySelectorAll(".chart-col")];
+      if (!columns.length) return;
+      const viewportStart = chart.scrollLeft;
+      const viewportEnd = viewportStart + chart.clientWidth;
+      const visibleColumns = columns.filter((column) =>
+        column.offsetLeft + column.offsetWidth > viewportStart
+        && column.offsetLeft < viewportEnd
+      );
+      const scaleColumns = visibleColumns.length ? visibleColumns : columns.slice(-7);
+      const maxAbs = Math.max(...scaleColumns.flatMap((column) => [
+        Number(column.dataset.consumed) || 0,
+        Number(column.dataset.scaleMaximum) || 0
+      ]), 1);
+      const barAreaHeight = 122;
+      columns.forEach((column) => {
+        const consumed = Number(column.dataset.consumed) || 0;
+        const minimumHeight = column.dataset.hasWeight === "1" ? 18 : 8;
+        const height = Math.max(minimumHeight, consumed / maxAbs * barAreaHeight);
+        const barArea = column.querySelector(".chart-bar-area");
+        const bar = column.querySelector(".chart-bar");
+        barArea?.style.setProperty("--bar-height", `${height}px`);
+        if (bar) bar.style.height = `${Math.max(height, 12)}px`;
+        column.querySelectorAll("[data-target-value]").forEach((marker) => {
+          const targetValue = Number(marker.dataset.targetValue) || 0;
+          const bottom = Math.min(barAreaHeight, Math.max(0, targetValue / maxAbs * barAreaHeight));
+          marker.style.setProperty("--target-bottom", `${bottom}px`);
+        });
+      });
+    }
+
+    function scheduleVisibleChartScale() {
+      cancelAnimationFrame(chartScaleFrame);
+      chartScaleFrame = requestAnimationFrame(updateVisibleChartScale);
+    }
+
     function renderChart() {
       const data = historyDaysSeries();
       chart.setAttribute("aria-label", `Histórico diário com ${data.length} dias`);
       renderHistoryOverview(data);
-      const maxAbs = Math.max(...data.flatMap((item) => [
+      const initialData = data.slice(-7);
+      const maxAbs = Math.max(...initialData.flatMap((item) => [
         item.consumed,
         item.targetRange.max + (usesMaximumDailyTarget(item.isoDate) ? 250 : 0)
       ]), 1);
@@ -7630,10 +7669,10 @@
         const weightLabel = `${formatWeight(item.weight)}kg`;
         const visibleBarHeight = Math.max(height, 12);
         const targetMarkers = gainWeight
-          ? `<span class="chart-day-target min" style="--target-bottom: ${minBottom}px;"></span><span class="chart-day-target goal" style="--target-bottom: ${goalBottom}px;"></span><span class="chart-day-target max" style="--target-bottom: ${maxBottom}px;"></span>`
+          ? `<span class="chart-day-target min" data-target-value="${lowerLimit}" style="--target-bottom: ${minBottom}px;"></span><span class="chart-day-target goal" data-target-value="${upperLimit}" style="--target-bottom: ${goalBottom}px;"></span><span class="chart-day-target max" data-target-value="${redLimit}" style="--target-bottom: ${maxBottom}px;"></span>`
           : maximumTarget
-            ? `<span class="chart-day-target min" style="--target-bottom: ${minBottom}px;"></span>`
-            : `<span class="chart-day-target min" style="--target-bottom: ${minBottom}px;"></span><span class="chart-day-target max" style="--target-bottom: ${maxBottom}px;"></span>`;
+            ? `<span class="chart-day-target min" data-target-value="${lowerLimit}" style="--target-bottom: ${minBottom}px;"></span>`
+            : `<span class="chart-day-target min" data-target-value="${lowerLimit}" style="--target-bottom: ${minBottom}px;"></span><span class="chart-day-target max" data-target-value="${redLimit}" style="--target-bottom: ${maxBottom}px;"></span>`;
         const targetDescription = gainWeight
           ? `manutenção ${round(lowerLimit)} kcal, meta ${round(upperLimit)} kcal e limite ${round(redLimit)} kcal`
           : maintainWeight
@@ -7643,12 +7682,18 @@
         const noteMarkup = note ? `<span class="chart-note">${escapeHTML(note)}</span>` : "";
         const title = `${item.consumed} kcal consumidas; ${item.spent} kcal em atividades; ${targetDescription}; peso ${weightLabel}${note ? `; observação: ${note}` : ""}`;
         const selectedDate = currentPeriod === "hoje" ? todayISO() : currentPeriod;
-        return `<button type="button" class="chart-col ${selectedDate === item.isoDate ? "selected" : ""}" data-history-date="${item.isoDate}" title="${escapeHTML(title)}" aria-label="Abrir registros de ${item.isoDate.split("-").reverse().join("/")}. ${escapeHTML(title)}"><div class="chart-bar-area" style="--bar-height: ${height}px;"><div class="chart-value ${status}">${item.consumed}</div>${targetMarkers}<div class="chart-bar ${status}" style="height: ${visibleBarHeight}px;">${noteMarkup}<span class="chart-weight" data-history-weight="${item.isoDate}" title="Editar peso de ${item.date}">${weightLabel}</span></div></div><div class="chart-date"><span class="chart-weekday">${item.weekday}</span><span>${item.date}</span></div></button>`;
+        return `<button type="button" class="chart-col ${selectedDate === item.isoDate ? "selected" : ""}" data-history-date="${item.isoDate}" data-consumed="${item.consumed}" data-scale-maximum="${redLimit}" data-has-weight="${item.weight ? 1 : 0}" title="${escapeHTML(title)}" aria-label="Abrir registros de ${item.isoDate.split("-").reverse().join("/")}. ${escapeHTML(title)}"><div class="chart-bar-area" style="--bar-height: ${height}px;"><div class="chart-value ${status}">${item.consumed}</div>${targetMarkers}<div class="chart-bar ${status}" style="height: ${visibleBarHeight}px;">${noteMarkup}<span class="chart-weight" data-history-weight="${item.isoDate}" title="Editar peso de ${item.date}">${weightLabel}</span></div></div><div class="chart-date"><span class="chart-weekday">${item.weekday}</span><span>${item.date}</span></div></button>`;
       }).join("");
 
       chart.innerHTML = bars;
+      chart.onscroll = scheduleVisibleChartScale;
       if (currentPeriod === "hoje") {
-        requestAnimationFrame(() => { chart.scrollLeft = chart.scrollWidth; });
+        requestAnimationFrame(() => {
+          chart.scrollLeft = chart.scrollWidth;
+          updateVisibleChartScale();
+        });
+      } else {
+        scheduleVisibleChartScale();
       }
       chart.querySelectorAll("[data-history-weight]").forEach((weightElement) => {
         weightElement.addEventListener("click", (event) => {
