@@ -443,6 +443,21 @@ const foods = [
     ]
   },
   {
+    id: "chuleta-frita",
+    name: "Chuleta Frita",
+    aliases: ["Chuleta Bovina Frita", "Contrafilé Frito"],
+    icon: "🥩",
+    category: "Alimentação",
+    caloriesPer100g: 300,
+    proteinPer100g: 32.1,
+    carbsPer100g: 0,
+    saturatedFatPer100g: 7.4,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "50g", grams: 50 }
+    ]
+  },
+  {
     id: "coxinha-de-frango-frita",
     name: "Coxinha de Frango Frita",
     icon: "🍗",
