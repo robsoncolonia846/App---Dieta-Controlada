@@ -1884,6 +1884,19 @@ const foods = [
     ]
   },
   {
+    id: "rap10",
+    name: "Rap10",
+    icon: "🌯",
+    category: "Alimentação",
+    caloriesPer100g: 70,
+    proteinPer100g: 2,
+    carbsPer100g: 13,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "unidade", name: "Unidade", grams: 100 }
+    ]
+  },
+  {
     id: "farofa",
     name: "Farofa",
     icon: "🥣",
