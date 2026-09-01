@@ -154,6 +154,20 @@ const foods = [
     ]
   },
   {
+    id: "batata-frita-airfryer",
+    name: "Batata Frita (Airfryer)",
+    aliases: ["Batata Frita Airfryer", "Batata Frita (Air Fryer)"],
+    imageSpritePosition: "0%",
+    category: "Alimentação",
+    caloriesPer100g: 150,
+    proteinPer100g: 3,
+    carbsPer100g: 25,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "50g", grams: 50 }
+    ]
+  },
+  {
     id: "batata-inglesa",
     name: "Batata Inglesa",
     category: "Alimenta??o",
@@ -1994,7 +2008,7 @@ const fiberPer100gById = {
   "abacaxi": 1.4, "abobora": 2.8, "alface": 1.3, "amendoim": 8.5, "chia": 34.4,
   "arroz": 1.6, "banana": 2.6, "batida-leite-banana-acucar": 1,
   "batata-com-maionese": 1.5,
-  "batata-palha": 4, "batata-frita": 3.8, "batata-inglesa": 1.8,
+  "batata-palha": 4, "batata-frita": 3.8, "batata-frita-airfryer": 3.8, "batata-inglesa": 1.8,
   "batata-ensopada": 1.8,
   "bauru-file": 4, "bergamota": 1.8, "beterraba-cozida-assada": 2,
   "beterraba-crua": 2.8, "bife-a-parmegiana": 0.8, "brocolis": 3.3,
