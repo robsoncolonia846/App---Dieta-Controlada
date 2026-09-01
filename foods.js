@@ -2055,7 +2055,7 @@ const fiberPer100gById = {
 // Açúcares totais médios por 100 g/ml. O valor nunca ultrapassa o carboidrato cadastrado.
 const sugarPer100gById = {
   "abacaxi": 10, "abobora": 2.8, "alface": 0.8, "amendoim": 4.7, "chia": 0,
-  "banana": 12.2, "batida-leite-banana-acucar": 14.5,
+  "bala": 5, "banana": 12.2, "batida-leite-banana-acucar": 14.5,
   "bergamota": 8.5, "batata-ensopada": 1.2,
   "beterraba-cozida-assada": 7,
   "beterraba-crua": 6.8, "brocolis": 1.7, "caldo-de-legumes-com-frango": 1.5,
@@ -2095,7 +2095,7 @@ const sugarPer100gById = {
 // Açúcares livres/adicionados por 100 g/ml. Não inclui o açúcar natural
 // de frutas inteiras, verduras ou leite sem açúcar adicionado.
 const freeSugarPer100gById = {
-  "doce-de-leite": 45, "goiabada": 68, "leite-condensado": 45,
+  "bala": 5, "doce-de-leite": 45, "goiabada": 68, "leite-condensado": 45,
   "batida-leite-banana-acucar": 4.8,
   "pao-caseiro": 3, "pao-de-forma": 4,
   "bolo-de-banana-com-canela": 20, "bolo-de-cenoura": 27,
