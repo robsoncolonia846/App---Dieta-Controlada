@@ -6265,10 +6265,8 @@
       const foodId = String(item.foodId || findFoodByName(item.name)?.id || "").toLowerCase();
       return name === "ovo cozido"
         || name === "ovo frito"
-        || name === "rap10"
         || foodId === "ovo-cozido"
-        || foodId === "ovo-frito"
-        || foodId === "rap10";
+        || foodId === "ovo-frito";
     }
 
     function adjustedHalfThenWholeAmount(currentValue, direction) {
