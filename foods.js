@@ -184,7 +184,7 @@ const foods = [
     name: "Batata Ensopada",
     icon: "\ud83e\udd54",
     category: "Alimenta\u00e7\u00e3o",
-    caloriesPer100g: 100,
+    caloriesPer100g: 60,
     proteinPer100g: 2,
     carbsPer100g: 18,
     servings: [
@@ -514,12 +514,12 @@ const foods = [
     name: "Empada Folhada",
     icon: "\ud83e\udd67",
     category: "Alimenta\u00e7\u00e3o",
-    caloriesPer100g: 100,
+    caloriesPer100g: 60,
     proteinPer100g: 3,
     carbsPer100g: 12,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "unidade", name: "Unidade", grams: 100 }
+      { id: "porcao", name: "250g", grams: 250 }
     ]
   },
   {
@@ -1423,6 +1423,21 @@ const foods = [
     ]
   },
   {
+    id: "salgadinho-de-padaria",
+    name: "Salgadinho de Padaria",
+    aliases: ["Salgado de Padaria"],
+    icon: "🥟",
+    category: "Alimentação",
+    caloriesPer100g: 300,
+    proteinPer100g: 6,
+    carbsPer100g: 30,
+    saturatedFatPer100g: 5,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "50g", grams: 50 }
+    ]
+  },
+  {
     id: "vinho-seco",
     name: "Vinho Seco",
     icon: "🍷",
@@ -2038,7 +2053,7 @@ const fiberPer100gById = {
   "cueca-virada-grostoli": 1.2,
   "pizza": 2.3, "enroladinho-salsicha-frito": 1.5,
   "enroladinho-salsicha-airfryer": 1.5,
-  "salsichao-frito": 0.2, "salsichao-grelhado": 0.2,
+  "salsichao-frito": 0.2, "salsichao-grelhado": 0.2, "salgadinho-de-padaria": 1.5,
   "acucar-cristal": 0, "batata-doce-cozida": 2.2, "mandioca-cozida": 1.6,
   "aveia-em-flocos": 9.1, "tapioca-com-manteiga": 0.4, "mamao-formosa": 1.8,
   "abacate": 6.3, "queijo-cottage": 0, "granola": 7.5, "quentao": 0.3,
@@ -2061,6 +2076,7 @@ const sugarPer100gById = {
   "beterraba-crua": 6.8, "brocolis": 1.7, "caldo-de-legumes-com-frango": 1.5,
   "cenoura-cozida-assada": 4.7,
   "cenoura-crua": 4.7, "cerveja": 0.1, "couve": 0.8, "churros-recheado": 25, "doce-de-leite": 50,
+  "salgadinho-de-padaria": 2,
   "estrogonof": 2.2, "estrogonof-de-frango": 2.2,
   "estrogonof-de-camarao": 2.2, "estrogonof-de-camarao-com-queijo": 2.2,
   "feijao": 0.3, "goiabada": 68, "iogurte-zero": 4.5,
@@ -2100,6 +2116,7 @@ const freeSugarPer100gById = {
   "pao-caseiro": 3, "pao-de-forma": 4,
   "bolo-de-banana-com-canela": 20, "bolo-de-cenoura": 27,
   "bolo-de-aniversario": 38, "brigadeiro": 55, "churros-recheado": 25,
+  "salgadinho-de-padaria": 1,
   "bolo-de-chocolate-com-calda": 52, "bolo-de-chocolate": 28,
   "bolinho-de-chuva": 15,
   "cueca-virada-grostoli": 12,
