@@ -1862,6 +1862,21 @@ const foods = [
     ]
   },
   {
+    id: "rapadura-de-amendoim",
+    name: "Rapadura de Amendoim",
+    aliases: ["Rapadura de Amendoin"],
+    icon: "🥜",
+    category: "Alimentação",
+    caloriesPer100g: 500,
+    proteinPer100g: 13.2,
+    carbsPer100g: 54.7,
+    saturatedFatPer100g: 5.08,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "porcao", name: "50g", grams: 50 }
+    ]
+  },
+  {
     id: "tijolinho-mariola-banana",
     name: "Tijolinho (Mariola) de Banana (15g)",
     icon: "🍌",
@@ -2061,6 +2076,7 @@ const fiberPer100gById = {
   "arroz-doce": 0.6, "biscoito-maizena": 1.5, "biscoito-agua-e-sal": 2.4,
   "biscoito-cream-cracker": 2.8, "biscoito-rosquinha-doce": 1.8,
   "biscoito-recheado": 2.5, "biscoito-vovo-sentada": 1.6, "pacoquinha": 5.5,
+  "rapadura-de-amendoim": 3.39,
   "chocolate-bis": 2.3,
   "farofa": 5, "pudim-leite-condensado": 0, "pudim-po-para-pudim": 0,
   "pessego-em-calda": 0.8, "doce-de-figo": 2,
@@ -2101,7 +2117,7 @@ const sugarPer100gById = {
   "torta-de-bolacha": 18, "arroz-doce": 15, "biscoito-maizena": 22,
   "biscoito-agua-e-sal": 4, "biscoito-cream-cracker": 5,
   "biscoito-rosquinha-doce": 25, "biscoito-recheado": 35,
-  "biscoito-vovo-sentada": 25, "pacoquinha": 38, "chocolate-bis": 40,
+  "biscoito-vovo-sentada": 25, "pacoquinha": 38, "rapadura-de-amendoim": 41, "chocolate-bis": 40,
   "tijolinho-mariola-banana": 46.7, "coca-cola-original": 7.5, "refrigerante-fanta": 10,
   "farofa": 1, "pudim-leite-condensado": 40, "pudim-po-para-pudim": 25,
   "pessego-em-calda": 18, "doce-de-figo": 35,
@@ -2128,7 +2144,7 @@ const freeSugarPer100gById = {
   "arroz-doce": 12, "biscoito-maizena": 22,
   "biscoito-agua-e-sal": 3, "biscoito-cream-cracker": 4,
   "biscoito-rosquinha-doce": 25, "biscoito-recheado": 35,
-  "biscoito-vovo-sentada": 25, "pacoquinha": 32, "chocolate-bis": 40,
+  "biscoito-vovo-sentada": 25, "pacoquinha": 32, "rapadura-de-amendoim": 41, "chocolate-bis": 40,
   "tijolinho-mariola-banana": 40,
   "coca-cola-original": 7.5, "refrigerante-fanta": 10,
   "pudim-leite-condensado": 35, "pudim-po-para-pudim": 25,
