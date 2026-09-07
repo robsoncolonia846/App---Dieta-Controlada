@@ -1476,6 +1476,21 @@ const foods = [
     ]
   },
   {
+    id: "chocolate-quente-com-chantilly",
+    name: "Chocolate Quente com Chantilly",
+    aliases: ["Chocolate Quente com Chantily"],
+    icon: "☕",
+    category: "Alimentação",
+    caloriesPer100g: 150,
+    proteinPer100g: 3,
+    carbsPer100g: 18,
+    saturatedFatPer100g: 4,
+    servings: [
+      { id: "mililitros", name: "Mililitros", grams: 1 },
+      { id: "excel", name: "100ml", grams: 100 }
+    ]
+  },
+  {
     id: "cafe-com-uma-colher-acucar",
     name: "Café com 1 Colher de Açúcar",
     icon: "☕",
