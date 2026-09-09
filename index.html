@@ -7277,7 +7277,7 @@
     function renderHistoryPeriodSummary(data) {
       const periods = [
         ...[7, 15, 30].map((days) => historyPeriodMetrics(data, days)),
-        historyPeriodMetrics(data)
+        ...(weightTrendPeriod === "max" ? [historyPeriodMetrics(data)] : [])
       ];
       historyPeriodSummary.innerHTML = periods.map((period) => {
         const balanceText = period.averageBalance === null
