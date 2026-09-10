@@ -6076,53 +6076,18 @@
       return Boolean(parseAmount(item.amount));
     }
 
-    function registeredGramAmount(item, fallbackValue) {
-      const food = findFoodByName(item?.name, item?.foodId);
-      const serving = preferredFoodServing(food);
-      const grams = Number(serving?.grams);
-      return Number.isFinite(grams) && grams > 0 ? grams : fallbackValue;
-    }
-
-    function gramAmountTiers(registeredValue) {
-      const registered = Math.max(1, Math.round(Number(registeredValue) || 10));
-      const minimum = registered <= 10 ? Math.max(1, Math.floor(registered / 2)) : 10;
-      const tiers = [registered];
-      let current = registered;
-      while (current > minimum) {
-        let next = Math.floor((current / 2) / 5) * 5;
-        if (next < minimum) next = minimum;
-        if (next >= current) break;
-        tiers.push(next);
-        current = next;
-      }
-      return [...new Set(tiers)].sort((a, b) => a - b);
-    }
+    const gramAmountSteps = [
+      5, 10, 15, 20, 25, 30, 40, 50,
+      75, 100, 125, 150, 200, 250, 300,
+      350, 400, 450, 500, 600, 700
+    ];
 
     function adjustedGramAmount(item, currentValue, direction) {
-      const foodId = String(item?.foodId || findFoodByName(item?.name)?.id || "").toLowerCase();
-      const saladFoodIds = new Set([
-        "alface", "beterraba-crua", "brocolis", "cenoura-crua",
-        "couve", "repolho", "tomate-cereja"
-      ]);
-      if (saladFoodIds.has(foodId)) {
-        return Math.max(10, Math.round(Number(currentValue) || 10) + (direction > 0 ? 10 : -10));
+      const current = Number(currentValue) || gramAmountSteps[0];
+      if (direction > 0) {
+        return gramAmountSteps.find((value) => value > current) ?? gramAmountSteps.at(-1);
       }
-      const registered = registeredGramAmount(item, currentValue);
-      const tiers = gramAmountTiers(registered);
-      const upwardStep = Math.max(5, Math.floor(registered / 2 / 5) * 5);
-      if (currentValue > registered) {
-        const offset = currentValue - registered;
-        const stepCount = direction < 0
-          ? Math.max(0, Math.ceil(offset / upwardStep) - 1)
-          : Math.floor(offset / upwardStep) + 1;
-        return registered + stepCount * upwardStep;
-      }
-      if (direction < 0) {
-        return tiers.filter((value) => value < currentValue).pop() ?? tiers[0];
-      }
-      const higherTier = tiers.find((value) => value > currentValue);
-      if (higherTier !== undefined) return higherTier;
-      return registered + upwardStep;
+      return gramAmountSteps.filter((value) => value < current).pop() ?? gramAmountSteps[0];
     }
 
     function adjustedCountAmount(currentValue, direction) {
