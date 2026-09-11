@@ -514,12 +514,12 @@ const foods = [
     name: "Empada Folhada",
     icon: "\ud83e\udd67",
     category: "Alimenta\u00e7\u00e3o",
-    caloriesPer100g: 60,
+    caloriesPer100g: 300,
     proteinPer100g: 3,
     carbsPer100g: 12,
     servings: [
       { id: "gramas", name: "Gramas", grams: 1 },
-      { id: "porcao", name: "250g", grams: 250 }
+      { id: "porcao", name: "25g", grams: 25 }
     ]
   },
   {
