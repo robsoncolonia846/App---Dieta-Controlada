@@ -25,6 +25,20 @@ const foods = [
     ]
   },
   {
+    id: "doce-caseiro-de-abobora",
+    name: "Doce Caseiro de Abóbora",
+    aliases: ["Doce de Abóbora Caseiro", "Doce de Abóbora"],
+    icon: "🎃",
+    category: "Alimentação",
+    caloriesPer100g: 200,
+    proteinPer100g: 1,
+    carbsPer100g: 55,
+    servings: [
+      { id: "gramas", name: "Gramas", grams: 1 },
+      { id: "excel", name: "10g", grams: 10 }
+    ]
+  },
+  {
     id: "alface",
     name: "Alface",
     category: "Alimenta??o",
@@ -2050,7 +2064,7 @@ const foods = [
 
 // Fibras médias por 100 g/ml. Preparações caseiras usam uma referência média.
 const fiberPer100gById = {
-  "abacaxi": 1.4, "abobora": 2.8, "alface": 1.3, "amendoim": 8.5, "chia": 34.4,
+  "abacaxi": 1.4, "abobora": 2.8, "doce-caseiro-de-abobora": 2, "alface": 1.3, "amendoim": 8.5, "chia": 34.4,
   "arroz": 1.6, "banana": 2.6, "batida-leite-banana-acucar": 1,
   "batata-com-maionese": 1.5,
   "batata-palha": 4, "batata-frita": 3.8, "batata-frita-airfryer": 3.8, "batata-inglesa": 1.8,
@@ -2100,7 +2114,7 @@ const fiberPer100gById = {
 
 // Açúcares totais médios por 100 g/ml. O valor nunca ultrapassa o carboidrato cadastrado.
 const sugarPer100gById = {
-  "abacaxi": 10, "abobora": 2.8, "alface": 0.8, "amendoim": 4.7, "chia": 0,
+  "abacaxi": 10, "abobora": 2.8, "doce-caseiro-de-abobora": 45, "alface": 0.8, "amendoim": 4.7, "chia": 0,
   "bala": 5, "banana": 12.2, "batida-leite-banana-acucar": 14.5,
   "bergamota": 8.5, "batata-ensopada": 1.2,
   "beterraba-cozida-assada": 7,
@@ -2142,7 +2156,7 @@ const sugarPer100gById = {
 // Açúcares livres/adicionados por 100 g/ml. Não inclui o açúcar natural
 // de frutas inteiras, verduras ou leite sem açúcar adicionado.
 const freeSugarPer100gById = {
-  "bala": 5, "doce-de-leite": 45, "goiabada": 68, "leite-condensado": 45,
+  "bala": 5, "doce-de-leite": 45, "doce-caseiro-de-abobora": 40, "goiabada": 68, "leite-condensado": 45,
   "batida-leite-banana-acucar": 4.8,
   "pao-caseiro": 3, "pao-de-forma": 4,
   "bolo-de-banana-com-canela": 20, "bolo-de-cenoura": 27,
